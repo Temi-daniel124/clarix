@@ -15,7 +15,7 @@ migration that creates the table.
 
 ## Supabase project isolation
 
-- **Project:** `Clarix`, project ref: `<TO BE FILLED IN — updated once the project is created>`.
+- **Project:** `Clarix`, project ref: `sxugaizwmqigtioqgefx` (`https://sxugaizwmqigtioqgefx.supabase.co`).
 - This is a **new, standalone project** inside an existing Supabase organization that already
   contains one unrelated project. That unrelated project's database, storage, auth users, and API
   keys must never be queried, referenced, or connected to from this codebase, by any script,
@@ -25,8 +25,8 @@ migration that creates the table.
   reach the browser bundle, never be prefixed `NEXT_PUBLIC_`, and its use should be limited to a
   small, explicitly enumerated set of trusted server-only code paths — enumerate them here as
   they're introduced, so this list stays a real audit trail rather than going stale:
-  - *(none yet — add an entry the first time a service-role-key code path is written, naming the
-    file and why RLS can't be used there instead)*
+  - _(none yet — add an entry the first time a service-role-key code path is written, naming the
+    file and why RLS can't be used there instead)_
 
 ## Secrets
 
@@ -91,7 +91,7 @@ salary figures, IPPIS numbers, or payslip files in cleartext gets called out her
 before it's added — add an entry to the list below the first time such a dependency is
 introduced.
 
-- *(none yet)*
+- _(none yet)_
 
 ## Incident posture
 

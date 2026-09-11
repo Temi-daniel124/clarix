@@ -6,11 +6,12 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-11 (session that produced the governance doc set below).
+**Last updated:** 2026-09-11 (GitHub repo created and pushed; Vercel project auto-linked; Supabase
+project `Clarix` created).
 
 ## Phase
 
-**Planning complete. Implementation setup in progress. No code written yet.**
+**Planning complete. Accounts/infra setup in progress. No application code written yet.**
 
 ## What exists today
 
@@ -23,42 +24,67 @@ know exactly what already exists and what doesn't.
 
 ## What does not exist yet
 
-- [ ] No GitHub repository created yet. GitHub account exists (`temiloluwa-adebayo`); no repo.
-- [ ] No Supabase project named `Clarix` yet. A Supabase account and organization exist, with one
-      unrelated project already in that org — **do not touch it.** Walkthrough for creating the
-      new project is being tracked separately; once created, record its project ref below and in
-      `ARCHITECTURE.md`/`SECURITY.md`.
-- [ ] No Vercel project linked yet. A Vercel account exists.
-- [ ] Resend account exists; no domain/sender configured yet, no API key generated yet.
-- [ ] No `.env.local` or Vercel environment variables configured yet.
-- [ ] No database migrations written or pushed yet.
-- [ ] No application code written yet.
-- [ ] No CI workflow committed yet (stub provided at `.github/workflows/db-tests.yml` — needs to
-      actually run once a repo and a linked Supabase project exist).
-- [ ] Local git identity for this repo not yet configured on the development machine (must be set
-      per-repo before the first commit — see `DEVELOPMENT-WORKFLOW.md`).
+- [ ] Resend: account exists; no domain/sender configured yet, no API key generated yet.
+- [ ] `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY`
+      not yet set in Vercel's environment variables (the Supabase project exists — see below —
+      but its keys haven't been copied into Vercel or a local `.env.local` yet).
+- [ ] No database migrations written or pushed yet — the `Clarix` Supabase project is empty
+      (no tables, no RLS policies). `supabase link` has not been run locally yet either.
+- [ ] No application code written yet — the repo currently contains only this governance doc
+      set, which is why Vercel's first deployment 404s (nothing to serve yet; expected, not a
+      bug — see the note below).
+- [ ] CI workflow stub is committed (`.github/workflows/db-tests.yml`) but has never run — it
+      only triggers on PRs touching `supabase/migrations/**` or `supabase/tests/**`, neither of
+      which exists yet.
+- [ ] `RESEND_API_KEY` / `AI_PAYSLIP_API_KEY` not yet provisioned.
+
+## What now exists (done in this session)
+
+- [x] **GitHub repository created:** `github.com/temiloluwa-adebayo/clarix` (private), default
+      branch `main`. First commit `fa4e539` ("Add governance docs and repo scaffold"), authored
+      correctly as Temiloluwa Adebayo / adrianwilliams128765@gmail.com — GitHub shows it verified
+      (green check) against the account. The local git identity was set **per-repo** (no
+      `--global`), matching `DEVELOPMENT-WORKFLOW.md` §1.
+- [x] **Vercel project linked and deployed:** Vercel auto-imported the new GitHub repo into the
+      `adrianwilliams128765-pixel` account/team as project `clarix-3w5i`
+      (`clarix-3w5i.vercel.app`), and it auto-deployed on the initial push. **The live URL
+      currently 404s — this is expected, not an error:** the repo holds only documentation right
+      now, no `package.json` and no Next.js app for Vercel to build or serve. This will resolve
+      itself once the app scaffold in `BUILD.md` is committed. No git-identity-related deploy
+      block occurred this time.
+      **Open item:** confirm whether `clarix-3w5i` is the permanent project name/URL or should be
+      renamed to something like `clarix` in Vercel's project settings before real users see it —
+      not urgent, but easier to rename now than after a custom domain or shared links exist.
+- [x] **Supabase project `Clarix` created**, project ref `sxugaizwmqigtioqgefx`
+      (`https://sxugaizwmqigtioqgefx.supabase.co`). Recorded in `docs/ARCHITECTURE.md` and
+      `SECURITY.md`. The pre-existing unrelated project in the same organization was not touched.
+      **Open item:** the anon/public key and the database password generated at creation still
+      need to be retrieved from the dashboard (Project Settings → API) and stored — not yet
+      recorded anywhere, including here, since they're secrets (see `SECURITY.md`).
 
 ## Accounts inventory
 
-| Service | Status | Notes |
-|---|---|---|
-| Supabase | Account + org exist | One unrelated project already present in the org — never touch it. New project `Clarix` not yet created. |
-| GitHub | Account exists (`temiloluwa-adebayo`) | No repository yet. |
-| Vercel | Account exists | No project linked yet. |
-| Resend | Account exists | No domain/API key configured yet. |
-| AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned | P1 feature — not needed for the first working commit. |
+| Service                               | Status                                                               | Notes                                                                                                                                                             |
+| ------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Supabase                              | **Project `Clarix` created** (ref `sxugaizwmqigtioqgefx`)            | Lives alongside the pre-existing unrelated project in the same org — that project remains untouched. Anon key / DB password not yet retrieved from the dashboard. |
+| GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)              | First commit pushed, correctly authored, verified by GitHub.                                                                                                      |
+| Vercel                                | **Project linked:** `clarix-3w5i` under `adrianwilliams128765-pixel` | Auto-deployed from the GitHub push; currently 404s because there's no app code yet (expected). Consider renaming the project before go-live.                      |
+| Resend                                | Account exists                                                       | No domain/API key configured yet.                                                                                                                                 |
+| AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                                          | P1 feature — not needed for the first working commit.                                                                                                             |
 
 ## Immediate next steps (in order)
 
-1. Create the GitHub repository.
-2. Set the local git identity for this repo (see `DEVELOPMENT-WORKFLOW.md` §1).
-3. Place this governance doc set in the local project folder (already done if you're reading this
-   from that folder) and make the first commit.
-4. Create the Supabase project `Clarix` (see the setup walkthrough); record its project ref here
-   and update `ARCHITECTURE.md` / `SECURITY.md`.
-5. Link the repo to Vercel; configure environment variables (placeholders until Supabase/Resend
-   values exist).
-6. Scaffold the Next.js app skeleton and push the first migration.
+1. Retrieve the Supabase anon/public key from Project Settings → API and record the database
+   password somewhere safe (password manager) — neither goes in this repo (see `SECURITY.md`).
+2. Run `supabase link --project-ref sxugaizwmqigtioqgefx` locally (one time per machine/checkout).
+3. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and
+   `SUPABASE_SERVICE_ROLE_KEY` in Vercel's project (`clarix-3w5i`) environment variables, and in a
+   local `.env.local` (gitignored).
+4. Scaffold the Next.js app (per `BUILD.md`) and push it — this is what turns the current 404
+   into a real running app on the next Vercel deploy.
+5. Write and push the first database migration (schema from `docs/DATA-MODEL.md`), including its
+   RLS policies in the same migration.
+6. Set up Resend (domain + API key) when the invite-email flows are being built.
 
 ## Decision/scope drift check
 

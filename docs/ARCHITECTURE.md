@@ -36,10 +36,10 @@ Claude/OpenAI API  ── payslip OCR fallback only (never the eligibility decis
 - **Project name:** `Clarix`
 - **Organization:** the user's existing Supabase organization (already contains one unrelated
   project — never touched, queried, or referenced by this codebase; see `DECISIONS.md` D020).
-- **Project ref:** `<TO BE FILLED IN — update this line once the project is created; see the
-  setup walkthrough delivered alongside this document>`
-- **Region:** choose the region closest to Nigeria available on the free tier at creation time
-  (typically an EU region on Supabase's free plan) — record the actual choice here once made.
+- **Project ref:** `sxugaizwmqigtioqgefx`
+- **Project URL:** `https://sxugaizwmqigtioqgefx.supabase.co`
+- **Region:** `<TO BE FILLED IN — check Project Settings → General in the Supabase dashboard and
+record the actual region chosen at creation, for the record>`
 - **Connection:** the Next.js app never connects directly with a raw Postgres connection string
   for application traffic — it uses the Supabase JS client (anon key, RLS-enforced) from the
   browser/server-component context, and the service-role key only from trusted server-only code
@@ -78,6 +78,7 @@ project, `Clarix`, serves both). If a staging split becomes necessary later, tha
 `DECISIONS.md` entry, not a silent addition.
 
 ## Environment variables (names only — actual values live in Vercel's project settings and the
+
 local `.env.local`, never committed; see `SECURITY.md`)
 
 ```
