@@ -1,0 +1,51 @@
+# .github/workflows/db-tests.yml — Clarix
+#
+# Docker-dependent database tests (pgTAP, RLS behavior) run HERE, on GitHub's hosted runner,
+# and never on the developer's laptop. See docs/DEVELOPMENT-WORKFLOW.md §2-3 and
+# docs/DECISIONS.md D015 for why.
+#
+# This is a starter stub — intentionally minimal until real migrations and pgTAP test files
+# exist under supabase/migrations/ and supabase/tests/. Expand the test-run step as those grow.
+
+name: Database tests
+
+on:
+  pull_request:
+    paths:
+      - "supabase/migrations/**"
+      - "supabase/tests/**"
+      - ".github/workflows/db-tests.yml"
+
+jobs:
+  pgtap:
+    name: pgTAP / RLS tests (hosted runner — Docker lives here, not on any laptop)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase stack (runner-only — never run this command on a laptop)
+        run: supabase start
+
+      - name: Apply migrations to the ephemeral runner database
+        run: supabase db reset
+
+      # pgTAP test files live under supabase/tests/*.sql once they exist.
+      # `supabase test db` runs them against the just-reset runner database.
+      - name: Run pgTAP suite
+        run: |
+          if [ -d "supabase/tests" ] && [ -n "$(find supabase/tests -name '*.sql' -print -quit)" ]; then
+            supabase test db
+          else
+            echo "No pgTAP tests found yet under supabase/tests/ — add tests as the schema in docs/DATA-MODEL.md is built out."
+          fi
+
+      - name: Stop Supabase stack
+        if: always()
+        run: supabase stop --no-backup
