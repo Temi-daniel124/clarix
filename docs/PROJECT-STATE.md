@@ -23,9 +23,14 @@ join a cooperative) has not been started.
   `DESIGN_SYSTEM.md`).
 - **GitHub repository:** `github.com/temiloluwa-adebayo/clarix` (private), default branch `main`.
   Commit identity verified per-session as Temiloluwa Adebayo / adrianwilliams128765@gmail.com.
-- **Vercel project:** `clarix-3w5i` under `adrianwilliams128765-pixel`, auto-deploying from the
-  GitHub repo. **Open item:** decide whether `clarix-3w5i` is the permanent project name/URL
-  before real users or a custom domain exist.
+- **Vercel:** the project actually building this repository is **`clarix_app`**, which serves
+  `clarix-3w5i.vercel.app`. A second Vercel project named `clarix-3w5i` also exists in the same
+  account with its own separate URL. Earlier revisions of this document named `clarix-3w5i` as
+  the project, which was wrong. **Open items:** confirm whether the second project is also
+  connected to this repository and delete it if it is redundant, then decide the permanent
+  project name and URL before real users or a custom domain exist.
+  `vercel.json` pins the framework preset to Next.js, because `clarix_app` had been configured
+  before any app code existed and was looking for a `dist/` directory.
 - **Supabase project `Clarix`**, ref `sxugaizwmqigtioqgefx`, linked locally (`supabase/.temp/`
   holds the link). The pre-existing unrelated project in the same organization is untouched.
   **Open item:** the region still needs recording in `docs/ARCHITECTURE.md`.
@@ -92,6 +97,14 @@ join a cooperative) has not been started.
       inline script in the document, because Chrome fires that event before React hydrates and a
       listener registered in a component effect missed it entirely. The banner appears on the
       dashboard, never on the landing page, and a dismissal is honoured for a week.
+- [x] **Deployed and reviewed on a Vercel Preview**, on branch `slice-01-foundations-auth`. Two
+      further defects surfaced only there, neither of which any local check could have caught:
+      a clean `npm install` failed because `create-next-app` pinned `@types/node` to 20 while
+      Vitest 5 requires 22 or newer (the local lockfile had been built up incrementally and
+      hid it), and the landing page rendered blank below the navigation for several seconds
+      because the hero entrance was a Motion component, so the headline was server-rendered at
+      opacity 0 and waited for hydration. The hero entrance is now a CSS animation on a server
+      component whose resting state is visible.
 
 ## What does not exist yet
 
