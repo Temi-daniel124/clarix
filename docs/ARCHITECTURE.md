@@ -38,8 +38,12 @@ Claude/OpenAI API  ── payslip OCR fallback only (never the eligibility decis
   project — never touched, queried, or referenced by this codebase; see `DECISIONS.md` D020).
 - **Project ref:** `sxugaizwmqigtioqgefx`
 - **Project URL:** `https://sxugaizwmqigtioqgefx.supabase.co`
-- **Region:** `<TO BE FILLED IN — check Project Settings → General in the Supabase dashboard and
-record the actual region chosen at creation, for the record>`
+- **Region:** `eu-west-1` (Ireland). Worth being aware of rather than changing: the pilot's users
+  are in Abeokuta, so every request crosses to Europe and back. That is a latency cost, not a
+  correctness one, and Supabase cannot move a project between regions after creation — it would
+  mean a new project and a migration. Revisit only if the pilot shows latency actually hurting,
+  and note that the nearest alternatives carry their own data-residency questions under the NDPA.
+- **Postgres:** 17.6
 - **Connection:** the Next.js app never connects directly with a raw Postgres connection string
   for application traffic — it uses the Supabase JS client (anon key, RLS-enforced) from the
   browser/server-component context, and the service-role key only from trusted server-only code

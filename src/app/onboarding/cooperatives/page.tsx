@@ -30,7 +30,6 @@ export default async function CooperativesPage() {
     <>
       <StepIndicator current="cooperatives" />
       <CooperativeBrowser
-        organizationName={context.organization.name}
         cooperatives={(cooperatives ?? []).map((entry) => ({
           id: entry.id,
           name: entry.name,

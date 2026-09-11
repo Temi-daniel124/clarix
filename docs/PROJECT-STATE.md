@@ -6,15 +6,15 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-11 (landing-page visual pass with a colour-scheme control, and employee
-onboarding 2.1-2.5 built and walked end to end against the live project).
+**Last updated:** 2026-09-11 (the persistent app shell, the real Dashboard, My Cooperatives,
+Discovery and the Cooperative Discovery Profile — blueprint Parts 3 and 4).
 
 ## Phase
 
-**Planning complete. Infra live. The whole employee path from landing page to a completed
-onboarding now exists and has been walked end to end against the live project.** What remains
-before an employee dashboard means anything is the loan side: the eligibility lookup, the
-reservation transaction, and the tables they need.
+**Planning complete. Infra live. Blueprint Parts 1 to 4 are built** — landing page, auth,
+onboarding, the persistent navigation shell, and the home-base screens — and every one has been
+walked in a browser against the live project. What remains is Part 5, the loan side: the
+`loans` table, the cross-cooperative eligibility lookup, and the reservation transaction.
 
 ## What exists today
 
@@ -129,14 +129,36 @@ reservation transaction, and the tables they need.
       can read that member's `users` row, where the eligibility figures live, but cannot read or
       write the payslip document. Committed as pgTAP suite 002.
 
+- [x] **Persistent navigation shell** (blueprint Part 3): sidebar on desktop, bottom tab bar on
+      mobile, both generated from one destination list so the two cannot drift into separate
+      information architectures. Notifications and Profile are direct sidebar rows on desktop and
+      sit behind More on mobile, exactly as the blueprint splits them. It wraps every
+      authenticated screen; the bare dashboard placeholder is gone.
+- [x] **Dashboard** (blueprint 4.1), replacing the placeholder wholesale: greeting, the four KPI
+      cards with tap-to-expand, the freshness line, the Insights strip, and the quiet
+      browse-Discovery prompt. Available Capacity is the only card that expands into the meter,
+      because it is the only one that is a number against a limit.
+- [x] **My Cooperatives (4.2), Discovery (4.3) and the Cooperative Discovery Profile (4.4)**,
+      the last with its Benefits-and-packages and Requirements-to-join sections and the real
+      "Apply to join" action.
+- [x] **Migration 005** adds `cooperative_loan_products` with RLS. Read access is deliberately
+      wider than the rest of the schema and that is safe: a loan product describes what a
+      cooperative offers, not what any member owes. Verified in the browser that the
+      `is_public` policy genuinely filters — a cooperative's unadvertised product does not
+      reach the profile screen, and no query filters for it.
+- [x] **The two apply paths are now one.** Onboarding 2.5 used to create memberships inline
+      because 4.4 did not exist; it now links into the real profile with `?from=onboarding`, and
+      that screen offers a way back into onboarding rather than into the app.
+
 ## What does not exist yet
 
-- [ ] **Self-service signup cannot complete**, and this is the one thing blocking the employee
-      flow. Supabase's built-in email sender is rate-limited to a handful of messages an hour, so
-      the confirmation email fails and no account is created. The form submits correctly and now
-      explains the failure in plain language, but the fix is infrastructure, not code: point
-      Supabase Auth's SMTP at Resend, which is already the approved email provider. Until then,
-      accounts have to be created directly in the database.
+- [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
+      now wired to `smtp.resend.com:465`, so Supabase's built-in sender and its rate limit are
+      out of the picture. What remains is the sender address: `onboarding@resend.dev` is
+      Resend's shared testing sender and only delivers to the Resend account owner's own email,
+      so a signup from any other address fails with "Error sending confirmation email". Verifying
+      a real sending domain closes this. Until then, accounts are created directly in the
+      database.
 - [ ] **`NEXT_PUBLIC_SUPABASE_ANON_KEY` is set locally but its value in Vercel is unverified.**
       All five variables exist in the Vercel project as Secret-type entries, which means they
       cannot be read back out to confirm they match.
@@ -147,8 +169,21 @@ reservation transaction, and the tables they need.
       rather than inventing a "reading your payslip" stage for something nothing is doing.
       Building it means adding a PDF text-extraction dependency, which needs a TOOLING-POLICY.md
       check and a SECURITY.md entry first, because it would see payslip files in cleartext.
-- [ ] The cooperative discovery profile (blueprint 4.2). Applying currently happens inline on
-      the onboarding list; the profile screen with packages and benefits is where it belongs.
+- [ ] **Three test cooperatives and nine loan products are seeded in the live database**, named
+      with a "(test data)" suffix so they cannot be mistaken for real FMC Abeokuta cooperatives,
+      plus one pending membership held by the test account. Seeded directly rather than in a
+      migration, the same way the pilot test account was. **Delete all of it before go-live.**
+- [ ] Cooperative Detail (blueprint 5.2). My Cooperatives rows are deliberately not links yet,
+      because the screen they would open does not exist and a row that looks tappable and does
+      nothing is worse than one that does not pretend.
+- [ ] Loans, Notifications, Profile and Help are reachable from the navigation but show a short
+      honest holding screen: the shell has no dead tabs, and none of them imitates the screen it
+      stands in for.
+- [ ] The three loan-derived dashboard figures — Active Loans, Monthly Deductions, and the
+      committed half of Available Capacity — read as zero because the `loans` table does not
+      exist yet. That is the truth rather than a placeholder: an employee with no loans recorded
+      owes nothing through Clarix, so the whole cap is genuinely available. They become live when
+      Part 5 lands, with no change to the dashboard beyond the query.
 - [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
       so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
       wholesale when the real dashboard is built.
@@ -163,7 +198,6 @@ reservation transaction, and the tables they need.
 - [ ] The pgTAP suite has **never actually executed** — it runs only on a pull request touching
       `supabase/migrations/**` or `supabase/tests/**`. Its assertions were each verified by hand
       against the live project, but the file itself is unproven until CI runs it.
-- [ ] Resend: account exists; no domain, sender or API key configured.
 - [ ] `RESEND_API_KEY` / `AI_PAYSLIP_API_KEY` not provisioned.
 - [ ] A test account, `pilot.tester@fmcabeokuta.org.ng`, exists in `auth.users` and was created
       directly in the database rather than through signup. **Delete it before go-live.**
@@ -175,24 +209,28 @@ reservation transaction, and the tables they need.
 
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Six tables, 23 RLS policies, one seeded organization. The unrelated project in the same org is untouched. |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Seven tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub.                                                        |
-| Vercel                                | **Project linked:** `clarix-3w5i`                          | Will serve a real app from the next push. Needs the Supabase env vars set before auth works.              |
-| Resend                                | Account exists                                            | No domain/API key configured yet.                                                                         |
+| Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
+| Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
 | AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                               | P1 feature.                                                                                               |
 
 ## Immediate next steps (in order)
 
-1. **Point Supabase Auth's SMTP at Resend.** This unblocks self-service signup, which is
-   currently the only broken step in the employee journey. It needs a verified sending domain in
-   Resend and its SMTP credentials entered under Supabase → Authentication → Emails.
+1. **Verify a sending domain in Resend and point the sender at it.** Custom SMTP is already
+   wired to `smtp.resend.com:465` and the built-in rate limiter is gone, but the sender is
+   still `onboarding@resend.dev`, which Resend restricts to the account owner's own address.
+   Signing up any other address now fails with "Error sending confirmation email" — a different
+   failure from before, and the last thing blocking self-service signup.
 2. Confirm the Vercel environment variables really hold the same Supabase URL and anon key as
    `.env.local` — they are stored as Secret-type entries and cannot be read back to check.
 3. Review the Preview deployment on an actual phone, which the iframe-based review cannot stand
    in for.
-4. Build employee onboarding (blueprint 2.1–2.5) and the migrations it needs (`documents`).
-5. Record the Supabase region in `docs/ARCHITECTURE.md`, and decide on the Vercel project name.
-6. Delete the `pilot.tester@fmcabeokuta.org.ng` account before go-live.
+4. Decide the permanent Vercel project name, and remove the redundant `clarix-3w5i` project if
+   it is not serving anything.
+5. Enable leaked-password protection in Supabase Auth.
+6. Delete the `pilot.tester@fmcabeokuta.org.ng` account and its uploaded probe payslip before
+   go-live.
 
 ## Decision/scope drift check
 

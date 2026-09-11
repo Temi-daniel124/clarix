@@ -19,6 +19,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      cooperative_loan_products: {
+        Row: {
+          cooperative_id: string
+          created_at: string
+          id: string
+          interest_terms: string | null
+          is_public: boolean
+          max_tenure_months: number
+          min_savings_ratio: number
+          name: string
+        }
+        Insert: {
+          cooperative_id: string
+          created_at?: string
+          id?: string
+          interest_terms?: string | null
+          is_public?: boolean
+          max_tenure_months: number
+          min_savings_ratio: number
+          name: string
+        }
+        Update: {
+          cooperative_id?: string
+          created_at?: string
+          id?: string
+          interest_terms?: string | null
+          is_public?: boolean
+          max_tenure_months?: number
+          min_savings_ratio?: number
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cooperative_loan_products_cooperative_id_fkey"
+            columns: ["cooperative_id"]
+            isOneToOne: false
+            referencedRelation: "cooperatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cooperative_memberships: {
         Row: {
           cooperative_id: string

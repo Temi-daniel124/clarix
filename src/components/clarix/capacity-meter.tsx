@@ -23,6 +23,7 @@ export function CapacityMeter({
   proposed = 0,
   caption,
   showVerdict = false,
+  showHeadline = true,
   className,
 }: {
   /** The deduction ceiling: salary basis × the organization's maximum percentage. */
@@ -33,6 +34,12 @@ export function CapacityMeter({
   proposed?: number;
   caption?: string;
   showVerdict?: boolean;
+  /**
+   * Set false when the surrounding card already states the label and the figure — the KPI
+   * card does, and rendering them again made "Available capacity" and the amount appear twice
+   * in the same card. The meter, its legend and its caption still render.
+   */
+  showHeadline?: boolean;
   className?: string;
 }) {
   const reduceMotion = useReducedMotion();
@@ -56,18 +63,26 @@ export function CapacityMeter({
 
   return (
     <div className={cn("w-full", className)}>
-      <p className="type-caption uppercase tracking-[0.08em] text-text-muted">{headlineLabel}</p>
+      {showHeadline ? (
+        <>
+          <p className="type-caption uppercase tracking-[0.08em] text-text-muted">
+            {headlineLabel}
+          </p>
 
-      <div className="mt-2 flex items-baseline gap-3">
-        <RollingNumber
-          value={headlineValue}
-          className={cn("type-kpi", !eligible && proposed > 0 ? "text-danger" : "text-text")}
-        />
-        {showVerdict ? <Verdict eligible={eligible} reduceMotion={Boolean(reduceMotion)} /> : null}
-      </div>
+          <div className="mt-2 flex items-baseline gap-3">
+            <RollingNumber
+              value={headlineValue}
+              className={cn("type-kpi", !eligible && proposed > 0 ? "text-danger" : "text-text")}
+            />
+            {showVerdict ? (
+              <Verdict eligible={eligible} reduceMotion={Boolean(reduceMotion)} />
+            ) : null}
+          </div>
+        </>
+      ) : null}
 
       <MeterBar
-        className="mt-4"
+        className={showHeadline ? "mt-4" : ""}
         usedRatio={usedRatio}
         proposedRatio={proposedRatio}
         tone={tone}
