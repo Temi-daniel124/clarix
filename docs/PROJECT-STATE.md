@@ -6,15 +6,15 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-11 (first application slice, after browser review: local Supabase
-configured, login verified end to end, eight visual and behavioural defects found by eye and
-fixed, migration-application method resolved as DECISIONS.md D023).
+**Last updated:** 2026-09-11 (landing-page visual pass with a colour-scheme control, and employee
+onboarding 2.1-2.5 built and walked end to end against the live project).
 
 ## Phase
 
-**Planning complete. Infra live. First application slice built and awaiting review** — the
-landing page and authentication screens exist and build clean; onboarding (employee ID, payslip,
-join a cooperative) has not been started.
+**Planning complete. Infra live. The whole employee path from landing page to a completed
+onboarding now exists and has been walked end to end against the live project.** What remains
+before an employee dashboard means anything is the loan side: the eligibility lookup, the
+reservation transaction, and the tables they need.
 
 ## What exists today
 
@@ -56,8 +56,10 @@ join a cooperative) has not been started.
 - [x] **Three migrations written and applied to the remote `Clarix` project:**
       `20260911141652_init_core_identity_and_cooperatives.sql` (the six tables, their enums, the
       D009 reservation-ceiling trigger, 23 RLS policies, the signup trigger, and the seeded FMC
-      Abeokuta organization row); `20260911143000_harden_function_privileges.sql`;
-      `20260911152000_grant_table_privileges.sql`.
+      Abeokuta organization row); `20260911141744_harden_function_privileges.sql`;
+      `20260911144045_grant_table_privileges.sql`; `20260911211501_documents_and_payslip_storage.sql`.
+      Local filenames were reconciled to the versions the database recorded, per D023 — three
+      had drifted, which is exactly the failure that rule exists to catch.
 - [x] **FMC Abeokuta seeded** — `deduction_basis='gross'`, `deduction_max_percentage=33.30`,
       `employee_id_pattern='^[0-9]{6}$'`, `reservation_expiry_days_default=7`.
 - [x] **RLS verified against the live project**, not just written: an officer of cooperative A
@@ -106,6 +108,27 @@ join a cooperative) has not been started.
       opacity 0 and waited for hydration. The hero entrance is now a CSS animation on a server
       component whose resting state is visible.
 
+- [x] **Landing page visual pass** (D017, P0). The nav is rebuilt from Watermelon's
+      navigation-5 — floating pill and mobile sheet kept, the four-column mega-menu cut as
+      clarix-design-system.md § 4 instructs — fixed at page level, glass over backdrop-blur, and
+      carrying the product's first colour-scheme control (light / system / dark, applied before
+      first paint so there is no flash). The hero is rebuilt from hero-32: its staggered
+      entrance kept, its four bespoke springs collapsed into the one Clarix spring expressed as
+      a CSS `linear()` easing, and its sunflower photograph replaced by a composed backdrop of
+      ledger rules plus one oversized capacity arc.
+- [x] **Employee onboarding built** (blueprint 2.1–2.5): welcome tour, staff ID entry validated
+      against `organizations.employee_id_pattern`, payslip upload to a private bucket, review
+      and confirm, and cooperative discovery with apply. Walked end to end in a browser against
+      the live project: a real file reached Storage under the employee's own folder, the
+      `documents` row was written and confirmed, and `users.salary_gross` / `salary_net` /
+      `salary_verified_at` / `salary_source_doc_id` all landed correctly.
+- [x] **Migration 004** adds `documents`, `users.salary_source_doc_id` and the private
+      `payslips` Storage bucket, with RLS and storage policies in the same migration. Payslip
+      access is deliberately narrower than anything else in the schema, and that was verified
+      against the live project rather than assumed: an officer at the member's *own* cooperative
+      can read that member's `users` row, where the eligibility figures live, but cannot read or
+      write the payslip document. Committed as pgTAP suite 002.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup cannot complete**, and this is the one thing blocking the employee
@@ -117,14 +140,24 @@ join a cooperative) has not been started.
 - [ ] **`NEXT_PUBLIC_SUPABASE_ANON_KEY` is set locally but its value in Vercel is unverified.**
       All five variables exist in the Vercel project as Secret-type entries, which means they
       cannot be read back out to confirm they match.
-- [ ] Employee onboarding (blueprint 2.1–2.5): welcome tour, employee ID entry, payslip upload,
-      review extracted salary, join a cooperative. `/onboarding` is linked from the dashboard
-      but does not exist yet.
+- [ ] **Automatic payslip extraction.** MVP-SCOPE.md puts this at P1, and it is not built, so
+      every account currently lands on the review screen with the fields blank and editable —
+      which is the degradation path blueprint 2.4 already specifies for a failed read. The
+      upload itself is real, and the processing steps name only work that genuinely happens
+      rather than inventing a "reading your payslip" stage for something nothing is doing.
+      Building it means adding a PDF text-extraction dependency, which needs a TOOLING-POLICY.md
+      check and a SECURITY.md entry first, because it would see payslip files in cleartext.
+- [ ] The cooperative discovery profile (blueprint 4.2). Applying currently happens inline on
+      the onboarding list; the profile screen with packages and benefits is where it belongs.
 - [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
       so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
       wholesale when the real dashboard is built.
 - [ ] `/privacy` and `/reset-password` are linked from the auth screens but not built.
-- [ ] The remaining tables from `docs/DATA-MODEL.md`: `documents`, `cooperative_loan_products`,
+- [ ] **Leaked-password protection is disabled** in Supabase Auth. The advisor recommends
+      enabling it (it checks new passwords against HaveIBeenPwned), which is a cheap win for a
+      product holding salary data. It is a project setting, so it needs your decision rather
+      than a code change.
+- [ ] The remaining tables from `docs/DATA-MODEL.md`: `cooperative_loan_products`,
       `savings_transactions`, `loans`, `deduction_reconciliation`, `access_grants`, `audit_log`.
 - [ ] The reservation transaction itself (D008 advisory lock) and its concurrency test.
 - [ ] The pgTAP suite has **never actually executed** — it runs only on a pull request touching

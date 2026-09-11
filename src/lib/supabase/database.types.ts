@@ -169,6 +169,59 @@ export type Database = {
           },
         ]
       }
+      documents: {
+        Row: {
+          byte_size: number | null
+          extracted_fields: Json | null
+          id: string
+          mime_type: string | null
+          original_filename: string | null
+          pay_period: string | null
+          review_status: Database["public"]["Enums"]["document_review_status"]
+          reviewed_at: string | null
+          storage_path: string
+          type: Database["public"]["Enums"]["document_type"]
+          uploaded_at: string
+          user_id: string
+        }
+        Insert: {
+          byte_size?: number | null
+          extracted_fields?: Json | null
+          id?: string
+          mime_type?: string | null
+          original_filename?: string | null
+          pay_period?: string | null
+          review_status?: Database["public"]["Enums"]["document_review_status"]
+          reviewed_at?: string | null
+          storage_path: string
+          type?: Database["public"]["Enums"]["document_type"]
+          uploaded_at?: string
+          user_id: string
+        }
+        Update: {
+          byte_size?: number | null
+          extracted_fields?: Json | null
+          id?: string
+          mime_type?: string | null
+          original_filename?: string | null
+          pay_period?: string | null
+          review_status?: Database["public"]["Enums"]["document_review_status"]
+          reviewed_at?: string | null
+          storage_path?: string
+          type?: Database["public"]["Enums"]["document_type"]
+          uploaded_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "documents_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -236,6 +289,7 @@ export type Database = {
           phone: string | null
           salary_gross: number | null
           salary_net: number | null
+          salary_source_doc_id: string | null
           salary_verified_at: string | null
         }
         Insert: {
@@ -248,6 +302,7 @@ export type Database = {
           phone?: string | null
           salary_gross?: number | null
           salary_net?: number | null
+          salary_source_doc_id?: string | null
           salary_verified_at?: string | null
         }
         Update: {
@@ -260,6 +315,7 @@ export type Database = {
           phone?: string | null
           salary_gross?: number | null
           salary_net?: number | null
+          salary_source_doc_id?: string | null
           salary_verified_at?: string | null
         }
         Relationships: [
@@ -268,6 +324,13 @@ export type Database = {
             columns: ["organization_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "users_salary_source_doc_id_fkey"
+            columns: ["salary_source_doc_id"]
+            isOneToOne: false
+            referencedRelation: "documents"
             referencedColumns: ["id"]
           },
         ]
@@ -290,6 +353,8 @@ export type Database = {
     Enums: {
       cooperative_status: "active" | "inactive"
       deduction_basis: "gross" | "net"
+      document_review_status: "pending_review" | "confirmed" | "corrected"
+      document_type: "payslip"
       membership_status: "pending" | "active" | "suspended"
       staff_role: "admin" | "officer"
       staff_role_status: "invited" | "active" | "revoked"
@@ -422,6 +487,8 @@ export const Constants = {
     Enums: {
       cooperative_status: ["active", "inactive"],
       deduction_basis: ["gross", "net"],
+      document_review_status: ["pending_review", "confirmed", "corrected"],
+      document_type: ["payslip"],
       membership_status: ["pending", "active", "suspended"],
       staff_role: ["admin", "officer"],
       staff_role_status: ["invited", "active", "revoked"],
