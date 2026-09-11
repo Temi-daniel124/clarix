@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { computeCapacity, type Capacity } from "@/lib/eligibility";
+import type { TrendPoint } from "@/components/clarix/trend-indicator";
 
 export type JoinedCooperative = {
   membershipId: string;
@@ -28,6 +29,14 @@ export type DashboardData = {
   /** When the figures above last changed, for the freshness line the blueprint asks for. */
   lastUpdated: string | null;
   insights: Insight[];
+  /**
+   * Savings history for the sparkline. Empty until `savings_transactions` exists — the
+   * memberships table holds a current balance and no history at all, so there is genuinely
+   * nothing to plot. The card shows its empty state rather than a flat or invented line.
+   */
+  savingsTrend: TrendPoint[];
+  organizationName: string;
+  employeeId: string | null;
 };
 
 /**
@@ -53,7 +62,7 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
   const { data: profile } = await supabase
     .from("users")
     .select(
-      "name, salary_gross, salary_net, salary_verified_at, organization_id, organizations(deduction_basis, deduction_max_percentage)",
+      "name, employee_id, salary_gross, salary_net, salary_verified_at, organization_id, organizations(name, deduction_basis, deduction_max_percentage)",
     )
     .eq("id", user.id)
     .maybeSingle();
@@ -109,6 +118,10 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
     .at(-1) ?? null;
 
   return {
+    organizationName: organization?.name ?? "your organization",
+    employeeId: profile.employee_id,
+    // Empty until `savings_transactions` exists; see the field's comment above.
+    savingsTrend: [],
     firstName: profile.name?.trim().split(/\s+/)[0] ?? null,
     salaryConfirmed: Boolean(profile.salary_verified_at),
     capacity,

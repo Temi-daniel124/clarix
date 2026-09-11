@@ -6,8 +6,9 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-11 (the persistent app shell, the real Dashboard, My Cooperatives,
-Discovery and the Cooperative Discovery Profile — blueprint Parts 3 and 4).
+**Last updated:** 2026-09-12 (visual pass on the app shell and dashboard: floating mobile tab
+pill, collapsible desktop rail, dashboard hierarchy and trend indicators, and a real fix for the
+KPI expand animation).
 
 ## Phase
 
@@ -149,6 +150,34 @@ walked in a browser against the live project. What remains is Part 5, the loan s
 - [x] **The two apply paths are now one.** Onboarding 2.5 used to create memberships inline
       because 4.4 did not exist; it now links into the real profile with `?from=onboarding`, and
       that screen offers a way back into onboarding rather than into the app.
+
+- [x] **Navigation rebuilt to match the landing page.** The mobile bar is now a floating navy
+      glass pill whose active tab widens to show its label, and the desktop sidebar is a navy
+      rail that collapses to icons. Both use the one standard spring — the rail's width
+      transition uses `--ease-spring`, which is that same spring solved as a CSS easing, so
+      there is still only one motion vocabulary in the product. The rail's state is remembered
+      per device.
+- [x] **Dashboard given real hierarchy**: an identity mark built from the person's initial
+      rather than a stock avatar (DESIGN_SYSTEM.md rules those out and D017 makes that binding),
+      an organization and staff-ID line under the greeting, the KPI row grouped under its own
+      heading with the freshness line attached, and a movement-over-time indicator on the cards
+      where that question makes sense. No stock photography or decorative illustration was
+      added.
+- [x] **The trend indicator shows an honest empty state.** `savings_transactions` does not
+      exist, so no KPI has any history to plot and every trend currently reads "No history yet".
+      The sparkline is built and will render the moment there is something real to draw. A flat
+      line or an invented upward trend would each have been a small lie on the one screen whose
+      whole job is telling the truth about money.
+- [x] **The KPI expand animation was diagnosed rather than re-tuned.** A single tap was starting
+      four overlapping animation systems: a layout animation on the card (which fires on all
+      four, since one card's span change moves every sibling), two more nested inside each card,
+      and an AnimatePresence height animation fighting the parent's own resize. Up to twelve
+      layout animations plus a height animation settled at slightly different moments, and that
+      compounding — not the spring — is what read as bouncy. Now there is one layout animation
+      on the card, `layout="position"` on its content so text moves rather than stretches, and
+      a plain fade for the detail. Measured over 52 frames: a single 2.9% overshoot, settled by
+      470ms, no oscillation. The expanded card also rises to the top of the grid, because a
+      full-width item was otherwise splitting the row around itself.
 
 ## What does not exist yet
 

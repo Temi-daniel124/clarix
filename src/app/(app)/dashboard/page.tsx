@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { IdentityMark } from "@/components/clarix/identity-mark";
 import { KpiCards } from "@/components/clarix/kpi-cards";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { loadDashboardData } from "@/lib/supabase/dashboard-data";
@@ -20,9 +21,14 @@ export const metadata: Metadata = { title: "Home" };
  * Insights strip, and a quiet prompt to browse Discovery if they have joined fewer cooperatives
  * than exist.
  *
- * There is deliberately no refresh control. Figures are current as of the last confirmed record,
- * and the timestamp below the KPI row says when that was, rather than implying the numbers are
- * live from a payroll system they are not connected to.
+ * The hierarchy is deliberate rather than a flat stack: an identity block at the top that says
+ * whose figures these are, then the KPI group under its own heading with the freshness line
+ * attached to it, then Insights. Without that grouping the screen read as four bare numbers on
+ * an empty page.
+ *
+ * There is no refresh control. Figures are current as of the last confirmed record, and the
+ * timestamp says when that was, rather than implying a live payroll connection that does not
+ * exist (DECISIONS.md D005).
  */
 export default async function DashboardPage() {
   const data = await loadDashboardData();
@@ -36,26 +42,49 @@ export default async function DashboardPage() {
     <div className="mx-auto w-full max-w-[1100px] px-5 py-8 md:px-8 md:py-10">
       <InstallPrompt />
 
-      <h1 className="type-page-title mt-6 text-text">
-        {greeting()}
-        {data.firstName ? `, ${data.firstName}` : ""}.
-      </h1>
+      <header className="mt-6 flex items-center gap-4">
+        <IdentityMark name={data.firstName} className="size-12 shrink-0 md:size-14" />
 
-      <section className="mt-8" aria-label="Your position across every cooperative">
+        <div className="min-w-0">
+          <h1 className="type-page-title text-text">
+            {greeting()}
+            {data.firstName ? `, ${data.firstName}` : ""}.
+          </h1>
+          <p className="type-secondary mt-1 truncate text-text-secondary">
+            {data.organizationName}
+            {data.employeeId ? ` · ${data.employeeId}` : ""}
+          </p>
+        </div>
+      </header>
+
+      <section
+        className="mt-10 rounded-feature border border-border bg-background p-4 md:p-5"
+        aria-labelledby="position-heading"
+      >
+        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 px-1 pb-4">
+          <h2
+            id="position-heading"
+            className="type-caption uppercase tracking-[0.08em] text-text-muted"
+          >
+            Across every cooperative
+          </h2>
+
+          {data.lastUpdated ? (
+            <p className="flex items-center gap-1.5 type-caption text-text-muted">
+              <Clock aria-hidden strokeWidth={1.75} className="size-3.5" />
+              Current as of {formatUpdated(data.lastUpdated)}
+            </p>
+          ) : null}
+        </div>
+
         <KpiCards
           totalSavings={data.totalSavings}
           activeLoanCount={data.activeLoanCount}
           monthlyDeductions={data.monthlyDeductions}
           capacity={data.capacity}
           salaryConfirmed={data.salaryConfirmed}
+          savingsTrend={data.savingsTrend}
         />
-
-        {data.lastUpdated ? (
-          <p className="mt-3 flex items-center gap-1.5 type-caption text-text-muted">
-            <Clock aria-hidden strokeWidth={1.75} className="size-3.5" />
-            Current as of {formatUpdated(data.lastUpdated)}
-          </p>
-        ) : null}
       </section>
 
       <InsightsStrip insights={data.insights} />

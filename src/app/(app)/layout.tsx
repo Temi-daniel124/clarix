@@ -29,8 +29,8 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
       <div className="flex min-w-0 flex-1 flex-col">
         <AppTopBar />
 
-        {/* The bottom padding clears the fixed mobile tab bar. */}
-        <main className="flex-1 pb-28 md:pb-12">{children}</main>
+        {/* The bottom padding clears the floating mobile tab pill. */}
+        <main className="flex-1 pb-32 md:pb-12">{children}</main>
       </div>
 
       <AppBottomTabs />

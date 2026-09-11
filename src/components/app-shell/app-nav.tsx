@@ -1,184 +1,269 @@
 "use client";
 
+import { useCallback, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Ellipsis } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { Ellipsis, PanelLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { SIDEBAR_STORAGE_KEY } from "@/components/theme/theme-script";
+import { springStandard } from "@/lib/motion";
 import {
   DESTINATIONS,
   PRIMARY_DESTINATIONS,
   SECONDARY_DESTINATIONS,
   isActive,
+  type Destination,
 } from "./destinations";
 
 /**
  * The persistent navigation — blueprint Part 3.
  *
- * Sidebar on desktop, bottom tab bar on mobile, both generated from the same destination list so
- * the two can never drift into separate information architectures.
+ * Sidebar on desktop, floating tab pill on mobile, both generated from the same destination list
+ * so the two can never drift into separate information architectures.
  *
- * The active entry is distinguished by a filled treatment and full-strength label; the rest are
- * outlined and muted, as the blueprint specifies. Icon fill is expressed as a tinted rounded
- * plate rather than by swapping to a different icon set, since lucide is the only icon source
- * (DECISIONS.md D013) and it has no filled variants.
+ * Both are navy glass, matching the landing page's nav pill. That is deliberate: navigation
+ * chrome is one fixed dark surface across the whole product while content follows the colour
+ * scheme, which is what makes the app and the marketing page read as the same thing.
+ * DESIGN_SYSTEM.md assigns brand-primary navy to "nav, headings, dark surfaces", so this is the
+ * token doing its job.
  */
+
+const RAIL_CHANGE_EVENT = "clarix:sidebar-change";
+
+/* ---------------------------------------------------------------------------
+   Desktop: a collapsible rail
+--------------------------------------------------------------------------- */
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const collapsed = useSyncExternalStore(subscribeToRail, readRail, () => false);
+
+  const toggle = useCallback(() => {
+    const root = document.documentElement;
+    const next = root.classList.contains("rail-collapsed") ? "expanded" : "collapsed";
+    root.classList.toggle("rail-collapsed", next === "collapsed");
+
+    try {
+      window.localStorage.setItem(SIDEBAR_STORAGE_KEY, next);
+    } catch {
+      // Storage blocked; the rail still toggles, it just will not survive a reload.
+    }
+
+    window.dispatchEvent(new Event(RAIL_CHANGE_EVENT));
+  }, []);
 
   return (
-    <aside className="hidden w-[248px] shrink-0 flex-col border-r border-border bg-surface md:flex">
-      <div className="px-6 py-6">
-        <Link href="/dashboard" aria-label="Clarix home">
-          <Wordmark />
-        </Link>
+    <aside
+      /* Width comes from the CSS variable so the collapsed state is correct on first paint. */
+      className="theme-dark hidden shrink-0 flex-col border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
+      style={{ width: "var(--sidebar-width)" }}
+    >
+      <div
+        className={cn(
+          "flex items-center gap-2 px-4 py-5",
+          collapsed ? "justify-center" : "justify-between",
+        )}
+      >
+        {collapsed ? null : (
+          <Link href="/dashboard" aria-label="Clarix home" className="min-w-0 pl-1">
+            <Wordmark tone="onDark" />
+          </Link>
+        )}
+
+        <button
+          type="button"
+          onClick={toggle}
+          aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
+          aria-expanded={!collapsed}
+          className="flex size-9 shrink-0 items-center justify-center rounded-card text-white/55 transition-colors duration-150 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+        >
+          <PanelLeft
+            aria-hidden
+            strokeWidth={1.75}
+            className={cn("size-[18px] transition-transform duration-200", collapsed && "rotate-180")}
+          />
+        </button>
       </div>
 
       <nav aria-label="Main" className="flex-1 px-3">
         <ul className="flex flex-col gap-1">
-          {DESTINATIONS.map((destination) => {
-            const active = isActive(pathname, destination);
-            const Icon = destination.icon;
-
-            return (
-              <li key={destination.href}>
-                <Link
-                  href={destination.href}
-                  aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "flex items-center gap-3 rounded-card px-3 py-2.5 type-body transition-colors duration-150",
-                    "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-                    active
-                      ? "bg-background font-medium text-text"
-                      : "text-text-secondary hover:bg-background hover:text-text",
-                  )}
-                >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "flex size-8 shrink-0 items-center justify-center rounded-card transition-colors duration-150",
-                      active ? "text-emerald" : "text-text-muted",
-                    )}
-                    style={
-                      active
-                        ? {
-                            backgroundColor:
-                              "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)",
-                          }
-                        : undefined
-                    }
-                  >
-                    <Icon className="size-[18px]" strokeWidth={active ? 2.25 : 1.75} />
-                  </span>
-                  {destination.label}
-                </Link>
-              </li>
-            );
-          })}
+          {DESTINATIONS.map((destination) => (
+            <li key={destination.href}>
+              <RailLink
+                destination={destination}
+                active={isActive(pathname, destination)}
+                collapsed={collapsed}
+              />
+            </li>
+          ))}
         </ul>
       </nav>
 
-      <div className="flex items-center justify-between gap-3 border-t border-border px-4 py-4">
-        <span className="type-caption text-text-muted">Appearance</span>
-        <ThemeToggle />
+      <div
+        className={cn(
+          "border-t border-white/8 px-4 py-4",
+          collapsed ? "flex justify-center" : "flex items-center justify-between gap-3",
+        )}
+      >
+        {collapsed ? null : <span className="type-caption text-white/40">Appearance</span>}
+        <ThemeToggle tone="onDark" />
       </div>
     </aside>
   );
 }
 
-export function AppBottomTabs() {
-  const pathname = usePathname();
-  const moreActive = SECONDARY_DESTINATIONS.some((entry) => pathname.startsWith(entry.href));
+function RailLink({
+  destination,
+  active,
+  collapsed,
+}: {
+  destination: Destination;
+  active: boolean;
+  collapsed: boolean;
+}) {
+  const Icon = destination.icon;
 
   return (
-    <nav
-      aria-label="Main"
-      /* pb-[env(safe-area-inset-bottom)] keeps the bar clear of the home indicator on iOS,
-         which DESIGN_SYSTEM.md § PWA app-shell behavior requires of every fixed element. */
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-surface/95 backdrop-blur-lg md:hidden"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    <Link
+      href={destination.href}
+      aria-current={active ? "page" : undefined}
+      title={collapsed ? destination.label : undefined}
+      className={cn(
+        "flex items-center gap-3 rounded-card py-2 type-body transition-colors duration-150",
+        "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
+        collapsed ? "justify-center px-2" : "px-2",
+        active ? "bg-white/[0.07] font-medium text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white",
+      )}
     >
-      <ul className="flex items-stretch">
-        {PRIMARY_DESTINATIONS.map((destination) => {
-          const active = isActive(pathname, destination);
-          const Icon = destination.icon;
+      <span
+        aria-hidden
+        className={cn(
+          "flex size-8 shrink-0 items-center justify-center rounded-card transition-colors duration-150",
+          active ? "text-emerald" : "text-white/45",
+        )}
+        style={
+          active
+            ? { backgroundColor: "color-mix(in srgb, var(--clarix-brand-accent) 16%, transparent)" }
+            : undefined
+        }
+      >
+        <Icon className="size-[18px]" strokeWidth={active ? 2.25 : 1.75} />
+      </span>
 
-          return (
-            <li key={destination.href} className="flex-1">
-              <Link
-                href={destination.href}
-                aria-current={active ? "page" : undefined}
-                className="flex flex-col items-center gap-1 px-1 py-2.5 focus-visible:outline-2 focus-visible:outline-indigo"
-              >
-                <span
-                  aria-hidden
-                  className={cn(
-                    "flex h-7 w-12 items-center justify-center rounded-full transition-colors duration-150",
-                    active ? "text-emerald" : "text-text-muted",
-                  )}
-                  style={
-                    active
-                      ? {
-                          backgroundColor:
-                            "color-mix(in srgb, var(--clarix-brand-accent) 14%, transparent)",
-                        }
-                      : undefined
-                  }
-                >
-                  <Icon className="size-[18px]" strokeWidth={active ? 2.25 : 1.75} />
-                </span>
-                <span
-                  className={cn(
-                    "type-caption",
-                    active ? "font-medium text-text" : "text-text-muted",
-                  )}
-                >
-                  {destination.label}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
+      {collapsed ? (
+        <span className="sr-only">{destination.label}</span>
+      ) : (
+        <span className="truncate">{destination.label}</span>
+      )}
+    </Link>
+  );
+}
 
-        <li className="flex-1">
-          <Link
-            href="/more"
-            aria-current={moreActive || pathname === "/more" ? "page" : undefined}
-            className="flex flex-col items-center gap-1 px-1 py-2.5 focus-visible:outline-2 focus-visible:outline-indigo"
-          >
-            <span
-              aria-hidden
-              className={cn(
-                "flex h-7 w-12 items-center justify-center rounded-full transition-colors duration-150",
-                moreActive || pathname === "/more" ? "text-emerald" : "text-text-muted",
-              )}
-              style={
-                moreActive || pathname === "/more"
-                  ? {
-                      backgroundColor:
-                        "color-mix(in srgb, var(--clarix-brand-accent) 14%, transparent)",
-                    }
-                  : undefined
-              }
+/* ---------------------------------------------------------------------------
+   Mobile: a floating glass pill
+--------------------------------------------------------------------------- */
+
+export function AppBottomTabs() {
+  const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
+  const moreActive =
+    pathname === "/more" || SECONDARY_DESTINATIONS.some((entry) => pathname.startsWith(entry.href));
+
+  return (
+    <div
+      /* Safe-area padding keeps the pill clear of the iOS home indicator, which
+         DESIGN_SYSTEM.md § PWA app-shell behavior requires of every fixed element. */
+      className="theme-dark fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden"
+    >
+      <nav
+        aria-label="Main"
+        className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border border-white/10 bg-navy-surface/88 p-1.5 shadow-[0_8px_30px_rgba(11,18,32,0.28)] backdrop-blur-xl"
+      >
+        {PRIMARY_DESTINATIONS.map((destination) => (
+          <TabPill
+            key={destination.href}
+            href={destination.href}
+            label={destination.label}
+            icon={destination.icon}
+            active={isActive(pathname, destination)}
+            reduceMotion={Boolean(reduceMotion)}
+          />
+        ))}
+
+        <TabPill
+          href="/more"
+          label="More"
+          icon={Ellipsis}
+          active={moreActive}
+          reduceMotion={Boolean(reduceMotion)}
+        />
+      </nav>
+    </div>
+  );
+}
+
+/**
+ * One tab. The active one widens to show its label beside the icon; the rest stay icon-only.
+ *
+ * The width change is a `layout` animation on the one standard spring — the same physics the
+ * rest of the product uses — rather than a bespoke width tween. The label fades in behind it so
+ * the text is not stretched while the pill is still growing.
+ */
+function TabPill({
+  href,
+  label,
+  icon: Icon,
+  active,
+  reduceMotion,
+}: {
+  href: string;
+  label: string;
+  icon: Destination["icon"];
+  active: boolean;
+  reduceMotion: boolean;
+}) {
+  return (
+    <motion.div layout={!reduceMotion} transition={reduceMotion ? { duration: 0 } : springStandard}>
+      <Link
+        href={href}
+        aria-current={active ? "page" : undefined}
+        aria-label={label}
+        className={cn(
+          "flex h-11 items-center gap-2 rounded-full px-3.5 transition-colors duration-150",
+          "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
+          active ? "text-emerald" : "text-white/55 hover:text-white/80",
+        )}
+        style={
+          active
+            ? { backgroundColor: "color-mix(in srgb, var(--clarix-brand-accent) 16%, transparent)" }
+            : undefined
+        }
+      >
+        <Icon
+          aria-hidden
+          className="size-[18px] shrink-0"
+          strokeWidth={active ? 2.25 : 1.75}
+        />
+
+        <AnimatePresence initial={false}>
+          {active ? (
+            <motion.span
+              key="label"
+              initial={reduceMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0 }}
+              transition={reduceMotion ? { duration: 0 } : { duration: 0.15 }}
+              className="type-caption font-medium whitespace-nowrap"
             >
-              <Ellipsis className="size-[18px]" strokeWidth={2} />
-            </span>
-            <span
-              className={cn(
-                "type-caption",
-                moreActive || pathname === "/more"
-                  ? "font-medium text-text"
-                  : "text-text-muted",
-              )}
-            >
-              More
-            </span>
-          </Link>
-        </li>
-      </ul>
-    </nav>
+              {label}
+            </motion.span>
+          ) : null}
+        </AnimatePresence>
+      </Link>
+    </motion.div>
   );
 }
 
@@ -192,4 +277,22 @@ export function AppTopBar() {
       <ThemeToggle />
     </header>
   );
+}
+
+/* ---------------------------------------------------------------------------
+   Rail state
+--------------------------------------------------------------------------- */
+
+function subscribeToRail(onChange: () => void) {
+  window.addEventListener(RAIL_CHANGE_EVENT, onChange);
+  window.addEventListener("storage", onChange);
+  return () => {
+    window.removeEventListener(RAIL_CHANGE_EVENT, onChange);
+    window.removeEventListener("storage", onChange);
+  };
+}
+
+/** Reads the class the inline script already set, so React and CSS agree from the start. */
+function readRail(): boolean {
+  return document.documentElement.classList.contains("rail-collapsed");
 }

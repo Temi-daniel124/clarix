@@ -43,15 +43,21 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    // suppressHydrationWarning is required here and applies to this element's own attributes
-    // only, not to its subtree: ThemeScript adds a `light` or `dark` class to <html> before
-    // React hydrates, so the class attribute the client sees legitimately differs from the one
-    // the server rendered. Without it, every page load logs a hydration mismatch.
-    <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
+// <html> deliberately carries no className. ThemeScript writes the colour-scheme and
+    // sidebar classes onto this element before first paint, and leaving React with no className
+    // of its own here means React never owns that attribute and cannot overwrite them. This is
+    // the same arrangement next-themes requires, and it is defensive rather than a fix for an
+    // observed production bug: the classes survive hydration in a production build either way,
+    // but `next dev` resets the root className during hydration, which makes the preference look
+    // lost while developing.
+    //
+    // So the font variable and the layout classes live on <body>, html's height comes from CSS,
+    // and suppressHydrationWarning covers the attributes the script adds.
+    <html lang="en" suppressHydrationWarning>
       <head>
         <ThemeScript />
       </head>
-      <body className="flex min-h-full flex-col">
+      <body className={`${inter.variable} flex min-h-full flex-col`}>
         {/*
           Chrome fires `beforeinstallprompt` during page load, typically BEFORE React has
           hydrated — so a listener registered inside a component effect misses it altogether and

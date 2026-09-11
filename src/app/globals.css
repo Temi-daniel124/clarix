@@ -341,9 +341,33 @@
   animation: clarix-scale-in var(--duration-spring) var(--ease-spring) backwards;
 }
 
+/* ---------------------------------------------------------------------------
+   The desktop sidebar rail.
+
+   Its width is driven from a class the inline theme script sets before first paint, so a viewer
+   who collapsed it last visit never sees it snap from one width to the other after hydration.
+   (A data attribute was tried first and did not survive hydration — see theme-script.tsx.) The transition uses --ease-spring, which IS springStandard from src/lib/motion.ts
+   solved as a CSS easing — the same physics as every JavaScript-driven spring in the product,
+   not a second motion vocabulary.
+--------------------------------------------------------------------------- */
+
+:root {
+  --sidebar-width: 248px;
+}
+
+:root.rail-collapsed {
+  --sidebar-width: 76px;
+}
+
 @layer base {
   * {
     border-color: var(--clarix-border);
+  }
+
+  /* Was `h-full` on <html> in JSX. It has to be CSS now, because <html> must carry no React
+     className for the pre-paint theme script's classes to survive hydration. */
+  html {
+    height: 100%;
   }
 
   body {
