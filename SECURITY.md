@@ -28,6 +28,28 @@ migration that creates the table.
   - _(none yet — add an entry the first time a service-role-key code path is written, naming the
     file and why RLS can't be used there instead)_
 
+## Elevated database privileges that are not the service-role key
+
+Four functions under `supabase/migrations/` run as `SECURITY DEFINER`, which means they bypass
+RLS. They are listed here for the same reason the service-role list exists — so that the set of
+things able to see past the boundary is written down rather than discovered later:
+
+- `is_platform_admin()`, `is_active_staff(uuid)` and `is_active_cooperative_admin(uuid)` read
+  `cooperative_staff_roles` from inside policies attached to that same table, which would
+  otherwise recurse infinitely. Each takes no free-form input, returns only a boolean about the
+  caller's own roles, and pins its `search_path`. `EXECUTE` is revoked from `anon` and kept for
+  `authenticated` — that is required, not an oversight: a policy expression is evaluated with the
+  querying role's privileges, so revoking it would disable every policy in the schema.
+- `handle_new_auth_user()` is the signup trigger that writes the matching `public.users` row
+  (`docs/DECISIONS.md` D021). `EXECUTE` is revoked from both `anon` and `authenticated`, so it
+  exists only as a trigger and not as a callable PostgREST endpoint.
+
+Table-level privileges are granted to `authenticated` only, verb by verb, matching the policies
+that actually exist; `anon` holds no privilege on any table in the `public` schema. Worth
+remembering when reading a policy: a GRANT is checked *before* RLS, so a missing grant denies
+everything regardless of policy, and a generous grant still leaves RLS deciding which rows are
+reachable.
+
 ## Secrets
 
 - No secret (Supabase keys, Resend API key, the AI payslip-OCR API key) is ever committed to the

@@ -188,6 +188,83 @@ are never touched, queried, or referenced by anything in this codebase.
 **Rationale:** Explicit client instruction; accidental cross-project access would be a serious
 data-boundary failure for an unrelated client's data.
 
+### D021 — Credentials live in Supabase Auth; `public.users` is a 1:1 profile keyed to `auth.users`
+**Status:** Locked
+**Decision:** `public.users.id` is a primary key that references `auth.users(id)` with
+`on delete cascade`, and the table carries no `password_hash` column — the illustrative one in
+`docs/DATA-MODEL.md` is satisfied by Supabase Auth, which owns credentials, email/phone
+verification and session issuance. The matching `public.users` row is created by a
+`SECURITY DEFINER` trigger (`on_auth_user_created`) in the same transaction as the `auth.users`
+insert, rather than by a second write from application code.
+**Rationale:** Two writes from the client can half-succeed, leaving an account that can sign in
+but has no Clarix row. Doing it in the database makes that impossible, and avoids introducing
+the first service-role-key code path in the product — `SECURITY.md`'s enumerated list of those
+stays empty, which is worth keeping true for as long as possible.
+**Consequence:** `users.employee_id`, `name`, `salary_gross` and `salary_net` are all nullable
+at creation and filled in during onboarding (blueprint 2.2–2.4); `employee_id` is unique per
+organization, not globally.
+
+### D022 — v1 authentication is email and password only; phone sign-in is deferred
+**Status:** Provisional (revisit if an SMS provider is ever budgeted)
+**Decision:** Sign Up and Log In accept an email address and password. A phone number entered in
+the identifier field is recognised and answered with a plain inline message saying phone
+sign-up is not available yet, rather than being silently rejected or failing obscurely.
+**Rationale:** `docs/ROLES-AND-PERMISSIONS.md` describes "email/phone + password", but phone
+authentication in Supabase requires a third-party SMS provider. That is a second paid service,
+which `docs/TOOLING-POLICY.md` does not approve and which nobody has agreed to fund; the only
+budgeted paid service is the payslip-OCR API. Recording the gap here rather than building around
+it silently.
+**Action before go-live:** confirm with the cooperative heads that email-only sign-in is
+acceptable for the pilot, since some staff may not use email routinely.
+
+---
+### D023 — Agent-applied migrations go through the Supabase Management API; `db push` stays the human path
+**Status:** Locked
+**Supersedes:** nothing; it narrows the operational detail of D015, which is unchanged — no local
+Docker, and the remote `Clarix` project is still the only database.
+
+**Decision:** A migration written by an AI agent is applied to the remote `Clarix` project through
+the Supabase Management API, using the agent's already-authorized Supabase connection, rather than
+`supabase db push`. Three conditions make this the approved path rather than a workaround, and all
+three are binding:
+
+1. **The migration exists as a reviewed `.sql` file under `supabase/migrations/` first.** The file
+   is the artefact of record. Applying it is a second, separate step, and the file's timestamp
+   prefix is reconciled to the version the API records, so `supabase db push` run later by a human
+   sees the migration as already applied and does not attempt to re-run it.
+2. **The agent is never given the raw database password.** That is the entire point. The password
+   lives in the maintainer's password manager and is not pasted into a prompt, a file, an
+   environment variable the agent can read, or a terminal command the agent composes.
+3. **Nothing is applied that was not written down first.** No ad-hoc DDL typed straight at the
+   database, and no dashboard SQL-editor edits — the prohibition in `DATA-MODEL.md`
+   ("Migration discipline") is unchanged and still applies to both humans and agents.
+
+`supabase db push` remains correct and preferred for a human maintainer working locally, and
+remains the documented path in `BUILD.md`. This entry does not deprecate it; it records which of
+the two paths applies to which kind of operator.
+
+**Rationale:** `supabase db push` authenticates to Postgres directly and therefore needs the
+database password. The three ways to give an agent that capability are all worse than the
+Management API: putting the password in `.env` or the shell environment makes it readable by
+anything the agent runs and one `cat` away from a transcript; passing it inline puts it in the
+session history permanently; and caching it into the CLI's stored credentials still means it was
+handed over once. The Management API path uses a token that is already scoped to project
+administration, can be revoked independently, and never exposes the database superuser credential
+at all. Losing `db push`'s local diffing convenience is a small price for an agent that cannot
+leak a password it was never given.
+
+**What would make `db push` workable for an agent without that exposure**, recorded so this can be
+revisited rather than re-derived: the maintainer sets `SUPABASE_DB_PASSWORD` once in their own
+shell profile (never in the repository, never in `.env.local`), or runs `supabase link` once
+interactively so the CLI caches the credential in the OS keyring. The agent then runs
+`supabase db push` and the CLI reads the secret itself. That is a legitimate future option; it is
+not adopted now because it still places a live database password in an environment the agent
+executes inside, which is a meaningfully weaker boundary than not having it at all.
+
+**Consequence for `DEVELOPMENT-WORKFLOW.md` §2:** that section is updated to describe both paths
+instead of naming `db push` as the only one, which it previously did and which the first
+implementation slice already contradicted.
+
 ---
 
 ## Open, not yet decided

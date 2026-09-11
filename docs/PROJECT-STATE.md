@@ -6,85 +6,147 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-11 (GitHub repo created and pushed; Vercel project auto-linked; Supabase
-project `Clarix` created).
+**Last updated:** 2026-09-11 (first application slice, after browser review: local Supabase
+configured, login verified end to end, eight visual and behavioural defects found by eye and
+fixed, migration-application method resolved as DECISIONS.md D023).
 
 ## Phase
 
-**Planning complete. Accounts/infra setup in progress. No application code written yet.**
+**Planning complete. Infra live. First application slice built and awaiting review** — the
+landing page and authentication screens exist and build clean; onboarding (employee ID, payslip,
+join a cooperative) has not been started.
 
 ## What exists today
 
-- Full planning corpus, written and saved to the "Clarix Re-visioned" Claude project:
-  strategic analysis, MVP spec, design system, and four role-by-role UX blueprints (Employee,
-  Cooperative Admin, Cooperative Officer, Super Admin). Copies live under `docs/planning/` in
-  this repository for local/offline reference by whoever (or whatever agent) is building.
-- This governance doc set (`docs/DECISIONS.md` through `docs/TOOLING-POLICY.md`, plus
-  `AGENT.md`, `CLAUDE.md`, `BUILD.md`, `SECURITY.md`, `DESIGN_SYSTEM.md`).
-
-## What does not exist yet
-
-- [ ] Resend: account exists; no domain/sender configured yet, no API key generated yet.
-- [ ] `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SERVICE_ROLE_KEY`
-      not yet set in Vercel's environment variables (the Supabase project exists — see below —
-      but its keys haven't been copied into Vercel or a local `.env.local` yet).
-- [ ] No database migrations written or pushed yet — the `Clarix` Supabase project is empty
-      (no tables, no RLS policies). `supabase link` has not been run locally yet either.
-- [ ] No application code written yet — the repo currently contains only this governance doc
-      set, which is why Vercel's first deployment 404s (nothing to serve yet; expected, not a
-      bug — see the note below).
-- [ ] CI workflow stub is committed (`.github/workflows/db-tests.yml`) but has never run — it
-      only triggers on PRs touching `supabase/migrations/**` or `supabase/tests/**`, neither of
-      which exists yet.
-- [ ] `RESEND_API_KEY` / `AI_PAYSLIP_API_KEY` not yet provisioned.
+- Full planning corpus under `docs/planning/`, and the governance doc set (`docs/DECISIONS.md`
+  through `docs/TOOLING-POLICY.md`, plus `AGENT.md`, `CLAUDE.md`, `BUILD.md`, `SECURITY.md`,
+  `DESIGN_SYSTEM.md`).
+- **GitHub repository:** `github.com/temiloluwa-adebayo/clarix` (private), default branch `main`.
+  Commit identity verified per-session as Temiloluwa Adebayo / adrianwilliams128765@gmail.com.
+- **Vercel project:** `clarix-3w5i` under `adrianwilliams128765-pixel`, auto-deploying from the
+  GitHub repo. **Open item:** decide whether `clarix-3w5i` is the permanent project name/URL
+  before real users or a custom domain exist.
+- **Supabase project `Clarix`**, ref `sxugaizwmqigtioqgefx`, linked locally (`supabase/.temp/`
+  holds the link). The pre-existing unrelated project in the same organization is untouched.
+  **Open item:** the region still needs recording in `docs/ARCHITECTURE.md`.
 
 ## What now exists (done in this session)
 
-- [x] **GitHub repository created:** `github.com/temiloluwa-adebayo/clarix` (private), default
-      branch `main`. First commit `fa4e539` ("Add governance docs and repo scaffold"), authored
-      correctly as Temiloluwa Adebayo / adrianwilliams128765@gmail.com — GitHub shows it verified
-      (green check) against the account. The local git identity was set **per-repo** (no
-      `--global`), matching `DEVELOPMENT-WORKFLOW.md` §1.
-- [x] **Vercel project linked and deployed:** Vercel auto-imported the new GitHub repo into the
-      `adrianwilliams128765-pixel` account/team as project `clarix-3w5i`
-      (`clarix-3w5i.vercel.app`), and it auto-deployed on the initial push. **The live URL
-      currently 404s — this is expected, not an error:** the repo holds only documentation right
-      now, no `package.json` and no Next.js app for Vercel to build or serve. This will resolve
-      itself once the app scaffold in `BUILD.md` is committed. No git-identity-related deploy
-      block occurred this time.
-      **Open item:** confirm whether `clarix-3w5i` is the permanent project name/URL or should be
-      renamed to something like `clarix` in Vercel's project settings before real users see it —
-      not urgent, but easier to rename now than after a custom domain or shared links exist.
-- [x] **Supabase project `Clarix` created**, project ref `sxugaizwmqigtioqgefx`
-      (`https://sxugaizwmqigtioqgefx.supabase.co`). Recorded in `docs/ARCHITECTURE.md` and
-      `SECURITY.md`. The pre-existing unrelated project in the same organization was not touched.
-      **Open item:** the anon/public key and the database password generated at creation still
-      need to be retrieved from the dashboard (Project Settings → API) and stored — not yet
-      recorded anywhere, including here, since they're secrets (see `SECURITY.md`).
+- [x] **Next.js app scaffolded** — Next 16 (App Router, Turbopack), TypeScript, Tailwind v4,
+      `src/` layout, per `BUILD.md`. shadcn initialised on the **base-ui** base with
+      `lucide` as its icon library, plus `motion`, `@supabase/ssr`, `zod`.
+- [x] **Design tokens built exactly to `DESIGN_SYSTEM.md`** in `src/app/globals.css`: the full
+      light/dark colour pairs, the eight-step type scale as `type-*` utilities with the correct
+      mobile/desktop sizes, the card radius (14px mobile / 16px desktop / 20px feature), the one
+      shadow elevation, and a global `prefers-reduced-motion` fallback. The shadcn/base-ui
+      variables are remapped onto Clarix values so no borrowed component can render in preset
+      colours. The one standard spring lives in `src/lib/motion.ts`.
+- [x] **Signature motif primitives built**: `RollingNumber` (tabular digit columns on the one
+      sanctioned heavier spring), `MeterBar` (committed / requested / overshoot in a single
+      track) and `CapacityMeter`, which composes them with the eligible / not-eligible verdict.
+      Everything showing a number against a limit goes through these.
+- [x] **Eligibility arithmetic extracted and unit-tested** — `src/lib/eligibility.ts` implements
+      Steps 1 and 2 of `docs/DATA-MODEL.md`; 16 Vitest cases pass (`npm test`), including the
+      gross-vs-net divergence that motivates D007.
+- [x] **Three migrations written and applied to the remote `Clarix` project:**
+      `20260911141652_init_core_identity_and_cooperatives.sql` (the six tables, their enums, the
+      D009 reservation-ceiling trigger, 23 RLS policies, the signup trigger, and the seeded FMC
+      Abeokuta organization row); `20260911143000_harden_function_privileges.sql`;
+      `20260911152000_grant_table_privileges.sql`.
+- [x] **FMC Abeokuta seeded** — `deduction_basis='gross'`, `deduction_max_percentage=33.30`,
+      `employee_id_pattern='^[0-9]{6}$'`, `reservation_expiry_days_default=7`.
+- [x] **RLS verified against the live project**, not just written: an officer of cooperative A
+      sees only A's memberships, sees no B rows, cannot write into B, and `anon` reaches nothing.
+      The same assertions are committed as pgTAP at
+      `supabase/tests/001_rls_cooperative_isolation.sql` for CI.
+- [x] **Screens built** — Landing Page (blueprint 1.1), Sign Up (1.3), Log In (1.4) and the
+      Verify Contact screen (1.5) that Sign Up leads to. Sign Up creates a real Supabase auth
+      user; the matching `public.users` row is created by a database trigger (D021), verified
+      end-to-end against the live project.
+- [x] **PWA** — manifest at `/manifest.webmanifest`, meter-ring app icons (standard and
+      maskable), an app-shell service worker that never caches a financial figure, an offline
+      fallback screen, and the install-prompt banner (blueprint 1.2) mounted on the dashboard
+      route only.
+- [x] **Three new decision entries** — D021 (credentials live in Supabase Auth), D022 (email-only
+      authentication for v1) and D023 (agent-applied migrations go through the Supabase
+      Management API; `supabase db push` remains the human path). `DEVELOPMENT-WORKFLOW.md` §2
+      was rewritten to describe both paths rather than contradicting what actually happened.
+- [x] **Local environment configured** — `.env.local` holds the Supabase URL and anon key only.
+      The service-role, Resend and AI keys are deliberately absent until a code path needs them.
+- [x] **Log In verified end to end in a real browser**: a confirmed test account signs in, the
+      session cookie is issued, the dashboard server component reads that user's own `users` row
+      under RLS and greets them by name. A signed-in session sees exactly one `users` row (its
+      own) and zero memberships, which is the isolation behaviour the policies intend.
+- [x] **Every screen reviewed by eye** at desktop (1280px) and mobile (390px) widths, in both
+      light and dark mode, against `DESIGN_SYSTEM.md`'s checklist. Eight defects were found that
+      the build, the type checker and the linter had all passed, and all eight were fixed:
+      the rolling number's digits sat off the baseline and collided with the ₦ sign; the hero
+      caption lagged a frame behind the meter it described; an over-cap request made the meter's
+      segments overflow so flex silently shrank the committed portion; the hero card went
+      near-black on navy in dark mode; the auth panel rendered near-black text on navy in light
+      mode; every navigating button logged a base-ui accessibility error; the disabled primary
+      button read as broken rather than unavailable; and the consent checkbox visually unticked
+      itself after a failed submit while the form still considered consent given. Raw Supabase
+      error text shown to employees was also replaced with plain-language wording.
+- [x] **PWA install prompt verified working** — it now captures `beforeinstallprompt` from an
+      inline script in the document, because Chrome fires that event before React hydrates and a
+      listener registered in a component effect missed it entirely. The banner appears on the
+      dashboard, never on the landing page, and a dismissal is honoured for a week.
+
+## What does not exist yet
+
+- [ ] **Self-service signup cannot complete**, and this is the one thing blocking the employee
+      flow. Supabase's built-in email sender is rate-limited to a handful of messages an hour, so
+      the confirmation email fails and no account is created. The form submits correctly and now
+      explains the failure in plain language, but the fix is infrastructure, not code: point
+      Supabase Auth's SMTP at Resend, which is already the approved email provider. Until then,
+      accounts have to be created directly in the database.
+- [ ] **`NEXT_PUBLIC_SUPABASE_ANON_KEY` is set locally but its value in Vercel is unverified.**
+      All five variables exist in the Vercel project as Secret-type entries, which means they
+      cannot be read back out to confirm they match.
+- [ ] Employee onboarding (blueprint 2.1–2.5): welcome tour, employee ID entry, payslip upload,
+      review extracted salary, join a cooperative. `/onboarding` is linked from the dashboard
+      but does not exist yet.
+- [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
+      so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
+      wholesale when the real dashboard is built.
+- [ ] `/privacy` and `/reset-password` are linked from the auth screens but not built.
+- [ ] The remaining tables from `docs/DATA-MODEL.md`: `documents`, `cooperative_loan_products`,
+      `savings_transactions`, `loans`, `deduction_reconciliation`, `access_grants`, `audit_log`.
+- [ ] The reservation transaction itself (D008 advisory lock) and its concurrency test.
+- [ ] The pgTAP suite has **never actually executed** — it runs only on a pull request touching
+      `supabase/migrations/**` or `supabase/tests/**`. Its assertions were each verified by hand
+      against the live project, but the file itself is unproven until CI runs it.
+- [ ] Resend: account exists; no domain, sender or API key configured.
+- [ ] `RESEND_API_KEY` / `AI_PAYSLIP_API_KEY` not provisioned.
+- [ ] A test account, `pilot.tester@fmcabeokuta.org.ng`, exists in `auth.users` and was created
+      directly in the database rather than through signup. **Delete it before go-live.**
+- [ ] No screen has been reviewed on a real phone. The 390px review was done in a same-origin
+      iframe, which gives CSS media queries a genuine narrow viewport but not real touch
+      targets, real safe-area insets, or iOS Safari's own rendering.
 
 ## Accounts inventory
 
-| Service                               | Status                                                               | Notes                                                                                                                                                             |
-| ------------------------------------- | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Project `Clarix` created** (ref `sxugaizwmqigtioqgefx`)            | Lives alongside the pre-existing unrelated project in the same org — that project remains untouched. Anon key / DB password not yet retrieved from the dashboard. |
-| GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)              | First commit pushed, correctly authored, verified by GitHub.                                                                                                      |
-| Vercel                                | **Project linked:** `clarix-3w5i` under `adrianwilliams128765-pixel` | Auto-deployed from the GitHub push; currently 404s because there's no app code yet (expected). Consider renaming the project before go-live.                      |
-| Resend                                | Account exists                                                       | No domain/API key configured yet.                                                                                                                                 |
-| AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                                          | P1 feature — not needed for the first working commit.                                                                                                             |
+| Service                               | Status                                                    | Notes                                                                                                    |
+| ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Six tables, 23 RLS policies, one seeded organization. The unrelated project in the same org is untouched. |
+| GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub.                                                        |
+| Vercel                                | **Project linked:** `clarix-3w5i`                          | Will serve a real app from the next push. Needs the Supabase env vars set before auth works.              |
+| Resend                                | Account exists                                            | No domain/API key configured yet.                                                                         |
+| AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                               | P1 feature.                                                                                               |
 
 ## Immediate next steps (in order)
 
-1. Retrieve the Supabase anon/public key from Project Settings → API and record the database
-   password somewhere safe (password manager) — neither goes in this repo (see `SECURITY.md`).
-2. Run `supabase link --project-ref sxugaizwmqigtioqgefx` locally (one time per machine/checkout).
-3. Set `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and
-   `SUPABASE_SERVICE_ROLE_KEY` in Vercel's project (`clarix-3w5i`) environment variables, and in a
-   local `.env.local` (gitignored).
-4. Scaffold the Next.js app (per `BUILD.md`) and push it — this is what turns the current 404
-   into a real running app on the next Vercel deploy.
-5. Write and push the first database migration (schema from `docs/DATA-MODEL.md`), including its
-   RLS policies in the same migration.
-6. Set up Resend (domain + API key) when the invite-email flows are being built.
+1. **Point Supabase Auth's SMTP at Resend.** This unblocks self-service signup, which is
+   currently the only broken step in the employee journey. It needs a verified sending domain in
+   Resend and its SMTP credentials entered under Supabase → Authentication → Emails.
+2. Confirm the Vercel environment variables really hold the same Supabase URL and anon key as
+   `.env.local` — they are stored as Secret-type entries and cannot be read back to check.
+3. Review the Preview deployment on an actual phone, which the iframe-based review cannot stand
+   in for.
+4. Build employee onboarding (blueprint 2.1–2.5) and the migrations it needs (`documents`).
+5. Record the Supabase region in `docs/ARCHITECTURE.md`, and decide on the Vercel project name.
+6. Delete the `pilot.tester@fmcabeokuta.org.ng` account before go-live.
 
 ## Decision/scope drift check
 
