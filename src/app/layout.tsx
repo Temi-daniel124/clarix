@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
+import { ThemeScript } from "@/components/theme/theme-script";
 
 /** Inter, one family, loaded once — DESIGN_SYSTEM.md § Typography. */
 const inter = Inter({
@@ -42,7 +43,14 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${inter.variable} h-full`}>
+    // suppressHydrationWarning is required here and applies to this element's own attributes
+    // only, not to its subtree: ThemeScript adds a `light` or `dark` class to <html> before
+    // React hydrates, so the class attribute the client sees legitimately differs from the one
+    // the server rendered. Without it, every page load logs a hydration mismatch.
+    <html lang="en" className={`${inter.variable} h-full`} suppressHydrationWarning>
+      <head>
+        <ThemeScript />
+      </head>
       <body className="flex min-h-full flex-col">
         {/*
           Chrome fires `beforeinstallprompt` during page load, typically BEFORE React has

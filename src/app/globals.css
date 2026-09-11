@@ -258,22 +258,87 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* The landing hero's entrance — DESIGN_SYSTEM.md § Motion: a 180–240ms fade plus a small
-   shift, no spring. Written as CSS rather than driven by the animation library so that the
-   headline does not depend on React hydrating to become visible. */
-@keyframes clarix-rise {
+/* ---------------------------------------------------------------------------
+   The landing entrance choreography.
+
+   Adapted from the Watermelon hero-32 component's staggered entrance — nav drops in, title
+   rises with more weight, subtitle follows lighter, call to action scales into place — which is
+   the part of that component worth keeping (docs/planning/clarix-design-system.md § 4: keep the
+   choreography, replace the content entirely).
+
+   Two deliberate departures from the original:
+
+   1. It is CSS, not the animation library. hero-32 renders each element at opacity 0 and waits
+      for React to animate it in, which left this page blank below the nav for several seconds
+      on the deployed build. A CSS animation runs without hydration, and the resting state of
+      every element here is visible, so if animations never run the content is simply there.
+
+   2. The four different spring configs in the original are collapsed into one. DESIGN_SYSTEM.md
+      § Motion permits exactly one spring and forbids a different stiffness/damping per
+      component, so `--ease-spring` below IS springStandard from src/lib/motion.ts — stiffness
+      260, damping 22, mass 0.9 — solved numerically and sampled as a CSS linear() easing. It
+      overshoots 3.9% and settles in 566ms, exactly as the JavaScript spring does. The
+      choreography therefore comes entirely from stagger delays, not from differing physics.
+--------------------------------------------------------------------------- */
+
+:root {
+  --ease-spring: linear(
+    0, 0.0257, 0.0914, 0.182, 0.286, 0.3943, 0.5004, 0.5998, 0.6896, 0.7682, 0.8352, 0.8906,
+    0.9351, 0.9697, 0.9957, 1.0143, 1.0268, 1.0343, 1.038, 1.0387, 1.0373, 1.0346, 1.0309,
+    1.0268, 1.0226, 1.0185, 1.0148, 1.0114, 1.0084, 1.0059, 1.0039, 1.0022, 1.0009, 1, 0.9993,
+    0.9989, 0.9986, 0.9985, 0.9985, 0.9986, 0.9987
+  );
+  --duration-spring: 566ms;
+}
+
+@keyframes clarix-drop-in {
   from {
     opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
+    transform: translateY(-24px) scale(0.97);
+    filter: blur(8px);
   }
 }
 
-@utility hero-reveal {
-  animation: clarix-rise 220ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+@keyframes clarix-title-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+    filter: blur(10px);
+  }
+}
+
+@keyframes clarix-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes clarix-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+}
+
+/* `backwards` rather than `both`: the element holds its hidden first frame through the stagger
+   delay, then animates. The resting state stays the authored one, so nothing is left pinned to
+   an animated value if the animation is interrupted. */
+@utility enter-drop {
+  animation: clarix-drop-in var(--duration-spring) var(--ease-spring) backwards;
+}
+
+@utility enter-title {
+  animation: clarix-title-rise var(--duration-spring) var(--ease-spring) backwards;
+}
+
+@utility enter-rise {
+  animation: clarix-rise var(--duration-spring) var(--ease-spring) backwards;
+}
+
+@utility enter-scale {
+  animation: clarix-scale-in var(--duration-spring) var(--ease-spring) backwards;
 }
 
 @layer base {

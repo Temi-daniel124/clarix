@@ -7,9 +7,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { EligibilityPreview } from "@/components/clarix/eligibility-preview";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { HeroReveal } from "@/components/landing/hero-reveal";
+import { LandingHero } from "@/components/landing/landing-hero";
 import { LandingNav } from "@/components/landing/landing-nav";
 
 /**
@@ -73,43 +72,8 @@ const FAQ = [
 export default function LandingPage() {
   return (
     <main className="flex flex-1 flex-col">
-      {/* Dark navy header area — blueprint 1.1. */}
-      <div className="theme-dark bg-navy-surface">
-        <LandingNav />
-
-        <div className="mx-auto w-full max-w-[1160px] px-5 pt-8 pb-16 md:px-8 md:pt-16 md:pb-24">
-          <div className="mx-auto max-w-[760px] text-center">
-            <HeroReveal>
-              <h1 className="type-display text-white">One employee. Several cooperatives. One salary.</h1>
-            </HeroReveal>
-
-            <HeroReveal delay={0.08}>
-              <p className="mx-auto mt-6 max-w-[620px] type-body text-white/65">
-                Cooperatives at Federal Medical Centre, Abeokuta each approve loans without seeing
-                what a member already owes elsewhere. Clarix coordinates those deductions, so the
-                combined total is checked against the agreed limit before anyone commits.
-              </p>
-            </HeroReveal>
-          </div>
-
-          {/* The hero visual: the real eligibility check, running. Not an illustration. */}
-          <HeroReveal delay={0.16} className="mx-auto mt-12 max-w-[560px]">
-            <EligibilityPreview pace="hero" />
-          </HeroReveal>
-
-          <HeroReveal delay={0.24}>
-            <div className="mt-10 flex flex-col items-center gap-4">
-              <Button size="default" render={<Link href="/signup" />} className="w-full sm:w-auto">
-                Get started
-                <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />
-              </Button>
-              <p className="type-caption text-white/45">
-                Free for FMC Abeokuta staff during the pilot.
-              </p>
-            </div>
-          </HeroReveal>
-        </div>
-      </div>
+      <LandingNav />
+      <LandingHero />
 
       {/* Three short sections: a heading and one sentence each — blueprint 1.1. */}
       <section
