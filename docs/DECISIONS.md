@@ -440,6 +440,20 @@ savings balance already there rather than starting at zero.
 
 ---
 
+## Standing operational constraints
+
+Not decisions — facts about the environment that keep being rediscovered and re-proposed as work.
+They live here because this file is read in full at the start of every session, and
+`docs/PROJECT-STATE.md` is rewritten often enough that a note there does not survive.
+
+- **Leaked-password protection cannot be enabled.** Supabase's advisor recommends it, and it has
+  been listed as an action item more than once, but checking passwords against HaveIBeenPwned is a
+  **Pro-plan feature** and Clarix is on the free plan (`docs/ARCHITECTURE.md` → Scaling notes).
+  There is nothing to switch on. Do not re-raise it as a task; if the project moves to Pro for
+  some other reason, enabling it is a one-click setting and can be picked up then.
+
+---
+
 ## Open, not yet decided
 
 Tracked here so they don't get silently assumed. Move an item to a numbered entry above the

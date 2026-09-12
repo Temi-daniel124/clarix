@@ -24,14 +24,16 @@ no holding screens left anywhere in the employee app.
 app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
 off `main` rather than a Preview.
 
-**The cooperative admin blueprint has started.** Parts 1 and 2 are built — accepting an
-invitation, role-aware login, and the setup sequence — on their own app shell with their own four
-destinations. The work stops deliberately at the first arrival on the Cooperative Dashboard
-(4.1): that screen, Members (Part 5), Loans (Part 6) and the rest belong to the next block, and
-each says so plainly rather than imitating itself.
+**Cooperative admin Parts 1, 2, 4 and 5 are built.** Parts 1 and 2 are on `main` already (pull
+request #2, merged after the pgTAP suites passed: 5 files, 60 tests): accepting an invitation,
+role-aware login, and the setup sequence, on their own app shell with their own four
+destinations. Parts 4 and 5 add the Cooperative Dashboard and member management — search,
+profile, adding somebody by hand, and recording what payroll has already delivered.
 
-That side is also what will eventually write the first notification row and make the first loan
-transition after reservation.
+The work stops deliberately before Part 6, Loan Management. Loan Application Review (6.2) is what
+the blueprint calls the single most consequential screen in this role, and it gets its own
+session the way the employee side's Loan Application did. Every loan transition after
+reservation, and the first notification row, belong to it.
 
 ## What exists today
 
@@ -351,6 +353,46 @@ transition after reservation.
       invite API was the obvious path and would have made an invitation the first thing in this
       codebase holding a key that bypasses RLS on every table. Two narrow functions cost less.
 
+- [x] **Cooperative Dashboard (4.1)** — the same tap-to-expand KPI row as the employee
+      dashboard, through the same component, over four figures about the cooperative: members,
+      savings held, active loans, and what is waiting on a decision. Then the section the
+      blueprint calls this screen's defining feature, "Attention required", and a short read on
+      the month. The setup checklist stays above it until setup is finished, which is what
+      blueprint 2.1 promises anyone who skips it.
+- [x] **Attention required shows its honest empty state.** At the one cooperative this admin
+      oversees, no loan application has ever been submitted, so nothing is pending — and the
+      section says so rather than being seeded with a fake item to look populated. What it does
+      surface is real: a member imported without a name. The same call as the trend indicator and
+      Notifications.
+- [x] **Member management (5.1 to 5.4)** — the always-visible search and full list, including
+      roster entries marked "Not on Clarix yet" and deliberately not dressed as links; the member
+      profile with its four tabs; adding one person by hand, which writes the same roster row the
+      import does; and recording a contribution, withdrawal or repayment.
+- [x] **The staff view of capacity is the member's own calculation, not a second one.** Migration
+      012 moves the arithmetic into `capacity_core()` and gives it two doors:
+      `capacity_for_user()` keeps its exact signature for the member, and
+      `capacity_for_membership()` is the staff door, which refuses unless the caller is active
+      staff at that membership's cooperative. Member Profile renders it with the *same*
+      CapacityMeter the member sees. Verified against live data: an 83,250 cap, 40,000 committed
+      across two cooperatives, 43,250 available — identical figures on either side.
+- [x] **`savings_transactions` needed no new policy**, which was checked before anything was
+      written: `savings_transactions_insert_staff` from migration 006 already lets a
+      cooperative's active staff record against any membership at that cooperative. Same outcome
+      as the `cooperative_staff_roles` check behind D027 — the policy was already right.
+- [x] **The savings balance now follows the ledger** (migration 012). It had been two independent
+      facts kept in step by whoever wrote them; recording became routine with 5.4, so a balance
+      that could disagree with the entries behind it stopped being tenable.
+- [x] **Imported opening balances became ledger entries** (migration 013). Reviewing 5.2 by eye
+      showed the seam those two changes left: a member with 145,000 and "nothing recorded yet"
+      beneath it. Worse, the first contribution recorded against them would have recomputed the
+      balance from a ledger holding only that contribution, silently erasing the import. Every
+      unexplained balance was backfilled with one entry saying what it is, and the roster-link
+      trigger now writes that entry rather than setting a bare number.
+- [x] **pgTAP suite 006** covers all of it: both doors agreeing on one figure, the staff door
+      refusing a membership at another cooperative, the balance following contributions,
+      withdrawals and repayments correctly, the pre-existing insert policy refusing a foreign
+      membership, and an imported member arriving with their balance explained.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -413,10 +455,6 @@ transition after reservation.
 - [ ] Notification preferences govern email that nothing sends yet. The toggles write to the
       database and are read back correctly; what reads them at send time arrives with the
       notification writers.
-- [ ] **Leaked-password protection is disabled** in Supabase Auth. The advisor recommends
-      enabling it (it checks new passwords against HaveIBeenPwned), which is a cheap win for a
-      product holding salary data. It is a project setting, so it needs your decision rather
-      than a code change.
 - [ ] The remaining tables from `docs/DATA-MODEL.md`: `deduction_reconciliation`,
       `access_grants`, `audit_log`.
 - [ ] **XLSX import is written but has only been exercised against CSV.** The reader unzips and
@@ -428,9 +466,19 @@ transition after reservation.
       the email telling somebody it exists waits on the same verified sending domain everything
       else does. The officer screen says exactly that on the form rather than implying a message
       went out.
-- [ ] Every screen of admin Parts 4 to 8 — the Cooperative Dashboard, Members, Loans,
-      Reconciliation, Reports, Notifications and the admin's own Profile. Each is reachable from
-      the navigation and says what will be there.
+- [ ] **Part 6, Loan Management** — the applications queue, Loan Application Review (6.2), the
+      active-loans list and Loan Detail. Until 6.2 exists, an application on the dashboard's
+      Attention list leads to the member it concerns rather than to a review screen, which is the
+      closest true thing rather than a dead link. Approving, rejecting and completing a loan all
+      belong there, which is why no loan transition after reservation works yet.
+- [ ] Admin Parts 7 and 8 beyond what the setup screens already cover — Reconciliation, Reports,
+      Notifications and the admin's own Profile. Each is reachable from the navigation and says
+      what will be there.
+- [ ] **Recording an entry was reviewed on screen but not submitted end to end in a browser.**
+      The form, its balance header and its type switcher were checked by eye; the write path is
+      the pre-existing staff insert policy, and pgTAP suite 006 exercises it along with the
+      balance arithmetic. One click-through is still worth doing once the admin account has a
+      password.
 - [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
       Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
       deliberately only ever produces `reserved`.
@@ -475,14 +523,14 @@ transition after reservation.
    it is not serving anything.
 4. Turn on branch protection for `main`, so the database check blocks a merge rather than merely
    reporting.
-5. Enable leaked-password protection in Supabase Auth.
-6. Delete the `pilot.tester@fmcabeokuta.org.ng` account, its uploaded probe payslip, and all
+5. Delete the `pilot.tester@fmcabeokuta.org.ng` account, its uploaded probe payslip, and all
    the seeded test data catalogued above, before go-live. That account now also carries a
    fictional phone number and one muted-then-restored notification preference, both written
    through the Profile screen while verifying it.
-7. Build the cooperative admin/officer blueprint, which owns approve, reject and complete, and
-   the expiry sweep that tidies lapsed reservations. Capacity is already correct without that
-   sweep — expiry is evaluated at read time per D024 — so it is housekeeping, not a gap.
+6. Carry on with the cooperative admin blueprint. Parts 1, 2, 4 and 5 are built; Part 6, Loan
+   Management, is what owns approve, reject and complete, plus the expiry sweep that tidies
+   lapsed reservations. Capacity is already correct without that sweep — expiry is evaluated at
+   read time per D024 — so it is housekeeping, not a gap.
 
 ## Decision/scope drift check
 
