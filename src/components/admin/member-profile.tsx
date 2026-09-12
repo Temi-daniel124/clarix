@@ -35,7 +35,19 @@ const TAB_LABELS: Record<Tab, string> = {
  * holds at any of them. That is not a UI choice: the function returns an aggregate and nothing
  * else, so the screen could not show more if it tried (DECISIONS.md D003).
  */
-export function MemberProfileView({ profile }: { profile: MemberProfile }) {
+export function MemberProfileView({
+  profile,
+  canRecord,
+}: {
+  profile: MemberProfile;
+  /**
+   * Officer blueprint 5.2: the actions at the bottom of each tab "reflect this Officer's specific
+   * permissions" — Record contribution and Record repayment appear only where that permission is
+   * granted. What they read stays identical either way, including the cross-cooperative
+   * eligibility panel, "never a lesser or delayed version of it".
+   */
+  canRecord: boolean;
+}) {
   const [tab, setTab] = useState<Tab>("overview");
   const reduceMotion = useReducedMotion();
 
@@ -101,9 +113,9 @@ export function MemberProfileView({ profile }: { profile: MemberProfile }) {
         {tab === "overview" ? (
           <Overview profile={profile} loanBalance={loanBalance} />
         ) : tab === "savings" ? (
-          <Savings profile={profile} />
+          <Savings profile={profile} canRecord={canRecord} />
         ) : tab === "loans" ? (
-          <Loans profile={profile} />
+          <Loans profile={profile} canRecord={canRecord} />
         ) : (
           <Deductions />
         )}
@@ -184,7 +196,7 @@ function Overview({ profile, loanBalance }: { profile: MemberProfile; loanBalanc
   );
 }
 
-function Savings({ profile }: { profile: MemberProfile }) {
+function Savings({ profile, canRecord }: { profile: MemberProfile; canRecord: boolean }) {
   const entries = profile.ledger.filter(
     (entry) => entry.type === "contribution" || entry.type === "withdrawal_record",
   );
@@ -205,13 +217,17 @@ function Savings({ profile }: { profile: MemberProfile }) {
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Contributions</h2>
-        <Button
-          size="sm"
-          render={<Link href={`/admin/members/${profile.membershipId}/record?type=contribution`} />}
-        >
-          <Plus className="size-4" aria-hidden strokeWidth={2.5} />
-          Record contribution
-        </Button>
+        {canRecord ? (
+          <Button
+            size="sm"
+            render={
+              <Link href={`/admin/members/${profile.membershipId}/record?type=contribution`} />
+            }
+          >
+            <Plus className="size-4" aria-hidden strokeWidth={2.5} />
+            Record contribution
+          </Button>
+        ) : null}
       </div>
 
       {withBalances.length === 0 ? (
@@ -265,14 +281,14 @@ function Savings({ profile }: { profile: MemberProfile }) {
   );
 }
 
-function Loans({ profile }: { profile: MemberProfile }) {
+function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: boolean }) {
   const repayable = profile.loans.filter((loan) => loan.status === "active");
 
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Loans with this cooperative</h2>
-        {repayable.length > 0 ? (
+        {canRecord && repayable.length > 0 ? (
           <Button
             size="sm"
             variant="outline"

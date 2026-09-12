@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (cooperative admin Part 8, the account cluster — which completes the
-cooperative admin blueprint end to end).
+**Last updated:** 2026-09-12 (cooperative officer Parts 1 to 4: the invitation path verified
+rather than rebuilt, the two-slide tour, the officer's own navigation, and Officer Home).
 
 ## Phase
 
@@ -39,11 +39,18 @@ approval writes a real notification to the member, the first row anything has ev
 approval on the admin side, and the member's own Notifications screen showing it unread a moment
 later.
 
-What remains is Part 8, the admin's own account cluster — Notifications, Profile / Settings,
-the Cooperative Audit Log and Help — which gets its own block, the same way the employee
-blueprint's account cluster did. Worth noting for that session: **8.3 is no longer blocked on
-anything.** `audit_log` exists as of migration 014 and already holds real rows, so that screen
-reads a live record rather than needing a deferral story of its own.
+**The cooperative officer blueprint is under way — Parts 1 to 4 are built.** Most of that role
+was already standing: an officer works in the admin's own screens, and the difference is which
+navigation they get, which controls appear, and what the policies let them write (D029). Parts 1
+and 2 of that blueprint needed no new authentication code at all — a real officer invitation was
+issued from the admin's own Officers screen, accepted through the existing invitation screen, and
+the account landed on its own home. What was genuinely new is the two-slide orientation tour, the
+officer's navigation, and Officer Home itself.
+
+Two boundaries the officer blueprint exposed were missing and are now closed in the database
+rather than in the interface: importing or adding a member takes a granted permission
+(migration 017), and the audit log is the admin's alone to read (migration 018). Both were
+previously open to any active staff member, which was invisible while officers had no screens.
 
 Reports (7.6) stays deferred, and that is the blueprint's own call rather than a gap: it is
 marked P1 there.
@@ -513,6 +520,46 @@ marked P1 there.
       own staff read their own entries, and nobody else reads any of it — including the member
       the entries are about, because this is a staff record.
 
+### Cooperative officer, Parts 1 to 4
+
+- [x] **Accept Invite (1.1) and Log In (1.2) needed no new code, which was checked rather than
+      assumed.** `staff_invitations` and `invite_cooperative_staff()` were written generically by
+      role from the start. An officer invitation was issued from the admin's own Officers screen
+      (7.2), and because that email already had an account the function took its existing-account
+      branch and wrote a `cooperative_staff_roles` row at `invited` — exactly the case the
+      officer blueprint describes. Signing in routed straight to the invitation screen, which
+      showed "Welcome back — this invitation is on your account", named the cooperative and the
+      title the admin had set, and activated the role on one tap. The only change was where it
+      leads afterwards: a brand-new officer account now goes to the tour, an existing one goes
+      straight to Officer Home, per blueprint 1.1.
+- [x] **Welcome to Cooperative Officer (2.1)** at `/officer/welcome` — two slides rather than
+      three, no "skip setup" language because there is no setup to skip. Slide one is assembled
+      per person rather than per role: it lists what this officer has actually been granted, and
+      says so in plain words. An officer granted nothing is told that plainly instead of being
+      shown an empty promise.
+- [x] **The officer's navigation (Part 3)** — Home, Members, Loans, and the account cluster, with
+      no "Manage cooperative" section and no audit log anywhere. "Import members" appears as a
+      direct row only when `can_import_members` is granted. Verified as a real officer: the
+      sidebar carried three primary rows plus Notifications, Profile and Help, More showed only
+      the Account group, and the import row appeared the moment the permission was switched on.
+- [x] **Officer Home (4.1)** — a greeting, then a persistent search field above everything else,
+      because finding a member fast is this role's most common single action. Below it a pending
+      task list that adapts: an officer who can decide loans sees the applications waiting, one
+      who cannot is told what would appear there and why nothing does. Then a light "Today"
+      strip — members this officer recorded against today, applications the cooperative received
+      today — rather than the admin's cooperative-wide figures.
+- [x] **Every screen an officer may not use turns them away, not just the menu.** `/admin/manage/*`
+      and `/admin/audit` redirect to the officer's home, and `/admin/members/new` to the member
+      list. Checked by requesting each URL directly while signed in as an officer.
+- [x] **Two boundaries the blueprint exposed are now in the database.** Migration 017 makes
+      writing a roster entry — importing, or adding one member — take `can_import_members`, which
+      had been available to any active staff member. Migration 018 makes the audit log readable by
+      that cooperative's admin alone, which blueprint 5.4 states outright. pgTAP suite 009 covers
+      the first, and suite 007 was extended for the second.
+- [x] **RLS was checked against the live project, not just in CI.** Acting as the real officer
+      account, an import was refused with `42501` while the member list stayed readable and the
+      audit log returned nothing.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -537,17 +584,27 @@ marked P1 there.
       cooperative with nothing set up, so the setup sequence has somewhere real to run. **Delete
       it with the rest of the test data before go-live.**
 
-      Its password was generated inside the database from `gen_random_uuid()` and has never been
-      seen by anybody, including the session that created the row, so **it must be set before the
-      account can be used**: Supabase dashboard, Authentication, Users, then either send a
-      recovery mail or set a password directly. Nothing else about the account needs touching.
-      Signing in then lands on the invitation screen, which activates the role.
+      Its password was generated inside the database from `gen_random_uuid()` and unseen by
+      anybody, so it was set by a one-off administrative statement against the live project and
+      the role has since been activated: the account is now an **active** cooperative admin. The
+      password is `ClarixTest-Coop-2026`, which is safe to write down here only because this
+      account is test data that goes before go-live.
 - [ ] **Four roster entries and one staff invitation at that same cooperative**, written through
       the real screens while reviewing them: staff IDs 204817, 300121, 300122 and 300123, of
       which 204817 matched the pilot tester and became an active membership carrying the imported
       145,000 — the roster-linking trigger doing its job, and also why that account now shows a
-      third cooperative. The invitation is to `test.officer@fmcabeokuta.org.ng`. All of it goes
-      before go-live with everything else.
+      third cooperative. The invitation to `test.officer@fmcabeokuta.org.ng` is still unclaimed,
+      and cannot be claimed: creating that account needs either a sending domain or one permitted
+      `insert` into `auth.users`, neither of which exists yet. All of it goes before go-live with
+      everything else.
+- [ ] **The pilot tester now also holds an active officer role** at Staff Multipurpose
+      Cooperative (test data), titled Secretary, invited through the admin's own Officers screen
+      and accepted through the real invitation screen while verifying the officer blueprint.
+      Its permissions are the record-only preset: see members, record entries, no approving and
+      no importing. Two consequences worth knowing before using that account for employee-side
+      testing: its password was reset to `ClarixTest-Officer-2026`, and signing in now lands on
+      the officer home at `/admin` rather than the employee dashboard, which is still reachable
+      at `/dashboard`. Remove the role, or the whole account, with the rest of the test data.
 - [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
       it was written directly rather than in a migration, the same way the pilot test account
       was, so none of it will follow the schema into production by accident. What exists: three
@@ -600,13 +657,6 @@ marked P1 there.
       before something writes them would be speculative schema. The dashboard's Attention
       required covers the same ground today.
 - [ ] **Reports (7.6)**, deferred by the blueprint's own P1 marking rather than by omission.
-- [ ] **Recording a savings entry (5.4) still has not been submitted end to end in a browser**,
-      and it is now blocked on the same single step as the production login check: the test admin
-      account `coop.admin@fmcabeokuta.org.ng` has no password, so nobody can sign in as a
-      cooperative's own staff without a temporary database grant. Setting that password (Supabase
-      dashboard, Authentication, Users) turns both into a two-minute click-through. The write
-      path is the pre-existing staff insert policy and pgTAP suite 006 exercises it, so this is
-      confirmation rather than discovery.
 - [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
       Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
       deliberately only ever produces `reserved`.
@@ -655,10 +705,15 @@ marked P1 there.
    the seeded test data catalogued above, before go-live. That account now also carries a
    fictional phone number and one muted-then-restored notification preference, both written
    through the Profile screen while verifying it.
-6. Carry on with the cooperative admin blueprint. Parts 1, 2, 4 and 5 are built; Part 6, Loan
-   Management, is what owns approve, reject and complete, plus the expiry sweep that tidies
-   lapsed reservations. Capacity is already correct without that sweep — expiry is evaluated at
-   read time per D024 — so it is housekeeping, not a gap.
+6. Finish the **cooperative officer blueprint**. Parts 1 to 4 are built; what is left is Parts 5
+   to 8, which are almost entirely permission-gating on screens that already exist, plus one
+   genuinely new piece: the read-only "Your role at [Cooperative]" panel on Profile (8.2), which
+   tells an officer in plain words what they are currently able to do.
+7. Settle where **loan completion and the expiry sweep** live. Neither blueprint assigns them a
+   screen: marking a loan repaid in full and tidying a lapsed reservation to `expired` are real
+   gaps in the loan lifecycle rather than deferred features. Capacity is already correct without
+   the sweep, because expiry is evaluated at read time (D024), so this is about the record
+   reading true rather than about the arithmetic.
 
 ## Decision/scope drift check
 

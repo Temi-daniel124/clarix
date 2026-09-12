@@ -14,6 +14,11 @@ export default async function ManageImportPage() {
   const role = staff ? preferredRole(staff.roles) : null;
   if (!role) redirect("/login");
 
+  // Importing writes other people's staff IDs and opening balances, so it is a granted permission
+  // rather than a side effect of being staff (migration 017). An officer without it never sees
+  // the navigation entry; this is what stops them reaching the screen by URL.
+  if (!role.permissions.can_import_members) redirect("/admin");
+
   const employeeIdPattern = await loadEmployeeIdPattern();
 
   return (

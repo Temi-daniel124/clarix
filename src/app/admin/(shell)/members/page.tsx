@@ -25,7 +25,7 @@ export default async function MembersPage() {
       </p>
 
       <div className="mt-8">
-        <MemberList members={members} />
+        <MemberList members={members} canAddMember={role.permissions.can_import_members} />
       </div>
     </div>
   );

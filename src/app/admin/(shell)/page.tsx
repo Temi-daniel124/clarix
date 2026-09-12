@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CooperativeDashboard } from "@/components/admin/cooperative-dashboard";
+import { OfficerHome } from "@/components/admin/officer-home";
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { cn } from "@/lib/utils";
 import { loadSetupState, loadStaffContext } from "@/lib/supabase/staff-context";
-import { loadCooperativeSummary } from "@/lib/supabase/admin-members";
+import { loadCooperativeSummary, loadMembers } from "@/lib/supabase/admin-members";
+import { loadOfficerHome } from "@/lib/supabase/officer-home";
 import { preferredRole } from "@/lib/staff";
 import { ADMIN_SETUP_STEPS } from "@/lib/admin-setup";
 
@@ -15,9 +17,15 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cooperative home" };
 
 /**
- * Cooperative Dashboard — admin blueprint 4.1.
+ * Home, for both staff roles — admin blueprint 4.1 and officer blueprint 4.1.
  *
- * The screen an admin returns to constantly: four figures about the cooperative, what is waiting
+ * Two genuinely different screens rather than one screen with pieces hidden. An admin gets the
+ * cooperative's figures and its setup checklist; an officer gets a search field and what is
+ * waiting on them, because the officer blueprint is explicit that cooperative-wide totals "are
+ * Admin-level information, not part of an Officer's daily job". Hiding four cards from a shared
+ * dashboard would have left an officer looking at the leftovers of somebody else's screen.
+ *
+ * The admin half is the screen they return to constantly: four figures about the cooperative, what is waiting
  * on a decision, and a short read on the month. The setup checklist stays above it until setup is
  * finished, which is what blueprint 2.1 promises anyone who skipped it — a dashboard that
  * "gently prompts them to finish the remaining setup steps rather than blocking entry".
@@ -27,7 +35,32 @@ export const metadata: Metadata = { title: "Cooperative home" };
 export default async function AdminHomePage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;
-  if (!role) redirect("/login");
+  if (!staff || !role) redirect("/login");
+
+  if (role.role === "officer") {
+    const [members, home] = await Promise.all([
+      loadMembers(role.cooperativeId),
+      loadOfficerHome(role.cooperativeId, staff.userId),
+    ]);
+
+    return (
+      <>
+        <div className="mx-auto w-full max-w-[880px] px-5 pt-8 md:px-8 md:pt-10">
+          <InstallPrompt />
+        </div>
+
+        <OfficerHome
+          cooperativeName={role.cooperativeName}
+          firstName={staff.name?.split(" ")[0] ?? null}
+          members={members}
+          tasks={home.tasks}
+          canApproveLoans={role.canApproveLoans}
+          recordedToday={home.recordedToday}
+          applicationsToday={home.applicationsToday}
+        />
+      </>
+    );
+  }
 
   const [setup, summary] = await Promise.all([
     loadSetupState(role.cooperativeId),

@@ -10,7 +10,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(19);
+select plan(20);
 
 select has_table('public', 'audit_log', 'audit_log exists');
 
@@ -245,6 +245,21 @@ select is(
   (select count(*)::int from public.audit_log),
   0,
   'and nobody outside that cooperative''s staff reads any of it, including the member concerned'
+);
+
+-- An officer at that very cooperative is also outside it. Officer blueprint 5.4: every entry is
+-- written "regardless of which role recorded it, even though only an Admin can later view that
+-- log" — so the log is admin-only rather than staff-wide (migration 018).
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"a2222222-2222-2222-2222-222222222222","role":"authenticated"}',
+  true
+);
+
+select is(
+  (select count(*)::int from public.audit_log),
+  0,
+  'and an officer of the same cooperative reads none of it either'
 );
 
 reset role;

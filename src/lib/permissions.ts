@@ -11,7 +11,11 @@
  * own access to their own cooperative would be a worse failure than any of this prevents.
  */
 
-export type PermissionKey = "can_view_members" | "can_record_savings" | "can_approve_loans";
+export type PermissionKey =
+  | "can_view_members"
+  | "can_record_savings"
+  | "can_approve_loans"
+  | "can_import_members";
 
 export type PermissionSpec = {
   key: PermissionKey;
@@ -43,6 +47,13 @@ export const PERMISSIONS: PermissionSpec[] = [
       "Decide applications — the cooperative's money, committed against a member's salary.",
     enforcedBy: "decide_loan_application",
   },
+  {
+    key: "can_import_members",
+    label: "Add and import members",
+    description:
+      "Add one member by hand, or import a roster spreadsheet of staff IDs and opening balances.",
+    enforcedBy: "member_roster_entries_insert_staff",
+  },
 ];
 
 /**
@@ -68,6 +79,7 @@ export function readPermissions(value: unknown): Record<PermissionKey, boolean> 
     can_view_members: source.can_view_members === true,
     can_record_savings: source.can_record_savings === true,
     can_approve_loans: source.can_approve_loans === true,
+    can_import_members: source.can_import_members === true,
   };
 }
 
@@ -81,10 +93,12 @@ export const PRESET_PERMISSIONS: Record<string, Record<PermissionKey, boolean>> 
     can_view_members: true,
     can_record_savings: true,
     can_approve_loans: false,
+    can_import_members: false,
   },
   can_approve: {
     can_view_members: true,
     can_record_savings: true,
     can_approve_loans: true,
+    can_import_members: false,
   },
 };

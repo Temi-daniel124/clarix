@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { formatNaira } from "@/lib/format";
+import { filterMembers } from "@/lib/members";
 import type { MemberRow } from "@/lib/supabase/admin-members";
 
 /**
@@ -20,20 +21,23 @@ import type { MemberRow } from "@/lib/supabase/admin-members";
  * a cooperative has hundreds of members rather than millions, and a round trip per keystroke
  * would make the one screen used dozens of times a day the slowest one in the product.
  */
-export function MemberList({ members }: { members: MemberRow[] }) {
+export function MemberList({
+  members,
+  canAddMember,
+}: {
+  members: MemberRow[];
+  /**
+   * Officer blueprint 5.1: the Add member action "only appears if this Officer has been granted
+   * the add/import permission; without it, this screen is purely a lookup tool, and that's a
+   * complete, honest state for it to be in rather than a lesser version of the Admin's screen".
+   */
+  canAddMember: boolean;
+}) {
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<"name" | "recent">("name");
 
   const filtered = useMemo(() => {
-    const needle = query.trim().toLowerCase();
-
-    const matched = needle
-      ? members.filter(
-          (member) =>
-            (member.name ?? "").toLowerCase().includes(needle) ||
-            (member.employeeId ?? "").toLowerCase().includes(needle),
-        )
-      : members;
+    const matched = filterMembers(members, query);
 
     if (sort === "recent") {
       return [...matched].sort((a, b) => (b.joinedAt ?? "").localeCompare(a.joinedAt ?? ""));
@@ -59,10 +63,12 @@ export function MemberList({ members }: { members: MemberRow[] }) {
           />
         </div>
 
-        <Button size="default" render={<Link href="/admin/members/new" />}>
-          <Plus className="size-4" aria-hidden strokeWidth={2.5} />
-          Add member
-        </Button>
+        {canAddMember ? (
+          <Button size="default" render={<Link href="/admin/members/new" />}>
+            <Plus className="size-4" aria-hidden strokeWidth={2.5} />
+            Add member
+          </Button>
+        ) : null}
       </div>
 
       <div className="mt-4 flex flex-wrap items-baseline justify-between gap-4">
@@ -105,9 +111,11 @@ export function MemberList({ members }: { members: MemberRow[] }) {
             {members.length === 0 ? "No members yet" : "Nobody matches that"}
           </p>
           <p className="type-secondary mx-auto mt-2 max-w-[420px] text-text-secondary">
-            {members.length === 0
-              ? "Import your existing list or add somebody by hand, and they appear here."
-              : "Try part of a name, or the staff ID as it appears on a payslip."}
+            {members.length !== 0
+              ? "Try part of a name, or the staff ID as it appears on a payslip."
+              : canAddMember
+                ? "Import your existing list or add somebody by hand, and they appear here."
+                : "Nobody has been imported into this cooperative yet. Your admin adds members, and they appear here as soon as they do."}
           </p>
         </div>
       ) : (
