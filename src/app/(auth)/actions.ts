@@ -2,6 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { landingPathFor } from "@/lib/staff";
 import { classifyIdentifier, logInSchema, signUpSchema } from "@/lib/validation/auth";
 import { describeAuthError } from "@/lib/validation/auth-errors";
 
@@ -60,7 +62,14 @@ export async function signUpAction(
   redirect("/verify");
 }
 
-/** Log In (employee blueprint 1.4). */
+/**
+ * Log In — employee blueprint 1.4 and cooperative admin blueprint 1.2, deliberately the same
+ * screen and the same action.
+ *
+ * "Clarix does not need a separate login surface per role; the same screen serves everyone, and
+ * what happens after sign-in is what actually differs." So the only role-aware part of this is
+ * the last line: where it sends them.
+ */
 export async function logInAction(
   _previous: AuthFormState,
   formData: FormData,
@@ -95,7 +104,13 @@ export async function logInAction(
     return { error: "That email address and password don't match an account." };
   }
 
-  redirect("/dashboard");
+  // Role decides the destination, not a separate login screen. An unclaimed invitation sitting
+  // against this email becomes a real role here, so somebody invited before they had an account
+  // finds it waiting on their first sign-in rather than never at all (DECISIONS.md D027).
+  await supabase.rpc("claim_staff_invitations");
+
+  const staff = await loadStaffContext();
+  redirect(staff ? landingPathFor(staff.roles) : "/dashboard");
 }
 
 function collectFieldErrors(error: { issues: Array<{ path: PropertyKey[]; message: string }> }) {

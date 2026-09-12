@@ -372,6 +372,74 @@ rather than replaced.
 
 ---
 
+### D027 — Staff invitations are database rows, not Supabase admin-API calls; the service-role key stays unused
+**Status:** Locked
+**Supersedes:** nothing. It settles a mechanism the blueprints assume ("the Super Admin sends a
+one-time invite link by email") without saying how it is built.
+
+**Decision:** A cooperative admin invites an officer — and a Super Admin invites a cooperative's
+first admin — by writing a row, never by calling Supabase's `auth.admin` API. There are two cases
+and the mechanism handles both:
+
+- **The invitee already has a Clarix account.** A `cooperative_staff_roles` row is written at
+  status `invited`. Migration 001 already anticipated exactly this: it has an insert policy for a
+  cooperative's admin and a separate policy letting the invited person move their own row from
+  `invited` to `active` and nothing else. No new policy was needed, which is worth recording —
+  the access pattern was checked against the live database rather than assumed.
+- **The invitee has no account yet.** A `staff_invitations` row is written against their email
+  address, and `claim_staff_invitations()` turns it into a real staff role the first time that
+  person signs in. One email resolves to one account (D010), so a claim can never attach a role
+  to the wrong person.
+
+**Why not `auth.admin.inviteUserByEmail()`**, which is the obvious path and the one most Supabase
+projects take: it requires the service-role key, which bypasses RLS entirely for every table in
+the schema. Clarix has reached the whole employee blueprint and both halves of the loan mechanism
+with `SECURITY.md`'s service-role list still empty, and an invitation — the lowest-stakes write in
+the product — is a poor reason to be the first entry on it. The alternative costs two
+`SECURITY DEFINER` functions whose reach is one email lookup and one insert each, which is a far
+smaller hole than a key that can read every payslip and every loan in the database.
+
+**What this does not solve.** The invitation still has to reach the person. That is email, and
+email is blocked on the same thing everything else is: Resend has no verified sending domain yet,
+so it delivers only to the account owner. The invitation row is real and correct the moment it is
+written; the notification about it lights up when the domain lands. An invitation that exists but
+has not been emailed is recoverable — an admin can read it back and pass the link on — whereas an
+account created through an admin API that never received its email is not.
+
+---
+
+### D028 — An imported member roster is its own table, and becomes a membership when the person joins
+**Status:** Locked
+**Supersedes:** nothing; `docs/DATA-MODEL.md` describes no import staging at all.
+
+**Decision:** Blueprint 2.4 and `MVP-SCOPE.md` P0 #2 require a cooperative to bring hundreds of
+existing members in from a spreadsheet. Those rows carry an IPPIS number, a name and a savings
+balance — and no Clarix account. `cooperative_memberships.user_id` is not null and references
+`users`, which references `auth.users`, so an imported member cannot be a membership until that
+person has actually signed up.
+
+So an import writes `member_roster_entries`: one row per person per cooperative, holding what the
+cooperative already knows. When a row matches an existing account's IPPIS number the membership is
+created immediately. When it does not, the entry waits, and a trigger on
+`cooperative_memberships` links the two the moment that person joins Clarix — carrying the savings
+balance the cooperative recorded onto the new membership and activating it, because a cooperative
+that imported somebody has already decided they are a member.
+
+**The alternatives, and why they lose.** Creating an `auth.users` row per imported member would
+mean mass-creating accounts for people who have not consented, mostly without email addresses,
+using the service-role key (D027 says why not). Relaxing the `users` foreign key so members can
+exist without accounts would break the identity rule D021 rests on and leave RLS with rows it
+cannot attribute to anybody. Storing the sheet as an uninterpreted blob until someone signs up
+would mean the cooperative could not see or correct its own roster, which is half of what the
+import is for.
+
+**Consequence:** a roster entry is member data and is scoped exactly like a membership — staff of
+that cooperative only, never the employee, who has no read access to the table at all. The
+employee side gains something without doing anything: an imported member who joins finds their
+savings balance already there rather than starting at zero.
+
+---
+
 ## Open, not yet decided
 
 Tracked here so they don't get silently assumed. Move an item to a numbered entry above the

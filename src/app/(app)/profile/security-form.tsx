@@ -5,7 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SectionFeedback } from "./section-feedback";
+import { SectionFeedback } from "@/components/clarix/section-feedback";
 import { changePasswordAction, type SectionState } from "./actions";
 
 const INITIAL: SectionState = {};

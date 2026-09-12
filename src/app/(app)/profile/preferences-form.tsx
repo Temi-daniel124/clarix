@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { Switch } from "@/components/ui/switch";
-import { SectionFeedback } from "./section-feedback";
+import { SectionFeedback } from "@/components/clarix/section-feedback";
 import {
   NOTIFICATION_CATEGORIES,
   NOTIFICATION_CATEGORY_ORDER,

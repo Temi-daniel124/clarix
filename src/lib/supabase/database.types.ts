@@ -322,6 +322,57 @@ export type Database = {
           },
         ]
       }
+      member_roster_entries: {
+        Row: {
+          cooperative_id: string
+          employee_id: string
+          id: string
+          imported_at: string
+          imported_by: string | null
+          linked_at: string | null
+          membership_id: string | null
+          name: string | null
+          savings_balance: number
+        }
+        Insert: {
+          cooperative_id: string
+          employee_id: string
+          id?: string
+          imported_at?: string
+          imported_by?: string | null
+          linked_at?: string | null
+          membership_id?: string | null
+          name?: string | null
+          savings_balance?: number
+        }
+        Update: {
+          cooperative_id?: string
+          employee_id?: string
+          id?: string
+          imported_at?: string
+          imported_by?: string | null
+          linked_at?: string | null
+          membership_id?: string | null
+          name?: string | null
+          savings_balance?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_roster_entries_cooperative_id_fkey"
+            columns: ["cooperative_id"]
+            isOneToOne: false
+            referencedRelation: "cooperatives"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "member_roster_entries_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           category: Database["public"]["Enums"]["notification_category"]
@@ -464,6 +515,53 @@ export type Database = {
           },
         ]
       }
+      staff_invitations: {
+        Row: {
+          claimed_at: string | null
+          claimed_by: string | null
+          cooperative_id: string
+          email: string
+          id: string
+          invited_at: string
+          invited_by: string | null
+          permissions: Json
+          role: Database["public"]["Enums"]["staff_role"]
+          title: string | null
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          cooperative_id: string
+          email: string
+          id?: string
+          invited_at?: string
+          invited_by?: string | null
+          permissions?: Json
+          role: Database["public"]["Enums"]["staff_role"]
+          title?: string | null
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          cooperative_id?: string
+          email?: string
+          id?: string
+          invited_at?: string
+          invited_by?: string | null
+          permissions?: Json
+          role?: Database["public"]["Enums"]["staff_role"]
+          title?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staff_invitations_cooperative_id_fkey"
+            columns: ["cooperative_id"]
+            isOneToOne: false
+            referencedRelation: "cooperatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       users: {
         Row: {
           created_at: string
@@ -566,6 +664,21 @@ export type Database = {
       is_active_staff: {
         Args: { target_cooperative_id: string }
         Returns: boolean
+      }
+      claim_staff_invitations: { Args: never; Returns: number }
+      invite_cooperative_staff: {
+        Args: {
+          invite_email: string
+          invite_permissions?: Json
+          invite_role?: Database["public"]["Enums"]["staff_role"]
+          invite_title?: string
+          target_cooperative_id: string
+        }
+        Returns: {
+          already_staff: boolean
+          had_account: boolean
+          invitation_id: string
+        }[]
       }
       is_platform_admin: { Args: never; Returns: boolean }
     }

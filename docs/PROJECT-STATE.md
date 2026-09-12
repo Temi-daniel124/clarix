@@ -6,9 +6,9 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (the six-part employee blueprint merged to `main` — the first
-production merge and the first production deploy — with the pgTAP suites executing in CI for the
-first time).
+**Last updated:** 2026-09-12 (the cooperative admin blueprint begins: Part 1 authentication and
+Part 2's setup sequence, on a new app shell, with the invite mechanism and the roster import that
+Part 2 needed decided before either could be built).
 
 ## Phase
 
@@ -24,8 +24,14 @@ no holding screens left anywhere in the employee app.
 app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
 off `main` rather than a Preview.
 
-What remains is the **cooperative admin/officer blueprint**, which owns every loan transition
-after reservation and is also what will write the first notification row.
+**The cooperative admin blueprint has started.** Parts 1 and 2 are built — accepting an
+invitation, role-aware login, and the setup sequence — on their own app shell with their own four
+destinations. The work stops deliberately at the first arrival on the Cooperative Dashboard
+(4.1): that screen, Members (Part 5), Loans (Part 6) and the rest belong to the next block, and
+each says so plainly rather than imitating itself.
+
+That side is also what will eventually write the first notification row and make the first loan
+transition after reservation.
 
 ## What exists today
 
@@ -298,6 +304,43 @@ after reservation and is also what will write the first notification row.
       the existing-user path, `auth.users` still holds exactly one row, and its `updated_at` did
       not move.
 
+- [x] **Cooperative admin Part 1** — Accept Invite / Set Password (1.1) serving both arrivals the
+      blueprint describes: a brand-new account setting a password from an invitation link, and an
+      existing account told plainly that the role has been added to it. Log In (1.2) is the *same
+      screen and the same action* as the employee's, with one thing added — where it sends you.
+      An active staff role goes to the cooperative, an unaccepted invitation goes to the screen
+      that accepts it, everyone else to the employee dashboard. The PWA prompt (1.3) reuses the
+      employee mechanic unchanged.
+- [x] **A new app shell, not a variant of the employee one** — Home, Members, Loans and a Manage
+      cooperative section that expands into six sub-items on desktop and folds behind More on
+      mobile. Same tokens, same spring, same navy glass, same collapsible rail; a different
+      information architecture, in its own destination list.
+- [x] **Cooperative admin Part 2, the setup sequence** — an admin-specific three-slide welcome
+      (2.1), the public profile with a live Discovery preview that renders from what is in the
+      form rather than what was saved (2.2), loan products with progressive disclosure and an
+      out-of-range warning drawn from what other cooperatives actually require (2.3), the roster
+      import (2.4), and officer invitations (2.5). All four setup screens are the same components
+      the permanent Manage screens use, which is what the blueprint describes: 2.2-2.5 are a
+      first run through screens that live on as 7.1-7.4.
+- [x] **The import reads the file in the browser and uploads nothing.** CSV and XLSX both, with
+      no new dependency: the XLSX path unzips using the platform's own `DecompressionStream` and
+      reads the two XML parts a roster needs. A member list is a file full of IPPIS numbers and
+      balances, and `docs/TOOLING-POLICY.md` item 5 is explicit about what may see that.
+      Column-matching, row validation, duplicate detection and the CSV reader are pure functions
+      with 21 unit tests of their own.
+- [x] **Migration 010** adds `staff_invitations` and `member_roster_entries` with their RLS, two
+      `SECURITY DEFINER` functions for inviting and claiming, and the trigger pair that turns a
+      roster entry into a real membership. pgTAP suite 005 covers all of it. The local filename
+      was reconciled to the recorded version, per D023.
+- [x] **`cooperative_staff_roles`'s existing policies were checked rather than assumed**, which
+      is why no new policy was written for them: migration 001 already had an admin-only insert,
+      an admin-only update, and a separate policy letting an invited person move their own row
+      from `invited` to `active` and nothing else. That is exactly the access pattern Part 1
+      needed.
+- [x] **The service-role key is still unused, and now by decision** (D027). Supabase's admin
+      invite API was the obvious path and would have made an invitation the first thing in this
+      codebase holding a key that bypasses RLS on every table. Two narrow functions cost less.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -317,6 +360,22 @@ after reservation and is also what will write the first notification row.
       rather than inventing a "reading your payslip" stage for something nothing is doing.
       Building it means adding a PDF text-extraction dependency, which needs a TOOLING-POLICY.md
       check and a SECURITY.md entry first, because it would see payslip files in cleartext.
+- [ ] **A cooperative-admin invitation for `coop.admin@fmcabeokuta.org.ng`**, holding an
+      `invited` admin role at Staff Multipurpose Cooperative (test data) — the one seeded
+      cooperative with nothing set up, so the setup sequence has somewhere real to run. **Delete
+      it with the rest of the test data before go-live.**
+
+      Its password was generated inside the database from `gen_random_uuid()` and has never been
+      seen by anybody, including the session that created the row, so **it must be set before the
+      account can be used**: Supabase dashboard, Authentication, Users, then either send a
+      recovery mail or set a password directly. Nothing else about the account needs touching.
+      Signing in then lands on the invitation screen, which activates the role.
+- [ ] **Four roster entries and one staff invitation at that same cooperative**, written through
+      the real screens while reviewing them: staff IDs 204817, 300121, 300122 and 300123, of
+      which 204817 matched the pilot tester and became an active membership carrying the imported
+      145,000 — the roster-linking trigger doing its job, and also why that account now shows a
+      third cooperative. The invitation is to `test.officer@fmcabeokuta.org.ng`. All of it goes
+      before go-live with everything else.
 - [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
       it was written directly rather than in a migration, the same way the pilot test account
       was, so none of it will follow the schema into production by accident. What exists: three
@@ -350,6 +409,18 @@ after reservation and is also what will write the first notification row.
       than a code change.
 - [ ] The remaining tables from `docs/DATA-MODEL.md`: `deduction_reconciliation`,
       `access_grants`, `audit_log`.
+- [ ] **XLSX import is written but has only been exercised against CSV.** The reader unzips and
+      parses the two XML parts a roster needs, which covers a plain sheet out of Excel,
+      LibreOffice or Google Sheets; a file using dates, formulas or a second worksheet is not
+      something it has been shown. When it cannot read one it says so and asks for CSV rather
+      than importing something wrong.
+- [ ] **Nothing emails an invitation.** The row is real and claims correctly on first sign-in;
+      the email telling somebody it exists waits on the same verified sending domain everything
+      else does. The officer screen says exactly that on the form rather than implying a message
+      went out.
+- [ ] Every screen of admin Parts 4 to 8 — the Cooperative Dashboard, Members, Loans,
+      Reconciliation, Reports, Notifications and the admin's own Profile. Each is reachable from
+      the navigation and says what will be there.
 - [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
       Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
       deliberately only ever produces `reserved`.
@@ -375,7 +446,7 @@ after reservation and is also what will write the first notification row.
 
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Ten tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Twelve tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
 | Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |

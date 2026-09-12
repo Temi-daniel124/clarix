@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { SectionFeedback } from "./section-feedback";
+import { SectionFeedback } from "@/components/clarix/section-feedback";
 import { updatePersonalInfoAction, type SectionState } from "./actions";
 
 const INITIAL: SectionState = {};
