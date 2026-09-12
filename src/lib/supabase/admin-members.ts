@@ -321,9 +321,9 @@ export async function loadCooperativeSummary(
         expiresIn !== null && expiresIn <= 2
           ? `The hold on their capacity lapses in ${expiresIn === 0 ? "under a day" : `${expiresIn} ${expiresIn === 1 ? "day" : "days"}`}.`
           : `Applied for ${formatNaira(Number(loan.requested_amount))}.`,
-      // Loan Application Review (6.2) is the next block of work; until it exists this leads to
-      // the member it concerns, which is the closest true thing rather than a dead link.
-      href: `/admin/members/${loan.membership_id}`,
+      // Straight into Loan Application Review (6.2), not the general queue: the blueprint is
+      // explicit that an admin who clicked a specific item should not lose the context of why.
+      href: `/admin/loans/${loan.id}`,
       waitingDays,
       urgent: expiresIn !== null && expiresIn <= 2,
     });

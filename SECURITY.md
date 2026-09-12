@@ -90,6 +90,24 @@ things able to see past the boundary is written down rather than discovered late
   is still the separate, policy-governed step migration 001 already defined. `EXECUTE` on both
   is revoked from `anon` and granted to `authenticated` only.
 
+- `decide_loan_application(uuid, text, text)` turns a reservation into an active loan or turns it
+  down (admin blueprint 6.2).
+
+  **Why RLS cannot be used directly here.** It writes to two tables that deliberately accept no
+  client write at all: `notifications`, which has no insert policy because a notification records
+  something the system did rather than something its recipient claims (D025), and `audit_log`,
+  which has no insert, update or delete policy because append-only means append-only. It also
+  reads the member's committed total across every cooperative, which is the same D003 exception
+  the capacity functions carry.
+
+  **What keeps it narrow.** It refuses unless the caller is active staff at this loan's own
+  cooperative AND either an admin or an officer whose permissions include approving loans. It
+  acts only on a loan still at `reserved`, so nothing can be decided twice. It refuses an
+  approval that exceeds the member's available capacity unless a reason is supplied, so the note
+  blueprint 6.2 asks for is enforced by the database rather than by the form. It returns a status
+  and figures about this one loan, never another cooperative's rows. `EXECUTE` is revoked from
+  `anon` and granted to `authenticated` only.
+
 - `link_roster_entry()` and `apply_roster_link()` are triggers on `cooperative_memberships`
   (D028). They read `member_roster_entries`, which an employee has no access to and must not
   gain: it carries other members' IPPIS numbers and savings balances. Both are triggers only —

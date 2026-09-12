@@ -19,6 +19,60 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_log: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          cooperative_id: string | null
+          created_at: string
+          id: string
+          new_value: Json | null
+          note: string | null
+          old_value: Json | null
+          target_id: string | null
+          target_table: string
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          cooperative_id?: string | null
+          created_at?: string
+          id?: string
+          new_value?: Json | null
+          note?: string | null
+          old_value?: Json | null
+          target_id?: string | null
+          target_table: string
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          cooperative_id?: string | null
+          created_at?: string
+          id?: string
+          new_value?: Json | null
+          note?: string | null
+          old_value?: Json | null
+          target_id?: string | null
+          target_table?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_log_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_log_cooperative_id_fkey"
+            columns: ["cooperative_id"]
+            isOneToOne: false
+            referencedRelation: "cooperatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cooperative_loan_products: {
         Row: {
           cooperative_id: string
@@ -678,6 +732,15 @@ export type Database = {
         Returns: boolean
       }
       claim_staff_invitations: { Args: never; Returns: number }
+      decide_loan_application: {
+        Args: { decision: string; note?: string; target_loan_id: string }
+        Returns: {
+          available_before: number
+          monthly_repayment: number
+          status: string
+          was_over_cap: boolean
+        }[]
+      }
       invite_cooperative_staff: {
         Args: {
           invite_email: string
