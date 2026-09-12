@@ -263,6 +263,65 @@ export type Database = {
           },
         ]
       }
+      loans: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          loan_product_id: string | null
+          membership_id: string
+          monthly_repayment: number
+          rejected_at: string | null
+          requested_amount: number
+          reservation_expires_at: string | null
+          reserved_at: string | null
+          status: Database["public"]["Enums"]["loan_status"]
+          tenure_months: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          loan_product_id?: string | null
+          membership_id: string
+          monthly_repayment: number
+          rejected_at?: string | null
+          requested_amount: number
+          reservation_expires_at?: string | null
+          reserved_at?: string | null
+          status?: Database["public"]["Enums"]["loan_status"]
+          tenure_months: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          loan_product_id?: string | null
+          membership_id?: string
+          monthly_repayment?: number
+          rejected_at?: string | null
+          requested_amount?: number
+          reservation_expires_at?: string | null
+          reserved_at?: string | null
+          status?: Database["public"]["Enums"]["loan_status"]
+          tenure_months?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loans_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -315,6 +374,54 @@ export type Database = {
             columns: ["user_id"]
             isOneToOne: true
             referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      savings_transactions: {
+        Row: {
+          amount: number
+          description: string | null
+          id: string
+          loan_id: string | null
+          membership_id: string
+          recorded_at: string
+          recorded_by: string | null
+          type: Database["public"]["Enums"]["savings_transaction_type"]
+        }
+        Insert: {
+          amount: number
+          description?: string | null
+          id?: string
+          loan_id?: string | null
+          membership_id: string
+          recorded_at?: string
+          recorded_by?: string | null
+          type: Database["public"]["Enums"]["savings_transaction_type"]
+        }
+        Update: {
+          amount?: number
+          description?: string | null
+          id?: string
+          loan_id?: string | null
+          membership_id?: string
+          recorded_at?: string
+          recorded_by?: string | null
+          type?: Database["public"]["Enums"]["savings_transaction_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "savings_transactions_loan_id_fkey"
+            columns: ["loan_id"]
+            isOneToOne: false
+            referencedRelation: "loans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "savings_transactions_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_memberships"
             referencedColumns: ["id"]
           },
         ]
@@ -381,6 +488,36 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      capacity_for_user: {
+        Args: { proposed_monthly_repayment?: number }
+        Returns: {
+          available: number
+          cap: number
+          committed: number
+          eligible: boolean
+          headroom: number
+          proposed: number
+          shortfall: number
+        }[]
+      }
+      submit_loan_application: {
+        Args: {
+          loan_product_id?: string
+          requested_amount: number
+          target_membership_id: string
+          tenure_months: number
+        }
+        Returns: {
+          available: number
+          cap: number
+          committed: number
+          eligible: boolean
+          loan_id: string
+          monthly_repayment: number
+          reservation_expires_at: string
+          shortfall: number
+        }[]
+      }
       is_active_cooperative_admin: {
         Args: { target_cooperative_id: string }
         Returns: boolean
@@ -396,7 +533,18 @@ export type Database = {
       deduction_basis: "gross" | "net"
       document_review_status: "pending_review" | "confirmed" | "corrected"
       document_type: "payslip"
+      loan_status:
+        | "draft"
+        | "reserved"
+        | "active"
+        | "rejected"
+        | "completed"
+        | "expired"
       membership_status: "pending" | "active" | "suspended"
+      savings_transaction_type:
+        | "contribution"
+        | "withdrawal_record"
+        | "loan_repayment"
       staff_role: "admin" | "officer"
       staff_role_status: "invited" | "active" | "revoked"
     }
@@ -530,7 +678,9 @@ export const Constants = {
       deduction_basis: ["gross", "net"],
       document_review_status: ["pending_review", "confirmed", "corrected"],
       document_type: ["payslip"],
+      loan_status: ["draft","reserved","active","rejected","completed","expired"],
       membership_status: ["pending", "active", "suspended"],
+      savings_transaction_type: ["contribution","withdrawal_record","loan_repayment"],
       staff_role: ["admin", "officer"],
       staff_role_status: ["invited", "active", "revoked"],
     },

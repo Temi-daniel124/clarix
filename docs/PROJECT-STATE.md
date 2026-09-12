@@ -6,16 +6,18 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (visual pass on the app shell and dashboard: floating mobile tab
-pill, collapsible desktop rail, dashboard hierarchy and trend indicators, and a real fix for the
-KPI expand animation).
+**Last updated:** 2026-09-12 (Part 5, the loan side: the `loans` and `savings_transactions`
+tables, the locked reservation transaction proven under real concurrency, and screens 5.1
+through 5.5).
 
 ## Phase
 
-**Planning complete. Infra live. Blueprint Parts 1 to 4 are built** — landing page, auth,
-onboarding, the persistent navigation shell, and the home-base screens — and every one has been
-walked in a browser against the live project. What remains is Part 5, the loan side: the
-`loans` table, the cross-cooperative eligibility lookup, and the reservation transaction.
+**Planning complete. Infra live. The whole employee blueprint, Parts 1 to 5, is built** —
+landing page, auth, onboarding, the persistent navigation shell, the home-base screens, and the
+loan side: the `loans` and `savings_transactions` tables, the cross-cooperative eligibility
+lookup, and the reservation transaction that is the product's core mechanism. Every screen has
+been walked in a browser against the live project, in both themes at both widths. What remains
+is the cooperative admin/officer side, which owns every loan transition after reservation.
 
 ## What exists today
 
@@ -52,8 +54,9 @@ walked in a browser against the live project. What remains is Part 5, the loan s
       track) and `CapacityMeter`, which composes them with the eligible / not-eligible verdict.
       Everything showing a number against a limit goes through these.
 - [x] **Eligibility arithmetic extracted and unit-tested** — `src/lib/eligibility.ts` implements
-      Steps 1 and 2 of `docs/DATA-MODEL.md`; 16 Vitest cases pass (`npm test`), including the
-      gross-vs-net divergence that motivates D007.
+      Steps 1 and 2 of `docs/DATA-MODEL.md`; 19 Vitest cases pass (`npm test`), including the
+      gross-vs-net divergence that motivates D007 and the `capOverride` path the loan
+      application screen uses to preview against the cap the database computed.
 - [x] **Three migrations written and applied to the remote `Clarix` project:**
       `20260911141652_init_core_identity_and_cooperatives.sql` (the six tables, their enums, the
       D009 reservation-ceiling trigger, 23 RLS policies, the signup trigger, and the seeded FMC
@@ -163,11 +166,11 @@ walked in a browser against the live project. What remains is Part 5, the loan s
       heading with the freshness line attached, and a movement-over-time indicator on the cards
       where that question makes sense. No stock photography or decorative illustration was
       added.
-- [x] **The trend indicator shows an honest empty state.** `savings_transactions` does not
-      exist, so no KPI has any history to plot and every trend currently reads "No history yet".
-      The sparkline is built and will render the moment there is something real to draw. A flat
-      line or an invented upward trend would each have been a small lie on the one screen whose
-      whole job is telling the truth about money.
+- [x] **The trend indicator shows an honest empty state**, and now also shows real movement.
+      When it was built `savings_transactions` did not exist, so every trend read "No history
+      yet" rather than drawing a flat line or an invented climb. With Part 5 landed the savings
+      card plots genuine month-end balances from the ledger, and any KPI still without history
+      keeps the honest empty state instead of borrowing another card's shape.
 - [x] **The KPI expand animation was diagnosed rather than re-tuned.** A single tap was starting
       four overlapping animation systems: a layout animation on the card (which fires on all
       four, since one card's span change moves every sibling), two more nested inside each card,
@@ -178,6 +181,40 @@ walked in a browser against the live project. What remains is Part 5, the loan s
       a plain fade for the detail. Measured over 52 frames: a single 2.9% overshoot, settled by
       470ms, no oscillation. The expanded card also rises to the top of the grid, because a
       full-width item was otherwise splitting the row around itself.
+
+- [x] **The reservation transaction is one Postgres function, and it was proven under real
+      concurrency rather than asserted.** `submit_loan_application` takes
+      `pg_advisory_xact_lock` on a key derived from the caller, recomputes committed obligations
+      across every cooperative *inside* that lock, and either reserves or reports the exact
+      shortfall — all in a single `supabase.rpc()` call, because the lock only serialises within
+      one transaction and sequential client calls would not have it. Two independent clients
+      fired it simultaneously against the live project: the first reserved 50,000 a month against
+      an 83,250 cap, the second queued on the lock and recomputed, and it saw 33,250 available,
+      the reduced figure rather than a stale 83,250. Exactly one reservation existed afterwards.
+- [x] **`capacity_for_user` and `submit_loan_application` are `SECURITY DEFINER`**, which is
+      D003's narrow cross-cooperative exception, and both are now named in SECURITY.md's
+      elevated-privileges list with why RLS cannot express the aggregate. Each derives the caller
+      from `auth.uid()` rather than an argument, returns only totals and a verdict, and
+      `submit_loan_application` refuses any `membership_id` that is not the caller's own active
+      membership. `loans` deliberately has no employee insert policy at all, so the locked
+      function is the only path to a reservation.
+- [x] **Migration 006** adds `loans` and `savings_transactions` with their RLS in the same file;
+      **migration 007** adds the two functions. Local filenames were reconciled to the versions
+      the database recorded, per D023 — both had drifted, again.
+- [x] **Screens built** — Loan Application (5.5) with the live CapacityMeter readout that updates
+      locally on every slider move and touches the database only on submit; Cooperative Detail
+      (5.1); Savings Statement (5.2); Loan Detail (5.3); and the cross-cooperative Loans overview
+      (5.4). Repayment progress is derived from ledger rows, never from elapsed time.
+- [x] **The dashboard's loan figures are live.** Active Loans, Monthly Deductions and the
+      committed half of Available Capacity now come from the same RPC the application screen
+      uses, so the two screens cannot disagree. The stale "nothing is committed yet" insight,
+      which kept rendering after loans existed, is gone.
+- [x] **D024 records the two deliberate departures from `DATA-MODEL.md`**: loan repayments living
+      in `savings_transactions`, and a lapsed reservation counting as uncommitted at read time
+      rather than waiting for a sweep to rewrite its status.
+- [x] **Concurrency committed as pgTAP suite 003.** It states plainly that pgTAP cannot open two
+      parallel connections, records what the live parallel run proved, and asserts every figure
+      that run produced, including a foreign `membership_id` being refused with `42501`.
 
 ## What does not exist yet
 
@@ -198,21 +235,19 @@ walked in a browser against the live project. What remains is Part 5, the loan s
       rather than inventing a "reading your payslip" stage for something nothing is doing.
       Building it means adding a PDF text-extraction dependency, which needs a TOOLING-POLICY.md
       check and a SECURITY.md entry first, because it would see payslip files in cleartext.
-- [ ] **Three test cooperatives and nine loan products are seeded in the live database**, named
-      with a "(test data)" suffix so they cannot be mistaken for real FMC Abeokuta cooperatives,
-      plus one pending membership held by the test account. Seeded directly rather than in a
-      migration, the same way the pilot test account was. **Delete all of it before go-live.**
-- [ ] Cooperative Detail (blueprint 5.2). My Cooperatives rows are deliberately not links yet,
-      because the screen they would open does not exist and a row that looks tappable and does
-      nothing is worse than one that does not pretend.
-- [ ] Loans, Notifications, Profile and Help are reachable from the navigation but show a short
-      honest holding screen: the shell has no dead tabs, and none of them imitates the screen it
-      stands in for.
-- [ ] The three loan-derived dashboard figures — Active Loans, Monthly Deductions, and the
-      committed half of Available Capacity — read as zero because the `loans` table does not
-      exist yet. That is the truth rather than a placeholder: an employee with no loans recorded
-      owes nothing through Clarix, so the whole cap is genuinely available. They become live when
-      Part 5 lands, with no change to the dashboard beyond the query.
+- [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
+      it was written directly rather than in a migration, the same way the pilot test account
+      was, so none of it will follow the schema into production by accident. What exists: three
+      cooperatives carrying a "(test data)" suffix so they cannot be mistaken for real FMC
+      Abeokuta cooperatives; nine loan products across them, six public; the pilot tester holding
+      an active membership at two of them plus one pending application; four loans against those
+      memberships — an active 360,000 over 24 months, a reserved 180,000 over 12 months, a
+      completed 120,000, and a 120,000 reservation created through the application screen during
+      verification; and 26 `savings_transactions` rows backing 330,000 of savings and the
+      repayment history the active loan's progress is computed from.
+- [ ] Notifications, Profile and Help are reachable from the navigation but show a short honest
+      holding screen: the shell has no dead tabs, and none of them imitates the screen it stands
+      in for.
 - [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
       so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
       wholesale when the real dashboard is built.
@@ -221,9 +256,11 @@ walked in a browser against the live project. What remains is Part 5, the loan s
       enabling it (it checks new passwords against HaveIBeenPwned), which is a cheap win for a
       product holding salary data. It is a project setting, so it needs your decision rather
       than a code change.
-- [ ] The remaining tables from `docs/DATA-MODEL.md`: `cooperative_loan_products`,
-      `savings_transactions`, `loans`, `deduction_reconciliation`, `access_grants`, `audit_log`.
-- [ ] The reservation transaction itself (D008 advisory lock) and its concurrency test.
+- [ ] The remaining tables from `docs/DATA-MODEL.md`: `deduction_reconciliation`,
+      `access_grants`, `audit_log`.
+- [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
+      Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
+      deliberately only ever produces `reserved`.
 - [ ] The pgTAP suite has **never actually executed** — it runs only on a pull request touching
       `supabase/migrations/**` or `supabase/tests/**`. Its assertions were each verified by hand
       against the live project, but the file itself is unproven until CI runs it.
@@ -238,7 +275,7 @@ walked in a browser against the live project. What remains is Part 5, the loan s
 
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Seven tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Nine tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub.                                                        |
 | Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
@@ -258,8 +295,11 @@ walked in a browser against the live project. What remains is Part 5, the loan s
 4. Decide the permanent Vercel project name, and remove the redundant `clarix-3w5i` project if
    it is not serving anything.
 5. Enable leaked-password protection in Supabase Auth.
-6. Delete the `pilot.tester@fmcabeokuta.org.ng` account and its uploaded probe payslip before
-   go-live.
+6. Delete the `pilot.tester@fmcabeokuta.org.ng` account, its uploaded probe payslip, and all
+   the seeded test data catalogued above, before go-live.
+7. Build the cooperative admin/officer blueprint, which owns approve, reject and complete, and
+   the expiry sweep that tidies lapsed reservations. Capacity is already correct without that
+   sweep — expiry is evaluated at read time per D024 — so it is housekeeping, not a gap.
 
 ## Decision/scope drift check
 

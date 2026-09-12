@@ -59,14 +59,27 @@ export function computeCapacity({
   salary,
   policy,
   committedMonthlyRepayments,
+  capOverride,
 }: {
   salary: SalaryBasis;
   policy: DeductionPolicy;
   /** Every reserved or active monthly repayment the employee holds, across all cooperatives. */
   committedMonthlyRepayments: number;
+  /**
+   * A cap already computed elsewhere — in practice the one `capacity_for_user` returned.
+   *
+   * The screens receive the cap from the database, because only the database can sum committed
+   * obligations across cooperatives. Passing it through rather than recomputing salary maths in
+   * the browser keeps a single source of truth for the figure, while this module stays the
+   * single source of truth for the arithmetic around it.
+   */
+  capOverride?: number;
 }): Capacity {
   const basisAmount = salaryBasisAmount(salary, policy.basis);
-  const cap = round2((basisAmount * policy.maxPercentage) / 100);
+  const cap =
+    capOverride !== undefined && capOverride >= 0
+      ? round2(capOverride)
+      : round2((basisAmount * policy.maxPercentage) / 100);
   const committed = round2(Math.max(0, committedMonthlyRepayments));
 
   return {
@@ -85,13 +98,15 @@ export function previewEligibility({
   policy,
   committedMonthlyRepayments,
   requestedMonthlyRepayment,
+  capOverride,
 }: {
   salary: SalaryBasis;
   policy: DeductionPolicy;
   committedMonthlyRepayments: number;
   requestedMonthlyRepayment: number;
+  capOverride?: number;
 }): EligibilityPreview {
-  const capacity = computeCapacity({ salary, policy, committedMonthlyRepayments });
+  const capacity = computeCapacity({ salary, policy, committedMonthlyRepayments, capOverride });
   const requested = round2(Math.max(0, requestedMonthlyRepayment));
   const eligible = requested <= capacity.available;
 

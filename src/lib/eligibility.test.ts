@@ -148,3 +148,42 @@ describe("reservationExpiryDays", () => {
     expect(reservationExpiryDays({ organizationDefault: 7, cooperativeOverride: 30 })).toBe(7);
   });
 });
+
+describe("capOverride", () => {
+  it("uses a cap computed elsewhere in place of the salary calculation", () => {
+    const capacity = computeCapacity({
+      salary: { gross: null, net: null },
+      policy: { basis: "gross", maxPercentage: 0 },
+      committedMonthlyRepayments: 30_000,
+      capOverride: 83_250,
+    });
+
+    expect(capacity.cap).toBe(83_250);
+    expect(capacity.available).toBe(53_250);
+  });
+
+  it("previews against that cap, which is how the application screen stays instant", () => {
+    // The screen holds the cap the database returned and never recomputes salary maths in the
+    // browser, so moving a slider costs nothing and cannot disagree with the server.
+    const preview = previewEligibility({
+      salary: { gross: null, net: null },
+      policy: { basis: "gross", maxPercentage: 0 },
+      committedMonthlyRepayments: 30_000,
+      requestedMonthlyRepayment: 60_000,
+      capOverride: 83_250,
+    });
+
+    expect(preview.eligible).toBe(false);
+    expect(preview.shortfall).toBe(6_750);
+  });
+
+  it("falls back to the salary calculation when no override is given", () => {
+    const capacity = computeCapacity({
+      salary: { gross: 250_000, net: 180_000 },
+      policy: { basis: "gross", maxPercentage: 33.3 },
+      committedMonthlyRepayments: 0,
+    });
+
+    expect(capacity.cap).toBe(83_250);
+  });
+});

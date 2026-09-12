@@ -267,6 +267,40 @@ implementation slice already contradicted.
 
 ---
 
+### D024 — Two deliberate departures from `DATA-MODEL.md` in the loan/savings schema
+**Status:** Locked
+**Supersedes:** nothing; it records where the implemented schema knowingly goes past what
+`DATA-MODEL.md` describes, so the difference is a decision rather than drift.
+
+**Decision 1 — `savings_transactions` carries loan repayments, not only savings movements.**
+The table gains a `loan_repayment` value in its type enum and a nullable `loan_id` column,
+constrained so `loan_id` is present exactly when the type is `loan_repayment` and absent
+otherwise. `DATA-MODEL.md` defines no repayment ledger at all, yet Loan Detail (blueprint 5.3)
+has to show how much of a loan has actually been repaid, and a loan's progress must be derived
+from money that genuinely moved rather than from how many months have elapsed since approval. A
+separate `loan_repayments` table was the alternative and was rejected: both kinds of row are the
+same shape — a dated, described, signed amount against one membership — and keeping them in one
+ledger means a member's statement can be assembled from a single ordered query. The savings
+statement screen filters the repayment rows out, because a repayment leaves the salary and does
+not move the savings balance.
+
+**Decision 2 — a lapsed reservation is not a committed obligation, even while its status still
+reads `reserved`.** Every capacity calculation counts a reserved loan only while
+`reservation_expires_at` is still in the future. Nothing sweeps the table to rewrite statuses to
+`expired`, so a row can read `reserved` and contribute nothing to the committed total. The
+alternative — a scheduled job flipping statuses — was rejected because capacity would then be
+wrong for as long as the job was late, down, or between runs, and being wrong about capacity is
+the one failure this product cannot have. Expiry is therefore evaluated at read time, which makes
+it exact by construction. A background sweep may still be added later for tidiness, but it would
+be cosmetic: it could only ever agree with what the read-time check already computed.
+
+**Consequence:** `DATA-MODEL.md` describes the shape of the intent, and these two points are where
+the implementation is authoritative instead. Anything computing committed obligations must apply
+the expiry check; anything reading the ledger must filter by type rather than assuming every row
+is a savings movement.
+
+---
+
 ## Open, not yet decided
 
 Tracked here so they don't get silently assumed. Move an item to a numbered entry above the

@@ -43,6 +43,28 @@ things able to see past the boundary is written down rather than discovered late
 - `handle_new_auth_user()` is the signup trigger that writes the matching `public.users` row
   (`docs/DECISIONS.md` D021). `EXECUTE` is revoked from both `anon` and `authenticated`, so it
   exists only as a trigger and not as a callable PostgREST endpoint.
+- `capacity_for_user(numeric)` and `submit_loan_application(uuid, numeric, integer, uuid)` are
+  the cross-cooperative capacity calculation and the reservation transaction (D003, D008).
+
+  **Why RLS cannot be used directly here.** Committed obligations must be summed across every
+  cooperative the employee belongs to. The RLS policies on `loans` deliberately refuse that —
+  they scope each staff member to their own cooperative's rows, and they must keep doing so.
+  There is no policy that could express "sum across all cooperatives but reveal none of them",
+  because RLS filters rows and what is needed here is an aggregate over rows the caller may not
+  see individually. That is precisely D003's narrow exception.
+
+  **What keeps it narrow.** Both functions return only an aggregate and a verdict: one summed
+  monthly figure, a cap, a remainder, and eligible/not-eligible. Neither returns another
+  cooperative's identity, its savings balances, its loan rows, or any figure attributable to a
+  particular cooperative — a caller learns what they owe in total, never to whom. Both derive the
+  caller from `auth.uid()` rather than from an argument, and `submit_loan_application` refuses
+  any `membership_id` that is not the caller's own and active, so an employee can only ever
+  reserve through their own record. `EXECUTE` is revoked from `anon` and granted to
+  `authenticated` only.
+
+  `submit_loan_application` is also the ONLY write path to a reservation: `loans` has no insert
+  policy for employees at all, which is what forces every reservation through the advisory lock
+  that makes it safe under concurrency.
 
 Table-level privileges are granted to `authenticated` only, verb by verb, matching the policies
 that actually exist; `anon` holds no privilege on any table in the `public` schema. Worth

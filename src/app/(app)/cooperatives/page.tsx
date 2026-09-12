@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowRight, Building2, Clock, Plus } from "lucide-react";
+import { ArrowRight, Building2, ChevronRight, Clock, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { loadDashboardData } from "@/lib/supabase/dashboard-data";
@@ -53,10 +53,11 @@ export default async function MyCooperativesPage() {
       ) : (
         <ul className="mt-8 flex flex-col gap-3">
           {data.cooperatives.map((cooperative) => (
-            <li
-              key={cooperative.membershipId}
-              className="flex items-center gap-4 rounded-card border border-border bg-surface p-5"
-            >
+            <li key={cooperative.membershipId}>
+              <Link
+                href={`/cooperatives/${cooperative.cooperativeId}`}
+                className="flex items-center gap-4 rounded-card border border-border bg-surface p-5 transition-colors duration-150 hover:border-text-muted/50 focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+              >
               <span
                 aria-hidden
                 className="flex size-10 shrink-0 items-center justify-center rounded-card border border-border text-text-secondary"
@@ -79,12 +80,15 @@ export default async function MyCooperativesPage() {
                 )}
               </div>
 
-              {cooperative.status === "active" ? (
-                <RollingNumber
-                  value={cooperative.savingsBalance}
-                  className="type-card-title shrink-0 text-text"
-                />
-              ) : null}
+                {cooperative.status === "active" ? (
+                  <RollingNumber
+                    value={cooperative.savingsBalance}
+                    className="type-card-title shrink-0 text-text"
+                  />
+                ) : null}
+
+                <ChevronRight aria-hidden strokeWidth={2} className="size-4 shrink-0 text-text-muted" />
+              </Link>
             </li>
           ))}
 
