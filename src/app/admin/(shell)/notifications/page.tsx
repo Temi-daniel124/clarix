@@ -1,21 +1,69 @@
 import type { Metadata } from "next";
-import { Bell } from "lucide-react";
-import { ComingLater } from "@/components/app-shell/coming-later";
+import Link from "next/link";
+import { BellOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { NotificationList } from "@/app/(app)/notifications/notification-list";
+import { loadNotifications, relativeTime } from "@/lib/supabase/notifications-data";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Notifications" };
 
 /**
- * Notifications (blueprint 8.1) — built in a later block of the cooperative admin blueprint.
+ * Notifications — admin blueprint 8.1.
  *
- * It says what will be here and does not imitate it, which is the same standard the employee
- * shell held itself to while its own later parts were outstanding.
+ * "Structurally identical to the Employee role's Notifications screen", so it is literally the
+ * same component over the same query: one notifications table, one read-and-mark-read pattern,
+ * one unread dot. A second list UI would be two things to keep in step for no gain.
+ *
+ * **Nothing writes an admin-facing notification yet, and this screen says so rather than being
+ * padded.** The one writer that exists — `decide_loan_application` — notifies the member whose
+ * loan was decided, which is the employee side. The events this screen will carry (an application
+ * arriving, a reservation nearing expiry, an invitation accepted) have no writer, and inventing
+ * rows to make the screen feel populated is exactly what D025 ruled out when the table was empty
+ * for everyone.
+ *
+ * What an admin needs today is on the dashboard: "Attention required" already lists applications
+ * waiting, imports needing a name, and invitations nobody has taken up.
  */
-export default function Page() {
+export default async function AdminNotificationsPage() {
+  const notifications = await loadNotifications();
+
+  const now = new Date();
+  const timestamps = Object.fromEntries(
+    notifications.map((item) => [item.id, relativeTime(item.createdAt, now)]),
+  );
+
   return (
-    <ComingLater
-      icon={Bell}
-      title="Notifications"
-      body="New applications, decisions recorded by your officers, and anything a member changed that affects what you are owed."
-    />
+    <div className="mx-auto w-full max-w-[760px] px-5 py-8 md:px-8 md:py-10">
+      <h1 className="type-page-title text-text">Notifications</h1>
+
+      {notifications.length === 0 ? (
+        <div className="mt-8 rounded-feature border border-border bg-surface px-6 py-12 text-center md:px-10">
+          <span
+            aria-hidden
+            className="mx-auto flex size-12 items-center justify-center rounded-card border border-border text-text-muted"
+          >
+            <BellOff className="size-5" strokeWidth={1.75} />
+          </span>
+
+          <h2 className="type-section mt-6 text-text">Nothing addressed to you yet</h2>
+
+          <p className="type-body mx-auto mt-3 max-w-[460px] text-text-secondary">
+            New applications, reservations approaching their expiry, and officers taking up an
+            invitation will appear here. None of those sends a notification yet — what needs your
+            attention today is on your cooperative&apos;s home screen instead, which is fed from
+            the same records.
+          </p>
+
+          <Button variant="outline" size="sm" className="mt-8" render={<Link href="/admin" />}>
+            See what is waiting
+          </Button>
+        </div>
+      ) : (
+        <div className="mt-6">
+          <NotificationList items={notifications} timestamps={timestamps} />
+        </div>
+      )}
+    </div>
   );
 }

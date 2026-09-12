@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (cooperative admin Part 7: officer permissions that change what the
-database permits rather than only what a screen shows, and monthly reconciliation).
+**Last updated:** 2026-09-12 (cooperative admin Part 8, the account cluster — which completes the
+cooperative admin blueprint end to end).
 
 ## Phase
 
@@ -23,9 +23,14 @@ no holding screens left anywhere in the employee app.
 app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
 off `main` rather than a Preview.
 
-**Cooperative admin Parts 1 to 7 are built**, with Parts 1, 2, 4, 5 and 6 on `main` already
-(pull requests #2, #3 and #4, each merged after the pgTAP suites passed). Part 7 completes
-cooperative configuration: officer permissions, and the monthly reconciliation entry.
+**The cooperative admin blueprint is complete — Parts 1 to 8, every screen built.** Parts 1 to 7
+are on `main` already (pull requests #2 to #5, each merged after the pgTAP suites passed). Part 8
+adds the account cluster: Notifications, Profile / Settings, the Cooperative Audit Log, and
+Help / Support.
+
+Both blueprints are now built end to end. What remains is not a part of either: loan completion
+and the expiry sweep have no screen assigned yet, and Reports (7.6) is deferred by the
+blueprint's own P1 marking rather than by omission.
 
 **The product now does something it has never done before.** A reservation can become an active
 loan or be turned down — the first transition past `reserved` anywhere in Clarix — and an
@@ -479,6 +484,35 @@ marked P1 there.
       own rows and the member read their own months. pgTAP suite 008 covers the permission
       boundary and the table.
 
+- [x] **Notifications (8.1) is the employee screen's component over the same query.** One
+      notifications table, one read-and-mark-read pattern, one unread dot — a second list UI would
+      have been two things to keep in step for no gain. Nothing writes an admin-facing
+      notification yet and the screen says so rather than being padded: the only writer,
+      `decide_loan_application`, notifies the member whose loan was decided. What an admin needs
+      today is on the dashboard, where Attention required already lists it.
+- [x] **Cooperative Audit Log (8.3) reads the real table**, scoped by policy to the admin's own
+      cooperative, with the date-range, action and search filters the blueprint asks for. It
+      already has something to show: the approval walked through last session. Entries carry the
+      old value beside the new — a log that only names its events is one you can count, not one
+      you can review.
+- [x] **Fields that only exist after an action are shown as context, not as changes.** Drawing
+      `over_cap` or `available_before` with an arrow from nothing would invent a "before" that
+      never existed. Caught by looking at the screen, and fixed in the reader rather than by
+      changing what is recorded.
+- [x] **Profile / Settings (8.2)** — the same three sections as the employee's, through the same
+      components and the same server actions, deliberately without a salary section: being an
+      admin does not imply being a beneficiary member anywhere. An account that also holds
+      memberships gets the "Switch to my member view" link the blueprint describes, which is the
+      multi-role model made visible rather than explained.
+- [x] **Help / Support (8.4)** — fifteen answers under Managing members, Loans and eligibility,
+      and Cooperative settings, each describing what an admin can actually do today, plus the
+      same contact form and the same provisional support address (D026). Where the honest answer
+      is that something is not built — correcting a recorded figure, marking a loan repaid — it
+      says so.
+- [x] **The audit log's read scope is covered by pgTAP** (suite 007, extended): a cooperative's
+      own staff read their own entries, and nobody else reads any of it — including the member
+      the entries are about, because this is a staff record.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -555,14 +589,17 @@ marked P1 there.
       the email telling somebody it exists waits on the same verified sending domain everything
       else does. The officer screen says exactly that on the form rather than implying a message
       went out.
-- [ ] **Completing a loan has no screen.** Approve and reject exist; marking a loan repaid in
-      full is still only implied by the repayment ledger adding up, and nothing flips the status
-      to `completed`. Nor does anything sweep a lapsed reservation to `expired`, which costs
-      nothing because expiry is evaluated at read time (D024).
-- [ ] Admin Parts 7 and 8 beyond what the setup screens already cover — Reconciliation, Reports,
-      Notifications, the admin's own Profile, and the Audit Log screen (8.3) that reads back what
-      migration 014 now records. Each is reachable from the navigation and says what will be
-      there.
+- [ ] **Completing a loan has no screen, and no part of either blueprint owns it.** Approve and
+      reject exist; marking a loan repaid in full is still only implied by the repayment ledger
+      adding up, and nothing flips the status to `completed`. Nor does anything sweep a lapsed
+      reservation to `expired`, which costs nothing because expiry is evaluated at read time
+      (D024). Deciding where that work lands is the next thing to settle.
+- [ ] **Nothing writes an admin-facing notification.** A new application arriving, a reservation
+      nearing expiry and an officer accepting an invitation are all real events with no writer,
+      and the notification categories for them do not exist in the enum either — adding them
+      before something writes them would be speculative schema. The dashboard's Attention
+      required covers the same ground today.
+- [ ] **Reports (7.6)**, deferred by the blueprint's own P1 marking rather than by omission.
 - [ ] **Recording a savings entry (5.4) still has not been submitted end to end in a browser**,
       and it is now blocked on the same single step as the production login check: the test admin
       account `coop.admin@fmcabeokuta.org.ng` has no password, so nobody can sign in as a
