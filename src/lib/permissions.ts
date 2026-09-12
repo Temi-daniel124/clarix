@@ -23,6 +23,15 @@ export type PermissionSpec = {
   description: string;
   /** Where the boundary actually lives, so a reader can check the claim. */
   enforcedBy: string;
+  /**
+   * The same capability said to the person who holds it rather than to the admin switching it
+   * on: `plain` for the read-only panel on their own Profile (officer blueprint 8.2), `phrase`
+   * as a verb phrase the orientation tour can put in a sentence (2.1). One source, because a
+   * tour that promised something the panel then omitted would be the product contradicting
+   * itself on a person's first day.
+   */
+  plain: string;
+  phrase: string;
 };
 
 export const PERMISSIONS: PermissionSpec[] = [
@@ -32,6 +41,8 @@ export const PERMISSIONS: PermissionSpec[] = [
     description:
       "Open the members area, search it, and read a member's savings, loans and capacity.",
     enforcedBy: "cooperative_memberships_select_staff",
+    plain: "Search members and open their profiles",
+    phrase: "search the member list",
   },
   {
     key: "can_record_savings",
@@ -39,6 +50,8 @@ export const PERMISSIONS: PermissionSpec[] = [
     description:
       "Enter what payroll has already delivered against a member, and fill in the monthly reconciliation.",
     enforcedBy: "savings_transactions_insert_staff",
+    plain: "Record contributions and repayments",
+    phrase: "record what payroll has delivered",
   },
   {
     key: "can_approve_loans",
@@ -46,6 +59,8 @@ export const PERMISSIONS: PermissionSpec[] = [
     description:
       "Decide applications — the cooperative's money, committed against a member's salary.",
     enforcedBy: "decide_loan_application",
+    plain: "Approve or reject loan applications",
+    phrase: "decide loan applications",
   },
   {
     key: "can_import_members",
@@ -53,6 +68,8 @@ export const PERMISSIONS: PermissionSpec[] = [
     description:
       "Add one member by hand, or import a roster spreadsheet of staff IDs and opening balances.",
     enforcedBy: "member_roster_entries_insert_staff",
+    plain: "Add members, and import a roster",
+    phrase: "add and import members",
   },
 ];
 

@@ -20,6 +20,7 @@ import { isAdminActive, isMoreActive, staffNav, type AdminDestination } from "./
 export type StaffNavProps = {
   role: "admin" | "officer";
   canImport: boolean;
+  canViewMembers: boolean;
 };
 
 /**
@@ -41,9 +42,13 @@ export function AdminSidebar({
   cooperativeName,
   role,
   canImport,
+  canViewMembers,
 }: StaffNavProps & { cooperativeName: string }) {
   const pathname = usePathname();
-  const nav = staffNav(role, { can_import_members: canImport });
+  const nav = staffNav(role, {
+    can_import_members: canImport,
+    can_view_members: canViewMembers,
+  });
   const collapsed = useSyncExternalStore(subscribeToRail, readRail, () => false);
 
   const toggle = useCallback(() => {
@@ -212,10 +217,13 @@ function RailLink({
   );
 }
 
-export function AdminBottomTabs({ role, canImport }: StaffNavProps) {
+export function AdminBottomTabs({ role, canImport, canViewMembers }: StaffNavProps) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
-  const nav = staffNav(role, { can_import_members: canImport });
+  const nav = staffNav(role, {
+    can_import_members: canImport,
+    can_view_members: canViewMembers,
+  });
 
   return (
     <div className="theme-dark fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">

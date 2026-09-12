@@ -39,6 +39,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   }
 
   const canImport = role.permissions.can_import_members;
+  const canViewMembers = role.permissions.can_view_members;
 
   return (
     <div className="flex min-h-dvh flex-1">
@@ -46,6 +47,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         cooperativeName={role.cooperativeName}
         role={role.role}
         canImport={canImport}
+        canViewMembers={canViewMembers}
       />
 
       <div className="flex min-w-0 flex-1 flex-col">
@@ -53,7 +55,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <main className="flex-1 pb-32 md:pb-12">{children}</main>
       </div>
 
-      <AdminBottomTabs role={role.role} canImport={canImport} />
+      <AdminBottomTabs role={role.role} canImport={canImport} canViewMembers={canViewMembers} />
     </div>
   );
 }

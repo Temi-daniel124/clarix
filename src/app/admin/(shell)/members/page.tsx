@@ -14,6 +14,11 @@ export default async function MembersPage() {
   const role = staff ? preferredRole(staff.roles) : null;
   if (!role) redirect("/login");
 
+  // Every screen in the member and loan areas reads through `cooperative_memberships`, which
+  // `can_view_members` governs (migration 016). Without it these screens would render an empty
+  // shell rather than refuse, and an empty shell reads as a bug rather than as a boundary.
+  if (!role.permissions.can_view_members) redirect("/admin");
+
   const members = await loadMembers(role.cooperativeId);
 
   return (

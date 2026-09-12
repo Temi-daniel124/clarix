@@ -33,6 +33,7 @@ export function AdminProfileSections({
   phone,
   preferences,
   memberCooperativeCount,
+  staffRole,
 }: {
   name: string | null;
   email: string | null;
@@ -40,6 +41,8 @@ export function AdminProfileSections({
   preferences: Record<NotificationCategory, boolean>;
   /** How many cooperatives this account belongs to as an ordinary member. */
   memberCooperativeCount: number;
+  /** Only so the copy below says something true: an officer does not manage a cooperative. */
+  staffRole: "admin" | "officer";
 }) {
   return (
     <>
@@ -80,7 +83,8 @@ export function AdminProfileSections({
             {memberCooperativeCount === 1
               ? "a cooperative"
               : `${memberCooperativeCount} cooperatives`}{" "}
-            as an ordinary member, separately from the one you manage. Your savings, loans and
+            as an ordinary member, separately from the one you{" "}
+            {staffRole === "admin" ? "manage" : "help run"}. Your savings, loans and
             deduction limit live on that side, and nothing you do here touches them.
           </p>
 

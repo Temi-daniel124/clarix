@@ -22,21 +22,10 @@ export default async function OfficerWelcomePage() {
   if (!role) redirect("/login");
 
   const granted = PERMISSIONS.filter((permission) => role.permissions[permission.key]).map(
-    (permission) => TOUR_PHRASES[permission.key],
+    (permission) => permission.phrase,
   );
 
   return (
     <OfficerWelcomeTour cooperativeName={role.cooperativeName} granted={granted} />
   );
 }
-
-/**
- * The same permissions the Officer Management panel names, said the way somebody would say them
- * about their own job rather than the way an admin switches them on.
- */
-const TOUR_PHRASES: Record<string, string> = {
-  can_view_members: "search the member list",
-  can_record_savings: "record what payroll has delivered",
-  can_approve_loans: "decide loan applications",
-  can_import_members: "add and import members",
-};

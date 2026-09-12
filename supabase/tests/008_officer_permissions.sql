@@ -10,7 +10,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(12);
+select plan(14);
 
 select has_table('public', 'deduction_reconciliation', 'deduction_reconciliation exists');
 
@@ -89,6 +89,18 @@ select throws_ok(
   'and cannot enter a reconciliation figure either'
 );
 
+-- Recording a repayment is the same act under the same permission, not a separate one. Both
+-- blueprints put "Record contribution" and "Record repayment" behind one granted permission, and
+-- `savings_transactions_insert_staff` does not look at the row's type — this is the assertion
+-- that keeps those two facts together.
+select throws_ok(
+  $$ insert into public.savings_transactions (membership_id, type, amount)
+     values ('b8888888-8888-8888-8888-888888888888', 'loan_repayment', 5000) $$,
+  '42501',
+  null,
+  'and a repayment is refused on the same permission a contribution is'
+);
+
 -- ---------------------------------------------------------------------------
 -- An admin switches one thing on, and exactly that thing changes
 -- ---------------------------------------------------------------------------
@@ -152,6 +164,17 @@ select is(
     where id = 'b8888888-8888-8888-8888-888888888888'),
   5000::numeric,
   'with recording switched on, the entry lands and the balance follows'
+);
+
+insert into public.savings_transactions (membership_id, type, amount, loan_id)
+select 'b8888888-8888-8888-8888-888888888888', 'loan_repayment', 4000, l.id
+  from public.loans l where l.membership_id = 'b8888888-8888-8888-8888-888888888888';
+
+select is(
+  (select savings_balance from public.cooperative_memberships
+    where id = 'b8888888-8888-8888-8888-888888888888'),
+  5000::numeric,
+  'the same permission lets a repayment land, and a repayment does not move the savings balance'
 );
 
 insert into public.deduction_reconciliation (membership_id, period, expected_amount, actual_amount_received)

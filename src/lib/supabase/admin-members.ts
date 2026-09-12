@@ -262,7 +262,7 @@ export async function loadCooperativeSummary(
         .is("claimed_at", null),
       supabase
         .from("cooperative_staff_roles")
-        .select("id, status, invited_at, users(name, email)")
+        .select("id, status, invited_at, users!cooperative_staff_roles_user_id_fkey(name, email)")
         .eq("cooperative_id", cooperativeId)
         .eq("status", "invited"),
     ]);

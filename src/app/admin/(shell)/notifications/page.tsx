@@ -4,12 +4,14 @@ import { BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { NotificationList } from "@/app/(app)/notifications/notification-list";
 import { loadNotifications, relativeTime } from "@/lib/supabase/notifications-data";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { preferredRole } from "@/lib/staff";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Notifications" };
 
 /**
- * Notifications — admin blueprint 8.1.
+ * Notifications — admin blueprint 8.1, officer blueprint 8.1.
  *
  * "Structurally identical to the Employee role's Notifications screen", so it is literally the
  * same component over the same query: one notifications table, one read-and-mark-read pattern,
@@ -24,9 +26,16 @@ export const metadata: Metadata = { title: "Notifications" };
  *
  * What an admin needs today is on the dashboard: "Attention required" already lists applications
  * waiting, imports needing a name, and invitations nobody has taken up.
+ *
+ * The officer's version is the same screen and the same query — their rows are scoped by the same
+ * policy, keyed on who the notification is addressed to rather than on any role. Only the empty
+ * state differs, because the events it is waiting for are different ones: an officer is told about
+ * their own submitted applications and about a permission their admin changed, not about
+ * invitations being taken up.
  */
 export default async function AdminNotificationsPage() {
-  const notifications = await loadNotifications();
+  const [notifications, staff] = await Promise.all([loadNotifications(), loadStaffContext()]);
+  const isOfficer = preferredRole(staff?.roles ?? [])?.role === "officer";
 
   const now = new Date();
   const timestamps = Object.fromEntries(
@@ -49,14 +58,13 @@ export default async function AdminNotificationsPage() {
           <h2 className="type-section mt-6 text-text">Nothing addressed to you yet</h2>
 
           <p className="type-body mx-auto mt-3 max-w-[460px] text-text-secondary">
-            New applications, reservations approaching their expiry, and officers taking up an
-            invitation will appear here. None of those sends a notification yet — what needs your
-            attention today is on your cooperative&apos;s home screen instead, which is fed from
-            the same records.
+            {isOfficer
+              ? "An application you submitted changing status, a reservation you created nearing its expiry, and a change your admin makes to what you are allowed to do will appear here. None of those sends a notification yet — what is waiting on you today is on your home screen instead, which is fed from the same records."
+              : "New applications, reservations approaching their expiry, and officers taking up an invitation will appear here. None of those sends a notification yet — what needs your attention today is on your cooperative's home screen instead, which is fed from the same records."}
           </p>
 
           <Button variant="outline" size="sm" className="mt-8" render={<Link href="/admin" />}>
-            See what is waiting
+            {isOfficer ? "See what is waiting on you" : "See what is waiting"}
           </Button>
         </div>
       ) : (
