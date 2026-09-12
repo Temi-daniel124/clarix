@@ -454,6 +454,14 @@ marked P1 there.
       and recording entries, so switching off "see the member list" means Postgres refuses the
       rows. A switch that moved a stored value without moving a boundary would read as a control
       and behave as a label.
+- [x] **The change reached further than intended, and CI is what said so.** Three older
+      assertions failed: an officer with an empty permissions object now sees nothing. That is
+      the change working, not a regression — but it also surfaced that the `users` policy reaches
+      members *through* `cooperative_memberships`, so gating that table also gates reading a
+      member's own record. Coherent, and worth writing down: "can see the member list" means "can
+      see member records". No assertion was weakened; each suite now gives its officer the
+      permission that gets them to the boundary under test, because an officer who can see
+      nothing proves nothing about boundaries.
 - [x] **Default-deny, with admins exempt.** An officer starts with nothing; an admin passes every
       check implicitly, per `docs/DATA-MODEL.md`, which is what stops an admin locking themselves
       out of their own cooperative with a mis-tap. No officer exists anywhere yet, so default-deny
