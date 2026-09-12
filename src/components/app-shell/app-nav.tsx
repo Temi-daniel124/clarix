@@ -58,7 +58,9 @@ export function AppSidebar() {
   return (
     <aside
       /* Width comes from the CSS variable so the collapsed state is correct on first paint. */
-      className="theme-dark hidden shrink-0 flex-col border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
+      /* Sticky and full-height: the blueprint calls this navigation persistent, and a rail that
+         scrolls away on a long screen is not. */
+      className="theme-dark sticky top-0 hidden h-dvh shrink-0 flex-col border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
       style={{ width: "var(--sidebar-width)" }}
     >
       <div

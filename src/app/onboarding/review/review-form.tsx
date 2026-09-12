@@ -33,12 +33,17 @@ export function ReviewForm({
   employeeId,
   filename,
   extracted,
+  destination = "onboarding",
+  submitLabel = "Confirm and continue",
 }: {
   documentId: string;
   employeeIdLabel: string;
   employeeId: string | null;
   filename: string | null;
   extracted: { gross: number | null; net: number | null; payPeriod: string | null };
+  /** Which journey this screen is part of — see CONFIRM_DESTINATIONS in ../actions.ts. */
+  destination?: "onboarding" | "profile";
+  submitLabel?: string;
 }) {
   const reduceMotion = useReducedMotion();
   const [state, formAction, pending] = useActionState(confirmSalaryAction, INITIAL);
@@ -75,6 +80,7 @@ export function ReviewForm({
 
       <form action={formAction} className="mt-8">
         <input type="hidden" name="documentId" value={documentId} />
+        <input type="hidden" name="destination" value={destination} />
 
         <div className="divide-y divide-border rounded-feature border border-border bg-surface">
           <StaticRow label={employeeIdLabel} value={employeeId ?? "—"} />
@@ -118,7 +124,7 @@ export function ReviewForm({
         </p>
 
         <Button type="submit" disabled={pending} className="mt-10 w-full">
-          {pending ? "Saving…" : "Confirm and continue"}
+          {pending ? "Saving…" : submitLabel}
           {pending ? null : <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />}
         </Button>
       </form>

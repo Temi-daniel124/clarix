@@ -1,12 +1,21 @@
-import { Building2, House, Bell, Receipt, User, type LucideIcon } from "lucide-react";
+import {
+  Building2,
+  House,
+  Bell,
+  CircleQuestionMark,
+  Receipt,
+  User,
+  type LucideIcon,
+} from "lucide-react";
 
 /**
  * The employee app's information architecture — blueprint Part 3.
  *
  * There is one set of functional areas, expressed two ways. Mobile gets a four-item bottom bar
  * with Notifications, Profile and Help folded behind "More", because five items in a bottom bar
- * is crowded and "More" is a space-saving device. Desktop has the width, so Notifications and
- * Profile become their own sidebar rows and "More" does not exist there at all.
+ * is crowded and "More" is a space-saving device. Desktop has the width, so those three become
+ * their own sidebar rows and "More" does not exist there at all — blueprint 6.3 is explicit that
+ * Help is reached "from the mobile More menu or the desktop sidebar".
  *
  * The blueprint is explicit that this must never become two different information architectures,
  * which is why both bars are generated from this one list rather than written out separately.
@@ -33,7 +42,8 @@ export const DESTINATIONS: Destination[] = [
   },
   { href: "/loans", label: "Loans", icon: Receipt, placement: "both", matchPrefix: true },
   { href: "/notifications", label: "Notifications", icon: Bell, placement: "more" },
-  { href: "/profile", label: "Profile", icon: User, placement: "more" },
+  { href: "/profile", label: "Profile", icon: User, placement: "more", matchPrefix: true },
+  { href: "/help", label: "Help", icon: CircleQuestionMark, placement: "more" },
 ];
 
 /** The four bottom-bar entries: the three shared areas, plus More. */

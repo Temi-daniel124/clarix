@@ -301,6 +301,77 @@ is a savings movement.
 
 ---
 
+### D025 — `notifications` is a real table from the start, and preferences live on `users`
+**Status:** Locked
+**Supersedes:** nothing. `docs/DATA-MODEL.md` describes neither of these, so this entry adds them
+rather than changing anything.
+
+**Decision 1 — the `notifications` table.** Blueprint 6.1 needs somewhere for "anything that
+needs the employee's attention" to live, and `DATA-MODEL.md` has no such table. It is:
+
+```
+notifications(id, user_id -> users.id, category, message, target_url, read_at nullable, created_at)
+```
+
+`category` is an enum rather than free text, because the screen renders an icon per category and
+a typo in a string would silently produce an unlabelled row. RLS is the narrowest in the schema:
+`user_id = auth.uid()`, for select and update only. A notification is addressed to one person and
+there is no reading over anyone's shoulder — not by a cooperative's officers, not by an admin.
+There is deliberately **no insert policy at all**, the same shape as `loans`: an employee cannot
+write their own notifications, because every notification is something the system or a
+cooperative did, not something its recipient claims happened. The write path arrives with the
+cooperative admin/officer blueprint.
+
+"Mark all as read" is a real `UPDATE` setting `read_at`, not a client-side flag. An employee who
+clears a backlog on their phone must find it cleared on their laptop, and the unread dot must
+mean the same thing to every device.
+
+**Decision 2 — notification preferences are a `jsonb` column on `users`, not a table.** There is
+exactly one preferences row per user and it is only ever read as a whole, alongside the user
+record the screen has already loaded. A separate table would add a join and a second RLS policy
+to express a relationship that is already one-to-one. `users.notification_preferences` is
+`jsonb not null default '{}'`, and a **missing key means opted in**: an employee who has never
+touched the toggles receives everything, and only an explicit `false` turns a category off. That
+way a category added later is on by default for everyone rather than silently off for every
+existing account, which is the failure mode a per-row-per-preference table would have had too.
+Preferences are a delivery choice, never a suppression of the record: a muted category is still
+written to `notifications` and still appears in the list. What it will eventually suppress is
+email about it.
+
+**This screen will show a genuine empty state in practice, and that is expected.** Nothing in the
+employee blueprint writes a notification row — every writer (a loan approved or rejected, a
+membership approved, a new public loan product) belongs to the cooperative admin/officer
+blueprint, which does not exist yet. No rows are seeded and none will be fabricated to make the
+screen look populated. This is the same call already made for the dashboard's trend indicator,
+which read "No history yet" until `savings_transactions` existed rather than drawing an invented
+line: a screen that is honestly empty is worth more than one that demonstrates well.
+
+---
+
+### D026 — The employee support address is `support@clarix.ng`, read from configuration
+**Status:** Provisional. The address shape is settled; the domain depends on the still-open
+production-domain question at the foot of this document, so confirm it before go-live.
+
+**Decision:** Help / Support (blueprint 6.3) sends its contact form to a single support mailbox,
+and shows that same address on screen as a `mailto:` link so an employee is never dependent on
+the form working. The address is `support@clarix.ng` unless `CLARIX_SUPPORT_EMAIL` overrides it,
+so the pilot can point support at a real inbox without a code change.
+
+**Rationale:** nothing in the repository settled a support address, and the blueprint is explicit
+that this stage gets a mailbox rather than a ticketing system. A role address rather than a
+person's own mailbox is the only choice that survives the pilot handing over to whoever runs
+support next. Showing the address alongside the form is not redundancy for its own sake: the form
+sends through Resend, and Resend cannot deliver to anyone but the account owner until a sending
+domain is verified, so for now the `mailto:` link is the path that actually works. The form is
+built correctly against the real API and starts working the moment that domain lands, which is
+the same blocker already holding up signup confirmation mail.
+
+**What still needs confirming:** whether `clarix.ng` is the domain that gets registered. If the
+production domain lands somewhere else, this address moves with it and this entry is amended
+rather than replaced.
+
+---
+
 ## Open, not yet decided
 
 Tracked here so they don't get silently assumed. Move an item to a numbered entry above the

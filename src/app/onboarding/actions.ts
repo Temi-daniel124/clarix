@@ -83,6 +83,26 @@ const salarySchema = z.object({
 });
 
 /**
+ * Where to go once the figures are saved. An allowlist rather than a free-form redirect: this
+ * value arrives in a form field, and anything reaching `redirect()` from a form field is an
+ * open-redirect waiting to happen. Onboarding continues to the cooperative step; the Profile
+ * re-upload (blueprint 6.2) returns to Profile, which is the only difference between the two
+ * journeys through this screen.
+ */
+const CONFIRM_DESTINATIONS = {
+  onboarding: "/onboarding/cooperatives",
+  profile: "/profile",
+} as const;
+
+type ConfirmDestination = keyof typeof CONFIRM_DESTINATIONS;
+
+function resolveDestination(raw: string): string {
+  return raw in CONFIRM_DESTINATIONS
+    ? CONFIRM_DESTINATIONS[raw as ConfirmDestination]
+    : CONFIRM_DESTINATIONS.onboarding;
+}
+
+/**
  * Step 2.4 — confirm or correct the salary figures, then save them against the account.
  *
  * This is the human checkpoint DECISIONS.md D006 requires: nothing reaches `users.salary_gross`
@@ -117,6 +137,7 @@ export async function confirmSalaryAction(
   }
 
   const { grossSalary, netSalary, payPeriod, documentId } = parsed.data;
+  const destination = resolveDestination(String(formData.get("destination") ?? ""));
 
   if (netSalary > grossSalary) {
     return {
@@ -152,5 +173,5 @@ export async function confirmSalaryAction(
     return { error: "We could not save your salary figures. Please try again." };
   }
 
-  redirect("/onboarding/cooperatives");
+  redirect(destination);
 }

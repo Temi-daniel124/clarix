@@ -135,7 +135,15 @@ salary figures, IPPIS numbers, or payslip files in cleartext gets called out her
 before it's added — add an entry to the list below the first time such a dependency is
 introduced.
 
-- _(none yet)_
+- **Resend**, reached over its HTTP API from `src/lib/support.ts`, carries the Help screen's
+  support messages (blueprint 6.3, `docs/DECISIONS.md` D026). It is listed here because it is the
+  first outbound path that carries anything a person wrote inside Clarix to a third party, and it
+  is worth being precise about what it does and does not carry. It sends the employee's name,
+  their email address, and the message they typed. It deliberately does **not** carry the IPPIS
+  number, any salary figure, or anything from a payslip: an employee's payroll identifier is
+  sensitive personal data under the NDPA, and a support question is not a reason for it to leave
+  the system. Anyone extending this path must keep that true — the account email is enough to
+  find a person inside Clarix.
 
 ## Incident posture
 

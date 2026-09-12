@@ -39,7 +39,18 @@ const MAX_BYTES = 10 * 1024 * 1024;
 
 type Stage = { label: string; done: boolean };
 
-export function PayslipUpload({ userId }: { userId: string }) {
+export function PayslipUpload({
+  userId,
+  nextHref = "/onboarding/review",
+  heading = "Upload your most recent payslip",
+  intro = "Clarix reads one thing from it: what you earn. That is the figure your deduction limit is worked out from. It is stored privately and no cooperative can see it.",
+}: {
+  userId: string;
+  /** Where the review step lives for this journey. Profile re-uploads (6.2) use their own. */
+  nextHref?: string;
+  heading?: string;
+  intro?: string;
+}) {
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -110,22 +121,19 @@ export function PayslipUpload({ userId }: { userId: string }) {
         { label: "Storing it privately", done: true },
       ]);
 
-      router.push("/onboarding/review");
+      router.push(nextHref);
     } catch {
       setStages(null);
       setError("We could not upload that payslip. Check your connection and try again.");
     }
-  }, [file, router, userId]);
+  }, [file, nextHref, router, userId]);
 
   const busy = stages !== null;
 
   return (
     <div className="pt-10">
-      <h1 className="type-page-title text-text">Upload your most recent payslip</h1>
-      <p className="type-body mt-3 text-text-secondary">
-        Clarix reads one thing from it: what you earn. That is the figure your deduction limit is
-        worked out from. It is stored privately and no cooperative can see it.
-      </p>
+      <h1 className="type-page-title text-text">{heading}</h1>
+      <p className="type-body mt-3 text-text-secondary">{intro}</p>
 
       {error ? (
         <p

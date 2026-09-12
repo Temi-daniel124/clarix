@@ -322,6 +322,44 @@ export type Database = {
           },
         ]
       }
+      notifications: {
+        Row: {
+          category: Database["public"]["Enums"]["notification_category"]
+          created_at: string
+          id: string
+          message: string
+          read_at: string | null
+          target_url: string | null
+          user_id: string
+        }
+        Insert: {
+          category: Database["public"]["Enums"]["notification_category"]
+          created_at?: string
+          id?: string
+          message: string
+          read_at?: string | null
+          target_url?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: Database["public"]["Enums"]["notification_category"]
+          created_at?: string
+          id?: string
+          message?: string
+          read_at?: string | null
+          target_url?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       organizations: {
         Row: {
           created_at: string
@@ -433,6 +471,7 @@ export type Database = {
           employee_id: string | null
           id: string
           name: string | null
+          notification_preferences: Json
           organization_id: string
           phone: string | null
           salary_gross: number | null
@@ -446,6 +485,7 @@ export type Database = {
           employee_id?: string | null
           id: string
           name?: string | null
+          notification_preferences?: Json
           organization_id: string
           phone?: string | null
           salary_gross?: number | null
@@ -459,6 +499,7 @@ export type Database = {
           employee_id?: string | null
           id?: string
           name?: string | null
+          notification_preferences?: Json
           organization_id?: string
           phone?: string | null
           salary_gross?: number | null
@@ -541,6 +582,11 @@ export type Database = {
         | "completed"
         | "expired"
       membership_status: "pending" | "active" | "suspended"
+      notification_category:
+        | "loan_decision"
+        | "membership_decision"
+        | "new_loan_product"
+        | "salary_reverification"
       savings_transaction_type:
         | "contribution"
         | "withdrawal_record"
@@ -680,6 +726,12 @@ export const Constants = {
       document_type: ["payslip"],
       loan_status: ["draft","reserved","active","rejected","completed","expired"],
       membership_status: ["pending", "active", "suspended"],
+      notification_category: [
+        "loan_decision",
+        "membership_decision",
+        "new_loan_product",
+        "salary_reverification",
+      ],
       savings_transaction_type: ["contribution","withdrawal_record","loan_repayment"],
       staff_role: ["admin", "officer"],
       staff_role_status: ["invited", "active", "revoked"],

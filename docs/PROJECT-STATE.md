@@ -6,18 +6,21 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (Part 5, the loan side: the `loans` and `savings_transactions`
-tables, the locked reservation transaction proven under real concurrency, and screens 5.1
-through 5.5).
+**Last updated:** 2026-09-12 (Part 6, closing the employee blueprint: Notifications, Profile /
+Settings and Help / Support, with the `notifications` table and the notification-preferences
+column behind them).
 
 ## Phase
 
-**Planning complete. Infra live. The whole employee blueprint, Parts 1 to 5, is built** —
-landing page, auth, onboarding, the persistent navigation shell, the home-base screens, and the
-loan side: the `loans` and `savings_transactions` tables, the cross-cooperative eligibility
-lookup, and the reservation transaction that is the product's core mechanism. Every screen has
-been walked in a browser against the live project, in both themes at both widths. What remains
-is the cooperative admin/officer side, which owns every loan transition after reservation.
+**Planning complete. Infra live. The employee blueprint is complete — Parts 1 to 6, every
+screen built.** Landing page, auth, onboarding, the persistent navigation shell, the home-base
+screens, the loan side with the reservation transaction that is the product's core mechanism,
+and now the account cluster: Notifications, Profile / Settings and Help / Support. Every screen
+has been walked in a browser against the live project, in both themes at both widths. There are
+no holding screens left anywhere in the employee app.
+
+What remains is the **cooperative admin/officer blueprint**, which owns every loan transition
+after reservation and is also what will write the first notification row.
 
 ## What exists today
 
@@ -216,6 +219,48 @@ is the cooperative admin/officer side, which owns every loan transition after re
       parallel connections, records what the live parallel run proved, and asserts every figure
       that run produced, including a foreign `membership_id` being refused with `42501`.
 
+- [x] **Notifications (6.1)** — the `notifications` table with the narrowest RLS in the schema
+      (`user_id = auth.uid()`, select and update only, and deliberately no insert policy at all),
+      the reverse-chronological list with its small unread dot rather than a badge count, rows
+      that lead to whatever they concern, and "Mark all as read" as a real UPDATE so a backlog
+      cleared on a phone is cleared on a laptop too. **This screen is genuinely empty in
+      practice, and that is expected, not a bug** — every writer (loan approved or rejected,
+      membership accepted, new package published) belongs to the cooperative admin/officer
+      blueprint, which does not exist yet. No rows were seeded and none were invented, the same
+      call already made for the dashboard's trend indicator. The empty state says why it is
+      empty rather than saying "no data".
+- [x] **Profile / Settings (6.2)** — an identity summary, then four sections that each save on
+      their own with their own small confirmation: Personal information, Salary information,
+      Security, and Notification preferences. Log out sits apart at the bottom in a muted style,
+      because signing out of a device is ordinary and reversible and the danger tone belongs to
+      things that cost money.
+- [x] **The Reveal & Copy pattern is now built** (`src/components/clarix/reveal-copy.tsx`) and
+      masks the confirmed salary figures until asked for. It did not previously exist anywhere in
+      the product despite being an adopted pattern in `docs/planning/clarix-design-system.md`, so
+      it was built once as a shared primitive rather than inline on this screen. The digits are
+      absent from the DOM until revealed, so masking holds against a screen reader and a copy of
+      the page source, not just against a glance.
+- [x] **Changing a password asks for the current one first.** Supabase does not require that — an
+      open session is enough — but an unattended unlocked phone is exactly the case where that
+      default is too generous for a product holding salary data.
+- [x] **Re-upload payslip** reopens the onboarding Upload/Review pair (2.3–2.4) scoped to
+      updating: same components, no step indicator, inside the app shell, returning to Profile.
+      The destination is an allowlist rather than a free-form redirect field.
+- [x] **Help / Support (6.3)** — thirteen FAQ answers under "About my savings and loans" and
+      "About my account", each describing what Clarix actually does (the 33.3% cap, what
+      "reserved" means, that Clarix informs rather than approves, what a cooperative can and
+      cannot see), plus a short contact form. No filler, and where the honest answer is "not
+      yet" it says so.
+- [x] **Migration 008** adds `notifications` with its RLS; **migration 009** adds
+      `users.notification_preferences`, a jsonb column where a missing key means opted in.
+      Local filenames were reconciled to the recorded versions, per D023.
+- [x] **D025 and D026 were written before the migrations**, per the PLAN step in
+      `docs/DEVELOPMENT-WORKFLOW.md`: D025 covers the notifications table and where preferences
+      live, D026 settles the support address.
+- [x] **The desktop rail is now sticky and full-height.** It previously stretched to the page
+      rather than the viewport, so on a long screen its foot — including the appearance control
+      — sat below the fold. The blueprint calls this navigation persistent.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -245,13 +290,23 @@ is the cooperative admin/officer side, which owns every loan transition after re
       completed 120,000, and a 120,000 reservation created through the application screen during
       verification; and 26 `savings_transactions` rows backing 330,000 of savings and the
       repayment history the active loan's progress is computed from.
-- [ ] Notifications, Profile and Help are reachable from the navigation but show a short honest
-      holding screen: the shell has no dead tabs, and none of them imitates the screen it stands
-      in for.
+- [ ] **Nothing writes a notification row.** The table, its policies and the screen are real and
+      were exercised against the live project, but the list will stay empty until the cooperative
+      admin/officer blueprint can approve a loan, accept a membership, or publish a package
+      (D025). Expected, and stated on the screen itself.
+- [ ] **The Help contact form cannot deliver yet.** It posts to Resend's API against
+      `RESEND_API_KEY`, which is not provisioned, and even once it is, Resend will only deliver
+      to the account owner until a sending domain is verified — the same blocker holding up
+      signup mail. Until then the form fails honestly and the screen shows `support@clarix.ng` as
+      a mailto link, which is the path that works. The address itself is provisional (D026) and
+      needs the domain question settled.
 - [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
       so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
       wholesale when the real dashboard is built.
 - [ ] `/privacy` and `/reset-password` are linked from the auth screens but not built.
+- [ ] Notification preferences govern email that nothing sends yet. The toggles write to the
+      database and are read back correctly; what reads them at send time arrives with the
+      notification writers.
 - [ ] **Leaked-password protection is disabled** in Supabase Auth. The advisor recommends
       enabling it (it checks new passwords against HaveIBeenPwned), which is a cheap win for a
       product holding salary data. It is a project setting, so it needs your decision rather
@@ -275,7 +330,7 @@ is the cooperative admin/officer side, which owns every loan transition after re
 
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Nine tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Ten tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub.                                                        |
 | Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
@@ -296,7 +351,9 @@ is the cooperative admin/officer side, which owns every loan transition after re
    it is not serving anything.
 5. Enable leaked-password protection in Supabase Auth.
 6. Delete the `pilot.tester@fmcabeokuta.org.ng` account, its uploaded probe payslip, and all
-   the seeded test data catalogued above, before go-live.
+   the seeded test data catalogued above, before go-live. That account now also carries a
+   fictional phone number and one muted-then-restored notification preference, both written
+   through the Profile screen while verifying it.
 7. Build the cooperative admin/officer blueprint, which owns approve, reject and complete, and
    the expiry sweep that tidies lapsed reservations. Capacity is already correct without that
    sweep — expiry is evaluated at read time per D024 — so it is housekeeping, not a gap.
