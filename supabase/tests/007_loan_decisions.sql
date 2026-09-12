@@ -131,12 +131,25 @@ select is(
   'approving changes nothing about the member''s available capacity'
 );
 
+-- Asserted from the MEMBER's own session, because `notifications_select_own` deliberately hides
+-- the row from everyone else — including the admin who caused it. Checking it as the admin
+-- returned zero on the first CI run, which was the policy working rather than the write failing.
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"a3333333-3333-3333-3333-333333333333","role":"authenticated"}',
+  true
+);
+
 select is(
-  (select count(*)::int from public.notifications
-    where user_id = 'a3333333-3333-3333-3333-333333333333'
-      and category = 'loan_decision'),
+  (select count(*)::int from public.notifications where category = 'loan_decision'),
   1,
   'the member is told, which is the first row anything has ever written to notifications'
+);
+
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"a1111111-1111-1111-1111-111111111111","role":"authenticated"}',
+  true
 );
 
 select is(
