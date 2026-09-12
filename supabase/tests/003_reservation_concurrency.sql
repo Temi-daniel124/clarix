@@ -55,10 +55,16 @@ select is(
 -- holding active memberships at two different cooperatives.
 -- ---------------------------------------------------------------------------
 
+-- Both employees are created here, while the session is still the migration-running superuser.
+-- `authenticated` has no privilege on auth.users at all, so creating the second one further down
+-- — after the role switch — would fail on permissions rather than testing anything.
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
                         created_at, updated_at, raw_app_meta_data, raw_user_meta_data)
-values ('77777777-7777-7777-7777-777777777777', '00000000-0000-0000-0000-000000000000',
-        'authenticated', 'authenticated', 'borrower@example.test', 'x', now(), now(), '{}', '{}');
+values
+  ('77777777-7777-7777-7777-777777777777', '00000000-0000-0000-0000-000000000000',
+   'authenticated', 'authenticated', 'borrower@example.test', 'x', now(), now(), '{}', '{}'),
+  ('88888888-8888-8888-8888-888888888888', '00000000-0000-0000-0000-000000000000',
+   'authenticated', 'authenticated', 'other@example.test', 'x', now(), now(), '{}', '{}');
 
 update public.users
    set salary_gross = 250000, salary_net = 180000, salary_verified_at = now()
@@ -161,11 +167,6 @@ select is(
 -- ---------------------------------------------------------------------------
 -- An employee may only reserve through a membership that is their own
 -- ---------------------------------------------------------------------------
-
-insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
-                        created_at, updated_at, raw_app_meta_data, raw_user_meta_data)
-values ('88888888-8888-8888-8888-888888888888', '00000000-0000-0000-0000-000000000000',
-        'authenticated', 'authenticated', 'other@example.test', 'x', now(), now(), '{}', '{}');
 
 select set_config(
   'request.jwt.claims',
