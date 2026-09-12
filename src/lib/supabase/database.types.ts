@@ -627,6 +627,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      capacity_for_membership: {
+        Args: { proposed_monthly_repayment?: number; target_membership_id: string }
+        Returns: {
+          available: number
+          cap: number
+          committed: number
+          eligible: boolean
+          headroom: number
+          proposed: number
+          shortfall: number
+        }[]
+      }
       capacity_for_user: {
         Args: { proposed_monthly_repayment?: number }
         Returns: {
