@@ -329,9 +329,19 @@ transition after reservation.
       Column-matching, row validation, duplicate detection and the CSV reader are pure functions
       with 21 unit tests of their own.
 - [x] **Migration 010** adds `staff_invitations` and `member_roster_entries` with their RLS, two
-      `SECURITY DEFINER` functions for inviting and claiming, and the trigger pair that turns a
-      roster entry into a real membership. pgTAP suite 005 covers all of it. The local filename
-      was reconciled to the recorded version, per D023.
+      `SECURITY DEFINER` functions for inviting and claiming, and the trigger that turns a roster
+      entry into a real membership. pgTAP suite 005 covers all of it. Local filenames were
+      reconciled to the recorded versions, per D023.
+- [x] **CI caught a real defect on suite 005's first run, and migration 011 fixes the cause.**
+      Migration 010 activated an imported member from a BEFORE INSERT trigger. A policy's
+      WITH CHECK is evaluated after BEFORE-triggers have had the row, so the trigger rewrote it
+      into exactly the shape `cooperative_memberships_insert_own_pending` refuses — an employee
+      on a roster could not join their own cooperative at all. The live check in the previous
+      session missed it because the import inserts memberships as staff, where the staff policy
+      permits any status; only the employee path fails, and only CI exercised it. Activation now
+      happens in the AFTER trigger, where it belongs: the insert lands as `pending` exactly as
+      the policy intends, and activating an imported member is a system action rather than
+      something the applicant asserted. No assertion was weakened. **5 files, 60 tests, passing.**
 - [x] **`cooperative_staff_roles`'s existing policies were checked rather than assumed**, which
       is why no new policy was written for them: migration 001 already had an admin-only insert,
       an admin-only update, and a separate policy letting an invited person move their own row
