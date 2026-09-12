@@ -25,12 +25,16 @@ migration that creates the table.
   reach the browser bundle, never be prefixed `NEXT_PUBLIC_`, and its use should be limited to a
   small, explicitly enumerated set of trusted server-only code paths — enumerate them here as
   they're introduced, so this list stays a real audit trail rather than going stale:
-  - _(none yet — add an entry the first time a service-role-key code path is written, naming the
-    file and why RLS can't be used there instead)_
+  - _(still none, and that is now a decision rather than an accident: `docs/DECISIONS.md` D027
+    chose database rows plus two narrow `SECURITY DEFINER` functions over Supabase's
+    `auth.admin.inviteUserByEmail()`, specifically so staff invitations would not become the
+    first thing to hold a key that bypasses RLS on every table in the schema. Add an entry the
+    first time a service-role-key code path is genuinely written, naming the file and why RLS
+    can't be used there instead.)_
 
 ## Elevated database privileges that are not the service-role key
 
-Four functions under `supabase/migrations/` run as `SECURITY DEFINER`, which means they bypass
+Several functions under `supabase/migrations/` run as `SECURITY DEFINER`, which means they bypass
 RLS. They are listed here for the same reason the service-role list exists — so that the set of
 things able to see past the boundary is written down rather than discovered later:
 
@@ -66,6 +70,34 @@ things able to see past the boundary is written down rather than discovered late
   policy for employees at all, which is what forces every reservation through the advisory lock
   that makes it safe under concurrency.
 
+- `invite_cooperative_staff(...)` and `claim_staff_invitations()` are the two halves of the
+  staff-invitation mechanism (D027).
+
+  **Why RLS cannot be used directly here.** Inviting somebody requires resolving an email address
+  to an account, and no policy on `users` permits that: `users_select_own_cooperative_members`
+  deliberately limits an officer to people who already belong to their cooperative, and an
+  invitee by definition does not yet. Widening that policy to make invitations work would widen
+  it for everything else that reads `users`. Claiming is the mirror image: the rows addressed to
+  a new arrival sit in `staff_invitations`, whose only select policy is "staff of that
+  cooperative" — which the person claiming is not, until they have claimed.
+
+  **What keeps them narrow.** `invite_cooperative_staff` refuses anything unless the caller is
+  the named cooperative's active admin, and returns only whether an account already existed —
+  never the resolved user's id, name, or any other field, so it cannot be used to probe who
+  holds which address. `claim_staff_invitations` takes no arguments at all: it reads the
+  caller's own email from their own `users` row, so it can only ever claim invitations addressed
+  to the person calling it, and it creates roles at status `invited`, never `active`. Accepting
+  is still the separate, policy-governed step migration 001 already defined. `EXECUTE` on both
+  is revoked from `anon` and granted to `authenticated` only.
+
+- `link_roster_entry()` and `apply_roster_link()` are triggers on `cooperative_memberships`
+  (D028). They read `member_roster_entries`, which an employee has no access to and must not
+  gain: it carries other members' IPPIS numbers and savings balances. Both are triggers only —
+  `EXECUTE` is revoked from `anon` and `authenticated` alike, so neither is reachable as a
+  PostgREST endpoint — and each touches exactly one entry: the one whose `employee_id` matches
+  the joining person's own, in the cooperative they are joining. Nothing about that entry is
+  returned to the caller; its only visible effect is on the employee's own new membership.
+
 Table-level privileges are granted to `authenticated` only, verb by verb, matching the policies
 that actually exist; `anon` holds no privilege on any table in the `public` schema. Worth
 remembering when reading a policy: a GRANT is checked *before* RLS, so a missing grant denies
@@ -100,6 +132,11 @@ reachable.
   cooperative's savings balance or any other cooperative's private member data. This is not a UX
   choice, it's the governing rule of the whole product (`docs/DECISIONS.md` D003) and must be
   enforced at the query level, not just by what the UI chooses to render.
+- **The member-roster import never uploads the spreadsheet.** A cooperative's member list is a
+  file full of IPPIS numbers, names and savings balances. It is read, column-mapped and validated
+  entirely in the admin's browser (`src/lib/roster/`, dependency-free on purpose — see
+  `docs/TOOLING-POLICY.md` item 5), and only the rows the admin explicitly confirms are sent to
+  the database. The file itself reaches no server, no bucket and no log.
 - Payslip OCR: when the AI-fallback path is used, only the minimum content needed for extraction
   is sent to the API call, the response is treated as untrusted until a human confirms it
   (`docs/DECISIONS.md` D006), and no salary data is retained by that call path beyond what the
