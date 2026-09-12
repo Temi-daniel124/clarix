@@ -440,6 +440,40 @@ savings balance already there rather than starting at zero.
 
 ---
 
+### D029 — Officers and admins share one set of staff screens, separated by permission rather than by a second app
+
+**Decided:** 2026-09-12, while starting the cooperative officer blueprint.
+
+**Decision:** the cooperative officer does not get a parallel route tree. Both staff roles work in
+the same screens under `/admin/*`, and the difference between them is expressed in three places:
+the navigation the shell builds (`staffNav()` — an officer has no "Manage cooperative" section and
+no audit log at all), a guard at the top of each screen a role may not open, and, underneath both,
+the RLS policies keyed on `staff_has_permission()`. Home is the one screen that genuinely differs,
+and `/admin` renders a different component per role rather than hiding pieces of one.
+
+The officer's own first-run tour is the exception and lives at `/officer/welcome`, because it is
+the only screen that belongs to this role and to nobody else.
+
+**Why.** The officer blueprint says it plainly: an officer "does the same day-to-day work an Admin
+does ... but holds none of the cooperative-wide configuration power", and most of their screens are
+"near-identical in shape to the equivalent Admin screens". Two copies of Member Profile, Record
+Entry and Loan Review would drift — and the copy that drifted would be the officer's, since it is
+the one nobody demos. A single screen whose controls appear or do not appear cannot drift.
+
+**The alternative, and why it loses.** A `/officer/*` route group would read better in the address
+bar, and it was the obvious first instinct. It costs a base-path parameter threaded through every
+shared component's links, so that an officer clicking a member does not land back in the admin's
+URL space, and it touches every already-tested admin screen to do it. The prefix is a cosmetic gain
+paid for with a real refactor of working code.
+
+**Consequence:** an officer's browser says `/admin/members`, which is a wart and is accepted as
+one. Renaming the whole tree to something role-neutral stays available as a mechanical change if it
+ever matters. The rule that must not be broken meanwhile: a screen an officer may not use needs a
+guard of its own, because leaving it out of the navigation is not a boundary — only the guard and
+the policy behind it are.
+
+---
+
 ## Standing operational constraints
 
 Not decisions — facts about the environment that keep being rediscovered and re-proposed as work.

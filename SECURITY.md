@@ -77,7 +77,10 @@ things able to see past the boundary is written down rather than discovered late
   rows, returns only a boolean, and takes the permission key as an argument rather than trusting
   one from a client payload. Admins pass every check by design (`docs/DATA-MODEL.md`: "admins
   implicitly have full cooperative permissions"), which is what stops an admin locking themselves
-  out of their own cooperative.
+  out of their own cooperative. Four keys are live: `can_view_members`, `can_record_savings`,
+  `can_approve_loans` and `can_import_members` — the last added by migration 017, because writing
+  a roster entry carries other people's IPPIS numbers and opening balances and had until then
+  been available to any active staff member.
 
 - `invite_cooperative_staff(...)` and `claim_staff_invitations()` are the two halves of the
   staff-invitation mechanism (D027).
@@ -191,6 +194,12 @@ application logic that never assumes otherwise. The one deliberate exception is 
 Every view or edit of financial data records who, what, when, and (for edits) old→new value
 (`docs/DATA-MODEL.md` → `audit_log`). This table is append-only from the application's
 perspective — no UPDATE or DELETE path should ever be exposed against it.
+
+Reading it is the **cooperative admin's** alone, not any staff member's (migration 018). An
+officer records entries that land in this log and cannot read the log, which is what the officer
+blueprint asks for in 5.4: entries are written "regardless of which role recorded it, even though
+only an Admin can later view that log". The screen is absent from an officer's navigation, but
+`audit_log_select_admin` is what makes the absence mean anything.
 
 ## Dependency security
 

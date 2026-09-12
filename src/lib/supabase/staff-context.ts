@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { readsCanApproveLoans, type StaffRole } from "@/lib/staff";
+import { effectivePermissions, type StaffRole } from "@/lib/staff";
 
 /**
  * Everything an admin/officer screen needs about the signed-in person's relationship to a
@@ -36,6 +36,7 @@ export async function loadStaffContext(): Promise<StaffContext | null> {
 
   const roles: StaffRole[] = (rows ?? []).map((row) => {
     const cooperative = Array.isArray(row.cooperatives) ? row.cooperatives[0] : row.cooperatives;
+    const permissions = effectivePermissions(row.role, row.permissions);
 
     return {
       id: row.id,
@@ -44,7 +45,8 @@ export async function loadStaffContext(): Promise<StaffContext | null> {
       role: row.role,
       status: row.status,
       title: row.title,
-      canApproveLoans: row.role === "admin" || readsCanApproveLoans(row.permissions),
+      canApproveLoans: permissions.can_approve_loans,
+      permissions,
     };
   });
 

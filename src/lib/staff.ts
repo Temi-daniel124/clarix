@@ -1,4 +1,5 @@
 import type { Database } from "@/lib/supabase/database.types";
+import { readPermissions, type PermissionKey } from "@/lib/permissions";
 
 /**
  * Who a signed-in person is *to a cooperative* — the admin/officer side of the account model.
@@ -20,7 +21,30 @@ export type StaffRole = {
   /** The cosmetic name a cooperative uses instead of "Officer" — Treasurer, Secretary. */
   title: string | null;
   canApproveLoans: boolean;
+  /**
+   * What this person may actually do here — default-deny, and enforced by the policies named in
+   * `PERMISSIONS`, not by this object. An admin holds everything implicitly, so their row reads
+   * as every flag granted rather than as the empty jsonb their record usually carries.
+   */
+  permissions: Record<PermissionKey, boolean>;
 };
+
+/** An admin passes every permission check in the database, so they read as granted everywhere. */
+export function effectivePermissions(
+  role: StaffRoleName,
+  permissions: unknown,
+): Record<PermissionKey, boolean> {
+  if (role === "admin") {
+    return {
+      can_view_members: true,
+      can_record_savings: true,
+      can_approve_loans: true,
+      can_import_members: true,
+    };
+  }
+
+  return readPermissions(permissions);
+}
 
 /**
  * The two presets blueprint 2.5 asks for. Finer-grained toggles belong to Officer Management
@@ -36,6 +60,7 @@ export const PERMISSION_PRESETS = {
       can_view_members: true,
       can_record_savings: true,
       can_approve_loans: false,
+      can_import_members: false,
     },
   },
   can_approve: {
@@ -46,6 +71,7 @@ export const PERMISSION_PRESETS = {
       can_view_members: true,
       can_record_savings: true,
       can_approve_loans: true,
+      can_import_members: false,
     },
   },
 } as const;

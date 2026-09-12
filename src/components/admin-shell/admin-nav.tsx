@@ -10,14 +10,17 @@ import { Wordmark } from "@/components/clarix/wordmark";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SIDEBAR_STORAGE_KEY } from "@/components/theme/theme-script";
 import { springStandard } from "@/lib/motion";
-import {
-  ADMIN_ACCOUNT,
-  ADMIN_MANAGE,
-  ADMIN_PRIMARY,
-  isAdminActive,
-  isMoreActive,
-  type AdminDestination,
-} from "./destinations";
+import { isAdminActive, isMoreActive, staffNav, type AdminDestination } from "./destinations";
+
+/**
+ * Which navigation this person gets. Plain data rather than the destination lists themselves:
+ * every destination carries an icon *component*, which cannot cross the server/client boundary,
+ * so the shell hands over a role and one flag and the client builds the lists from them.
+ */
+export type StaffNavProps = {
+  role: "admin" | "officer";
+  canImport: boolean;
+};
 
 /**
  * The cooperative admin's navigation — admin blueprint Part 3.
@@ -34,8 +37,13 @@ import {
 
 const RAIL_CHANGE_EVENT = "clarix:sidebar-change";
 
-export function AdminSidebar({ cooperativeName }: { cooperativeName: string }) {
+export function AdminSidebar({
+  cooperativeName,
+  role,
+  canImport,
+}: StaffNavProps & { cooperativeName: string }) {
   const pathname = usePathname();
+  const nav = staffNav(role, { can_import_members: canImport });
   const collapsed = useSyncExternalStore(subscribeToRail, readRail, () => false);
 
   const toggle = useCallback(() => {
@@ -87,7 +95,7 @@ export function AdminSidebar({ cooperativeName }: { cooperativeName: string }) {
 
       <nav aria-label="Main" className="flex-1 px-3">
         <ul className="flex flex-col gap-1">
-          {ADMIN_PRIMARY.map((destination) => (
+          {nav.primary.map((destination) => (
             <li key={destination.href}>
               <RailLink
                 destination={destination}
@@ -98,30 +106,34 @@ export function AdminSidebar({ cooperativeName }: { cooperativeName: string }) {
           ))}
         </ul>
 
-        <p
-          className={cn(
-            "mt-6 mb-1 px-3 type-caption uppercase tracking-[0.08em] text-white/35",
-            collapsed && "sr-only",
-          )}
-        >
-          Manage cooperative
-        </p>
+        {nav.manage.length > 0 ? (
+          <>
+            <p
+              className={cn(
+                "mt-6 mb-1 px-3 type-caption uppercase tracking-[0.08em] text-white/35",
+                collapsed && "sr-only",
+              )}
+            >
+              Manage cooperative
+            </p>
 
-        <ul className="flex flex-col gap-1">
-          {ADMIN_MANAGE.map((destination) => (
-            <li key={destination.href}>
-              <RailLink
-                destination={destination}
-                active={pathname.startsWith(destination.href)}
-                collapsed={collapsed}
-                muted
-              />
-            </li>
-          ))}
-        </ul>
+            <ul className="flex flex-col gap-1">
+              {nav.manage.map((destination) => (
+                <li key={destination.href}>
+                  <RailLink
+                    destination={destination}
+                    active={pathname.startsWith(destination.href)}
+                    collapsed={collapsed}
+                    muted
+                  />
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
 
         <ul className="mt-6 flex flex-col gap-1 border-t border-white/8 pt-4">
-          {ADMIN_ACCOUNT.map((destination) => (
+          {nav.account.map((destination) => (
             <li key={destination.href}>
               <RailLink
                 destination={destination}
@@ -200,9 +212,10 @@ function RailLink({
   );
 }
 
-export function AdminBottomTabs() {
+export function AdminBottomTabs({ role, canImport }: StaffNavProps) {
   const pathname = usePathname();
   const reduceMotion = useReducedMotion();
+  const nav = staffNav(role, { can_import_members: canImport });
 
   return (
     <div className="theme-dark fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
@@ -210,7 +223,7 @@ export function AdminBottomTabs() {
         aria-label="Main"
         className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border border-white/10 bg-navy-surface/88 p-1.5 shadow-[0_8px_30px_rgba(11,18,32,0.28)] backdrop-blur-xl"
       >
-        {ADMIN_PRIMARY.map((destination) => (
+        {nav.primary.map((destination) => (
           <TabPill
             key={destination.href}
             href={destination.href}
@@ -225,7 +238,7 @@ export function AdminBottomTabs() {
           href="/admin/more"
           label="More"
           icon={Ellipsis}
-          active={isMoreActive(pathname)}
+          active={isMoreActive(pathname, nav)}
           reduceMotion={Boolean(reduceMotion)}
         />
       </nav>
@@ -284,12 +297,20 @@ function TabPill({
   );
 }
 
-/** Mobile-only top bar: the cooperative's name is what an admin needs to see, not the wordmark. */
-export function AdminTopBar({ cooperativeName }: { cooperativeName: string }) {
+/** Mobile-only top bar: the cooperative's name is what staff need to see, not the wordmark. */
+export function AdminTopBar({
+  cooperativeName,
+  role,
+}: {
+  cooperativeName: string;
+  role: "admin" | "officer";
+}) {
   return (
     <header className="flex items-center justify-between gap-4 border-b border-border bg-surface px-5 py-4 md:hidden">
       <Link href="/admin" className="min-w-0" aria-label="Cooperative home">
-        <span className="block type-caption text-text-muted">Managing</span>
+        <span className="block type-caption text-text-muted">
+          {role === "admin" ? "Managing" : "Working at"}
+        </span>
         <span className="block truncate type-card-title text-text">{cooperativeName}</span>
       </Link>
       <div className="flex shrink-0 items-center gap-1">

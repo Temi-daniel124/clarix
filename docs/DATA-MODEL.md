@@ -79,7 +79,10 @@ cooperative_staff_roles
   title                         -- free-text display label set by the cooperative's admin,
                                  -- e.g. 'Treasurer' — cosmetic only, never changes permissions
   permissions (jsonb)           -- boolean flags, meaningful only when role='officer';
-                                 -- admins implicitly have full cooperative permissions
+                                 -- admins implicitly have full cooperative permissions.
+                                 -- Live keys: can_view_members, can_record_savings,
+                                 -- can_approve_loans, can_import_members. Default-deny, and each
+                                 -- is enforced by a policy (migrations 016, 017), not by the UI
   granted_by (fk -> users)
   status                        -- 'invited' | 'active' | 'revoked'
   invited_at / accepted_at

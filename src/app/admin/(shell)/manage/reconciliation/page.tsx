@@ -18,6 +18,11 @@ export default async function ReconciliationPage({
   const role = staff ? preferredRole(staff.roles) : null;
   if (!role) redirect("/login");
 
+  // Officer blueprint Part 3: nothing under "Manage cooperative" is available to an officer
+  // "regardless of how their individual permissions are configured". The sidebar omits it; this
+  // is what makes the omission a boundary rather than a menu choice.
+  if (role.role !== "admin") redirect("/admin");
+
   const periods = recentPeriods();
   const period =
     query.period && periods.some((entry) => entry.period === query.period)

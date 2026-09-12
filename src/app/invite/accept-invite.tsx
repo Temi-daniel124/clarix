@@ -77,7 +77,17 @@ export function AcceptInvite({
         }
       }
 
-      router.push(first.role === "admin" ? "/admin/setup/welcome" : "/admin");
+      // Where each role lands is written in its own blueprint: an admin into the setup sequence,
+      // a brand-new officer into their two-slide orientation (officer blueprint 2.1), and an
+      // existing account that just added a role "straight to the Officer Home screen (4.1)",
+      // because somebody already using Clarix does not need to be introduced to it again.
+      router.push(
+        first.role === "admin"
+          ? "/admin/setup/welcome"
+          : needsPassword
+            ? "/officer/welcome"
+            : "/admin",
+      );
     });
   };
 

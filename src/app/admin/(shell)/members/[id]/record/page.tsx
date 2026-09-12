@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { RecordEntryForm } from "@/components/admin/record-entry-form";
 import { loadMemberProfile } from "@/lib/supabase/admin-members";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { preferredRole } from "@/lib/staff";
 import { formatNaira } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -16,8 +18,13 @@ export default async function RecordEntryPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
-  const profile = await loadMemberProfile(id);
+  const [staff, profile] = await Promise.all([loadStaffContext(), loadMemberProfile(id)]);
   if (!profile) redirect("/admin/members");
+
+  // The database refuses this write without `can_record_savings` (migration 016). Turning back
+  // here means an officer who typed the URL sees the member rather than a form that would fail.
+  const role = staff ? preferredRole(staff.roles) : null;
+  if (!role?.permissions.can_record_savings) redirect(`/admin/members/${id}`);
 
   const repayable = profile.loans
     .filter((loan) => loan.status === "active")

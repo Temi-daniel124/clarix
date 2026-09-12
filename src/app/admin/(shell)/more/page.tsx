@@ -1,8 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ChevronRight } from "lucide-react";
-import { ADMIN_ACCOUNT, ADMIN_MANAGE } from "@/components/admin-shell/destinations";
+import { staffNav, type AdminDestination } from "@/components/admin-shell/destinations";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { preferredRole } from "@/lib/staff";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "More" };
 
 /**
@@ -11,23 +15,33 @@ export const metadata: Metadata = { title: "More" };
  * A space-saving device rather than a fifth area: it holds exactly what the desktop sidebar
  * shows directly, in the same order, so the two densities never become two different products.
  */
-export default function AdminMorePage() {
+export default async function AdminMorePage() {
+  const staff = await loadStaffContext();
+  const role = staff ? preferredRole(staff.roles) : null;
+  if (!role) redirect("/login");
+
+  const nav = staffNav(role.role, role.permissions);
+
   return (
     <div className="mx-auto w-full max-w-[560px] px-5 py-8 md:px-8 md:py-10">
       <h1 className="type-page-title text-text">More</h1>
 
-      <h2 className="type-caption mt-8 uppercase tracking-[0.08em] text-text-muted">
-        Manage cooperative
-      </h2>
-      <Rows entries={ADMIN_MANAGE} />
+      {nav.manage.length > 0 ? (
+        <>
+          <h2 className="type-caption mt-8 uppercase tracking-[0.08em] text-text-muted">
+            Manage cooperative
+          </h2>
+          <Rows entries={nav.manage} />
+        </>
+      ) : null}
 
       <h2 className="type-caption mt-8 uppercase tracking-[0.08em] text-text-muted">Account</h2>
-      <Rows entries={ADMIN_ACCOUNT} />
+      <Rows entries={nav.account} />
     </div>
   );
 }
 
-function Rows({ entries }: { entries: typeof ADMIN_MANAGE }) {
+function Rows({ entries }: { entries: AdminDestination[] }) {
   return (
     <ul className="mt-2 divide-y divide-border rounded-feature border border-border bg-surface">
       {entries.map((entry) => {
