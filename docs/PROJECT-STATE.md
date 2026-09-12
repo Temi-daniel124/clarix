@@ -6,9 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (the cooperative admin blueprint begins: Part 1 authentication and
-Part 2's setup sequence, on a new app shell, with the invite mechanism and the roster import that
-Part 2 needed decided before either could be built).
+**Last updated:** 2026-09-12 (cooperative admin Part 6: loan management, the first transition
+past `reserved`, the audit log, and the first real notification a member has ever received).
 
 ## Phase
 
@@ -24,16 +23,21 @@ no holding screens left anywhere in the employee app.
 app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
 off `main` rather than a Preview.
 
-**Cooperative admin Parts 1, 2, 4 and 5 are built.** Parts 1 and 2 are on `main` already (pull
-request #2, merged after the pgTAP suites passed: 5 files, 60 tests): accepting an invitation,
-role-aware login, and the setup sequence, on their own app shell with their own four
-destinations. Parts 4 and 5 add the Cooperative Dashboard and member management — search,
-profile, adding somebody by hand, and recording what payroll has already delivered.
+**Cooperative admin Parts 1, 2, 4, 5 and 6 are built.** Parts 1, 2, 4 and 5 are on `main`
+already (pull requests #2 and #3, each merged after the pgTAP suites passed). Part 6 adds loan
+management: the applications queue, the review screen the blueprint calls the single most
+consequential in this role, the active-loans list and the admin's loan detail.
 
-The work stops deliberately before Part 6, Loan Management. Loan Application Review (6.2) is what
-the blueprint calls the single most consequential screen in this role, and it gets its own
-session the way the employee side's Loan Application did. Every loan transition after
-reservation, and the first notification row, belong to it.
+**The product now does something it has never done before.** A reservation can become an active
+loan or be turned down — the first transition past `reserved` anywhere in Clarix — and an
+approval writes a real notification to the member, the first row anything has ever put in
+`notifications` since D025 created the table. Walked end to end against the live project: an
+approval on the admin side, and the member's own Notifications screen showing it unread a moment
+later.
+
+What remains of this blueprint is Part 7 beyond the setup screens (Reconciliation, Reports) and
+Part 8 (Notifications, the admin's own Profile, and the Audit Log screen that reads back what is
+now being recorded).
 
 ## What exists today
 
@@ -393,6 +397,44 @@ reservation, and the first notification row, belong to it.
       withdrawals and repayments correctly, the pre-existing insert policy refusing a foreign
       membership, and an imported member arriving with their balance explained.
 
+- [x] **Loan management (6.1 to 6.4)** — the queue, oldest first, each card carrying the
+      eligibility answer at a glance and flagging a reservation close to lapsing; the review
+      screen; the active-loans list with repayment progress drawn from money that actually
+      arrived; and the admin's view of one loan. The review screen shows the *same* CapacityMeter
+      the member saw when they applied, because it is the same calculation — and beside it, the
+      cooperative's own savings-ratio rule, which is a separate question that can disagree with
+      the first.
+- [x] **`audit_log` is built** (migration 014), which the blueprint had been quietly assuming
+      since 5.4. Scoped to what Part 6 needs — actor, action, target, old and new value, and the
+      note — with RLS that lets a cooperative's staff read their own entries and **no insert,
+      update or delete policy at all**: it is written only by SECURITY DEFINER functions, so
+      append-only means append-only. Reading it back (the Audit Log screen, 8.3) stays deferred,
+      because recording a decision is urgent and reading the record is not.
+- [x] **The over-cap note is enforced by the database, not the form.** Approving beyond what is
+      left of a member's limit is allowed — Clarix informs, it never gatekeeps a cooperative's
+      own decision — but `decide_loan_application` refuses it without a reason, and the reason
+      lands in `audit_log.note`. The outcome ruled out was asking for a justification and
+      dropping it on the floor.
+- [x] **One function makes the whole decision** (migration 014): the loan's status, the audit
+      entry, the member's notification, and the reason. Two of those tables accept no client
+      write by design, so a single SECURITY DEFINER function is what keeps them closed and the
+      set atomic. It also refuses an officer whose permissions do not include approving loans,
+      which is the first time the preset from blueprint 2.5 actually bites.
+- [x] **Rejecting releases the hold immediately.** A rejected loan counts towards nothing, so the
+      member's capacity is free for their other requests the moment it commits — proven in pgTAP
+      suite 007, which watches the figure fall and come back.
+- [x] **The Timed Undo runs before the write, not after it.** Approve or Reject starts an
+      eight-second countdown during which nothing has reached the database and the member has
+      been told nothing, so undo genuinely undoes rather than compensating for something already
+      done.
+- [x] **The dashboard's Attention items open the review screen directly**, replacing the
+      member-profile link that stood in honestly while 6.2 did not exist.
+- [x] **A notification said "120,000" with no currency**, caught on screen during that walkthrough
+      and fixed in migration 015. On a product whose whole subject is money, a figure without its
+      currency is a small dishonesty about what the reader is looking at.
+- [x] **pgTAP suite 007** covers who may decide, what approving and rejecting do to capacity, the
+      notification and audit rows, and the over-cap refusal with and without a reason.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -437,7 +479,10 @@ reservation, and the first notification row, belong to it.
       memberships — an active 360,000 over 24 months, a reserved 180,000 over 12 months, a
       completed 120,000, and a 120,000 reservation created through the application screen during
       verification; and 26 `savings_transactions` rows backing 330,000 of savings and the
-      repayment history the active loan's progress is computed from.
+      repayment history the active loan's progress is computed from. **One of those reservations
+      is now an approved, active loan**: the 120,000 at Allied Health Savings Cooperative was
+      approved through the real review screen while checking Part 6, which also produced the
+      project's first notification row and first audit-log entry.
 - [ ] **Nothing writes a notification row.** The table, its policies and the screen are real and
       were exercised against the live project, but the list will stay empty until the cooperative
       admin/officer blueprint can approve a loan, accept a membership, or publish a package
@@ -466,19 +511,21 @@ reservation, and the first notification row, belong to it.
       the email telling somebody it exists waits on the same verified sending domain everything
       else does. The officer screen says exactly that on the form rather than implying a message
       went out.
-- [ ] **Part 6, Loan Management** — the applications queue, Loan Application Review (6.2), the
-      active-loans list and Loan Detail. Until 6.2 exists, an application on the dashboard's
-      Attention list leads to the member it concerns rather than to a review screen, which is the
-      closest true thing rather than a dead link. Approving, rejecting and completing a loan all
-      belong there, which is why no loan transition after reservation works yet.
+- [ ] **Completing a loan has no screen.** Approve and reject exist; marking a loan repaid in
+      full is still only implied by the repayment ledger adding up, and nothing flips the status
+      to `completed`. Nor does anything sweep a lapsed reservation to `expired`, which costs
+      nothing because expiry is evaluated at read time (D024).
 - [ ] Admin Parts 7 and 8 beyond what the setup screens already cover — Reconciliation, Reports,
-      Notifications and the admin's own Profile. Each is reachable from the navigation and says
-      what will be there.
-- [ ] **Recording an entry was reviewed on screen but not submitted end to end in a browser.**
-      The form, its balance header and its type switcher were checked by eye; the write path is
-      the pre-existing staff insert policy, and pgTAP suite 006 exercises it along with the
-      balance arithmetic. One click-through is still worth doing once the admin account has a
-      password.
+      Notifications, the admin's own Profile, and the Audit Log screen (8.3) that reads back what
+      migration 014 now records. Each is reachable from the navigation and says what will be
+      there.
+- [ ] **Recording a savings entry (5.4) still has not been submitted end to end in a browser**,
+      and it is now blocked on the same single step as the production login check: the test admin
+      account `coop.admin@fmcabeokuta.org.ng` has no password, so nobody can sign in as a
+      cooperative's own staff without a temporary database grant. Setting that password (Supabase
+      dashboard, Authentication, Users) turns both into a two-minute click-through. The write
+      path is the pre-existing staff insert policy and pgTAP suite 006 exercises it, so this is
+      confirmation rather than discovery.
 - [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
       Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
       deliberately only ever produces `reserved`.
@@ -504,7 +551,7 @@ reservation, and the first notification row, belong to it.
 
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Twelve tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Thirteen tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
 | Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
