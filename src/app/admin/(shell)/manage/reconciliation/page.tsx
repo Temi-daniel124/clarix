@@ -1,21 +1,42 @@
 import type { Metadata } from "next";
-import { Landmark } from "lucide-react";
-import { ComingLater } from "@/components/app-shell/coming-later";
+import { redirect } from "next/navigation";
+import { ReconciliationTable } from "@/components/admin/reconciliation-table";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { preferredRole } from "@/lib/staff";
+import { loadReconciliation, recentPeriods } from "@/lib/supabase/reconciliation-data";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Reconciliation" };
 
-/**
- * Monthly Reconciliation (blueprint 7.5) — built in a later block of the cooperative admin blueprint.
- *
- * It says what will be here and does not imitate it, which is the same standard the employee
- * shell held itself to while its own later parts were outstanding.
- */
-export default function Page() {
+/** Monthly Reconciliation Entry — admin blueprint 7.5. */
+export default async function ReconciliationPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ period?: string }>;
+}) {
+  const [staff, query] = await Promise.all([loadStaffContext(), searchParams]);
+  const role = staff ? preferredRole(staff.roles) : null;
+  if (!role) redirect("/login");
+
+  const periods = recentPeriods();
+  const period =
+    query.period && periods.some((entry) => entry.period === query.period)
+      ? query.period
+      : periods[0].period;
+
+  const data = await loadReconciliation(role.cooperativeId, period);
+
   return (
-    <ComingLater
-      icon={Landmark}
-      title="Reconciliation"
-      body="Enter what payroll actually deducted this month against what Clarix expected, so a shortfall is visible the month it happens rather than a year later."
-    />
+    <div className="mx-auto w-full max-w-[900px] px-5 py-8 md:px-8 md:py-10">
+      <h1 className="type-page-title text-text">Reconciliation</h1>
+      <p className="type-body mt-3 max-w-[600px] text-text-secondary">
+        What Clarix expected payroll to deduct this month, against what actually reached the
+        cooperative. A shortfall recorded here is a shortfall somebody can do something about.
+      </p>
+
+      <div className="mt-8">
+        <ReconciliationTable cooperativePeriod={data} periods={periods} />
+      </div>
+    </div>
   );
 }

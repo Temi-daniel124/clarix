@@ -70,6 +70,15 @@ things able to see past the boundary is written down rather than discovered late
   policy for employees at all, which is what forces every reservation through the advisory lock
   that makes it safe under concurrency.
 
+- `staff_has_permission(uuid, text)` answers whether the caller may do one specific thing at one
+  cooperative, and is called from inside policies — so, like `is_active_staff()`, `EXECUTE` stays
+  with `authenticated`: a policy expression runs with the querying role's privileges, and
+  revoking it would disable the policies that depend on it. It reads only the caller's own role
+  rows, returns only a boolean, and takes the permission key as an argument rather than trusting
+  one from a client payload. Admins pass every check by design (`docs/DATA-MODEL.md`: "admins
+  implicitly have full cooperative permissions"), which is what stops an admin locking themselves
+  out of their own cooperative.
+
 - `invite_cooperative_staff(...)` and `claim_staff_invitations()` are the two halves of the
   staff-invitation mechanism (D027).
 

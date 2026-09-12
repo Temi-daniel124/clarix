@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (cooperative admin Part 6: loan management, the first transition
-past `reserved`, the audit log, and the first real notification a member has ever received).
+**Last updated:** 2026-09-12 (cooperative admin Part 7: officer permissions that change what the
+database permits rather than only what a screen shows, and monthly reconciliation).
 
 ## Phase
 
@@ -23,10 +23,9 @@ no holding screens left anywhere in the employee app.
 app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
 off `main` rather than a Preview.
 
-**Cooperative admin Parts 1, 2, 4, 5 and 6 are built.** Parts 1, 2, 4 and 5 are on `main`
-already (pull requests #2 and #3, each merged after the pgTAP suites passed). Part 6 adds loan
-management: the applications queue, the review screen the blueprint calls the single most
-consequential in this role, the active-loans list and the admin's loan detail.
+**Cooperative admin Parts 1 to 7 are built**, with Parts 1, 2, 4, 5 and 6 on `main` already
+(pull requests #2, #3 and #4, each merged after the pgTAP suites passed). Part 7 completes
+cooperative configuration: officer permissions, and the monthly reconciliation entry.
 
 **The product now does something it has never done before.** A reservation can become an active
 loan or be turned down — the first transition past `reserved` anywhere in Clarix — and an
@@ -35,9 +34,14 @@ approval writes a real notification to the member, the first row anything has ev
 approval on the admin side, and the member's own Notifications screen showing it unread a moment
 later.
 
-What remains of this blueprint is Part 7 beyond the setup screens (Reconciliation, Reports) and
-Part 8 (Notifications, the admin's own Profile, and the Audit Log screen that reads back what is
-now being recorded).
+What remains is Part 8, the admin's own account cluster — Notifications, Profile / Settings,
+the Cooperative Audit Log and Help — which gets its own block, the same way the employee
+blueprint's account cluster did. Worth noting for that session: **8.3 is no longer blocked on
+anything.** `audit_log` exists as of migration 014 and already holds real rows, so that screen
+reads a live record rather than needing a deferral story of its own.
+
+Reports (7.6) stays deferred, and that is the blueprint's own call rather than a gap: it is
+marked P1 there.
 
 ## What exists today
 
@@ -435,6 +439,38 @@ now being recorded).
 - [x] **pgTAP suite 007** covers who may decide, what approving and rejecting do to capacity, the
       notification and audit rows, and the over-cap refusal with and without a reason.
 
+- [x] **7.3 and 7.4 were already permanent, and that was verified rather than assumed.** Public
+      Profile Editor and the ongoing Member Roster Import are real routes under Manage
+      cooperative (`/admin/manage/profile` and `/admin/manage/import`), rendering the same
+      components the setup sequence uses without the wizard chrome — which is what the blueprint
+      describes: 2.2 and 2.4 are a first run through screens that live on as 7.3 and 7.4.
+- [x] **Officer Management (7.2) is now the fuller screen the blueprint describes**, not the
+      lightweight invite form setup gave it: every officer opens into a panel with individual
+      permission toggles, an editable cosmetic title, and removal behind a Timed Undo. The invite
+      form from 2.5 sits beneath it, which is still the right thing for adding somebody new.
+- [x] **The permission toggles change what the database permits.** This is the part that made it
+      more than UI work: `permissions` was a jsonb column only one flag had ever been read from.
+      Migration 016 adds `staff_has_permission()` and rewires the policies behind seeing members
+      and recording entries, so switching off "see the member list" means Postgres refuses the
+      rows. A switch that moved a stored value without moving a boundary would read as a control
+      and behave as a label.
+- [x] **Default-deny, with admins exempt.** An officer starts with nothing; an admin passes every
+      check implicitly, per `docs/DATA-MODEL.md`, which is what stops an admin locking themselves
+      out of their own cooperative with a mis-tap. No officer exists anywhere yet, so default-deny
+      cost nobody their access.
+- [x] **Removal revokes rather than deletes**, keeping who granted the role and when — and it
+      touches nothing else that person holds, because every relationship in Clarix is scoped to
+      its own cooperative.
+- [x] **Monthly Reconciliation Entry (7.5)** with the period selector, the expected-versus-received
+      table, per-row saves as each figure is entered, and an automatic shortfall flag. The
+      shortfall is arithmetic where it is displayed, never a third stored number that could
+      disagree. The expected figure IS stored, because what was expected at the time is the fact
+      worth keeping — a loan completed since must not rewrite last month's history.
+- [x] **Migration 016** adds `deduction_reconciliation`, specified in `docs/DATA-MODEL.md` from
+      the start and never migrated until now, with RLS that lets a cooperative's staff read their
+      own rows and the member read their own months. pgTAP suite 008 covers the permission
+      boundary and the table.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -551,7 +587,7 @@ now being recorded).
 
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Thirteen tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
+| Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Fourteen tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
 | Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |

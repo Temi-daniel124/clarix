@@ -29,16 +29,24 @@ export type StaffRole = {
  */
 export const PERMISSION_PRESETS = {
   record_only: {
-    label: "Can submit and record only",
+    label: "Can see members and record entries",
     description:
-      "Record savings, submit loan applications, and keep member records current. Cannot approve a loan.",
-    permissions: { can_approve_loans: false },
+      "Open the member list, and record what payroll has delivered against a member. Cannot decide a loan.",
+    permissions: {
+      can_view_members: true,
+      can_record_savings: true,
+      can_approve_loans: false,
+    },
   },
   can_approve: {
     label: "Can also approve loans",
     description:
       "Everything above, plus deciding loan applications — the cooperative's money, committed against a member's salary.",
-    permissions: { can_approve_loans: true },
+    permissions: {
+      can_view_members: true,
+      can_record_savings: true,
+      can_approve_loans: true,
+    },
   },
 } as const;
 
