@@ -42,12 +42,16 @@ select 'e1111111-1111-1111-1111-111111111111', id, 'Cooperative One' from public
 insert into public.cooperatives (id, organization_id, name)
 select 'e2222222-2222-2222-2222-222222222222', id, 'Cooperative Two' from public.organizations;
 
-insert into public.cooperative_staff_roles (user_id, cooperative_id, role, status)
+-- The officer is permitted to see members and record entries, which migration 016 made explicit
+-- flags rather than something being staff implied. This suite is about what the STAFF DOOR onto
+-- the capacity calculation returns and refuses, so the officer needs the permissions that get
+-- them to the door at all.
+insert into public.cooperative_staff_roles (user_id, cooperative_id, role, status, permissions)
 values
   ('d1111111-1111-1111-1111-111111111111', 'e1111111-1111-1111-1111-111111111111',
-   'officer', 'active'),
+   'officer', 'active', '{"can_view_members": true, "can_record_savings": true}'::jsonb),
   ('d2222222-2222-2222-2222-222222222222', 'e2222222-2222-2222-2222-222222222222',
-   'admin', 'active');
+   'admin', 'active', '{}'::jsonb);
 
 insert into public.cooperative_memberships (id, user_id, cooperative_id, status, joined_at)
 values
