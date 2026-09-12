@@ -1,7 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { readsCanApproveLoans } from "@/lib/staff";
+import { readPermissions } from "@/lib/permissions";
 import type { LoanProduct } from "@/components/admin/loan-products-manager";
 import type { OfficerRow, PendingInvitation } from "@/components/admin/officer-invites";
+import type { ManagedOfficer } from "@/components/admin/officer-management";
 
 /**
  * Reads for the cooperative-admin screens. Every one is scoped by the same RLS the employee side
@@ -141,4 +143,33 @@ export function summariseProducts(products: LoanProduct[]): string[] {
       (product) =>
         `${product.name} — save ${Math.round(product.minSavingsRatio * 100)}% first, repay over up to ${product.maxTenureMonths} months`,
     );
+}
+
+/**
+ * The same officers, carrying their full permission set — blueprint 7.2's panel needs every flag
+ * rather than the single "can approve" summary the invite list shows.
+ */
+export async function loadManagedOfficers(cooperativeId: string): Promise<ManagedOfficer[]> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("cooperative_staff_roles")
+    .select("id, status, title, permissions, users(name, email)")
+    .eq("cooperative_id", cooperativeId)
+    .eq("role", "officer")
+    .neq("status", "revoked")
+    .order("invited_at", { ascending: true });
+
+  return (data ?? []).map((row) => {
+    const person = Array.isArray(row.users) ? row.users[0] : row.users;
+
+    return {
+      id: row.id,
+      name: person?.name ?? null,
+      email: person?.email ?? null,
+      title: row.title,
+      status: row.status === "active" ? "active" : "invited",
+      permissions: readPermissions(row.permissions),
+    };
+  });
 }

@@ -264,6 +264,44 @@ export type Database = {
           },
         ]
       }
+      deduction_reconciliation: {
+        Row: {
+          actual_amount_received: number | null
+          entered_at: string
+          entered_by: string | null
+          expected_amount: number
+          id: string
+          membership_id: string
+          period: string
+        }
+        Insert: {
+          actual_amount_received?: number | null
+          entered_at?: string
+          entered_by?: string | null
+          expected_amount: number
+          id?: string
+          membership_id: string
+          period: string
+        }
+        Update: {
+          actual_amount_received?: number | null
+          entered_at?: string
+          entered_by?: string | null
+          expected_amount?: number
+          id?: string
+          membership_id?: string
+          period?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "deduction_reconciliation_membership_id_fkey"
+            columns: ["membership_id"]
+            isOneToOne: false
+            referencedRelation: "cooperative_memberships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       documents: {
         Row: {
           byte_size: number | null
@@ -756,6 +794,10 @@ export type Database = {
         }[]
       }
       is_platform_admin: { Args: never; Returns: boolean }
+      staff_has_permission: {
+        Args: { permission_key: string; target_cooperative_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       cooperative_status: "active" | "inactive"

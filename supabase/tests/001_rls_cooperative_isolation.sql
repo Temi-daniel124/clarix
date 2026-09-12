@@ -82,9 +82,15 @@ values
   ('22222222-2222-2222-2222-222222222222', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'active', 150000),
   ('33333333-3333-3333-3333-333333333333', 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb', 'active', 900000);
 
-insert into public.cooperative_staff_roles (user_id, cooperative_id, role, status)
+-- The officer is given the permission that lets them see members at all. Before migration 016
+-- that was implied by being staff; it is now an explicit flag, default-deny (blueprint 7.2). The
+-- subject of this suite is isolation BETWEEN cooperatives, so the officer needs to be permitted
+-- to see their own cooperative's members for the isolation assertions to mean anything — an
+-- officer who can see nothing proves nothing about boundaries.
+insert into public.cooperative_staff_roles (user_id, cooperative_id, role, status, permissions)
 values
-  ('11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'officer', 'active');
+  ('11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa', 'officer',
+   'active', '{"can_view_members": true, "can_record_savings": true}'::jsonb);
 
 -- ---------------------------------------------------------------------------
 -- Act as cooperative A's officer, exactly as the browser client does
