@@ -18,6 +18,7 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
 
   const role = staff ? preferredRole(staff.roles) : null;
   if (!role) redirect("/login");
+  if (!role.permissions.can_view_members) redirect("/admin");
 
   // RLS returns nothing for a membership at another cooperative, so this covers both "no such
   // member" and "not yours" without the screen having to tell them apart.

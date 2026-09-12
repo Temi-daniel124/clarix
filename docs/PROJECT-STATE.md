@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (cooperative officer Parts 1 to 4: the invitation path verified
-rather than rebuilt, the two-slide tour, the officer's own navigation, and Officer Home).
+**Last updated:** 2026-09-12 (cooperative officer Parts 1 to 8 — the blueprint is complete, and
+one real bug was found and fixed while verifying it).
 
 ## Phase
 
@@ -39,7 +39,7 @@ approval writes a real notification to the member, the first row anything has ev
 approval on the admin side, and the member's own Notifications screen showing it unread a moment
 later.
 
-**The cooperative officer blueprint is under way — Parts 1 to 4 are built.** Most of that role
+**The cooperative officer blueprint is complete — Parts 1 to 8, every screen.** Most of that role
 was already standing: an officer works in the admin's own screens, and the difference is which
 navigation they get, which controls appear, and what the policies let them write (D029). Parts 1
 and 2 of that blueprint needed no new authentication code at all — a real officer invitation was
@@ -51,6 +51,12 @@ Two boundaries the officer blueprint exposed were missing and are now closed in 
 rather than in the interface: importing or adding a member takes a granted permission
 (migration 017), and the audit log is the admin's alone to read (migration 018). Both were
 previously open to any active staff member, which was invisible while officers had no screens.
+
+**All three blueprints are now built end to end.** What remains is not a part of any of them:
+loan completion and the expiry sweep have no screen assigned, Reports (7.6) is deferred by the
+blueprint's own P1 marking, and submitting a loan application on a member's behalf (officer 6.2)
+is a screen neither role has — it is named in the permission panel as unavailable rather than
+quietly dropped.
 
 Reports (7.6) stays deferred, and that is the blueprint's own call rather than a gap: it is
 marked P1 there.
@@ -560,6 +566,49 @@ marked P1 there.
       account, an import was refused with `42501` while the member list stayed readable and the
       audit log returned nothing.
 
+### Cooperative officer, Parts 5 to 8
+
+- [x] **Parts 5, 6 and 7 are the admin's own screens, gated three ways.** Every action was walked
+      as a real officer: Add member and the import entry appear only with `can_import_members`,
+      Record contribution and Record repayment only with `can_record_savings`, Approve and Reject
+      only with `can_approve_loans`. Members and Loans leave the navigation entirely without
+      `can_view_members`, because both read through `cooperative_memberships` and would otherwise
+      be two tabs that always open onto nothing.
+- [x] **Every one of those screens also turns an officer away by URL**, and the database refuses
+      underneath. Probed as the real officer account: an import raised `42501`, and both
+      `decide_loan_application` calls were refused with the same sentence the screen shows, while
+      the application itself stayed readable — which is correct, since reading is what the
+      blueprint gives every officer who can see members.
+- [x] **Recording a repayment shares one permission with recording a contribution**, which was
+      checked rather than assumed. `savings_transactions_insert_staff` never looks at the row's
+      type, so both are `can_record_savings`, exactly as both blueprints describe. pgTAP suite 008
+      now pins that: a repayment is refused without the permission and lands with it, and it does
+      not move the savings balance.
+- [x] **An officer's decision was taken end to end, with the permission granted through the real
+      Officer Management screen and set back afterwards.** The approval moved the loan to active,
+      wrote the member's notification, and wrote an audit row naming the officer as the actor —
+      then that same officer could not read the entry they had just caused, while the admin could.
+      That is officer blueprint 5.4 ("written regardless of which role recorded it, even though
+      only an Admin can later view that log") demonstrated rather than asserted.
+- [x] **Notifications (8.1) needed no new code** — the same table, query and component every role
+      shares, scoped by who a notification is addressed to rather than by any role. Only the empty
+      state is role-aware, because the events an officer is waiting for are different ones.
+- [x] **Profile (8.2) gained the one genuinely new piece:** a read-only "Your role at
+      [Cooperative]" panel carrying the title the admin set and a plain-language list of what is
+      currently granted. Nothing ungranted is shown crossed out or greyed — it is simply absent,
+      and a line underneath says who decides. Reviewed in both themes.
+- [x] **Help (8.3)** — ten answers under the two categories the officer blueprint names, none of
+      them about a screen this role cannot open, and each honest where the answer is that
+      something is not built. Same contact form, same provisional support address (D026).
+- [x] **A real bug was found and fixed while verifying this.** `cooperative_staff_roles` has two
+      foreign keys into `users` — `user_id` and `granted_by` — so the unqualified `users(...)`
+      embed the officer queries used was ambiguous and PostgREST refused the whole request. The
+      refusal arrived as an error with null data, which `data ?? []` turned into "nobody works on
+      this cooperative yet": a wrong answer that looked exactly like a right one, and which had
+      been shipping since Part 2 unnoticed because there were no officers to miss. The embeds now
+      name their foreign key, and those loaders throw on a query error rather than returning an
+      empty list.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -605,6 +654,15 @@ marked P1 there.
       testing: its password was reset to `ClarixTest-Officer-2026`, and signing in now lands on
       the officer home at `/admin` rather than the employee dashboard, which is still reachable
       at `/dashboard`. Remove the role, or the whole account, with the rest of the test data.
+
+      That role was used to verify Parts 5 to 8 and left four things behind at that cooperative,
+      all of which go with the rest of the test data: a fifth roster entry, staff ID 300124
+      ("Kemi Alabi"), added through the officer's own Add member screen; a ₦100,000 loan
+      submitted by that account on the employee side and then **approved by it on the staff
+      side**, which is now active at ₨8,333 a month; the member notification that approval wrote;
+      and the audit-log entry naming the officer as the actor. Its permissions were temporarily
+      widened to all four through the real Officer Management screen and set back to record-only
+      afterwards, so what is stored now is what that screen actually granted.
 - [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
       it was written directly rather than in a migration, the same way the pilot test account
       was, so none of it will follow the schema into production by accident. What exists: three
@@ -705,10 +763,10 @@ marked P1 there.
    the seeded test data catalogued above, before go-live. That account now also carries a
    fictional phone number and one muted-then-restored notification preference, both written
    through the Profile screen while verifying it.
-6. Finish the **cooperative officer blueprint**. Parts 1 to 4 are built; what is left is Parts 5
-   to 8, which are almost entirely permission-gating on screens that already exist, plus one
-   genuinely new piece: the read-only "Your role at [Cooperative]" panel on Profile (8.2), which
-   tells an officer in plain words what they are currently able to do.
+6. Decide what happens to **submitting a loan application on a member's behalf** (officer
+   blueprint 6.2). It is the one screen no role has: members apply for themselves, staff can only
+   read and decide. The permission panel already names it as not built rather than pretending
+   otherwise, so this is a scheduling decision rather than a hidden gap.
 7. Settle where **loan completion and the expiry sweep** live. Neither blueprint assigns them a
    screen: marking a loan repaid in full and tidying a lapsed reservation to `expired` are real
    gaps in the loan lifecycle rather than deferred features. Capacity is already correct without

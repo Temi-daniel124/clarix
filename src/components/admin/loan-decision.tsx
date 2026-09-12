@@ -138,10 +138,11 @@ export function LoanDecision({
     return (
       <div className="rounded-feature border border-border bg-surface p-6">
         <p className="type-body text-text">
-          Your account can record and submit, but not decide loans.
+          Deciding loans is not switched on for your account.
         </p>
         <p className="type-secondary mt-2 max-w-[480px] text-text-secondary">
-          An admin at this cooperative can change that from Officers, under Manage cooperative.
+          You can read everything on this page, which is most of what a decision needs. An admin
+          at this cooperative grants the decision itself, from Officers under Manage cooperative.
         </p>
       </div>
     );

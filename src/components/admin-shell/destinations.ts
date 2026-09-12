@@ -101,7 +101,17 @@ export function isMoreActive(pathname: string, nav: StaffNav): boolean {
  * work is identical, the configuration power is not, and the boundary is in the policies rather
  * than in a second copy of every screen.
  */
-export const OFFICER_PRIMARY: AdminDestination[] = ADMIN_PRIMARY;
+/**
+ * Members and Loans are conditional for the same reason the import row is. Both screens read
+ * through `cooperative_memberships`, so an officer without `can_view_members` gets nothing from
+ * either — the member list is empty and, because `loans_select_staff` reaches a loan through its
+ * membership, so is the loan queue. Two tabs that always open onto nothing would be the
+ * greyed-out button the blueprint rules out, wearing a different disguise.
+ */
+export function officerPrimary(permissions: { can_view_members: boolean }): AdminDestination[] {
+  if (!permissions.can_view_members) return [ADMIN_PRIMARY[0]];
+  return ADMIN_PRIMARY;
+}
 
 export const OFFICER_IMPORT: AdminDestination = {
   href: "/admin/manage/import",
@@ -127,14 +137,14 @@ export type StaffNav = {
 
 export function staffNav(
   role: "admin" | "officer",
-  permissions: { can_import_members: boolean },
+  permissions: { can_import_members: boolean; can_view_members: boolean },
 ): StaffNav {
   if (role === "admin") {
     return { primary: ADMIN_PRIMARY, manage: ADMIN_MANAGE, account: ADMIN_ACCOUNT };
   }
 
   return {
-    primary: OFFICER_PRIMARY,
+    primary: officerPrimary(permissions),
     manage: [],
     account: permissions.can_import_members
       ? [OFFICER_IMPORT, ...OFFICER_ACCOUNT]

@@ -55,7 +55,7 @@ export async function decideLoanAction(
       return { error: "This application has already been decided." };
     }
     if (error.message.includes("may not decide") || error.message.includes("not decide loans")) {
-      return { error: "This account can record and submit, but not decide loans." };
+      return { error: "Deciding loans is not switched on for your account." };
     }
     return { error: "We could not record that decision. Please try again." };
   }

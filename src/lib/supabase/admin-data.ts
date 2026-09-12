@@ -55,16 +55,26 @@ export async function loadPeerRatioRange(
   return { min: Math.min(...ratios), max: Math.max(...ratios) };
 }
 
+/**
+ * `cooperative_staff_roles` holds two foreign keys into `users` — `user_id` and `granted_by` —
+ * so an unqualified `users(...)` embed is ambiguous and PostgREST refuses the whole request.
+ * The refusal arrives as an error with `data` null, which a `data ?? []` turns into "this
+ * cooperative has no officers": a wrong answer that looks exactly like a right one. Both are
+ * fixed here — the embed names its foreign key, and a query error is thrown rather than shown
+ * as an empty list.
+ */
 export async function loadOfficers(cooperativeId: string): Promise<OfficerRow[]> {
   const supabase = await createClient();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("cooperative_staff_roles")
-    .select("id, status, title, permissions, users(name, email)")
+    .select("id, status, title, permissions, users!cooperative_staff_roles_user_id_fkey(name, email)")
     .eq("cooperative_id", cooperativeId)
     .eq("role", "officer")
     .neq("status", "revoked")
     .order("invited_at", { ascending: true });
+
+  if (error) throw new Error(`Could not read this cooperative's officers: ${error.message}`);
 
   return (data ?? []).map((row) => {
     const person = Array.isArray(row.users) ? row.users[0] : row.users;
@@ -152,13 +162,15 @@ export function summariseProducts(products: LoanProduct[]): string[] {
 export async function loadManagedOfficers(cooperativeId: string): Promise<ManagedOfficer[]> {
   const supabase = await createClient();
 
-  const { data } = await supabase
+  const { data, error } = await supabase
     .from("cooperative_staff_roles")
-    .select("id, status, title, permissions, users(name, email)")
+    .select("id, status, title, permissions, users!cooperative_staff_roles_user_id_fkey(name, email)")
     .eq("cooperative_id", cooperativeId)
     .eq("role", "officer")
     .neq("status", "revoked")
     .order("invited_at", { ascending: true });
+
+  if (error) throw new Error(`Could not read this cooperative's officers: ${error.message}`);
 
   return (data ?? []).map((row) => {
     const person = Array.isArray(row.users) ? row.users[0] : row.users;

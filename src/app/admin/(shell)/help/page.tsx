@@ -7,11 +7,20 @@ import {
 } from "@/components/ui/accordion";
 import { ContactForm } from "@/app/(app)/help/contact-form";
 import { SUPPORT_EMAIL } from "@/lib/support";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { preferredRole } from "@/lib/staff";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Help" };
 
 /**
- * Help / Support — admin blueprint 8.4.
+ * Help / Support — admin blueprint 8.4, officer blueprint 8.3.
+ *
+ * Same pattern, same contact form, same address — different questions, because the two roles do
+ * not have the same ones. The officer blueprint names its categories outright ("Finding and
+ * helping members", "Submitting and checking loan applications") and asks for something "sized
+ * for a lean pilot rather than a full support desk", so an officer gets ten answers rather than
+ * the admin's fifteen, and none of them is about a screen they cannot open.
  *
  * "Structurally identical to the Employee role's Help/Support screen", with the categories the
  * blueprint names for this role and the same contact form component beneath — one support path,
@@ -108,7 +117,66 @@ const SETTINGS: Faq[] = [
   },
 ];
 
-export default function AdminHelpPage() {
+const OFFICER_MEMBERS: Faq[] = [
+  {
+    question: "Why can I do some things here and not others?",
+    answer:
+      "Your cooperative's admin decides, per person. Your own Profile screen lists exactly what you are currently able to do; anything not on that list is not available to you here, and it changes the moment they change it. Nothing is hidden from you about your own permissions.",
+  },
+  {
+    question: "Why do some members show as “not on Clarix yet”?",
+    answer:
+      "Because they were imported and have not signed up. The roster is what the cooperative knows; a Clarix account is what that person creates. When they sign up and enter the staff ID that was imported, their membership and the savings balance already recorded appear on their side automatically.",
+  },
+  {
+    question: "What does recording a contribution actually do?",
+    answer:
+      "It writes an entry in that member's ledger and moves their balance to match. Clarix holds no money and transfers none — you are recording what payroll has already delivered, in a book the member can also see. Their balance updates the moment you save.",
+  },
+  {
+    question: "Can I correct a figure I entered wrongly?",
+    answer:
+      "Not from the screen. Balances are recomputed from the entries behind them, so a correction means the entry itself has to change, and the screen for that is not built. Record the correction as a further entry so the ledger still explains the balance, and tell your admin.",
+  },
+  {
+    question: "Where does the capacity figure on a member's profile come from?",
+    answer:
+      "FMC Abeokuta caps total salary deductions at 33.3% of gross pay. Clarix works that out from the member's confirmed payslip, subtracts every monthly repayment they already owe across all their cooperatives, and shows what is left. You see one combined total and never which other cooperative it came from — the member sees the same number on their own screen.",
+  },
+];
+
+const OFFICER_LOANS: Faq[] = [
+  {
+    question: "How do I start an application on a member's behalf?",
+    answer:
+      "You cannot yet. Starting an application for somebody else is not built — members apply for themselves from their own account, and those applications arrive in the queue here. This is a missing screen rather than a permission you are lacking.",
+  },
+  {
+    question: "Can I approve or reject an application?",
+    answer:
+      "Only if your admin has granted it, and your Profile screen says whether they have. Without it the queue is still worth opening: you can see what is waiting and what the eligibility answer is, and an admin makes the decision.",
+  },
+  {
+    question: "What does “exceeds capacity” mean on an application?",
+    answer:
+      "That the monthly repayment being asked for is more than the member has left under the deduction cap, counting what they already owe everywhere. It is information, not a block: Clarix informs and the cooperative decides, so an approval is still possible and asks for a short reason that is recorded.",
+  },
+  {
+    question: "An application vanished before anyone decided it. Why?",
+    answer:
+      "A reservation holds capacity for a limited window — seven days by default — so one cooperative cannot freeze a member's salary indefinitely by sitting on a request. Once it lapses, the capacity returns to the member. The queue flags anything close to lapsing in amber first.",
+  },
+  {
+    question: "Why can I not see the audit log?",
+    answer:
+      "It is the admin's record of what staff did, and reading it is theirs alone. Everything you record is written into it exactly as an admin's entries are — the log does not treat your work differently, it is only read by somebody else.",
+  },
+];
+
+export default async function AdminHelpPage() {
+  const staff = await loadStaffContext();
+  const isOfficer = preferredRole(staff?.roles ?? [])?.role === "officer";
+
   return (
     <div className="mx-auto w-full max-w-[760px] px-5 py-8 md:px-8 md:py-10">
       <h1 className="type-page-title text-text">Help</h1>
@@ -117,9 +185,18 @@ export default function AdminHelpPage() {
         send a message at the bottom.
       </p>
 
-      <FaqSection title="Managing members" items={MEMBERS} />
-      <FaqSection title="Loans and eligibility" items={LOANS} />
-      <FaqSection title="Cooperative settings" items={SETTINGS} />
+      {isOfficer ? (
+        <>
+          <FaqSection title="Finding and helping members" items={OFFICER_MEMBERS} />
+          <FaqSection title="Submitting and checking loan applications" items={OFFICER_LOANS} />
+        </>
+      ) : (
+        <>
+          <FaqSection title="Managing members" items={MEMBERS} />
+          <FaqSection title="Loans and eligibility" items={LOANS} />
+          <FaqSection title="Cooperative settings" items={SETTINGS} />
+        </>
+      )}
 
       <div className="mt-12">
         <ContactForm supportEmail={SUPPORT_EMAIL} />

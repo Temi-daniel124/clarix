@@ -21,6 +21,7 @@ export default async function LoanPage({ params }: { params: Promise<{ id: strin
 
   const role = staff ? preferredRole(staff.roles) : null;
   if (!role) redirect("/login");
+  if (!role.permissions.can_view_members) redirect("/admin");
 
   return (
     <div className="mx-auto w-full max-w-[760px] px-5 py-8 md:px-8 md:py-10">
