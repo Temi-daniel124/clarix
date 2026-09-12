@@ -10,7 +10,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(17);
+select plan(19);
 
 select has_table('public', 'audit_log', 'audit_log exists');
 
@@ -221,6 +221,30 @@ select is(
     where target_id = 'd8888888-8888-8888-8888-888888888888' and action = 'approve_loan'),
   'Committee approved on 12 September.',
   'and the reason is what lands in the audit log, which is the point of asking for it'
+);
+
+-- ---------------------------------------------------------------------------
+-- The Cooperative Audit Log screen (blueprint 8.3) reads this table directly, so what it can
+-- reach is worth pinning down as carefully as what writes to it.
+-- ---------------------------------------------------------------------------
+
+select is(
+  (select count(*)::int from public.audit_log),
+  3,
+  'a cooperative''s own admin reads their own cooperative''s entries'
+);
+
+-- The member the entries are ABOUT is not staff, and the log is a staff record.
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"a3333333-3333-3333-3333-333333333333","role":"authenticated"}',
+  true
+);
+
+select is(
+  (select count(*)::int from public.audit_log),
+  0,
+  'and nobody outside that cooperative''s staff reads any of it, including the member concerned'
 );
 
 reset role;

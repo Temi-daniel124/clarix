@@ -1,11 +1,13 @@
 import {
   Bell,
   Building2,
+  CircleQuestionMark,
   FileSpreadsheet,
   House,
   Landmark,
   Receipt,
   Scale,
+  ScrollText,
   Settings2,
   UserCog,
   Users,
@@ -54,10 +56,19 @@ export const ADMIN_MANAGE: AdminDestination[] = [
   { href: "/admin/manage/reports", label: "Reports", icon: FileSpreadsheet },
 ];
 
-/** Account-level rows: their own sidebar entries on desktop, behind More on mobile. */
+/**
+ * The account cluster — admin blueprint Part 8. Their own sidebar entries on desktop, behind More
+ * on mobile.
+ *
+ * The audit log sits here rather than under Manage cooperative because Part 8 groups it with the
+ * account screens: it is consulted rather than configured, and an admin reaches for it when
+ * something needs checking, not while setting anything up.
+ */
 export const ADMIN_ACCOUNT: AdminDestination[] = [
   { href: "/admin/notifications", label: "Notifications", icon: Bell },
+  { href: "/admin/audit", label: "Audit log", icon: ScrollText },
   { href: "/admin/profile", label: "Profile", icon: Settings2 },
+  { href: "/admin/help", label: "Help", icon: CircleQuestionMark },
 ];
 
 export function isAdminActive(pathname: string, destination: AdminDestination): boolean {
