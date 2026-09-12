@@ -6,9 +6,9 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (Part 6, closing the employee blueprint: Notifications, Profile /
-Settings and Help / Support, with the `notifications` table and the notification-preferences
-column behind them).
+**Last updated:** 2026-09-12 (the six-part employee blueprint merged to `main` — the first
+production merge and the first production deploy — with the pgTAP suites executing in CI for the
+first time).
 
 ## Phase
 
@@ -18,6 +18,11 @@ screens, the loan side with the reservation transaction that is the product's co
 and now the account cluster: Notifications, Profile / Settings and Help / Support. Every screen
 has been walked in a browser against the live project, in both themes at both widths. There are
 no holding screens left anywhere in the employee app.
+
+**All of it is on `main`.** Until now every part lived on one long-lived branch,
+`slice-01-foundations-auth`; pull request #1 merged it, `main` now carries the whole employee
+app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
+off `main` rather than a Preview.
 
 What remains is the **cooperative admin/officer blueprint**, which owns every loan transition
 after reservation and is also what will write the first notification row.
@@ -261,6 +266,38 @@ after reservation and is also what will write the first notification row.
       rather than the viewport, so on a long screen its foot — including the appearance control
       — sat below the fold. The blueprint calls this navigation persistent.
 
+- [x] **The pgTAP suites have executed.** Pull request #1 ran
+      `.github/workflows/db-tests.yml` for the first time: `supabase start`, `supabase db reset`
+      and `supabase test db` on GitHub's runner, against a database built from nothing but the
+      nine migrations. **4 files, 48 tests, all passing**, in 3m27s. Until then every assertion
+      had only been checked by hand against the live project, which is a different thing from
+      the migrations applying cleanly in order on an empty database.
+
+      Two real defects stood in the way, both found by reading the workflow against the repository
+      before opening the PR rather than by watching CI fail:
+
+      1. **`supabase/config.toml` did not exist.** `supabase link` writes only `supabase/.temp`,
+         so nothing in the repository told the CLI what to start. `supabase start` would have
+         failed before reaching a single test. The file is now committed, annotated to say it
+         describes the throwaway CI stack and nothing else, with its Postgres major version kept
+         in step with the hosted project.
+      2. **Suite 003 created an `auth.users` row after switching to the `authenticated` role**,
+         which holds no privilege on that table. That insert would have failed on permissions and
+         taken the "an employee cannot reserve against somebody else's membership" assertion with
+         it. Both employees are now created in the fixture block while the session is still the
+         migration-running superuser. No assertion was weakened to get the check green.
+
+- [x] **Production environment variables confirmed against the live project.** They are
+      Secret-type entries in Vercel, and `vercel env pull` returns their names with empty values,
+      so they genuinely cannot be read back and compared. What settles it instead is a round trip
+      through the deployed site: a signup submitted on `clarix-3w5i.vercel.app` for the existing
+      test address appears in this project's own logs at 11:42:40 UTC as
+      `POST /auth/v1/signup → 200` with the auth event `user_repeated_signup`. A wrong URL would
+      have logged nothing here and a wrong anon key would have returned 401, so production is
+      reaching project `sxugaizwmqigtioqgefx` with a working key. The probe wrote nothing: it is
+      the existing-user path, `auth.users` still holds exactly one row, and its `updated_at` did
+      not move.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -270,9 +307,9 @@ after reservation and is also what will write the first notification row.
       so a signup from any other address fails with "Error sending confirmation email". Verifying
       a real sending domain closes this. Until then, accounts are created directly in the
       database.
-- [ ] **`NEXT_PUBLIC_SUPABASE_ANON_KEY` is set locally but its value in Vercel is unverified.**
-      All five variables exist in the Vercel project as Secret-type entries, which means they
-      cannot be read back out to confirm they match.
+- [x] **`NEXT_PUBLIC_SUPABASE_ANON_KEY` and `NEXT_PUBLIC_SUPABASE_URL` in Vercel are now
+      confirmed** by the production round trip described above, rather than by reading the values
+      back, which Secret-type entries do not allow.
 - [ ] **Automatic payslip extraction.** MVP-SCOPE.md puts this at P1, and it is not built, so
       every account currently lands on the review screen with the fields blank and editable —
       which is the degradation path blueprint 2.4 already specifies for a failed read. The
@@ -316,9 +353,17 @@ after reservation and is also what will write the first notification row.
 - [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
       Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
       deliberately only ever produces `reserved`.
-- [ ] The pgTAP suite has **never actually executed** — it runs only on a pull request touching
-      `supabase/migrations/**` or `supabase/tests/**`. Its assertions were each verified by hand
-      against the live project, but the file itself is unproven until CI runs it.
+- [ ] The pgTAP workflow still only runs on a pull request touching `supabase/migrations/**`
+      or `supabase/tests/**`. That is deliberate — it is the only expensive check — but it means
+      a pull request touching neither gets no database coverage at all.
+- [ ] Branch protection is not turned on, so nothing yet *requires* the database check to pass
+      before a merge. `docs/DEVELOPMENT-WORKFLOW.md` §3 already assumes it ("blocking merge, once
+      branch protection is turned on"); it is a repository setting, so it needs your decision
+      rather than a code change.
+- [ ] A password-verified sign-in has not been performed against production. The signup round
+      trip above proves the URL and anon key are right; the account password is in your keeping,
+      so completing a real login on `clarix-3w5i.vercel.app` is a one-minute check only you can
+      do.
 - [ ] `RESEND_API_KEY` / `AI_PAYSLIP_API_KEY` not provisioned.
 - [ ] A test account, `pilot.tester@fmcabeokuta.org.ng`, exists in `auth.users` and was created
       directly in the database rather than through signup. **Delete it before go-live.**
@@ -331,8 +376,8 @@ after reservation and is also what will write the first notification row.
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Ten tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
-| GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub.                                                        |
-| Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
+| GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
+| Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
 | AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                               | P1 feature.                                                                                               |
 
@@ -343,12 +388,12 @@ after reservation and is also what will write the first notification row.
    still `onboarding@resend.dev`, which Resend restricts to the account owner's own address.
    Signing up any other address now fails with "Error sending confirmation email" — a different
    failure from before, and the last thing blocking self-service signup.
-2. Confirm the Vercel environment variables really hold the same Supabase URL and anon key as
-   `.env.local` — they are stored as Secret-type entries and cannot be read back to check.
-3. Review the Preview deployment on an actual phone, which the iframe-based review cannot stand
-   in for.
-4. Decide the permanent Vercel project name, and remove the redundant `clarix-3w5i` project if
+2. Review the production site on an actual phone, which the iframe-based review cannot stand
+   in for. A password-verified sign-in there closes the last part of the environment check.
+3. Decide the permanent Vercel project name, and remove the redundant `clarix-3w5i` project if
    it is not serving anything.
+4. Turn on branch protection for `main`, so the database check blocks a merge rather than merely
+   reporting.
 5. Enable leaked-password protection in Supabase Auth.
 6. Delete the `pilot.tester@fmcabeokuta.org.ng` account, its uploaded probe payslip, and all
    the seeded test data catalogued above, before go-live. That account now also carries a
