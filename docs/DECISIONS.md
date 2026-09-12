@@ -188,6 +188,188 @@ are never touched, queried, or referenced by anything in this codebase.
 **Rationale:** Explicit client instruction; accidental cross-project access would be a serious
 data-boundary failure for an unrelated client's data.
 
+### D021 — Credentials live in Supabase Auth; `public.users` is a 1:1 profile keyed to `auth.users`
+**Status:** Locked
+**Decision:** `public.users.id` is a primary key that references `auth.users(id)` with
+`on delete cascade`, and the table carries no `password_hash` column — the illustrative one in
+`docs/DATA-MODEL.md` is satisfied by Supabase Auth, which owns credentials, email/phone
+verification and session issuance. The matching `public.users` row is created by a
+`SECURITY DEFINER` trigger (`on_auth_user_created`) in the same transaction as the `auth.users`
+insert, rather than by a second write from application code.
+**Rationale:** Two writes from the client can half-succeed, leaving an account that can sign in
+but has no Clarix row. Doing it in the database makes that impossible, and avoids introducing
+the first service-role-key code path in the product — `SECURITY.md`'s enumerated list of those
+stays empty, which is worth keeping true for as long as possible.
+**Consequence:** `users.employee_id`, `name`, `salary_gross` and `salary_net` are all nullable
+at creation and filled in during onboarding (blueprint 2.2–2.4); `employee_id` is unique per
+organization, not globally.
+
+### D022 — v1 authentication is email and password only; phone sign-in is deferred
+**Status:** Provisional (revisit if an SMS provider is ever budgeted)
+**Decision:** Sign Up and Log In accept an email address and password. A phone number entered in
+the identifier field is recognised and answered with a plain inline message saying phone
+sign-up is not available yet, rather than being silently rejected or failing obscurely.
+**Rationale:** `docs/ROLES-AND-PERMISSIONS.md` describes "email/phone + password", but phone
+authentication in Supabase requires a third-party SMS provider. That is a second paid service,
+which `docs/TOOLING-POLICY.md` does not approve and which nobody has agreed to fund; the only
+budgeted paid service is the payslip-OCR API. Recording the gap here rather than building around
+it silently.
+**Action before go-live:** confirm with the cooperative heads that email-only sign-in is
+acceptable for the pilot, since some staff may not use email routinely.
+
+---
+### D023 — Agent-applied migrations go through the Supabase Management API; `db push` stays the human path
+**Status:** Locked
+**Supersedes:** nothing; it narrows the operational detail of D015, which is unchanged — no local
+Docker, and the remote `Clarix` project is still the only database.
+
+**Decision:** A migration written by an AI agent is applied to the remote `Clarix` project through
+the Supabase Management API, using the agent's already-authorized Supabase connection, rather than
+`supabase db push`. Three conditions make this the approved path rather than a workaround, and all
+three are binding:
+
+1. **The migration exists as a reviewed `.sql` file under `supabase/migrations/` first.** The file
+   is the artefact of record. Applying it is a second, separate step, and the file's timestamp
+   prefix is reconciled to the version the API records, so `supabase db push` run later by a human
+   sees the migration as already applied and does not attempt to re-run it.
+2. **The agent is never given the raw database password.** That is the entire point. The password
+   lives in the maintainer's password manager and is not pasted into a prompt, a file, an
+   environment variable the agent can read, or a terminal command the agent composes.
+3. **Nothing is applied that was not written down first.** No ad-hoc DDL typed straight at the
+   database, and no dashboard SQL-editor edits — the prohibition in `DATA-MODEL.md`
+   ("Migration discipline") is unchanged and still applies to both humans and agents.
+
+`supabase db push` remains correct and preferred for a human maintainer working locally, and
+remains the documented path in `BUILD.md`. This entry does not deprecate it; it records which of
+the two paths applies to which kind of operator.
+
+**Rationale:** `supabase db push` authenticates to Postgres directly and therefore needs the
+database password. The three ways to give an agent that capability are all worse than the
+Management API: putting the password in `.env` or the shell environment makes it readable by
+anything the agent runs and one `cat` away from a transcript; passing it inline puts it in the
+session history permanently; and caching it into the CLI's stored credentials still means it was
+handed over once. The Management API path uses a token that is already scoped to project
+administration, can be revoked independently, and never exposes the database superuser credential
+at all. Losing `db push`'s local diffing convenience is a small price for an agent that cannot
+leak a password it was never given.
+
+**What would make `db push` workable for an agent without that exposure**, recorded so this can be
+revisited rather than re-derived: the maintainer sets `SUPABASE_DB_PASSWORD` once in their own
+shell profile (never in the repository, never in `.env.local`), or runs `supabase link` once
+interactively so the CLI caches the credential in the OS keyring. The agent then runs
+`supabase db push` and the CLI reads the secret itself. That is a legitimate future option; it is
+not adopted now because it still places a live database password in an environment the agent
+executes inside, which is a meaningfully weaker boundary than not having it at all.
+
+**Consequence for `DEVELOPMENT-WORKFLOW.md` §2:** that section is updated to describe both paths
+instead of naming `db push` as the only one, which it previously did and which the first
+implementation slice already contradicted.
+
+---
+
+### D024 — Two deliberate departures from `DATA-MODEL.md` in the loan/savings schema
+**Status:** Locked
+**Supersedes:** nothing; it records where the implemented schema knowingly goes past what
+`DATA-MODEL.md` describes, so the difference is a decision rather than drift.
+
+**Decision 1 — `savings_transactions` carries loan repayments, not only savings movements.**
+The table gains a `loan_repayment` value in its type enum and a nullable `loan_id` column,
+constrained so `loan_id` is present exactly when the type is `loan_repayment` and absent
+otherwise. `DATA-MODEL.md` defines no repayment ledger at all, yet Loan Detail (blueprint 5.3)
+has to show how much of a loan has actually been repaid, and a loan's progress must be derived
+from money that genuinely moved rather than from how many months have elapsed since approval. A
+separate `loan_repayments` table was the alternative and was rejected: both kinds of row are the
+same shape — a dated, described, signed amount against one membership — and keeping them in one
+ledger means a member's statement can be assembled from a single ordered query. The savings
+statement screen filters the repayment rows out, because a repayment leaves the salary and does
+not move the savings balance.
+
+**Decision 2 — a lapsed reservation is not a committed obligation, even while its status still
+reads `reserved`.** Every capacity calculation counts a reserved loan only while
+`reservation_expires_at` is still in the future. Nothing sweeps the table to rewrite statuses to
+`expired`, so a row can read `reserved` and contribute nothing to the committed total. The
+alternative — a scheduled job flipping statuses — was rejected because capacity would then be
+wrong for as long as the job was late, down, or between runs, and being wrong about capacity is
+the one failure this product cannot have. Expiry is therefore evaluated at read time, which makes
+it exact by construction. A background sweep may still be added later for tidiness, but it would
+be cosmetic: it could only ever agree with what the read-time check already computed.
+
+**Consequence:** `DATA-MODEL.md` describes the shape of the intent, and these two points are where
+the implementation is authoritative instead. Anything computing committed obligations must apply
+the expiry check; anything reading the ledger must filter by type rather than assuming every row
+is a savings movement.
+
+---
+
+### D025 — `notifications` is a real table from the start, and preferences live on `users`
+**Status:** Locked
+**Supersedes:** nothing. `docs/DATA-MODEL.md` describes neither of these, so this entry adds them
+rather than changing anything.
+
+**Decision 1 — the `notifications` table.** Blueprint 6.1 needs somewhere for "anything that
+needs the employee's attention" to live, and `DATA-MODEL.md` has no such table. It is:
+
+```
+notifications(id, user_id -> users.id, category, message, target_url, read_at nullable, created_at)
+```
+
+`category` is an enum rather than free text, because the screen renders an icon per category and
+a typo in a string would silently produce an unlabelled row. RLS is the narrowest in the schema:
+`user_id = auth.uid()`, for select and update only. A notification is addressed to one person and
+there is no reading over anyone's shoulder — not by a cooperative's officers, not by an admin.
+There is deliberately **no insert policy at all**, the same shape as `loans`: an employee cannot
+write their own notifications, because every notification is something the system or a
+cooperative did, not something its recipient claims happened. The write path arrives with the
+cooperative admin/officer blueprint.
+
+"Mark all as read" is a real `UPDATE` setting `read_at`, not a client-side flag. An employee who
+clears a backlog on their phone must find it cleared on their laptop, and the unread dot must
+mean the same thing to every device.
+
+**Decision 2 — notification preferences are a `jsonb` column on `users`, not a table.** There is
+exactly one preferences row per user and it is only ever read as a whole, alongside the user
+record the screen has already loaded. A separate table would add a join and a second RLS policy
+to express a relationship that is already one-to-one. `users.notification_preferences` is
+`jsonb not null default '{}'`, and a **missing key means opted in**: an employee who has never
+touched the toggles receives everything, and only an explicit `false` turns a category off. That
+way a category added later is on by default for everyone rather than silently off for every
+existing account, which is the failure mode a per-row-per-preference table would have had too.
+Preferences are a delivery choice, never a suppression of the record: a muted category is still
+written to `notifications` and still appears in the list. What it will eventually suppress is
+email about it.
+
+**This screen will show a genuine empty state in practice, and that is expected.** Nothing in the
+employee blueprint writes a notification row — every writer (a loan approved or rejected, a
+membership approved, a new public loan product) belongs to the cooperative admin/officer
+blueprint, which does not exist yet. No rows are seeded and none will be fabricated to make the
+screen look populated. This is the same call already made for the dashboard's trend indicator,
+which read "No history yet" until `savings_transactions` existed rather than drawing an invented
+line: a screen that is honestly empty is worth more than one that demonstrates well.
+
+---
+
+### D026 — The employee support address is `support@clarix.ng`, read from configuration
+**Status:** Provisional. The address shape is settled; the domain depends on the still-open
+production-domain question at the foot of this document, so confirm it before go-live.
+
+**Decision:** Help / Support (blueprint 6.3) sends its contact form to a single support mailbox,
+and shows that same address on screen as a `mailto:` link so an employee is never dependent on
+the form working. The address is `support@clarix.ng` unless `CLARIX_SUPPORT_EMAIL` overrides it,
+so the pilot can point support at a real inbox without a code change.
+
+**Rationale:** nothing in the repository settled a support address, and the blueprint is explicit
+that this stage gets a mailbox rather than a ticketing system. A role address rather than a
+person's own mailbox is the only choice that survives the pilot handing over to whoever runs
+support next. Showing the address alongside the form is not redundancy for its own sake: the form
+sends through Resend, and Resend cannot deliver to anyone but the account owner until a sending
+domain is verified, so for now the `mailto:` link is the path that actually works. The form is
+built correctly against the real API and starts working the moment that domain lands, which is
+the same blocker already holding up signup confirmation mail.
+
+**What still needs confirming:** whether `clarix.ng` is the domain that gets registered. If the
+production domain lands somewhere else, this address moves with it and this entry is amended
+rather than replaced.
+
 ---
 
 ## Open, not yet decided

@@ -94,6 +94,30 @@ This means the remote `Clarix` Supabase project *is* the development database �
 separate local Postgres. Be deliberate with destructive migrations for exactly that reason (no
 "just reset my local db" escape hatch exists here).
 
+**Who applies a migration, and how — see `DECISIONS.md` D023.** There are two sanctioned paths,
+and which one applies depends on who is at the keyboard:
+
+| Operator | How the migration is applied | Why |
+|---|---|---|
+| A human maintainer | `supabase db push`, as above | They already hold the database password. |
+| An AI coding agent | The Supabase Management API, using the agent's own authorized project connection | The agent is deliberately never given the database password, which `db push` requires. |
+
+Both paths are bound by the same three rules, which are the part that actually matters:
+
+1. **The `.sql` file under `supabase/migrations/` is written first and is the artefact of
+   record.** Applying it is a separate, second step.
+2. **When an agent applies a migration, its local filename timestamp is reconciled to the version
+   the API recorded**, so a later `supabase db push` by a human sees it as already applied rather
+   than trying to run it twice.
+3. **Neither path may ever apply DDL that was not written down first** — no ad-hoc statements
+   typed at the database, no edits through the dashboard's SQL editor. This is unchanged from
+   `DATA-MODEL.md` § "Migration discipline" and applies to humans and agents alike.
+
+If you want an agent to use `db push` in future, the way to do it without handing over a raw
+password in a prompt is to set `SUPABASE_DB_PASSWORD` in the maintainer's own shell profile, or to
+run `supabase link` once interactively so the CLI caches the credential in the OS keyring. That
+option is recorded and deliberately not adopted — see D023 for the reasoning.
+
 **Docker-dependent testing (pgTAP, full RLS integration tests) never runs locally either.** It
 runs inside GitHub Actions, on GitHub's hosted Ubuntu runner, which provides its own Docker —
 the cost lands on GitHub's infrastructure, never on this laptop. Supabase officially documents

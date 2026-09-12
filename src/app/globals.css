@@ -1,0 +1,453 @@
+@import "tailwindcss";
+@import "shadcn/tailwind.css";
+
+/* ---------------------------------------------------------------------------
+   Clarix design tokens.
+
+   Every value below is transcribed from DESIGN_SYSTEM.md. Nothing here is invented,
+   and no other hue exists in the product. If a screen needs a colour, a type size, a
+   spacing step, a radius, a shadow or a spring that is not defined here, that is a
+   design-system question to raise, not a value to add locally.
+
+   The shadcn/base-ui variables (--background, --primary, --card, ...) are deliberately
+   remapped onto Clarix values rather than left at their neutral preset, so any base-ui
+   component added later inherits the Clarix palette instead of demo styling.
+--------------------------------------------------------------------------- */
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  /* Palette — DESIGN_SYSTEM.md § Color */
+  --color-background: var(--clarix-background);
+  --color-surface: var(--clarix-surface);
+  --color-border: var(--clarix-border);
+  --color-text: var(--clarix-text-primary);
+  --color-text-secondary: var(--clarix-text-secondary);
+  --color-text-muted: var(--clarix-text-muted);
+  --color-navy: var(--clarix-brand-primary);
+
+  /* The fixed dark surface: the landing page header and the auth panel stay navy in BOTH
+     themes, because they are a deliberate dark ground rather than a themed surface. This is
+     the same #0B1220 as brand-primary's light value, held constant on purpose — without it,
+     `bg-navy` would flip to the pale dark-mode brand-primary and the header would invert. */
+  --color-navy-surface: #0b1220;
+  --color-on-navy: #ffffff;
+  --color-emerald: var(--clarix-brand-accent);
+  --color-indigo: var(--clarix-brand-secondary);
+  --color-success: var(--clarix-success);
+  --color-warning: var(--clarix-warning);
+  --color-danger: var(--clarix-danger);
+
+  /* Radius — DESIGN_SYSTEM.md § Spacing, radius, shadow.
+     14px on mobile, 16px on desktop, 20px for large feature cards. */
+  --radius-card: var(--clarix-radius-card);
+  --radius-feature: 20px;
+  --radius: var(--clarix-radius-card);
+
+  /* Shadow — one subtle elevation only. Prefer the 1px border wherever both would stack. */
+  --shadow-elevation: 0 4px 20px rgba(15, 23, 42, 0.04);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* shadcn / base-ui surface mapping */
+  --color-foreground: var(--clarix-text-primary);
+  --color-card: var(--clarix-surface);
+  --color-card-foreground: var(--clarix-text-primary);
+  --color-popover: var(--clarix-surface);
+  --color-popover-foreground: var(--clarix-text-primary);
+  --color-primary: var(--clarix-brand-primary);
+  --color-primary-foreground: var(--clarix-surface);
+  --color-secondary: var(--clarix-background);
+  --color-secondary-foreground: var(--clarix-text-primary);
+  --color-muted: var(--clarix-background);
+  --color-muted-foreground: var(--clarix-text-secondary);
+  --color-accent: var(--clarix-brand-accent);
+  --color-accent-foreground: var(--clarix-surface);
+  --color-destructive: var(--clarix-danger);
+  --color-input: var(--clarix-border);
+  --color-ring: var(--clarix-brand-secondary);
+}
+
+:root {
+  color-scheme: light;
+
+  --clarix-background: #f6f8fb;
+  --clarix-surface: #ffffff;
+  --clarix-border: #e7eaf0;
+  --clarix-text-primary: #111827;
+  --clarix-text-secondary: #667085;
+  --clarix-text-muted: #98a2b3;
+  --clarix-brand-primary: #0b1220;
+  --clarix-brand-accent: #16a57a;
+  --clarix-brand-secondary: #4f46e5;
+  --clarix-success: #16a57a;
+  --clarix-warning: #f59e0b;
+  --clarix-danger: #dc4a4a;
+
+  --clarix-radius-card: 14px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --clarix-radius-card: 16px;
+  }
+}
+
+/* Dark pairs — DESIGN_SYSTEM.md § Color, right-hand column. Carried through as the
+   components are written rather than retrofitted later. */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+
+    --clarix-background: #0b0b0e;
+    --clarix-surface: #151517;
+    --clarix-border: #2c2c30;
+    --clarix-text-primary: #f5f5f7;
+    --clarix-text-secondary: #9c9ca6;
+    --clarix-text-muted: #6b6b75;
+    --clarix-brand-primary: #e5e7eb;
+    --clarix-brand-accent: #34d399;
+    --clarix-brand-secondary: #818cf8;
+    --clarix-success: #34d399;
+    --clarix-warning: #fbbf24;
+    --clarix-danger: #f87171;
+  }
+}
+
+/* Scoped light palette.
+   The landing header and the auth panel are a FIXED navy ground in both themes. A card sitting
+   on that ground must stay a bright surface, or in dark mode it becomes near-black on navy —
+   three nearly identical dark greys stacked on each other, which is both unreadable and exactly
+   the "card inside card inside card" trap DESIGN_SYSTEM.md's checklist names. Applying this
+   class re-declares the same light token values for a subtree, so the hero preview renders as a
+   crisp product window on navy in both themes without a single off-palette colour. */
+.theme-light {
+  color-scheme: light;
+
+  --clarix-background: #f6f8fb;
+  --clarix-surface: #ffffff;
+  --clarix-border: #e7eaf0;
+  --clarix-text-primary: #111827;
+  --clarix-text-secondary: #667085;
+  --clarix-text-muted: #98a2b3;
+  --clarix-brand-primary: #0b1220;
+  --clarix-brand-accent: #16a57a;
+  --clarix-brand-secondary: #4f46e5;
+  --clarix-success: #16a57a;
+  --clarix-warning: #f59e0b;
+  --clarix-danger: #dc4a4a;
+}
+
+/* Scoped dark palette — the mirror of .theme-light above, and needed for the same reason.
+   The auth page's left panel is a fixed navy ground. Without this, its nested components
+   resolved --clarix-text-primary from the ROOT theme, so in light mode the capacity figure
+   rendered near-black on navy and was effectively invisible. Scoping the dark palette to that
+   subtree makes every token inside it correct for the ground it is actually sitting on. */
+.theme-dark {
+  color-scheme: dark;
+
+  --clarix-background: #0b0b0e;
+  --clarix-surface: #151517;
+  --clarix-border: #2c2c30;
+  --clarix-text-primary: #f5f5f7;
+  --clarix-text-secondary: #9c9ca6;
+  --clarix-text-muted: #6b6b75;
+  --clarix-brand-primary: #e5e7eb;
+  --clarix-brand-accent: #34d399;
+  --clarix-brand-secondary: #818cf8;
+  --clarix-success: #34d399;
+  --clarix-warning: #fbbf24;
+  --clarix-danger: #f87171;
+}
+
+.dark {
+  color-scheme: dark;
+
+  --clarix-background: #0b0b0e;
+  --clarix-surface: #151517;
+  --clarix-border: #2c2c30;
+  --clarix-text-primary: #f5f5f7;
+  --clarix-text-secondary: #9c9ca6;
+  --clarix-text-muted: #6b6b75;
+  --clarix-brand-primary: #e5e7eb;
+  --clarix-brand-accent: #34d399;
+  --clarix-brand-secondary: #818cf8;
+  --clarix-success: #34d399;
+  --clarix-warning: #fbbf24;
+  --clarix-danger: #f87171;
+}
+
+/* ---------------------------------------------------------------------------
+   Type scale — DESIGN_SYSTEM.md § Typography, exactly.
+   Mobile size is the base; the desktop size takes over at the md breakpoint.
+--------------------------------------------------------------------------- */
+
+@utility type-display {
+  font-size: 40px;
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  @media (width >= 48rem) {
+    font-size: 64px;
+  }
+}
+
+@utility type-page-title {
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  @media (width >= 48rem) {
+    font-size: 32px;
+  }
+}
+
+@utility type-section {
+  font-size: 18px;
+  line-height: 1.35;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  @media (width >= 48rem) {
+    font-size: 20px;
+  }
+}
+
+@utility type-card-title {
+  font-size: 16px;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+@utility type-body {
+  font-size: 14px;
+  line-height: 1.6;
+  font-weight: 400;
+  @media (width >= 48rem) {
+    font-size: 16px;
+  }
+}
+
+@utility type-secondary {
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 400;
+  @media (width >= 48rem) {
+    font-size: 14px;
+  }
+}
+
+@utility type-caption {
+  font-size: 12px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+
+@utility type-kpi {
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  @media (width >= 48rem) {
+    font-size: 36px;
+  }
+}
+
+/* Every financial figure in the product is tabular so digits do not jitter as they roll. */
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+   The landing entrance choreography.
+
+   Adapted from the Watermelon hero-32 component's staggered entrance — nav drops in, title
+   rises with more weight, subtitle follows lighter, call to action scales into place — which is
+   the part of that component worth keeping (docs/planning/clarix-design-system.md § 4: keep the
+   choreography, replace the content entirely).
+
+   Two deliberate departures from the original:
+
+   1. It is CSS, not the animation library. hero-32 renders each element at opacity 0 and waits
+      for React to animate it in, which left this page blank below the nav for several seconds
+      on the deployed build. A CSS animation runs without hydration, and the resting state of
+      every element here is visible, so if animations never run the content is simply there.
+
+   2. The four different spring configs in the original are collapsed into one. DESIGN_SYSTEM.md
+      § Motion permits exactly one spring and forbids a different stiffness/damping per
+      component, so `--ease-spring` below IS springStandard from src/lib/motion.ts — stiffness
+      260, damping 22, mass 0.9 — solved numerically and sampled as a CSS linear() easing. It
+      overshoots 3.9% and settles in 566ms, exactly as the JavaScript spring does. The
+      choreography therefore comes entirely from stagger delays, not from differing physics.
+--------------------------------------------------------------------------- */
+
+:root {
+  --ease-spring: linear(
+    0, 0.0257, 0.0914, 0.182, 0.286, 0.3943, 0.5004, 0.5998, 0.6896, 0.7682, 0.8352, 0.8906,
+    0.9351, 0.9697, 0.9957, 1.0143, 1.0268, 1.0343, 1.038, 1.0387, 1.0373, 1.0346, 1.0309,
+    1.0268, 1.0226, 1.0185, 1.0148, 1.0114, 1.0084, 1.0059, 1.0039, 1.0022, 1.0009, 1, 0.9993,
+    0.9989, 0.9986, 0.9985, 0.9985, 0.9986, 0.9987
+  );
+  --duration-spring: 566ms;
+}
+
+@keyframes clarix-drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.97);
+    filter: blur(8px);
+  }
+}
+
+@keyframes clarix-title-rise {
+  from {
+    opacity: 0;
+    transform: translateY(36px);
+    filter: blur(10px);
+  }
+}
+
+@keyframes clarix-rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+    filter: blur(4px);
+  }
+}
+
+@keyframes clarix-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.92);
+  }
+}
+
+/* `backwards` rather than `both`: the element holds its hidden first frame through the stagger
+   delay, then animates. The resting state stays the authored one, so nothing is left pinned to
+   an animated value if the animation is interrupted. */
+@utility enter-drop {
+  animation: clarix-drop-in var(--duration-spring) var(--ease-spring) backwards;
+}
+
+@utility enter-title {
+  animation: clarix-title-rise var(--duration-spring) var(--ease-spring) backwards;
+}
+
+@utility enter-rise {
+  animation: clarix-rise var(--duration-spring) var(--ease-spring) backwards;
+}
+
+@utility enter-scale {
+  animation: clarix-scale-in var(--duration-spring) var(--ease-spring) backwards;
+}
+
+/* ---------------------------------------------------------------------------
+   The desktop sidebar rail.
+
+   Its width is driven from a class the inline theme script sets before first paint, so a viewer
+   who collapsed it last visit never sees it snap from one width to the other after hydration.
+   (A data attribute was tried first and did not survive hydration — see theme-script.tsx.) The transition uses --ease-spring, which IS springStandard from src/lib/motion.ts
+   solved as a CSS easing — the same physics as every JavaScript-driven spring in the product,
+   not a second motion vocabulary.
+--------------------------------------------------------------------------- */
+
+:root {
+  --sidebar-width: 248px;
+}
+
+:root.rail-collapsed {
+  --sidebar-width: 76px;
+}
+
+/* The loan-amount slider (blueprint 5.5). Styled to the tokens rather than left as the browser
+   default, which is one of the fastest ways a screen reads as unfinished. Track is the neutral
+   border tone, the filled portion and thumb are emerald, and the thumb is a 20px target with a
+   generous hit area for a thumb on a phone. */
+@utility clarix-slider {
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+
+  &::-webkit-slider-runnable-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--clarix-border);
+  }
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-top: -7px;
+    border-radius: 999px;
+    background: var(--clarix-brand-accent);
+    border: 3px solid var(--clarix-surface);
+    box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+  }
+
+  &::-moz-range-track {
+    height: 6px;
+    border-radius: 999px;
+    background: var(--clarix-border);
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 999px;
+    background: var(--clarix-brand-accent);
+    border: 3px solid var(--clarix-surface);
+  }
+
+  &:focus-visible::-webkit-slider-thumb {
+    outline: 2px solid var(--clarix-brand-secondary);
+    outline-offset: 2px;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--clarix-border);
+  }
+
+  /* Was `h-full` on <html> in JSX. It has to be CSS now, because <html> must carry no React
+     className for the pre-paint theme script's classes to survive hydration. */
+  html {
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--clarix-background);
+    color: var(--clarix-text-primary);
+    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* DESIGN_SYSTEM.md § Motion: respect prefers-reduced-motion globally — every spring
+     becomes an instant/fade fallback. Motion's own `useReducedMotion` handles the
+     JS-driven springs; this covers everything CSS-driven. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      /* Zeroed too, or a staggered entrance would simply hold its invisible first frame
+         for the length of the delay instead of animating. */
+      animation-delay: 0ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--clarix-brand-accent) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--clarix-brand-secondary);
+    outline-offset: 2px;
+  }
+}

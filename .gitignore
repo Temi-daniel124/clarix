@@ -1,10 +1,20 @@
 node_modules/
 .next/
+out/
+
+# Environment files. The example template is the one exception and IS committed — it carries
+# variable names only, never values (SECURITY.md).
 .env
-.env.local
 .env*.local
+.env.local
+!.env.local.example
+
 .vercel
 *.log
 .DS_Store
 Thumbs.db
 supabase/.temp/
+
+# Next.js / TypeScript build artefacts
+*.tsbuildinfo
+next-env.d.ts

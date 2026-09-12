@@ -28,6 +28,50 @@ migration that creates the table.
   - _(none yet — add an entry the first time a service-role-key code path is written, naming the
     file and why RLS can't be used there instead)_
 
+## Elevated database privileges that are not the service-role key
+
+Four functions under `supabase/migrations/` run as `SECURITY DEFINER`, which means they bypass
+RLS. They are listed here for the same reason the service-role list exists — so that the set of
+things able to see past the boundary is written down rather than discovered later:
+
+- `is_platform_admin()`, `is_active_staff(uuid)` and `is_active_cooperative_admin(uuid)` read
+  `cooperative_staff_roles` from inside policies attached to that same table, which would
+  otherwise recurse infinitely. Each takes no free-form input, returns only a boolean about the
+  caller's own roles, and pins its `search_path`. `EXECUTE` is revoked from `anon` and kept for
+  `authenticated` — that is required, not an oversight: a policy expression is evaluated with the
+  querying role's privileges, so revoking it would disable every policy in the schema.
+- `handle_new_auth_user()` is the signup trigger that writes the matching `public.users` row
+  (`docs/DECISIONS.md` D021). `EXECUTE` is revoked from both `anon` and `authenticated`, so it
+  exists only as a trigger and not as a callable PostgREST endpoint.
+- `capacity_for_user(numeric)` and `submit_loan_application(uuid, numeric, integer, uuid)` are
+  the cross-cooperative capacity calculation and the reservation transaction (D003, D008).
+
+  **Why RLS cannot be used directly here.** Committed obligations must be summed across every
+  cooperative the employee belongs to. The RLS policies on `loans` deliberately refuse that —
+  they scope each staff member to their own cooperative's rows, and they must keep doing so.
+  There is no policy that could express "sum across all cooperatives but reveal none of them",
+  because RLS filters rows and what is needed here is an aggregate over rows the caller may not
+  see individually. That is precisely D003's narrow exception.
+
+  **What keeps it narrow.** Both functions return only an aggregate and a verdict: one summed
+  monthly figure, a cap, a remainder, and eligible/not-eligible. Neither returns another
+  cooperative's identity, its savings balances, its loan rows, or any figure attributable to a
+  particular cooperative — a caller learns what they owe in total, never to whom. Both derive the
+  caller from `auth.uid()` rather than from an argument, and `submit_loan_application` refuses
+  any `membership_id` that is not the caller's own and active, so an employee can only ever
+  reserve through their own record. `EXECUTE` is revoked from `anon` and granted to
+  `authenticated` only.
+
+  `submit_loan_application` is also the ONLY write path to a reservation: `loans` has no insert
+  policy for employees at all, which is what forces every reservation through the advisory lock
+  that makes it safe under concurrency.
+
+Table-level privileges are granted to `authenticated` only, verb by verb, matching the policies
+that actually exist; `anon` holds no privilege on any table in the `public` schema. Worth
+remembering when reading a policy: a GRANT is checked *before* RLS, so a missing grant denies
+everything regardless of policy, and a generous grant still leaves RLS deciding which rows are
+reachable.
+
 ## Secrets
 
 - No secret (Supabase keys, Resend API key, the AI payslip-OCR API key) is ever committed to the
@@ -91,7 +135,15 @@ salary figures, IPPIS numbers, or payslip files in cleartext gets called out her
 before it's added — add an entry to the list below the first time such a dependency is
 introduced.
 
-- _(none yet)_
+- **Resend**, reached over its HTTP API from `src/lib/support.ts`, carries the Help screen's
+  support messages (blueprint 6.3, `docs/DECISIONS.md` D026). It is listed here because it is the
+  first outbound path that carries anything a person wrote inside Clarix to a third party, and it
+  is worth being precise about what it does and does not carry. It sends the employee's name,
+  their email address, and the message they typed. It deliberately does **not** carry the IPPIS
+  number, any salary figure, or anything from a payslip: an employee's payroll identifier is
+  sensitive personal data under the NDPA, and a support question is not a reason for it to leave
+  the system. Anyone extending this path must keep that true — the account email is enough to
+  find a person inside Clarix.
 
 ## Incident posture
 
