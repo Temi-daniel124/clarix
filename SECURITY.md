@@ -70,6 +70,48 @@ things able to see past the boundary is written down rather than discovered late
   policy for employees at all, which is what forces every reservation through the advisory lock
   that makes it safe under concurrency.
 
+- `platform_overview()` and `platform_cooperative_directory()` are the Super Admin's only reads,
+  and they exist because **the alternative was a policy that would have handed this role every
+  member's savings balance in order to render a number on a card.**
+
+  **Why RLS cannot do this.** A Super Admin holds no membership and no staff role anywhere, by
+  design. `cooperative_memberships_select_staff` takes a cooperative-scoped permission,
+  `cooperative_staff_roles_select_same_cooperative` and `staff_invitations_select_staff` take
+  being staff of that cooperative, and `users_select_own_cooperative_members` reaches another
+  person's row only through a membership at a cooperative the caller staffs. The Platform
+  Dashboard needs a headcount and a pending-invite count; the directory needs a member count, an
+  officer count, and the name of the person invited to run each cooperative. Every one of those
+  is an aggregate, or a fact about staff, over rows the caller must never read individually — the
+  same shape as `capacity_for_user()` above, and the same reason a policy cannot express it. A
+  select policy admitting platform admins to `cooperative_memberships` would have satisfied the
+  screens and destroyed the boundary in the same line.
+
+  **What keeps them narrow.** Both check `is_platform_admin()` first and raise `42501` otherwise,
+  so a cooperative admin calling them directly is refused. Both take **no arguments at all**,
+  which is what makes them un-pointable: there is no member id, cooperative id or filter a caller
+  could supply to aim them at a person. Their declared return types are the whole contract —
+  `platform_overview()` returns four integers, and the directory returns one row per cooperative
+  carrying counts, timestamps, status, and the **staff** Admin's name and email. Neither can
+  return a member's name, a savings balance, a loan, or a salary figure, because no such column
+  exists in either signature. `EXECUTE` is revoked from `anon` and granted to `authenticated`
+  only.
+
+  **What they deliberately do not open.** Reaching an actual member's records stays with the
+  time-boxed, logged `access_grants` flow described below and in the Super Admin blueprint's Part
+  7, which is not built. `ROLES-AND-PERMISSIONS.md` calls the absence of standing access "a hard
+  requirement, not a convenience shortcut, even for debugging", and a count is not a step toward
+  it: the Cooperative Detail screen these feed has no view-members or view-loans action, and that
+  absence is load-bearing rather than unfinished.
+
+- `invite_cooperative_staff(...)` has **two** legitimate callers as of migration 019: that
+  cooperative's own active admin, inviting an officer (admin blueprint 7.2), and a platform admin
+  naming the admin of a cooperative they have just created (super-admin 5.3). The second was
+  added by widening the existing caller check rather than by adding a second function, because
+  D027 settled that a staff invitation is a database row written by exactly one narrow elevated
+  function — two functions writing the same row would be two places for the claim logic to drift.
+  It still cannot do anything but write an invitation, and it still derives the inviter from
+  `auth.uid()`.
+
 - `staff_has_permission(uuid, text)` answers whether the caller may do one specific thing at one
   cooperative, and is called from inside policies — so, like `is_active_staff()`, `EXECUTE` stays
   with `authenticated`: a policy expression runs with the querying role's privileges, and
