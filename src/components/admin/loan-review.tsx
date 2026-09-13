@@ -9,6 +9,8 @@ import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
 import { clampRatio, formatNaira } from "@/lib/format";
 import { LoanDecision } from "./loan-decision";
+import { PayslipEvidence } from "./payslip-evidence";
+import type { ReviewPayslip } from "@/lib/supabase/payslip-review";
 import type { LoanApplication } from "@/lib/supabase/admin-loans";
 
 type Application = LoanApplication & {
@@ -32,9 +34,22 @@ type Application = LoanApplication & {
 export function LoanReview({
   application,
   canDecide,
+  payslip,
+  salaryGross,
+  salaryNet,
+  salaryConfirmedAt,
 }: {
   application: Application;
   canDecide: boolean;
+  /**
+   * The salary evidence behind this application, present only while it is open to this reviewer
+   * (DECISIONS.md D031). Null covers three cases that need no distinguishing on screen: the member
+   * never uploaded one, the application has been decided, or this account cannot decide loans.
+   */
+  payslip: ReviewPayslip | null;
+  salaryGross: number | null;
+  salaryNet: number | null;
+  salaryConfirmedAt: string | null;
 }) {
   const pending = application.status === "reserved";
   const requiredSavings = application.product
@@ -185,6 +200,17 @@ export function LoanReview({
           </p>
         )}
       </section>
+
+      {payslip ? (
+        <div className="mt-8">
+          <PayslipEvidence
+            payslip={payslip}
+            salaryGross={salaryGross}
+            salaryNet={salaryNet}
+            confirmedAt={salaryConfirmedAt}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-8">
         {pending ? (

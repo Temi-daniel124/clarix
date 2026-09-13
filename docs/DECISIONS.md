@@ -526,6 +526,62 @@ record in that cooperative's own audit log, where its admin reads it.
 
 ---
 
+### D031 — A cooperative's reviewer may open the payslip behind an application they are deciding, and only then
+
+**Decided:** 2026-09-13, closing a fraud gap nobody had accounted for.
+
+**Decision:** while a member has a loan application awaiting decision at a cooperative, staff of
+that cooperative who hold the power to decide it can open and download the payslip the member's
+salary figure came from. Outside that window, nothing changes: the document is the member's alone,
+exactly as migration 004 established.
+
+**What this reverses, and why that migration was not wrong.** Migration 004 scoped payslips to the
+uploading employee and said so plainly: "cooperative staff have NO access to these rows or these
+files, not even for members of their own cooperative. The eligibility figures they are entitled to
+see come from `users.salary_gross` and the loan ledger, never from the document itself." That
+reasoning was sound for what it considered. What it did not consider is that the figure it points
+at is **self-reported**. A member uploads a payslip, confirms the numbers on a review screen, and
+those numbers become the basis of everybody's eligibility arithmetic thereafter. Nothing in the
+system has ever compared the confirmed figure to the document behind it, because nothing in the
+system could see the document. A member who overstates their gross pay raises their own deduction
+cap, and a cooperative approving money against that cap has no way to notice.
+
+That is not a hypothetical: it is the one number the entire product rests on, and it was the one
+number nobody could check.
+
+**Why scoped to the review rather than granted generally.** The NDPA principle this schema is built
+on is that no screen should expose more than its purpose requires. "Staff can see member payslips"
+would be a general capability serving an occasional purpose. What is actually needed is narrower and
+has a natural shape: a reviewer, deciding a specific application, checking the figure that decision
+rests on against its evidence. So the access exists exactly while that application is waiting, ends
+when it is decided or lapses, and belongs only to people who can decide it. An officer who may see
+members but not decide loans gains nothing here, which is the same default-deny rule the rest of
+their permissions follow.
+
+It is narrower than general access in three ways at once: only during a live application, only for
+the document the salary figure actually came from, and only for staff with approval permission.
+
+**The alternatives, and why they lose.** Showing the extracted figures without the document would
+mean trusting the same self-report the check exists to test. Letting the member attach a payslip to
+each application would be more ceremony for the same file and would leave the confirmed salary
+unchecked anyway. Requiring the member's per-application consent sounds better and is worse: consent
+that is required to get a loan is not consent, and it would teach members that refusing is what
+guilty people do.
+
+**Explicitly deferred, not built:** periodic re-verification of an aging payslip. A salary confirmed
+two years ago is weak evidence regardless of who can see it, and prompting for a fresh one on a
+schedule is a real control worth having. It is not needed to close this gap, because the gap was
+that nobody could ever check the document at all, and the scoped review access is the deterrent
+that matters now. Automatic extraction and machine verification stay P1-deferred where
+`docs/MVP-SCOPE.md` already puts them; this decision deliberately does not touch them.
+
+**Consequence:** `SECURITY.md`'s payslip section and pgTAP suite 002 both change. Suite 002 keeps
+its original assertion — an officer who may see members still cannot reach a payslip — because that
+is still true and is now the interesting half. What it gains is the other half: with an application
+waiting and the permission to decide it, the reviewer can; once decided, they cannot again.
+
+---
+
 ## Standing operational constraints
 
 Not decisions — facts about the environment that keep being rediscovered and re-proposed as work.

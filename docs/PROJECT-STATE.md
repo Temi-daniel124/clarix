@@ -804,6 +804,42 @@ verified against the live project from both directions.
       does not do something it says so: there is no automatic deletion on a schedule, and the
       notice admits that rather than describing a retention policy nobody implemented.
 
+### The payslip fraud gap, closed (D031)
+
+The salary figure every eligibility calculation in Clarix rests on is **self-reported**: a member
+uploads a payslip, confirms the numbers on a review screen, and those numbers become the deduction
+cap every cooperative then lends against. Migration 004 scoped payslips to the uploading employee
+and nobody else, which was right for what it considered and left nobody able to compare the
+confirmation with the document. A member who overstated their gross pay raised their own cap, and
+the cooperative approving money against it had no way to notice.
+
+- [x] **Scoped to the review, not granted generally.** Three conditions hold at once or the window
+      is shut: an application still awaiting decision at that cooperative, the permission to decide
+      it, and the document being the salary evidence rather than any file the member ever uploaded.
+      All three live in one function, `payslip_under_review()`, so there is one definition rather
+      than two that could drift.
+- [x] **Both halves, row and file.** A policy on `documents` and another on `storage.objects`. A
+      reviewer who could see the metadata but not open the file would be the worst of both.
+- [x] **Read-only.** No insert, update or delete policy for a reviewer anywhere. pgTAP asserts that
+      an attempted write leaves the document untouched.
+- [x] **The window closes by itself**, with nothing having to run: expiry is arithmetic against
+      `now()`, as everywhere else (D024).
+- [x] **Verified live, in four directions.** The reviewing admin sees the document while an
+      application waits; the platform operator sees nothing at the same moment; the same admin sees
+      nothing once the application is decided; and in the browser the evidence panel is present
+      during review and gone afterwards. A signed URL was issued and lasts sixty seconds.
+- [x] **pgTAP suite 002 was rewritten rather than widened.** It keeps its original assertion, that
+      an officer who may see members cannot reach a payslip, because D031 deliberately leaves that
+      true. What it gains is the shape of the doorway: the permission alone opens nothing, both
+      together open it, the read is read-only, and the decision closes it.
+- [x] **The reviewer sees the confirmed figures beside the document**, which is the point of the
+      panel: the comparison, not the link.
+- [ ] **Periodic re-verification of an aging payslip is explicitly deferred** (D031). A salary
+      confirmed two years ago is weak evidence regardless of who can read it, and prompting for a
+      fresh one on a schedule is a real control worth having later. It is not what closed this gap.
+- [ ] **Automatic extraction and machine verification stay P1-deferred** where `docs/MVP-SCOPE.md`
+      already puts them. D031 deliberately does not touch them.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
