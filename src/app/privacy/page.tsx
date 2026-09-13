@@ -136,9 +136,12 @@ export default function PrivacyPage() {
             </li>
             <li>
               <strong className="text-text">Your payslip document.</strong> The file you upload is
-              stored privately and today is readable by you alone. No cooperative&rsquo;s staff and
-              no platform operator can open it. What a cooperative sees is the salary figure taken
-              from it, not the document.
+              stored privately and is normally readable by you alone. There is one exception:
+              while you have a loan application waiting for a decision at a cooperative, the people
+              there who decide it can open the payslip your salary figure came from, so they can
+              check that figure against its evidence before lending against it. That access ends
+              the moment your application is decided or lapses. Nobody else can open it at any
+              time, and nobody can change it.
             </li>
             <li>
               <strong className="text-text">

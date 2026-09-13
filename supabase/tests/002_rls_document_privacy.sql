@@ -3,15 +3,31 @@
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
 -- A payslip carries a named individual's salary and their IPPIS number, which makes it the most
--- sensitive artefact in the product. SECURITY.md scopes it to the uploading employee and nobody
--- else — not cooperative staff of a cooperative that employee belongs to, and not Super Admin.
--- This suite is what stops that narrowing from being quietly widened later.
+-- sensitive artefact in the product. It belongs to the employee who uploaded it.
+--
+-- There is exactly one exception, added deliberately in DECISIONS.md D031: while a member has an
+-- application awaiting decision, staff of that cooperative who can decide it may open the payslip
+-- the salary figure came from, because that figure is self-reported and was until then
+-- uncheckable. This suite pins the exception as tightly as it pins the rule, which means asserting
+-- all four of its edges:
+--
+--   * the power to decide loans alone opens nothing, without an application waiting,
+--   * a reviewer with both can open it, and can only read it,
+--   * an officer who may see members but not decide loans still cannot, and
+--   * the same reviewer cannot once the application is decided.
+--
+-- That a platform operator never can, at any point, is checked live against the project rather
+-- than here: this suite has no platform-admin fixture, and adding one to assert a negative that
+-- `payslip_under_review()` cannot express for them would be testing the fixture.
+--
+-- Widening the old assertion would have tested that the door opens. What matters is the shape of
+-- the doorway.
 
 create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(9);
+select plan(14);
 
 select has_table('public', 'documents', 'documents exists');
 
@@ -132,6 +148,117 @@ select is(
     where id = 'dddddddd-dddd-dddd-dddd-dddddddddddd'),
   'pending_review',
   'an unrelated employee cannot write to someone else''s payslip record'
+);
+
+-- ---------------------------------------------------------------------------
+-- The D031 exception, and its four edges
+-- ---------------------------------------------------------------------------
+
+reset role;
+
+-- The officer gains the power to decide loans. On its own that changes nothing, because there is
+-- no application to decide.
+update public.cooperative_staff_roles
+   set permissions = '{"can_view_members": true, "can_approve_loans": true}'::jsonb
+ where user_id = '55555555-5555-5555-5555-555555555555';
+
+-- The payslip has to be the salary evidence for the exception to apply at all.
+update public.users
+   set salary_source_doc_id = 'dddddddd-dddd-dddd-dddd-dddddddddddd'
+ where id = '44444444-4444-4444-4444-444444444444';
+
+set local role authenticated;
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"55555555-5555-5555-5555-555555555555","role":"authenticated"}',
+  true
+);
+
+select is(
+  (select count(*)::int from public.documents),
+  0,
+  'the power to decide loans alone opens nothing: there has to be an application waiting'
+);
+
+-- Now there is one.
+reset role;
+
+insert into public.loans (id, membership_id, requested_amount, monthly_repayment, tenure_months,
+                          status, reserved_at, reservation_expires_at)
+select 'aaaaaaaa-cccc-cccc-cccc-cccccccccccc', m.id, 120000, 10000, 12,
+       'reserved', now(), now() + interval '7 days'
+  from public.cooperative_memberships m
+ where m.user_id = '44444444-4444-4444-4444-444444444444'
+   and m.cooperative_id = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+ limit 1;
+
+set local role authenticated;
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"55555555-5555-5555-5555-555555555555","role":"authenticated"}',
+  true
+);
+
+select is(
+  (select count(*)::int from public.documents),
+  1,
+  'with an application waiting, the reviewer can open the payslip the salary figure came from'
+);
+
+-- Reading is all it is. The member''s document is not the reviewer''s to change.
+update public.documents
+   set review_status = 'corrected'
+ where id = 'dddddddd-dddd-dddd-dddd-dddddddddddd';
+
+select is(
+  (select review_status::text from public.documents
+    where id = 'dddddddd-dddd-dddd-dddd-dddddddddddd'),
+  'pending_review',
+  'and can only read it: there is no write path for a reviewer, only a window to look'
+);
+
+-- An officer who may see members but not decide loans is back outside, which is the assertion
+-- this suite started life making and which D031 deliberately left true.
+reset role;
+
+update public.cooperative_staff_roles
+   set permissions = '{"can_view_members": true}'::jsonb
+ where user_id = '55555555-5555-5555-5555-555555555555';
+
+set local role authenticated;
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"55555555-5555-5555-5555-555555555555","role":"authenticated"}',
+  true
+);
+
+select is(
+  (select count(*)::int from public.documents),
+  0,
+  'an officer who may see members but not decide loans still cannot, application or not'
+);
+
+-- And once the application is decided, the window closes with nothing having run.
+reset role;
+
+update public.cooperative_staff_roles
+   set permissions = '{"can_view_members": true, "can_approve_loans": true}'::jsonb
+ where user_id = '55555555-5555-5555-5555-555555555555';
+
+update public.loans set status = 'rejected'
+ where id = 'aaaaaaaa-cccc-cccc-cccc-cccccccccccc';
+
+set local role authenticated;
+select set_config(
+  'request.jwt.claims',
+  '{"sub":"55555555-5555-5555-5555-555555555555","role":"authenticated"}',
+  true
+);
+
+select is(
+  (select count(*)::int from public.documents),
+  0,
+  'and the moment the application is decided the payslip is the member''s alone again'
 );
 
 -- ---------------------------------------------------------------------------

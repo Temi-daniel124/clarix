@@ -224,8 +224,28 @@ reachable.
   requires.
 - Uploaded payslips are stored in a **private** Supabase Storage bucket — never a public bucket,
   never a publicly-guessable URL. Access is mediated by a signed URL or an RLS-equivalent storage
-  policy, scoped to the uploading employee (and, if ever needed for support, only through the
-  Access Grant flow below).
+  policy, scoped to the uploading employee, with **one deliberate exception** (DECISIONS.md D031)
+  and the Access Grant flow below.
+
+  **The exception, and why it is narrower than it sounds.** While a member has a loan application
+  awaiting decision at a cooperative, staff there who hold `can_approve_loans` may open the payslip
+  the member's salary figure came from. This exists because that figure is *self-reported* — a
+  member uploads a payslip, confirms the numbers, and those numbers become the deduction cap every
+  cooperative then lends against — and until D031 nothing in the system could compare the
+  confirmation to the document, because nothing could see the document.
+
+  Three conditions hold simultaneously or the window is shut, all expressed in one function,
+  `payslip_under_review()`: an application still awaiting decision at that cooperative, the
+  permission to decide it, and the document being the salary evidence rather than any file the
+  member ever uploaded. The window closes the moment the application is decided or lapses, with
+  nothing having to run — expiry is arithmetic against `now()`, as everywhere else (D024). There is
+  no insert, update or delete policy for a reviewer: it is a window to look, not a claim on the
+  document. Signed URLs for it last sixty seconds, so a link pasted into a chat or caught in a
+  screen share stops working almost immediately.
+
+  An officer who may see members but not decide loans reaches nothing here, and neither does a
+  platform operator at any point — reaching a member's records from that side stays with the
+  access-grant flow. pgTAP suite 002 asserts each of those edges.
 - The cross-cooperative eligibility lookup exposes only the aggregate figures the formula needs
   (salary basis, combined committed obligations, resulting capacity) — **never** another
   cooperative's savings balance or any other cooperative's private member data. This is not a UX
