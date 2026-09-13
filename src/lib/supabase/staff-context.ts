@@ -15,6 +15,13 @@ export type StaffContext = {
   name: string | null;
   email: string | null;
   roles: StaffRole[];
+  /**
+   * Whether this account operates the platform itself (super-admin blueprint 1.1). It is a flag
+   * on `platform_admins`, not a cooperative-scoped role, which is why it sits beside `roles`
+   * rather than inside them — and it deliberately grants no access to any cooperative's member
+   * data (ROLES-AND-PERMISSIONS.md).
+   */
+  isPlatformAdmin: boolean;
 };
 
 export async function loadStaffContext(): Promise<StaffContext | null> {
@@ -25,13 +32,16 @@ export async function loadStaffContext(): Promise<StaffContext | null> {
   } = await supabase.auth.getUser();
   if (!user) return null;
 
-  const [{ data: profile }, { data: rows }] = await Promise.all([
+  const [{ data: profile }, { data: rows }, { data: platform }] = await Promise.all([
     supabase.from("users").select("name, email").eq("id", user.id).maybeSingle(),
     supabase
       .from("cooperative_staff_roles")
       .select("id, cooperative_id, role, status, title, permissions, cooperatives(name)")
       .eq("user_id", user.id)
       .neq("status", "revoked"),
+    // `platform_admins_select_own` scopes this to the caller's own row, so the query carries no
+    // filter of its own and can never see anybody else's.
+    supabase.from("platform_admins").select("user_id").maybeSingle(),
   ]);
 
   const roles: StaffRole[] = (rows ?? []).map((row) => {
@@ -55,6 +65,7 @@ export async function loadStaffContext(): Promise<StaffContext | null> {
     name: profile?.name ?? null,
     email: profile?.email ?? user.email ?? null,
     roles,
+    isPlatformAdmin: Boolean(platform),
   };
 }
 

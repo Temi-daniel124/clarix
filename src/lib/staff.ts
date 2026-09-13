@@ -110,7 +110,11 @@ export function pendingInvites(roles: StaffRole[]): StaffRole[] {
  * Somebody holding only an unaccepted invitation goes to the screen that accepts it, because
  * there is nothing else for them to do yet.
  */
-export function landingPathFor(roles: StaffRole[]): string {
+export function landingPathFor(roles: StaffRole[], isPlatformAdmin = false): string {
+  // Operating the platform is this account's primary purpose, so it opens there "even if this
+  // account also happens to hold an ordinary cooperative membership or staff role somewhere"
+  // (super-admin blueprint 1.2).
+  if (isPlatformAdmin) return "/platform";
   if (preferredRole(roles)) return "/admin";
   if (pendingInvites(roles).length > 0) return "/invite";
   return "/dashboard";

@@ -125,6 +125,13 @@ deduction_reconciliation
   entered_by (fk -> users, staff)
   entered_at
 
+cooperative_internal_notes          -- migration 021
+  cooperative_id (pk, fk)
+  note                             -- the platform operator's private note about a cooperative
+  updated_by (fk -> users) / updated_at
+  -- Its own table rather than a column on cooperatives, because cooperatives is readable by
+  -- every signed-in user (discovery needs its public fields) and RLS cannot hide one column.
+
 access_grants
   id (pk)
   requested_by (fk -> users, platform_admins)

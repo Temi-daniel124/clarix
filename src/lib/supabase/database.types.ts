@@ -536,6 +536,35 @@ export type Database = {
         }
         Relationships: []
       }
+      cooperative_internal_notes: {
+        Row: {
+          cooperative_id: string
+          note: string
+          updated_by: string | null
+          updated_at: string
+        }
+        Insert: {
+          cooperative_id: string
+          note: string
+          updated_by?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cooperative_id?: string
+          note?: string
+          updated_by?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cooperative_internal_notes_cooperative_id_fkey"
+            columns: ["cooperative_id"]
+            isOneToOne: true
+            referencedRelation: "cooperatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_admins: {
         Row: {
           granted_at: string
@@ -785,6 +814,7 @@ export type Database = {
           invite_permissions?: Json
           invite_role?: Database["public"]["Enums"]["staff_role"]
           invite_title?: string
+          invite_name?: string
           target_cooperative_id: string
         }
         Returns: {
@@ -797,6 +827,35 @@ export type Database = {
       staff_has_permission: {
         Args: { permission_key: string; target_cooperative_id: string }
         Returns: boolean
+      }
+      platform_overview: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          total_cooperatives: number
+          active_cooperatives: number
+          employee_headcount: number
+          pending_invites: number
+        }[]
+      }
+      platform_cooperative_directory: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          name: string
+          status: "active" | "inactive"
+          created_at: string
+          member_count: number
+          officer_count: number
+          admin_name: string | null
+          admin_email: string | null
+          admin_status: "invited" | "active" | null
+          admin_invited_at: string | null
+          admin_accepted_at: string | null
+          pending_invite_email: string | null
+          pending_invite_sent_at: string | null
+          has_expiry_override: boolean
+          internal_note: string | null
+        }[]
       }
     }
     Enums: {

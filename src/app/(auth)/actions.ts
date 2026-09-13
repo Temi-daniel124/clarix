@@ -110,7 +110,7 @@ export async function logInAction(
   await supabase.rpc("claim_staff_invitations");
 
   const staff = await loadStaffContext();
-  redirect(staff ? landingPathFor(staff.roles) : "/dashboard");
+  redirect(staff ? landingPathFor(staff.roles, staff.isPlatformAdmin) : "/dashboard");
 }
 
 function collectFieldErrors(error: { issues: Array<{ path: PropertyKey[]; message: string }> }) {

@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-12 (cooperative officer Parts 1 to 8 — the blueprint is complete, and
-one real bug was found and fixed while verifying it).
+**Last updated:** 2026-09-13 (super admin Parts 1 to 5 — the first Super Admin seeded, the
+platform shell, dashboard and cooperative management).
 
 ## Phase
 
@@ -52,7 +52,15 @@ rather than in the interface: importing or adding a member takes a granted permi
 (migration 017), and the audit log is the admin's alone to read (migration 018). Both were
 previously open to any active staff member, which was invisible while officers had no screens.
 
-**All three blueprints are now built end to end.** What remains is not a part of any of them:
+**The super admin blueprint is under way — Parts 1 to 5 are built.** The platform shell, its
+one-screen orientation, the Platform Dashboard, and Cooperative Management in full: the
+directory, a deliberately shallow detail screen, and creating a cooperative with its admin's
+invitation in one action. Parts 6 to 9 — Policy, the platform Audit Log, Access Requests,
+Platform Admins and this role's own account cluster — are not built, and every one of them is a
+navigation row that says so rather than a dead link.
+
+**All four blueprints' earlier parts are now built end to end.** What remains is not a part of
+the employee, admin or officer documents:
 loan completion and the expiry sweep have no screen assigned, Reports (7.6) is deferred by the
 blueprint's own P1 marking, and submitting a loan application on a member's behalf (officer 6.2)
 is a screen neither role has — it is named in the permission panel as unavailable rather than
@@ -609,6 +617,66 @@ marked P1 there.
       name their foreign key, and those loaders throw on a query error rather than returning an
       empty list.
 
+### Super Admin, Parts 1 to 5
+
+**Two findings came out of checking before building, and both were real:**
+
+- [x] **`platform_admins` existed and had never been seeded.** The table, `is_platform_admin()`,
+      and four policies that depend on it have been in the schema since migration 001. What was
+      missing was any row at all: the "one-time seed step" blueprint 1.1 describes had never
+      happened, so the entire Super Admin role was unreachable and had been since the project
+      started. Seeded this session with a test account.
+- [x] **Every figure Parts 4 and 5 ask for was unreadable by this role.** A Super Admin can read
+      `cooperatives`, because that policy is open to any signed-in user, and nothing else the
+      screens need: memberships take a cooperative permission, staff roles and invitations take
+      being staff there, and another person's `users` row takes staffing a cooperative they belong
+      to. Member counts, officer counts, the admin's name and the pending-invite count would all
+      have come back empty. Fixed with two aggregate-only functions rather than a policy exception
+      — see below.
+
+**Built this session:**
+
+- [x] **Log In (1.1, 1.2) needed no new code.** Signing in as the seeded account routes to
+      `/platform`, because `landingPathFor()` now checks the platform flag first: operating the
+      platform is this account's primary purpose "even if this account also happens to hold an
+      ordinary cooperative membership or staff role somewhere". The PWA prompt (1.3) is the same
+      component every other role uses.
+- [x] **Welcome (2.1)** — one screen, one Continue button, no slides, because this role belongs to
+      the operator "who already understands the product deeply". Its only job is the boundary: this
+      account manages cooperatives, not their members' money.
+- [x] **The navigation (Part 3) is flat, and the flatness is the design.** Eight direct rows, no
+      "Manage" submenu and no collapsible rail, per the blueprint's own reasoning that this role's
+      scope "is small enough that everything fits as a direct, visible entry". Nothing in it
+      reaches a member's savings, loans or salary.
+- [x] **Platform Dashboard (4.1)** — the same tap-to-expand KPI row every dashboard uses, over four
+      counts rather than money. The employee figure is organization-wide headcount and can only
+      ever be a count: the function behind it returns a single integer, so there is no version of
+      that card that becomes a directory of people. "Attention required" watches invitations and
+      says plainly that access requests are not built rather than implying it watches them.
+- [x] **Cooperative Directory (5.1), Detail (5.2) and Create (5.3)**, walked end to end against the
+      live project: a cooperative was created, its note stored, its admin invitation issued, and it
+      was deactivated and reactivated through the Timed Undo — which runs before the write, so the
+      undo genuinely undoes.
+- [x] **5.2 has no view-members or view-loans action, and that absence is load-bearing.** Verified
+      by eye rather than assumed: the screen carries counts and a status, and there is nothing on
+      it to click through to a person. Reaching that data stays with the Part 7 access-request
+      flow, which does not exist.
+- [x] **Creating a cooperative reuses the real invitation path.** `invite_cooperative_staff()`
+      already did exactly what 5.3 needs; what it refused was the caller, since a Super Admin
+      creating a brand-new cooperative can never be its active admin. Migration 019 widened that
+      one check to admit a platform admin — one function, two legitimate callers, rather than a
+      second invitation path for D027 to drift away from.
+- [x] **Two fields the blueprint asks for had nowhere to live, and neither was quietly dropped.**
+      The operator's internal note now has its own platform-admin-only table (migration 021, after
+      migration 020 put it on `cooperatives` and that proved unscopable — the cooperatives row is
+      readable by every signed-in user and RLS cannot hide one column). The intended admin's name
+      is kept on the invitation (migration 022), so a freshly created cooperative reads as
+      somebody's in the directory rather than nobody's while the invitation sits unaccepted.
+- [x] **The boundary was checked from both sides.** As a cooperative admin, every `/platform` route
+      redirects away, and both aggregate functions raise `42501`. As the platform admin, the
+      directory returns a member count of 1 for a cooperative whose membership rows the same
+      caller reads as zero. pgTAP suite 010 pins all of it.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -663,6 +731,23 @@ marked P1 there.
       and the audit-log entry naming the officer as the actor. Its permissions were temporarily
       widened to all four through the real Officer Management screen and set back to record-only
       afterwards, so what is stored now is what that screen actually granted.
+- [ ] **A test Super Admin, `super.admin@fmcabeokuta.org.ng`**, seeded directly into
+      `auth.users` and `platform_admins` because blueprint 1.1 describes the first one as a
+      one-time database entry and there is no screen that could create it. Its password is
+      `ClarixTest-Platform-2026`. **This is provisional on purpose** — the real operator account
+      is a deliberate decision to be made closer to go-live, not guessed at now — so delete this
+      one with the rest of the test data.
+
+      Worth knowing for the next account created this way: GoTrue refuses to sign in a row whose
+      token columns are NULL, which reads as "that email address and password don't match an
+      account" even though the hash is correct. Set `confirmation_token`, `recovery_token`,
+      `email_change`, `email_change_token_new`, `email_change_token_current`, `phone_change`,
+      `phone_change_token` and `reauthentication_token` to empty strings.
+- [ ] **A fourth cooperative, `Nursing Staff Cooperative (test data)`**, created through the real
+      5.3 screen while verifying it, along with its internal note and an unclaimed admin
+      invitation to `nursing.admin@fmcabeokuta.org.ng` in the name of "Folake Adeniyi". It sits
+      inactive, which is correct for a cooperative whose admin has not accepted. Goes with the
+      rest of the test data.
 - [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
       it was written directly rather than in a migration, the same way the pilot test account
       was, so none of it will follow the schema into production by accident. What exists: three
@@ -763,7 +848,13 @@ marked P1 there.
    the seeded test data catalogued above, before go-live. That account now also carries a
    fictional phone number and one muted-then-restored notification preference, both written
    through the Profile screen while verifying it.
-6. Decide what happens to **submitting a loan application on a member's behalf** (officer
+6. Finish the **super admin blueprint**: Part 6 (organization-wide policy), Part 7 (the platform
+   audit log, and the access-request flow that is the one deliberate exception to this role having
+   no sight of member data), Part 8 (managing platform admins — note that `platform_admins` has no
+   insert policy at all, so that screen needs one) and Part 9 (its account cluster). Access
+   Requests deserves its own session: it needs the `access_grants` table, which is specced in
+   `docs/DATA-MODEL.md` and does not exist.
+7. Decide what happens to **submitting a loan application on a member's behalf** (officer
    blueprint 6.2). It is the one screen no role has: members apply for themselves, staff can only
    read and decide. The permission panel already names it as not built rather than pretending
    otherwise, so this is a scheduling decision rather than a hidden gap.
