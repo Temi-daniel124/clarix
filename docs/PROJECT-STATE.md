@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-13 (super admin Parts 1 to 5 — the first Super Admin seeded, the
-platform shell, dashboard and cooperative management).
+**Last updated:** 2026-09-13 (super admin Parts 6, 7.1, 8 and 9 — every part of that blueprint
+except the access-request flow, which is held for its own session).
 
 ## Phase
 
@@ -52,7 +52,13 @@ rather than in the interface: importing or adding a member takes a granted permi
 (migration 017), and the audit log is the admin's alone to read (migration 018). Both were
 previously open to any active staff member, which was invisible while officers had no screens.
 
-**The super admin blueprint is under way — Parts 1 to 5 are built.** The platform shell, its
+**The super admin blueprint is built except for one thing.** Parts 1 to 6, 7.1, 8 and 9 all
+exist; what is deliberately held back is 7.2 and 7.3, the access-request flow and the elevated
+access view it leads to. That is the one mechanism in this product that deliberately crosses the
+"no standing sight of member data" line, it needs the `access_grants` table which does not exist,
+and it deserves undivided attention rather than being squeezed in alongside other work.
+
+Earlier in the same day, Parts 1 to 5 landed: The platform shell, its
 one-screen orientation, the Platform Dashboard, and Cooperative Management in full: the
 directory, a deliberately shallow detail screen, and creating a cooperative with its admin's
 invitation in one action. Parts 6 to 9 — Policy, the platform Audit Log, Access Requests,
@@ -677,6 +683,48 @@ marked P1 there.
       directory returns a member count of 1 for a cooperative whose membership rows the same
       caller reads as zero. pgTAP suite 010 pins all of it.
 
+### Super Admin, Parts 6 to 9
+
+**A correction to the entry above, since the previous session's checklist was incomplete:**
+Notifications (9.1) and Profile (9.2) were written as **working screens** in that session, not
+routing placeholders — 9.1 over the shared notification loader and list component, 9.2 over the
+same three forms and server actions every role's Profile uses. The checklist simply failed to
+mention them. Both have since gained what they were missing: 9.2 now carries the
+"switch to my other view" link the blueprint asks for when the account holds another relationship.
+
+- [x] **Deduction Policy Settings (6.1)** — a form over four organization columns that were
+      already seeded and had never been editable by anything. `organizations_update_platform_admin`
+      has permitted this since migration 001; no screen had ever offered it.
+- [x] **The confirmation on 6.1 is a step, not a toast.** Changing the basis or the percentage
+      replaces the save button with a panel naming the consequence and showing the old value struck
+      through beside the new one, and the commit button says what it commits to. The server refuses
+      the write without the confirmation flag, so the friction cannot be posted around either.
+      Walked end to end: the cap was moved to 30%, confirmed, verified in the database, and
+      restored to 33.3% the same way.
+- [x] **Platform Audit Log (7.1)** — built this session because it turned out not to depend on
+      anything Part 7 introduces. `audit_log.cooperative_id` has been nullable since migration 014,
+      so a platform event was always storable; what was missing was a policy that could read one
+      and a function that could write one.
+- [x] **The two audit logs cannot leak into each other.** `audit_log_select_platform` admits a
+      platform admin to rows with no cooperative and nothing else, and `record_platform_event()`
+      hard-codes `cooperative_id` as NULL so it can never forge an entry into a cooperative's log.
+      Verified live: the operator sees the platform's events and zero of the cooperative's.
+- [x] **Cooperative creation, activation, deactivation and invite reissues now record themselves**
+      in that log, which is what 7.1 lists as platform events.
+- [x] **Manage Platform Admins (8.1)** — a list, an add-by-email action, and removal through the
+      Timed Undo pattern. Deliberately **not** `invite_cooperative_staff()`: a platform admin is not
+      cooperative staff, lives in a different table, and is scoped to no cooperative.
+- [x] **The self-removal safeguard is enforced in the database.** `revoke_platform_admin()` raises
+      `42501` on the caller's own id, so the rule holds however the call is made; the screen also
+      omits the control on your own row, but that is only a courtesy. Verified by calling the
+      function directly on the operator's own account and being refused.
+- [x] **Help (9.3)**, and the navigation row that was missing. Part 3 lists Help among this role's
+      destinations and the sidebar built last session did not have it. Four reference notes rather
+      than an FAQ accordion, per the blueprint's read of who actually holds this role, plus the
+      shared support address.
+- [x] **pgTAP suite 011** pins the log separation, the grant and revoke round trip, the honest
+      refusal when an address has no Clarix account, and the self-removal safeguard.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -748,6 +796,10 @@ marked P1 there.
       invitation to `nursing.admin@fmcabeokuta.org.ng` in the name of "Folake Adeniyi". It sits
       inactive, which is correct for a cooperative whose admin has not accepted. Goes with the
       rest of the test data.
+- [ ] **Four platform audit entries**, written while verifying Parts 6 and 8: the deduction cap
+      moved from 33.3% to 30% and back again through the real confirmation step, and one platform
+      admin granted and revoked. The cap is back at its statutory value; the entries stay, because
+      an audit log you can tidy is not an audit log. They go with the rest of the test data.
 - [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
       it was written directly rather than in a migration, the same way the pilot test account
       was, so none of it will follow the schema into production by accident. What exists: three
@@ -848,12 +900,13 @@ marked P1 there.
    the seeded test data catalogued above, before go-live. That account now also carries a
    fictional phone number and one muted-then-restored notification preference, both written
    through the Profile screen while verifying it.
-6. Finish the **super admin blueprint**: Part 6 (organization-wide policy), Part 7 (the platform
-   audit log, and the access-request flow that is the one deliberate exception to this role having
-   no sight of member data), Part 8 (managing platform admins — note that `platform_admins` has no
-   insert policy at all, so that screen needs one) and Part 9 (its account cluster). Access
-   Requests deserves its own session: it needs the `access_grants` table, which is specced in
-   `docs/DATA-MODEL.md` and does not exist.
+6. Build the **access-request flow** (super-admin blueprint 7.2 and 7.3), the last unbuilt part of
+   any blueprint and the only mechanism in Clarix that deliberately crosses the "no standing sight
+   of member data" line. It needs the `access_grants` table, which is specced in
+   `docs/DATA-MODEL.md` and does not exist. Everything it touches is security-sensitive: a
+   time-boxed read grant, the affected cooperative's admin notified on submission, a visually
+   distinct read-only view, and per-record logging more granular than ordinary platform events.
+   It deserves a session of its own.
 7. Decide what happens to **submitting a loan application on a member's behalf** (officer
    blueprint 6.2). It is the one screen no role has: members apply for themselves, staff can only
    read and decide. The permission panel already names it as not built rather than pretending

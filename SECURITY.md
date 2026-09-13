@@ -103,6 +103,33 @@ things able to see past the boundary is written down rather than discovered late
   it: the Cooperative Detail screen these feed has no view-members or view-loans action, and that
   absence is load-bearing rather than unfinished.
 
+- `record_platform_event(...)`, `list_platform_admins()`, `grant_platform_admin(text)` and
+  `revoke_platform_admin(uuid)` are migration 023's four, and each answers a question RLS could
+  not.
+
+  **Why RLS cannot do this.** `audit_log` has no insert policy for anybody, by design — every row
+  in it arrives through a function that decided it was entitled to write one — so a platform event
+  needed a writer of its own. `platform_admins` carries exactly one policy, read-your-own-row, so
+  an operator could not see who else operates the platform, and nothing could add or remove one:
+  a general write policy on that table would have been a policy granting the power to grant the
+  power.
+
+  **What keeps them narrow.** All four refuse a caller who is not a platform admin.
+  `record_platform_event` hard-codes `cooperative_id` as NULL, so it can never forge an entry into
+  a cooperative's own log, and `audit_log_select_platform` mirrors that on the way out by admitting
+  a platform admin to rows with no cooperative and nothing else — the two logs cannot leak into
+  each other in either direction. `grant_platform_admin` takes an email that must already have a
+  Clarix account, because Clarix does not create accounts for people (D021), and reports honestly
+  when it does not rather than implying an invitation is waiting.
+
+  **The self-removal safeguard lives in `revoke_platform_admin`, not in the screen.** Blueprint 8.1
+  asks that a Super Admin cannot remove their own access, "avoiding the mistake of a single
+  operator locking themselves out entirely". The interface also omits the control on your own row,
+  but that is a courtesy; the function raises `42501` on `target_user_id = auth.uid()`, so the
+  safeguard holds however the call is made. Restoring access to an operator who has genuinely lost
+  it is deliberately a database-level act, which is the "separate, deliberately harder-to-reach"
+  path the blueprint describes.
+
 - `invite_cooperative_staff(...)` has **two** legitimate callers as of migration 019: that
   cooperative's own active admin, inviting an officer (admin blueprint 7.2), and a platform admin
   naming the admin of a cooperative they have just created (super-admin 5.3). The second was

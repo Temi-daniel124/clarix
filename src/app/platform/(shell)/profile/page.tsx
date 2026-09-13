@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -13,6 +15,8 @@ import { PreferencesForm } from "@/app/(app)/profile/preferences-form";
 import { SecurityForm } from "@/app/(app)/profile/security-form";
 import { LogOutButton } from "@/app/(app)/profile/log-out-button";
 import { createClient } from "@/lib/supabase/server";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { preferredRole } from "@/lib/staff";
 import {
   NOTIFICATION_CATEGORY_ORDER,
   categoryEnabled,
@@ -30,8 +34,10 @@ export const metadata: Metadata = { title: "Profile" };
  * the same three sections, the same three components and the same server actions every other
  * role's Profile uses — there is nothing role-specific about changing your own name or password.
  *
- * What is absent is any cooperative context, because this account holds none. That is the role,
- * not a gap.
+ * What is absent is any cooperative context, because this account normally holds none. Where it
+ * does — an edge case the data model allows and nothing in this role's normal use assumes — the
+ * blueprint asks for the same "switch to my other view" link every other role's Profile carries,
+ * and it appears below.
  */
 export default async function PlatformProfilePage() {
   const supabase = await createClient();
@@ -40,11 +46,18 @@ export default async function PlatformProfilePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("users")
-    .select("name, email, phone, notification_preferences")
-    .eq("id", user.id)
-    .maybeSingle();
+  const [{ data: profile }, { data: memberships }, staff] = await Promise.all([
+    supabase
+      .from("users")
+      .select("name, email, phone, notification_preferences")
+      .eq("id", user.id)
+      .maybeSingle(),
+    supabase.from("cooperative_memberships").select("id").eq("user_id", user.id),
+    loadStaffContext(),
+  ]);
+
+  const staffRole = staff ? preferredRole(staff.roles) : null;
+  const membershipCount = (memberships ?? []).length;
 
   const preferences = Object.fromEntries(
     NOTIFICATION_CATEGORY_ORDER.map((category) => [
@@ -91,6 +104,25 @@ export default async function PlatformProfilePage() {
           <PreferencesForm preferences={preferences} />
         </Section>
       </Accordion>
+
+      {staffRole || membershipCount > 0 ? (
+        <div className="mt-8 rounded-feature border border-border bg-surface p-5 md:p-6">
+          <h2 className="type-card-title text-text">You hold another role too</h2>
+          <p className="type-secondary mt-2 max-w-[520px] text-text-secondary">
+            {staffRole
+              ? `This account is also ${staffRole.role === "admin" ? "an admin" : "an officer"} at ${staffRole.cooperativeName}. That side is separate from the platform, and nothing you do here touches it.`
+              : `This account also belongs to ${membershipCount === 1 ? "a cooperative" : `${membershipCount} cooperatives`} as an ordinary member. Your savings, loans and deduction limit live on that side.`}
+          </p>
+
+          <Link
+            href={staffRole ? "/admin" : "/dashboard"}
+            className="mt-4 inline-flex items-center gap-2 type-secondary font-medium text-indigo underline-offset-4 transition-colors duration-150 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+          >
+            {staffRole ? "Switch to my cooperative view" : "Switch to my member view"}
+            <ArrowRight aria-hidden strokeWidth={2} className="size-4" />
+          </Link>
+        </div>
+      ) : null}
 
       <div className="mt-12 border-t border-border pt-6">
         <LogOutButton />
