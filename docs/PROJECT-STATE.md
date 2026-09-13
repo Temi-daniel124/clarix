@@ -772,6 +772,38 @@ verified against the live project from both directions.
       ending at read time with no sweep, the granular per-record logging writing rows, and the
       cooperative admin's notification firing on submission.
 
+### Auth gaps closed: password reset and the privacy notice
+
+- [x] **`/reset-password`**, both halves: ask for a link, and the screen the link lands on. Thin
+      over Supabase's own `resetPasswordForEmail` and `updateUser`, because Clarix never holds a
+      password of its own (D021).
+- [x] **The request screen never says whether an address has an account.** It reports the same
+      thing either way, for the same reason the sign-in screen refuses to distinguish a wrong
+      password from an unknown address: a form that answered honestly would tell anybody who asked
+      which of a cooperative's staff use Clarix.
+- [x] **A real hole was found and closed while testing it.** The first build of the confirm screen
+      accepted *any* live session, so anybody already signed in could set a new password without
+      knowing the current one, quietly undoing the check the Profile security section makes on
+      purpose. I hit this by accident, on a session left over from an earlier test. The token
+      exchange now also writes a short-lived, http-only, single-use ticket cookie, and the server
+      action refuses without it. Somebody who is merely signed in is sent to Profile, where
+      changing a password asks for the old one. Verified: `/reset-password/choose` redirects a
+      signed-in visitor to `/profile`.
+- [x] **The flow cannot complete end to end yet, and it is not this code's fault.** Supabase's
+      `/auth/v1/recover` returns `500 Error sending recovery email` for any address but the Resend
+      account owner's, and rolls the token back — the same blocker that already stops self-service
+      signup. Probed directly to confirm it rather than inferring it from an empty token column.
+      The screen says so plainly instead of implying a message is on its way.
+- [x] **Change password, while signed in, reconfirmed end to end.** Changed the platform operator's
+      password through Profile, verified the new hash in the database, and changed it back the same
+      way. The current-password check is real: it re-authenticates before allowing the change.
+- [x] **`/privacy`** — a complete NDPA 2023 notice written against what this system actually does.
+      Names consent at signup as the lawful basis, lists what is collected and why, describes the
+      per-cooperative isolation, the aggregate-only cross-cooperative figure and the logged
+      access-grant model, and gives the D026 support address as the contact route. Where Clarix
+      does not do something it says so: there is no automatic deletion on a schedule, and the
+      notice admits that rather than describing a retention policy nobody implemented.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -878,7 +910,9 @@ verified against the live project from both directions.
 - [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
       so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
       wholesale when the real dashboard is built.
-- [ ] `/privacy` and `/reset-password` are linked from the auth screens but not built.
+- [x] **`/privacy` and `/reset-password` are built.** Both had been dead links from the auth
+      screens since the first slice. See the section below for what each covers and the one real
+      hole the reset flow turned up on its way in.
 - [ ] Notification preferences govern email that nothing sends yet. The toggles write to the
       database and are read back correctly; what reads them at send time arrives with the
       notification writers.
