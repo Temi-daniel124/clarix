@@ -1,4 +1,4 @@
-import { Banknote, BellRing, FileText, Package, type LucideIcon } from "lucide-react";
+import { Banknote, BellRing, FileText, KeyRound, Package, type LucideIcon } from "lucide-react";
 import type { Database } from "@/lib/supabase/database.types";
 
 /**
@@ -41,8 +41,28 @@ export const NOTIFICATION_CATEGORIES: Record<NotificationCategory, CategoryDescr
     description: "When your confirmed salary needs a fresh payslip to stay current.",
     icon: FileText,
   },
+  /**
+   * The one staff-facing category, and the one nobody can turn off — see
+   * `NOTIFICATION_CATEGORY_ORDER` below for why it has no toggle.
+   */
+  access_request: {
+    label: "Support access requests",
+    description:
+      "When Clarix support asks to look at your cooperative's records, and why.",
+    icon: KeyRound,
+  },
 };
 
+/**
+ * Which categories get a toggle on Profile, and in what order.
+ *
+ * `access_request` is deliberately absent, which is the only place in this product where a
+ * notification cannot be muted. SECURITY.md requires that a cooperative's admin "is notified the
+ * moment a request naming their cooperative is submitted"; a switch that could turn that off
+ * would make the requirement conditional on somebody not having touched it, and a warning you can
+ * silence in advance is not a warning. It still has a label and an icon above, because it appears
+ * in the list like any other.
+ */
 export const NOTIFICATION_CATEGORY_ORDER: NotificationCategory[] = [
   "loan_decision",
   "membership_decision",

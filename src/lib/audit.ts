@@ -35,6 +35,10 @@ export type AuditFilters = {
 export const AUDIT_ACTION_LABELS: Record<string, string> = {
   approve_loan: "Loan approved",
   reject_loan: "Loan rejected",
+  // Written by `log_elevated_view()` when Clarix support looks at this cooperative's records
+  // under a time-boxed access grant (super-admin blueprint 7.3). It appears in THIS log, not the
+  // platform's, because the cooperative whose data was read has the stronger claim to know.
+  elevated_view: "Clarix support viewed a record",
 };
 
 export function describeAction(action: string): string {

@@ -474,6 +474,58 @@ the policy behind it are.
 
 ---
 
+### D030 — An access grant self-activates after a delay; it is not approved, and it lasts 24 hours
+
+**Decided:** 2026-09-13, building super-admin blueprint 7.2 and 7.3.
+
+**Decision:** a Super Admin's request to see a cooperative's member data becomes usable **on its
+own, one hour after it is submitted**, and expires **24 hours after it activates**. The affected
+cooperative's admin is notified the instant it is submitted, and can do nothing to stop it — what
+they get is the hour, the reason, and a permanent record.
+
+**Why self-activation rather than approval.** The blueprint deliberately left this configurable
+("it either self-grants with a short mandatory delay ... or requires that Admin's explicit
+approval"), so the tie-break came from `docs/DATA-MODEL.md`, which settles it by omission:
+`access_grants` has `requested_by`, `granted_at`, `expires_at` and `revoked_at`, and **no
+approver column at all**. An approval nobody is recorded as having given would be unauditable,
+which contradicts everything else about that table — so a schema with no `approved_by` is a schema
+describing a flow with no approver.
+
+It is also the more honest of the two for this product's actual situation. Requiring approval
+sounds safer and is worse in the case it exists for: a cooperative reports a discrepancy it cannot
+explain, and the person who must approve the investigation is the person whose cooperative is
+behaving oddly, possibly unreachable, possibly the problem. A support path that stalls when the
+subject does not answer is a support path that does not work.
+
+**Why one hour, and what it is really for.** The delay is not a veto window, because there is no
+veto. It exists so that a cooperative's admin learns about the access *before* it happens rather
+than afterwards, which is the difference between being told and being informed. An hour is long
+enough to be a real warning during a working day and short enough that a genuine support case is
+not held overnight. Nothing rests on the number; it is a starting value, and changing it is a
+one-line change to `access_grants.activates_at`'s default.
+
+**Why 24 hours.** The blueprint suggests it, nothing contradicts it, and it is short enough that
+an unused grant lapses within a day while long enough to survive a support case that spans a
+night. Same reasoning, same one-line change if experience says otherwise.
+
+**Two schema deviations this forces**, recorded here rather than silently:
+
+- `activates_at` is a column `docs/DATA-MODEL.md` does not list. The spec's flow had no delay to
+  represent. It is the delay.
+- `status` never stores `'active'` or `'expired'`. Both are functions of the clock, so both are
+  computed at read time exactly as a loan reservation's expiry is (D024). What is stored is
+  `'pending'` and `'revoked'`, which are the only two states a person ever puts a grant into. A
+  stored `'expired'` would need a sweep job to stay true, and a status that is only true until the
+  next tick is worse than no status.
+
+**Consequence:** there is no screen anywhere that lets a cooperative admin approve or block an
+access request, and that absence is deliberate rather than unbuilt. What protects a cooperative is
+not a gate — it is that the request is justified in writing, announced before it takes effect,
+limited to a day, revocable by the requester, read-only in the database, and logged record by
+record in that cooperative's own audit log, where its admin reads it.
+
+---
+
 ## Standing operational constraints
 
 Not decisions — facts about the environment that keep being rediscovered and re-proposed as work.

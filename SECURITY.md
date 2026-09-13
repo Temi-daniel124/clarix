@@ -258,6 +258,42 @@ application logic that never assumes otherwise. The one deliberate exception is 
 - If this flow is ever implemented without every one of the above properties, it is a security
   bug, not a shortcut.
 
+**Built, and where each property lives** (migrations 024-026, DECISIONS.md D030):
+
+- **No standing access.** `access_grants` gates five select policies —
+  `cooperative_memberships_select_granted`, `users_select_granted`,
+  `savings_transactions_select_granted`, `loans_select_granted` and
+  `deduction_reconciliation_select_granted` — each asking the single question
+  `has_active_access_grant(cooperative_id, user_id)`. With no grant, a platform admin reads zero
+  rows from every one of those tables, which is a refusal rather than an absent menu item.
+- **These are real policies on real tables, not another aggregate.** Parts 4 and 5 answer their
+  questions with counts precisely so member rows stay unreadable; this is the one place where the
+  honest answer is that a row genuinely has to be looked at, so it is opened deliberately,
+  briefly, and visibly rather than approximated.
+- **A required, non-generic reason.** A CHECK constraint refuses anything under twenty characters,
+  and `request_access_grant()` refuses it again before doing anything else. Length is a weak proxy
+  for "non-generic" and the real defence is that the sentence is shown to the cooperative, kept
+  permanently, and attached to every record opened under the grant.
+- **The cooperative's admin is told at submission, not after.** The notification is written inside
+  `request_access_grant()`, in the same statement as the grant, so no path exists that creates one
+  without the other. It uses the `access_request` notification category, which is deliberately the
+  only category with no mute toggle: a warning that can be switched off in advance is not a
+  warning.
+- **Time-boxed, evaluated at read time.** `has_active_access_grant()` is arithmetic against
+  `now()`, so a grant stops working the instant it lapses with nothing having to run — the same
+  rule D024 set for loan reservations, applied to the far more sensitive case. `status` never
+  stores `'active'` or `'expired'` for that reason.
+- **Read-only, in the database.** No insert, update or delete policy is granted to a grant holder
+  anywhere. The Elevated Access View also renders no write controls, but that is the cosmetic half;
+  a write attempted under a live grant is refused with `42501`.
+- **Every record opened is logged, in the COOPERATIVE's log.** `log_elevated_view()` writes an
+  `elevated_view` row carrying `cooperative_id`, so it lands in that cooperative's own audit log
+  where its admin reads it. A record of who examined your members' money that only the examiner can
+  read would be worse than none. The function refuses unless the grant is live at that instant, so
+  the log can never claim a view the policies would not have permitted.
+- **Only the requester can end a grant early**, and no one can approve or block one — see D030 for
+  why the protection is the delay, the notice and the record rather than a gate.
+
 ## Audit log
 
 Every view or edit of financial data records who, what, when, and (for edits) old→new value

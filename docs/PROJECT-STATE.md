@@ -6,8 +6,8 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-13 (super admin Parts 6, 7.1, 8 and 9 — every part of that blueprint
-except the access-request flow, which is held for its own session).
+**Last updated:** 2026-09-13 (the access-grant flow, 7.2 and 7.3 — **every screen in every
+blueprint is now built**).
 
 ## Phase
 
@@ -52,11 +52,14 @@ rather than in the interface: importing or adding a member takes a granted permi
 (migration 017), and the audit log is the admin's alone to read (migration 018). Both were
 previously open to any active staff member, which was invisible while officers had no screens.
 
-**The super admin blueprint is built except for one thing.** Parts 1 to 6, 7.1, 8 and 9 all
-exist; what is deliberately held back is 7.2 and 7.3, the access-request flow and the elevated
-access view it leads to. That is the one mechanism in this product that deliberately crosses the
-"no standing sight of member data" line, it needs the `access_grants` table which does not exist,
-and it deserves undivided attention rather than being squeezed in alongside other work.
+**Every screen in all four blueprints is built.** Employee Parts 1 to 6, cooperative admin Parts
+1 to 8, cooperative officer Parts 1 to 8, and super admin Parts 1 to 9 — including the last and
+most sensitive of them, the access-grant flow that is the only way a platform operator can ever
+see a member's savings, loans or salary.
+
+What remains is not a screen in any blueprint: loan completion and the expiry sweep have no
+screen assigned, Reports (admin 7.6) is deferred by its own P1 marking, and submitting a loan
+application on a member's behalf (officer 6.2) exists in no role.
 
 Earlier in the same day, Parts 1 to 5 landed: The platform shell, its
 one-screen orientation, the Platform Dashboard, and Cooperative Management in full: the
@@ -725,6 +728,50 @@ mention them. Both have since gained what they were missing: 9.2 now carries the
 - [x] **pgTAP suite 011** pins the log separation, the grant and revoke round trip, the honest
       refusal when an address has no Clarix account, and the self-removal safeguard.
 
+### Super Admin, Parts 7.2 and 7.3 — the access-grant flow
+
+The last screen in any blueprint, and the only mechanism in Clarix that deliberately crosses the
+"no standing sight of member data" line. SECURITY.md names five properties it must have and adds
+that a version missing any of them "is a security bug, not a shortcut"; each is built, and each was
+verified against the live project from both directions.
+
+- [x] **The self-activation question was settled by the data model, not guessed.** `access_grants`
+      has `requested_by`, `granted_at`, `expires_at` and `revoked_at` and **no approver column at
+      all** — a schema describing a flow with no approver. D030 records that reasoning, the
+      one-hour delay, the 24-hour window, and why an approval gate would fail in exactly the case
+      this mechanism exists for.
+- [x] **No access without a live grant, enforced by RLS rather than by an absent menu.** Probed as
+      the seeded operator: zero membership rows, zero savings rows, and `capacity_for_membership()`
+      refusing outright. With a grant live, the same queries return the real rows and the real
+      capacity figure.
+- [x] **Real policies on real tables, not another aggregate.** Five select policies, each asking
+      `has_active_access_grant()`. Parts 4 and 5 avoid member rows on purpose; this is the one
+      place where the honest answer is to open the row, deliberately and briefly.
+- [x] **Read-only in the database.** No insert, update or delete policy is granted to a grant
+      holder anywhere. Verified: an insert under a live grant raised `42501`, and an update changed
+      zero rows. The view rendering no write controls is the cosmetic half.
+- [x] **The cooperative's admin is notified at submission, inside the same function**, so no path
+      can create a grant without the notice. It uses a new `access_request` notification category
+      which is deliberately the only one with no mute toggle.
+- [x] **Expiry is arithmetic, not a sweep.** `has_active_access_grant()` compares against `now()`,
+      and `status` never stores `'active'` or `'expired'`. Verified by moving a grant's window into
+      the past: the rows became unreadable immediately and the Elevated Access View redirected back
+      to Access Requests on the next request, with nothing having run.
+- [x] **Every record opened is logged into the cooperative's own audit log**, where its admin reads
+      it — not the platform's, where only the person who looked could. Verified: the cooperative
+      admin sees the `elevated_view` row, the reason, the grant and the notification.
+- [x] **The Elevated Access View is the real Member Profile** under a sticky, non-dismissible amber
+      banner carrying the reason and a live countdown. Reviewed in both themes. It reuses
+      `MemberProfileView` and `loadMemberProfile()` rather than a read-only copy, so what the
+      operator sees cannot drift from what the cooperative sees.
+- [x] **One copy bug found and fixed while reviewing.** A lapsed grant that had named one member
+      described itself as covering the whole cooperative, because the wording keyed off the
+      member's *name* — which stops being readable the moment the grant lapses. It now keys off the
+      grant's own column and says "one member at …" when it cannot name them.
+- [x] **pgTAP suite 012** covers all four properties asked for: no access without a grant, access
+      ending at read time with no sweep, the granular per-record logging writing rows, and the
+      cooperative admin's notification firing on submission.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -796,6 +843,11 @@ mention them. Both have since gained what they were missing: 9.2 now carries the
       invitation to `nursing.admin@fmcabeokuta.org.ng` in the name of "Folake Adeniyi". It sits
       inactive, which is correct for a cooperative whose admin has not accepted. Goes with the
       rest of the test data.
+- [ ] **Two access grants against Staff Multipurpose Cooperative (test data)**, both now ended —
+      one revoked, one expired — plus the notifications they sent that cooperative's admin, the
+      platform events recording them, and two `elevated_view` rows in that cooperative's own audit
+      log. They stay: a record of exceptions you can tidy away is not a record. They go with the
+      rest of the test data before go-live.
 - [ ] **Four platform audit entries**, written while verifying Parts 6 and 8: the deduction cap
       moved from 33.3% to 30% and back again through the real confirmation step, and one platform
       admin granted and revoked. The cap is back at its statutory value; the entries stay, because
@@ -900,13 +952,10 @@ mention them. Both have since gained what they were missing: 9.2 now carries the
    the seeded test data catalogued above, before go-live. That account now also carries a
    fictional phone number and one muted-then-restored notification preference, both written
    through the Profile screen while verifying it.
-6. Build the **access-request flow** (super-admin blueprint 7.2 and 7.3), the last unbuilt part of
-   any blueprint and the only mechanism in Clarix that deliberately crosses the "no standing sight
-   of member data" line. It needs the `access_grants` table, which is specced in
-   `docs/DATA-MODEL.md` and does not exist. Everything it touches is security-sensitive: a
-   time-boxed read grant, the affected cooperative's admin notified on submission, a visually
-   distinct read-only view, and per-record logging more granular than ordinary platform events.
-   It deserves a session of its own.
+6. **No blueprint screen is left to build.** What remains is the three gaps none of them assigns
+   a screen to: loan completion and the expiry sweep, Reports (admin 7.6, deferred by its own P1
+   marking), and submitting a loan application on a member's behalf (officer 6.2). Each needs a
+   decision about where it belongs before it needs code.
 7. Decide what happens to **submitting a loan application on a member's behalf** (officer
    blueprint 6.2). It is the one screen no role has: members apply for themselves, staff can only
    read and decide. The permission panel already names it as not built rather than pretending
