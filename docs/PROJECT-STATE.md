@@ -840,6 +840,46 @@ the cooperative approving money against it had no way to notice.
 - [ ] **Automatic extraction and machine verification stay P1-deferred** where `docs/MVP-SCOPE.md`
       already puts them. D031 deliberately does not touch them.
 
+### Two things checked rather than assumed
+
+**The roster import against a real cooperative's spreadsheet.** Extra columns were never the
+problem: the importer maps by header name and reads only the columns it mapped, so a five-column
+or thirteen-column sheet works and everything else is ignored. Ragged rows, where trailing blanks
+leave a row shorter than the header, are also safe.
+
+What the check did find was worse than a crash, because it was silent:
+
+- [x] **"Loan Balance" was being imported as the savings balance** whenever it sat to the left of
+      the savings column and no exact synonym matched. The old matcher took the leftmost header
+      containing any synonym, and "loan balance" contains "balance". Every member's debt would have
+      been recorded as their savings.
+- [x] **"Next of Kin Name" was being imported as the member's name**, for the same reason.
+- [x] **Fixed two ways at once.** A disqualifier list means a header containing "loan",
+      "outstanding", "repayment", "kin", "bank" and so on is never *guessed* at for the field it
+      would corrupt, though an admin can still choose it by hand. And among the headers that
+      survive, the **longest** matching synonym wins rather than the leftmost column, so
+      "Contributions To Date" beats "Loan Balance" wherever the two sit relative to each other.
+- [x] **Both are now permanent regression tests** in `src/lib/roster/mapping.test.ts`, alongside the
+      five- and thirteen-column sheets and the ragged-row case. 27 tests pass.
+
+**The deduction policy propagates instantly, with nothing cached or duplicated.** There is exactly
+one copy of these values, the `organizations` row. Every reader joins it at query time:
+`capacity_core()` and both halves of `submit_loan_application()` in SQL, and the employee
+dashboard's loader in TypeScript. Nothing denormalises it onto a user, a cooperative or a loan, and
+there is no `unstable_cache`, no fetch revalidation and no route cache in front of it: the screens
+that show eligibility are all `force-dynamic`.
+
+- [x] **Verified live, twice.** In SQL, `capacity_for_user()` for a real member returned a cap of
+      ₦83,250 at 33.3%, ₦62,500 the moment the figure changed to 25%, and ₦83,250 again on the way
+      back. Through the product, the cap was changed to 25% on the Policy screen with its
+      confirmation step, and the member's own dashboard showed available capacity fall from ₦34,917
+      to ₦14,167 on the next load; it was then restored to 33.3% through the same screen.
+- [x] **A second organization's policy is independent by construction**, and needs no new code:
+      `capacity_core()` reaches the policy through `users.organization_id`, so a member is always
+      measured against their own organization's basis and cap and never another's. Only one
+      organization exists today (FMC Abeokuta, D019), so this is a statement about the scoping
+      rather than an observation of two live rows.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
