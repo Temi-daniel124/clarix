@@ -824,6 +824,34 @@ export type Database = {
         }[]
       }
       is_platform_admin: { Args: never; Returns: boolean }
+      record_platform_event: {
+        Args: {
+          event_action: string
+          event_target_table: string
+          event_target_id?: string | null
+          event_old?: Json | null
+          event_new?: Json | null
+          event_note?: string | null
+        }
+        Returns: string
+      }
+      list_platform_admins: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          user_id: string
+          name: string | null
+          email: string | null
+          granted_at: string
+        }[]
+      }
+      grant_platform_admin: {
+        Args: { admin_email: string }
+        Returns: { granted: boolean; reason: string }[]
+      }
+      revoke_platform_admin: {
+        Args: { target_user_id: string }
+        Returns: boolean
+      }
       staff_has_permission: {
         Args: { permission_key: string; target_cooperative_id: string }
         Returns: boolean

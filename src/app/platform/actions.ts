@@ -120,6 +120,16 @@ export async function createCooperativeAction(
     };
   }
 
+  // Blueprint 7.1 lists cooperative creation as a platform event. Recorded here rather than by a
+  // trigger, because what belongs in the log is the act and who performed it, not merely that a
+  // row appeared.
+  await supabase.rpc("record_platform_event", {
+    event_action: "create_cooperative",
+    event_target_table: "cooperatives",
+    event_target_id: cooperative.id,
+    event_new: { name: cooperative.name, admin_invited: parsed.data.adminEmail },
+  });
+
   const result = Array.isArray(invite) ? invite[0] : invite;
 
   revalidatePath("/platform", "layout");
@@ -145,12 +155,27 @@ export async function setCooperativeStatusAction(
   if (!staff) return { error: "This account cannot change a cooperative's status." };
 
   const supabase = await createClient();
+
+  const { data: before } = await supabase
+    .from("cooperatives")
+    .select("name, status")
+    .eq("id", cooperativeId)
+    .maybeSingle();
+
   const { error } = await supabase
     .from("cooperatives")
     .update({ status })
     .eq("id", cooperativeId);
 
   if (error) return { error: "We could not change that. Please try again." };
+
+  await supabase.rpc("record_platform_event", {
+    event_action: status === "active" ? "activate_cooperative" : "deactivate_cooperative",
+    event_target_table: "cooperatives",
+    event_target_id: cooperativeId,
+    event_old: before ? { name: before.name, status: before.status } : null,
+    event_new: { name: before?.name ?? null, status },
+  });
 
   revalidatePath("/platform", "layout");
   return { saved: status === "active" ? "Reactivated." : "Deactivated." };
@@ -180,6 +205,13 @@ export async function resendAdminInviteAction(
   });
 
   if (error) return { error: "We could not reissue that invitation." };
+
+  await supabase.rpc("record_platform_event", {
+    event_action: "reissue_admin_invite",
+    event_target_table: "cooperatives",
+    event_target_id: cooperativeId,
+    event_new: { email },
+  });
 
   revalidatePath("/platform", "layout");
   return { saved: "The invitation has been reissued and is waiting on their next sign-in." };

@@ -1,16 +1,35 @@
 import type { Metadata } from "next";
-import { ShieldCheck } from "lucide-react";
-import { ComingLater } from "@/components/app-shell/coming-later";
+import { redirect } from "next/navigation";
+import { PlatformAdmins } from "@/components/platform/platform-admins";
+import { loadPlatformAdmins } from "@/lib/supabase/platform-admin-data";
+import { loadStaffContext } from "@/lib/supabase/staff-context";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Platform admins" };
 
-/** Manage Platform Admins (blueprint 8.1) — built in a later block of this role. */
-export default function Page() {
+/**
+ * Manage Platform Admins — super-admin blueprint 8.1.
+ *
+ * `platform_admins` held one policy — read your own row — and no insert, update or delete, which
+ * was correct while the first account was seeded by hand and is what this screen needed a way
+ * around. Migration 023 adds three narrow functions rather than a general write policy, so the
+ * only things that can happen to this table are the two things this screen does.
+ */
+export default async function PlatformAdminsPage() {
+  const [staff, admins] = await Promise.all([loadStaffContext(), loadPlatformAdmins()]);
+  if (!staff) redirect("/login");
+
   return (
-    <ComingLater
-      icon={ShieldCheck}
-      title="Platform admins"
-      body="Who else can operate the platform. The first account is seeded once during deployment rather than invited; adding a second one from inside the product is this screen's job, and `platform_admins` carries no insert policy yet, so the database refuses it too."
-    />
+    <div className="mx-auto w-full max-w-[760px] px-5 py-8 md:px-8 md:py-10">
+      <h1 className="type-page-title text-text">Platform admins</h1>
+      <p className="type-body mt-3 max-w-[560px] text-text-secondary">
+        Everyone who can operate Clarix itself. This is not a cooperative role: it belongs to no
+        cooperative, and it carries no sight of anybody&rsquo;s savings or loans.
+      </p>
+
+      <div className="mt-10">
+        <PlatformAdmins admins={admins} currentUserId={staff.userId} />
+      </div>
+    </div>
   );
 }

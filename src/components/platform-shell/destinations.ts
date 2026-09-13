@@ -1,6 +1,7 @@
 import {
   Bell,
   Building2,
+  CircleQuestionMark,
   House,
   KeyRound,
   ScrollText,
@@ -50,6 +51,7 @@ export const PLATFORM_OVERSIGHT: PlatformDestination[] = [
 export const PLATFORM_ACCOUNT: PlatformDestination[] = [
   { href: "/platform/notifications", label: "Notifications", icon: Bell },
   { href: "/platform/profile", label: "Profile", icon: Settings2 },
+  { href: "/platform/help", label: "Help", icon: CircleQuestionMark },
 ];
 
 export function isPlatformActive(pathname: string, destination: PlatformDestination): boolean {
