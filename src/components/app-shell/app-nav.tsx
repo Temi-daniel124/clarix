@@ -19,7 +19,7 @@ import {
 } from "./destinations";
 
 /**
- * The persistent navigation — blueprint Part 3.
+ * The persistent navigation, blueprint Part 3.
  *
  * Sidebar on desktop, floating tab pill on mobile, both generated from the same destination list
  * so the two can never drift into separate information architectures.
@@ -210,8 +210,8 @@ export function AppBottomTabs() {
 /**
  * One tab. The active one widens to show its label beside the icon; the rest stay icon-only.
  *
- * The width change is a `layout` animation on the one standard spring — the same physics the
- * rest of the product uses — rather than a bespoke width tween. The label fades in behind it so
+ * The width change is a `layout` animation on the one standard spring: the same physics the
+ * rest of the product uses, rather than a bespoke width tween. The label fades in behind it so
  * the text is not stretched while the pill is still growing.
  */
 function TabPill({

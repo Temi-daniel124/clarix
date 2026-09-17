@@ -1,7 +1,7 @@
--- Clarix — migration 013: an imported opening balance becomes a ledger entry.
+-- Clarix, migration 013: an imported opening balance becomes a ledger entry.
 --
 -- Found while reviewing Member Profile (blueprint 5.2) by eye. Migration 012 made
--- `cooperative_memberships.savings_balance` derived from `savings_transactions`, which is right —
+-- `cooperative_memberships.savings_balance` derived from `savings_transactions`, which is right,
 -- a balance that disagrees with the entries behind it is exactly what a member would be right to
 -- distrust. But an imported balance has no entries behind it: the roster carries a figure, and
 -- migration 010's trigger copied that figure onto the membership directly.

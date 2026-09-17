@@ -12,7 +12,7 @@ import { createCooperativeAction, type PlatformState } from "@/app/platform/acti
 const INITIAL: PlatformState = {};
 
 /**
- * Create Cooperative — super-admin blueprint 5.3.
+ * Create Cooperative (super-admin blueprint 5.3).
  *
  * Four fields, one button, and the button does exactly what it says: it creates the cooperative's
  * record and issues its admin's invitation in one action, which is "the very first step of that
@@ -62,7 +62,7 @@ export function CreateCooperativeForm() {
       <h1 className="type-page-title mt-6 text-text">Create a cooperative</h1>
       <p className="type-body mt-3 max-w-[520px] text-text-secondary">
         This creates the cooperative&rsquo;s record and invites the person who will run it.
-        Everything else — its public profile, its loan rules, its member list — is theirs to set
+        Everything else. Its public profile, its loan rules, its member list, is theirs to set
         up once they accept.
       </p>
 

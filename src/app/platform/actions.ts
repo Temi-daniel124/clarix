@@ -6,14 +6,14 @@ import { createClient } from "@/lib/supabase/server";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 
 /**
- * The Super Admin's writes — super-admin blueprint 5.2 and 5.3.
+ * The Super Admin's writes (super-admin blueprint 5.2 and 5.3).
  *
  * Three actions, and between them they are the whole of what this role can change about a
  * cooperative: bring one into existence, name who runs it, and turn it off or back on. Nothing
  * here reaches a member, a loan or a balance, and there is deliberately no action that could.
  *
  * The `is_platform_admin()` check below is not the boundary. `cooperatives_insert_platform_admin`
- * and `cooperatives_update_own_admin` are, and they were written in migration 001 — this check
+ * and `cooperatives_update_own_admin` are, and they were written in migration 001. This check
  * exists so a signed-in employee who somehow posted this form gets a sentence rather than a
  * database error (SECURITY.md).
  */
@@ -37,12 +37,12 @@ async function requirePlatformAdmin() {
 }
 
 /**
- * Create Cooperative — blueprint 5.3.
+ * Create Cooperative (blueprint 5.3).
  *
  * Two writes, in the order that keeps the record honest if the second fails: the cooperative
  * first, then its admin's invitation through `invite_cooperative_staff()`. That is the same
  * function a cooperative's own admin uses to invite an officer, widened in migration 019 to admit
- * a platform admin as a second legitimate caller — D027 settled that invitations are database
+ * a platform admin as a second legitimate caller, D027 settled that invitations are database
  * rows written by one narrow function, and a second function for the same act would be a second
  * place for the claim logic to drift.
  *
@@ -142,7 +142,7 @@ export async function createCooperativeAction(
 }
 
 /**
- * Deactivate / reactivate — blueprint 5.2.
+ * Deactivate / reactivate (blueprint 5.2).
  *
  * The Timed Undo happens in the component before this is called, which is what makes the undo
  * real: nothing is written until the window closes.
@@ -182,7 +182,7 @@ export async function setCooperativeStatusAction(
 }
 
 /**
- * Resend the admin invitation — blueprint 5.2, shown only while one is still unaccepted.
+ * Resend the admin invitation (blueprint 5.2), shown only while one is still unaccepted.
  *
  * "Resend" is honest about what it does: it rewrites the invitation row and its timestamp through
  * the same function that issued it. Clarix cannot put an email in front of anybody until a

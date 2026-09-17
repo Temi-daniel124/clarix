@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { springStandard } from "@/lib/motion";
 
 /**
- * PWA install prompt — employee blueprint 1.2.
+ * PWA install prompt (employee blueprint 1.2).
  *
  * Not a screen: a small dismissible banner, and only ever on the Dashboard. Never on the
  * landing page and never during onboarding, when the employee hasn't yet seen enough value to
@@ -19,7 +19,7 @@ import { springStandard } from "@/lib/motion";
  * Screen route rather than pretending a button will do it.
  *
  * The install event itself is captured by a small inline script in the root layout, because
- * Chrome fires it before React hydrates — a listener added in an effect here would simply never
+ * Chrome fires it before React hydrates: a listener added in an effect here would simply never
  * see it. This component reads the stash through useSyncExternalStore, which also keeps every
  * piece of browser state out of an effect body.
  */
@@ -102,7 +102,7 @@ export function InstallPrompt() {
 
           <p className="type-secondary flex-1 text-text-secondary">
             {manualOnly
-              ? "Install Clarix for quicker access — tap Share, then Add to Home Screen."
+              ? "Install Clarix for quicker access, tap Share, then Add to Home Screen."
               : "Install Clarix for quicker access, without opening a browser tab."}
           </p>
 
@@ -128,7 +128,7 @@ export function InstallPrompt() {
 }
 
 type InstallEnvironment = {
-  /** Already running as an installed app — never ask again. */
+  /** Already running as an installed app, never ask again. */
   installed: boolean;
   /** iOS Safari, which fires no beforeinstallprompt and installs manually. */
   manualOnly: boolean;

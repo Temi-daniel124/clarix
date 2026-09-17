@@ -7,12 +7,12 @@ import { pendingInvites, preferredRole } from "@/lib/staff";
 export const dynamic = "force-dynamic";
 
 /**
- * The cooperative staff shell — admin blueprint Part 3, officer blueprint Part 3.
+ * The cooperative staff shell, admin blueprint Part 3, officer blueprint Part 3.
  *
  * One shell, two navigations. An officer does the same day-to-day work an admin does and reaches
  * it through the same screens; what they do not get is the configuration layer, so the sidebar
  * they see has no "Manage cooperative" section at all and no audit log. That difference is
- * expressed here, in what the navigation offers, and again in each screen's own guard — a menu
+ * expressed here, in what the navigation offers, and again in each screen's own guard: a menu
  * that simply omits a destination is not a boundary on its own.
  *
  * Wraps every screen an admin or officer sees after signing in. The redirects here are for
@@ -21,7 +21,7 @@ export const dynamic = "force-dynamic";
  * `cooperative_staff_roles` row this checks (SECURITY.md).
  *
  * Somebody holding only an unaccepted invitation is sent to accept it, because every screen in
- * here would be empty for them until they do — the policies key on an *active* role.
+ * here would be empty for them until they do: the policies key on an *active* role.
  *
  * The setup sequence (blueprint 2.1-2.5) deliberately sits OUTSIDE this group, in its own quiet
  * single-column layout, for the same reason employee onboarding does: a wizard with a navigation

@@ -1,5 +1,5 @@
 /**
- * Shared vocabulary for the audit log — admin blueprint 8.3.
+ * Shared vocabulary for the audit log (admin blueprint 8.3).
  *
  * Kept apart from the query module because the table that renders it is a client component: a
  * single import of the server Supabase client from there would pull server-only code into the
@@ -17,7 +17,7 @@ export type AuditEntry = {
   /** The member the entry is about, where the target resolves to one. */
   subjectName: string | null;
   subjectMembershipId: string | null;
-  /** Fields that existed before and after, and differ — the old value beside the new. */
+  /** Fields that existed before and after, and differ: the old value beside the new. */
   changes: { field: string; from: string; to: string }[];
   /** Figures the action recorded about itself, which were never a "before" of anything. */
   context: { field: string; value: string }[];

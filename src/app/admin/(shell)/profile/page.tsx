@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Profile" };
 
 /**
- * Profile / Settings — admin blueprint 8.2, officer blueprint 8.2.
+ * Profile / Settings (admin blueprint 8.2), officer blueprint 8.2.
  *
  * One screen for both staff roles, because the personal-information, security and
  * notification-preference sections are the same account's in either case. What the officer

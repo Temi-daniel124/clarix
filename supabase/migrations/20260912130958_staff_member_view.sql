@@ -1,11 +1,11 @@
--- Clarix — migration 012: what a cooperative's staff need to look after a member.
+-- Clarix, migration 012: what a cooperative's staff need to look after a member.
 --
 -- Two things Part 5 of the cooperative admin blueprint needs, and neither is a new table.
 --
 -- ---------------------------------------------------------------------------
 -- 1. One capacity calculation, two doors
 --
--- Member Profile (5.2) must show a member's cross-cooperative capacity — the same figure, drawn
+-- Member Profile (5.2) must show a member's cross-cooperative capacity: the same figure, drawn
 -- the same way, as that member sees on their own dashboard. `capacity_for_user()` already
 -- computes it, but derives the person from `auth.uid()`, so staff cannot use it for somebody
 -- else.
@@ -13,7 +13,7 @@
 -- Rather than write the arithmetic a second time and let the two drift, the calculation moves
 -- into `capacity_core()` and both entry points call it: `capacity_for_user()` keeps its exact
 -- signature and behaviour, and `capacity_for_membership()` is the staff door. There is still one
--- formula in this database, which is the whole point of DECISIONS.md D018 — both sides of a loan
+-- formula in this database, which is the whole point of DECISIONS.md D018. Both sides of a loan
 -- decision must see the same number because it IS the same number.
 --
 -- `submit_loan_application()` deliberately still recomputes the committed total itself, inside
@@ -36,7 +36,7 @@
 -- would be right to distrust.
 --
 -- The trigger below makes the balance derived. A contribution raises it, a recorded withdrawal
--- lowers it, and a loan repayment moves neither — a repayment leaves the salary, it is not a
+-- lowers it, and a loan repayment moves neither: a repayment leaves the salary, it is not a
 -- withdrawal from savings (DECISIONS.md D024).
 
 create or replace function public.capacity_core(

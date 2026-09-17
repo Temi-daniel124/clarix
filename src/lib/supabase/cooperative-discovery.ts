@@ -28,7 +28,7 @@ export type DiscoveryProfile = {
 };
 
 /**
- * Discovery (blueprint 4.3) — every active cooperative at the employee's organization, with
+ * Discovery (blueprint 4.3), every active cooperative at the employee's organization, with
  * whether they already hold a membership there.
  *
  * Everything returned is public-facing by design: a name, a description, joining requirements.
@@ -74,7 +74,7 @@ export async function loadDiscoveryCards(): Promise<DiscoveryCard[] | null> {
 }
 
 /**
- * The Cooperative Discovery Profile (blueprint 4.4) — everything an employee needs to decide
+ * The Cooperative Discovery Profile (blueprint 4.4). Everything an employee needs to decide
  * whether to join one specific cooperative.
  *
  * Loan products come back filtered to the advertised ones. That filtering is the RLS policy's

@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 010 — the Super Admin's boundary.
+-- Clarix pgTAP suite 010: the Super Admin's boundary.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -21,7 +21,7 @@ select has_function('public', 'platform_cooperative_directory', 'platform_cooper
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: a platform admin who staffs nothing, a cooperative with its own admin, and one
--- member holding savings — the data the Super Admin must be able to count and must not read.
+-- member holding savings: the data the Super Admin must be able to count and must not read.
 -- ---------------------------------------------------------------------------
 
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
@@ -101,7 +101,7 @@ select is(
 select is(
   (select count(*)::int from public.loans),
   0,
-  'nor any loan anywhere — no standing access to financial data is the whole role'
+  'nor any loan anywhere: no standing access to financial data is the whole role'
 );
 
 -- A count of employees is a count, and the signature cannot return anything else. The literal is

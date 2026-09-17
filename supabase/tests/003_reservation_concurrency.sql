@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 003 — the capacity calculation and the reservation transaction.
+-- Clarix pgTAP suite 003: the capacity calculation and the reservation transaction.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -18,7 +18,7 @@
 --
 -- The genuinely parallel case was verified separately against the live project with two
 -- simultaneous HTTP requests from two independent clients: the first reserved ₦50,000/month
--- against a ₦83,250 cap, and the second — arriving at the same moment — recomputed and correctly
+-- against a ₦83,250 cap, and the second, arriving at the same moment, recomputed and correctly
 -- saw ₦33,250 available rather than ₦83,250, reporting a ₦16,750 shortfall. Exactly one
 -- reservation was created.
 -- ---------------------------------------------------------------------------
@@ -56,8 +56,8 @@ select is(
 -- ---------------------------------------------------------------------------
 
 -- Both employees are created here, while the session is still the migration-running superuser.
--- `authenticated` has no privilege on auth.users at all, so creating the second one further down
--- — after the role switch — would fail on permissions rather than testing anything.
+-- `authenticated` has no privilege on auth.users at all, so creating the second one further down,
+-- after the role switch, would fail on permissions rather than testing anything.
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
                         created_at, updated_at, raw_app_meta_data, raw_user_meta_data)
 values
@@ -119,7 +119,7 @@ select is(
 select is(
   (select count(*)::int from public.loans),
   0,
-  'previewing reserves nothing — Step 2 has no side effect'
+  'previewing reserves nothing, Step 2 has no side effect'
 );
 
 -- ---------------------------------------------------------------------------
@@ -161,7 +161,7 @@ select is(
 select is(
   (select count(*)::int from public.loans),
   1,
-  'the second submission reserved nothing — still exactly one loan row'
+  'the second submission reserved nothing, still exactly one loan row'
 );
 
 -- ---------------------------------------------------------------------------

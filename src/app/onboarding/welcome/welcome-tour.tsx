@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 import { springStandard } from "@/lib/motion";
 
 /**
- * Welcome Tour — blueprint 2.1.
+ * Welcome Tour (blueprint 2.1).
  *
  * Three slides, a dot indicator, swipeable on mobile and advanced by a button on both platforms,
  * with Skip available on every slide. Mostly whitespace: a short headline, one supporting
- * sentence, one small icon. No large photo — this is the one place in the employee journey where
+ * sentence, one small icon. No large photo. This is the one place in the employee journey where
  * a light illustrative touch is appropriate, and it stays light.
  *
  * Its job is to make the next three screens feel reasonable rather than intrusive. An employee
@@ -24,7 +24,7 @@ const SLIDES = [
   {
     icon: Layers,
     title: "Every cooperative, in one place",
-    body: "Whether you belong to one cooperative or four, Clarix shows your savings, your loans and what is being deducted from your salary — added up correctly across all of them.",
+    body: "Whether you belong to one cooperative or four, Clarix shows your savings, your loans and what is being deducted from your salary, added up correctly across all of them.",
   },
   {
     icon: Scale,

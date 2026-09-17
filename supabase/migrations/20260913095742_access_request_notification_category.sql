@@ -1,4 +1,4 @@
--- Clarix — migration 024: a notification category for access requests.
+-- Clarix, migration 024: a notification category for access requests.
 --
 -- Alone in its own migration on purpose. Postgres will add a value to an enum inside a
 -- transaction, but will not let that value be *used* in the same transaction, and the next

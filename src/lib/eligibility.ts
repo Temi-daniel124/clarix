@@ -1,9 +1,9 @@
 /**
- * Deduction-capacity arithmetic — docs/DATA-MODEL.md § "Eligibility & reservation", Steps 1
+ * Deduction-capacity arithmetic, docs/DATA-MODEL.md § "Eligibility & reservation", Steps 1
  * and 2.
  *
  * Deliberately boring, deliberately pure, deliberately in one place. DECISIONS.md D018: this
- * is the eligibility decision, and it is arithmetic against an agreed policy — never a model
+ * is the eligibility decision, and it is arithmetic against an agreed policy, never a model
  * output, never inferred, always reproducible from the same inputs. Anything that shows a
  * capacity figure anywhere in the product calls these functions rather than recomputing the
  * formula locally.
@@ -15,9 +15,9 @@
 export type DeductionBasis = "gross" | "net";
 
 export type DeductionPolicy = {
-  /** organizations.deduction_basis — DECISIONS.md D007, default 'gross'. */
+  /** organizations.deduction_basis, DECISIONS.md D007, default 'gross'. */
   basis: DeductionBasis;
-  /** organizations.deduction_max_percentage — e.g. 33.3 for the Labour Act §5 cap. */
+  /** organizations.deduction_max_percentage, e.g. 33.3 for the Labour Act §5 cap. */
   maxPercentage: number;
 };
 
@@ -51,7 +51,7 @@ export function salaryBasisAmount(salary: SalaryBasis, basis: DeductionBasis): n
 }
 
 /**
- * Step 1 — compute available capacity. Read-only and safe to run at any time, which is what
+ * Step 1, compute available capacity. Read-only and safe to run at any time, which is what
  * makes the cross-cooperative lookup available outside an active loan submission
  * (DECISIONS.md D003).
  */
@@ -66,7 +66,7 @@ export function computeCapacity({
   /** Every reserved or active monthly repayment the employee holds, across all cooperatives. */
   committedMonthlyRepayments: number;
   /**
-   * A cap already computed elsewhere — in practice the one `capacity_for_user` returned.
+   * A cap already computed elsewhere, in practice the one `capacity_for_user` returned.
    *
    * The screens receive the cap from the database, because only the database can sum committed
    * obligations across cooperatives. Passing it through rather than recomputing salary maths in
@@ -90,7 +90,7 @@ export function computeCapacity({
 }
 
 /**
- * Step 2 — preview a hypothetical repayment against that capacity. No side effect: nothing is
+ * Step 2, preview a hypothetical repayment against that capacity. No side effect: nothing is
  * reserved, nothing is written, and it is safe to call on every keystroke of a slider.
  */
 export function previewEligibility({
@@ -121,7 +121,7 @@ export function previewEligibility({
 
 /**
  * The reservation window for a cooperative: its own override when it has set one, otherwise
- * the organization default. DECISIONS.md D009 — an override may only ever be shorter, which
+ * the organization default. DECISIONS.md D009: an override may only ever be shorter, which
  * the database enforces at write time; this clamp is the belt to that braces.
  */
 export function reservationExpiryDays({

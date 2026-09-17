@@ -11,7 +11,7 @@ import { landingPathFor } from "@/lib/staff";
 export const dynamic = "force-dynamic";
 
 /**
- * The Super Admin shell — super-admin blueprint Part 3.
+ * The Super Admin shell, super-admin blueprint Part 3.
  *
  * The redirect here is for people who have no business on these screens, not a security
  * boundary: every read behind them goes through a function that checks `is_platform_admin()`

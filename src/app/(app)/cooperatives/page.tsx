@@ -10,12 +10,12 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "My cooperatives" };
 
 /**
- * My Cooperatives — blueprint 4.2.
+ * My Cooperatives (blueprint 4.2).
  *
  * The browsing and selection layer for cooperatives already joined: one row each, showing the
  * name, the savings balance, and a status indicator. Tapping a row will open that cooperative's
  * Detail screen (blueprint 5.2), which belongs to the loan slice and is not built yet, so rows
- * are not yet links — a row that looks tappable and does nothing is worse than one that does not
+ * are not yet links: a row that looks tappable and does nothing is worse than one that does not
  * pretend.
  *
  * "Discover more" sits at the end of the list, keeping "view what I have" and "find what I

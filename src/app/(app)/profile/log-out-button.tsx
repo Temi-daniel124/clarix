@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { logOutAction } from "./actions";
 
 /**
- * Log out — blueprint 6.2, "at the very bottom, visually separated from everything else, in a
+ * Log out (blueprint 6.2), "at the very bottom, visually separated from everything else, in a
  * muted rather than alarming style".
  *
  * Muted is the correct reading of the action: signing out of a device is ordinary and reversible

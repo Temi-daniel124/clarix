@@ -12,7 +12,7 @@ import {
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Public profile" };
 
-/** Public Profile Editor — admin blueprint 7.3, the same screen as setup step 2.2. */
+/** Public Profile Editor (admin blueprint 7.3), the same screen as setup step 2.2. */
 export default async function ManageProfilePage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

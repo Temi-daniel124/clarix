@@ -17,7 +17,7 @@ import { nextAdminStepHref } from "@/lib/admin-setup";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cooperative profile" };
 
-/** Cooperative Profile Setup — admin blueprint 2.2. */
+/** Cooperative Profile Setup (admin blueprint 2.2). */
 export default async function SetupProfilePage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

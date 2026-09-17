@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 004 — notification privacy.
+-- Clarix pgTAP suite 004, notification privacy.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --

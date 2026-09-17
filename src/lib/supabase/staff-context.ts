@@ -6,7 +6,7 @@ import { effectivePermissions, type StaffRole } from "@/lib/staff";
  * cooperative, in one round trip.
  *
  * The query carries no `user_id` filter. `cooperative_staff_roles_select_own` is what scopes it,
- * the same way every other read in this product is scoped — the screen is not the boundary
+ * the same way every other read in this product is scoped: the screen is not the boundary
  * (SECURITY.md).
  */
 
@@ -18,7 +18,7 @@ export type StaffContext = {
   /**
    * Whether this account operates the platform itself (super-admin blueprint 1.1). It is a flag
    * on `platform_admins`, not a cooperative-scoped role, which is why it sits beside `roles`
-   * rather than inside them — and it deliberately grants no access to any cooperative's member
+   * rather than inside them, and it deliberately grants no access to any cooperative's member
    * data (ROLES-AND-PERMISSIONS.md).
    */
   isPlatformAdmin: boolean;

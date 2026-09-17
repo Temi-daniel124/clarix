@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Loans" };
 
 /**
- * Loans — blueprint 5.4, the cross-cooperative overview.
+ * Loans (blueprint 5.4), the cross-cooperative overview.
  *
  * "What do I owe, in total, and where", without a trip through My Cooperatives first. The
  * capacity figures from the Dashboard are deliberately repeated at the top: an employee arriving
@@ -68,7 +68,7 @@ export default async function LoansPage() {
           </span>
           <h2 className="type-card-title mt-5 text-text">You have no loans on Clarix</h2>
           <p className="type-secondary mx-auto mt-2 max-w-[420px] text-text-secondary">
-            When you apply for one, it appears here — and the amount it would take from your
+            When you apply for one, it appears here, and the amount it would take from your
             salary each month is checked against your limit before you commit to asking.
           </p>
           <Button className="mt-6" render={<Link href="/loans/apply" />}>

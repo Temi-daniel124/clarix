@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { springStandard } from "@/lib/motion";
 
 /**
- * Reveal & Copy — the sensitive-figure pattern from docs/planning/clarix-design-system.md § 4.
+ * Reveal & Copy: the sensitive-figure pattern from docs/planning/clarix-design-system.md § 4.
  *
  * A figure that is nobody's business but the owner's is masked until they ask for it, and can
  * then be copied without being retyped. The design system adopts this specifically so that
@@ -15,8 +15,8 @@ import { springStandard } from "@/lib/motion";
  * than claims, and Profile's salary rows are the first place that matters: a payslip figure
  * should not be sitting in plain sight when someone hands their phone over or shares a screen.
  *
- * This is not a second way of showing a number against a limit — it shows one figure, with no
- * comparison at all — so it does not compete with the RollingNumber/MeterBar motif. Anywhere a
+ * This is not a second way of showing a number against a limit. It shows one figure, with no
+ * comparison at all, so it does not compete with the RollingNumber/MeterBar motif. Anywhere a
  * figure IS being measured against a cap, that motif still applies and this does not.
  *
  * Masking is real: the digits are not in the DOM until revealed, so they are not exposed to a
@@ -29,7 +29,7 @@ export function RevealCopy({
   className,
 }: {
   label: string;
-  /** The plain text placed on the clipboard — digits only, no currency symbol or grouping. */
+  /** The plain text placed on the clipboard, digits only, no currency symbol or grouping. */
   value: string;
   /** What is shown once revealed. Defaults to `value`. */
   formatted?: string;

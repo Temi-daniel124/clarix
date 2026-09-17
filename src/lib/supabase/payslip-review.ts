@@ -1,12 +1,12 @@
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * The payslip behind an application under review — DECISIONS.md D031.
+ * The payslip behind an application under review, DECISIONS.md D031.
  *
  * There is no cooperative filter, no membership filter and no permission check in this file, and
  * that is deliberate: `documents_select_loan_review` decides whether the row comes back, keyed on
- * `payslip_under_review()`. If the caller is not entitled to it — no application waiting, no
- * permission to decide one, or the document is not the salary evidence — the query returns nothing
+ * `payslip_under_review()`. If the caller is not entitled to it (no application waiting, no
+ * permission to decide one, or the document is not the salary evidence) the query returns nothing
  * and this returns null, which is the same answer as "there is no payslip".
  */
 

@@ -1,4 +1,4 @@
--- Clarix — migration 014: the audit log, and the first loan transition past `reserved`.
+-- Clarix, migration 014: the audit log, and the first loan transition past `reserved`.
 --
 -- ---------------------------------------------------------------------------
 -- Why the audit log is being built now rather than deferred
@@ -7,12 +7,12 @@
 -- which was fine while nothing made a decision worth reviewing. Part 6 changes that. Blueprint
 -- 6.2 requires a note when an admin approves over a flagged capacity shortfall, "since approving
 -- over a flagged shortfall is exactly the kind of decision the audit log exists to make
--- reviewable later" — so the note field and the log are one feature, and building the field
+-- reviewable later", so the note field and the log are one feature, and building the field
 -- without the log would mean asking somebody to justify a decision and then dropping what they
 -- wrote on the floor. That is the one outcome worth ruling out.
 --
 -- Scoped to what Part 6 needs: actor, action, target, old and new value, and the note. Reading
--- it back — the Cooperative Audit Log screen (8.3) — stays deferred, because recording a
+-- it back: the Cooperative Audit Log screen (8.3), stays deferred, because recording a
 -- decision is urgent and reading the record is not.
 --
 -- One addition to the shape in DATA-MODEL.md: `cooperative_id`. Without it there is nothing to
@@ -23,7 +23,7 @@
 -- Why the decision is one function
 --
 -- Approving a loan is four writes that must not come apart: the loan's status, the audit entry,
--- the notification to the member, and — for an approval over the cap — the reason. Two of those
+-- the notification to the member, and, for an approval over the cap: the reason. Two of those
 -- tables deliberately have no insert policy at all (`notifications` per D025, and `audit_log`
 -- below), because neither is something a client should be able to write directly. A single
 -- SECURITY DEFINER function is what makes the set atomic and keeps those tables closed.
@@ -55,7 +55,7 @@ create index audit_log_cooperative_created_idx
   on public.audit_log (cooperative_id, created_at desc);
 
 comment on table public.audit_log is
-  'Append-only record of decisions worth reviewing later (docs/DATA-MODEL.md). Written only by SECURITY DEFINER functions — there is deliberately no insert, update or delete policy.';
+  'Append-only record of decisions worth reviewing later (docs/DATA-MODEL.md). Written only by SECURITY DEFINER functions. There is deliberately no insert, update or delete policy.';
 
 alter table public.audit_log enable row level security;
 
@@ -70,11 +70,11 @@ grant select on public.audit_log to authenticated;
 revoke all on public.audit_log from anon;
 
 -- ---------------------------------------------------------------------------
--- decide_loan_application() — approve or reject, and record what that meant
+-- decide_loan_application(), approve or reject, and record what that meant
 --
 -- SECURITY.md, "Elevated database privileges". It writes to `notifications` and `audit_log`,
 -- neither of which accepts a client write by design, and it reads the member's cross-cooperative
--- committed total to decide whether this is an over-cap approval — the same D003 exception the
+-- committed total to decide whether this is an over-cap approval: the same D003 exception the
 -- capacity functions already carry.
 --
 -- What keeps it narrow: it refuses unless the caller is active staff at THIS loan's cooperative

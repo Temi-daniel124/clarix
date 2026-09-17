@@ -8,7 +8,7 @@ import { loadAuditLog } from "@/lib/supabase/audit-data";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Audit log" };
 
-/** Cooperative Audit Log — admin blueprint 8.3. */
+/** Cooperative Audit Log (admin blueprint 8.3). */
 export default async function AuditLogPage({
   searchParams,
 }: {
@@ -30,7 +30,7 @@ export default async function AuditLogPage({
       <h1 className="type-page-title text-text">Audit log</h1>
       <p className="type-body mt-3 max-w-[600px] text-text-secondary">
         Who did what at {role.cooperativeName}, and when. This record covers this cooperative
-        only, and nothing in it can be edited or removed — including by you.
+        only, and nothing in it can be edited or removed, including by you.
       </p>
 
       <div className="mt-8">

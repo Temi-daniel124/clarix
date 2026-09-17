@@ -8,7 +8,7 @@ import { matchesEmployeeIdPattern } from "@/lib/onboarding";
 export type StepState = { error?: string; fieldErrors?: Record<string, string> };
 
 /**
- * Step 2.2 — record the employee's staff ID.
+ * Step 2.2, record the employee's staff ID.
  *
  * Validated against `organizations.employee_id_pattern` rather than a hard-coded six digits, so
  * the rule lives with the organization that sets it. The uniqueness constraint is
@@ -59,7 +59,7 @@ export async function saveEmployeeIdAction(
       return {
         fieldErrors: {
           employeeId:
-            "This ID is already linked to an account — try signing in instead, or check the number on your payslip.",
+            "This ID is already linked to an account, try signing in instead, or check the number on your payslip.",
         },
       };
     }
@@ -73,11 +73,11 @@ const salarySchema = z.object({
   grossSalary: z.coerce
     .number({ message: "Enter your gross salary." })
     .positive("Gross salary must be more than zero.")
-    .max(99_999_999, "That figure looks too large — please check it."),
+    .max(99_999_999, "That figure looks too large, please check it."),
   netSalary: z.coerce
     .number({ message: "Enter your net salary." })
     .positive("Net salary must be more than zero.")
-    .max(99_999_999, "That figure looks too large — please check it."),
+    .max(99_999_999, "That figure looks too large, please check it."),
   payPeriod: z.string().trim().max(64).optional(),
   documentId: z.string().uuid(),
 });
@@ -103,7 +103,7 @@ function resolveDestination(raw: string): string {
 }
 
 /**
- * Step 2.4 — confirm or correct the salary figures, then save them against the account.
+ * Step 2.4, confirm or correct the salary figures, then save them against the account.
  *
  * This is the human checkpoint DECISIONS.md D006 requires: nothing reaches `users.salary_gross`
  * without someone reading it on screen first. `salary_source_doc_id` records which payslip the
@@ -141,7 +141,7 @@ export async function confirmSalaryAction(
 
   if (netSalary > grossSalary) {
     return {
-      fieldErrors: { netSalary: "Net pay cannot be more than gross pay — please check both." },
+      fieldErrors: { netSalary: "Net pay cannot be more than gross pay, please check both." },
     };
   }
 

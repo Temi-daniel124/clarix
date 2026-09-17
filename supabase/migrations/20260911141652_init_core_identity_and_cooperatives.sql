@@ -1,4 +1,4 @@
--- Clarix — migration 001: core identity and cooperative tables, with RLS.
+-- Clarix, migration 001: core identity and cooperative tables, with RLS.
 --
 -- Covers the first six tables of docs/DATA-MODEL.md: organizations, users, cooperatives,
 -- cooperative_memberships, cooperative_staff_roles, platform_admins.

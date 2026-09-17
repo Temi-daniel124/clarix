@@ -18,14 +18,14 @@ import {
 } from "./destinations";
 
 /**
- * The Super Admin's navigation — super-admin blueprint Part 3.
+ * The Super Admin's navigation, super-admin blueprint Part 3.
  *
  * Same chrome as the other shells, because this is one product: navy glass, the one standard
  * spring, the same floating mobile pill. Two things differ, and both are the blueprint's own
  * instruction rather than a shortcut.
  *
  * It is flat. There is no collapsible "Manage" section and no rail-collapse control, because
- * there is nothing here deep enough to need either — eight rows, all visible, all one tap away.
+ * there is nothing here deep enough to need either: eight rows, all visible, all one tap away.
  *
  * It is quiet. Where an admin's sidebar names the cooperative they manage under the wordmark,
  * this one says "Platform" and stops. This is the one part of Clarix meant to read as calm

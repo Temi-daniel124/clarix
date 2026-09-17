@@ -7,7 +7,7 @@ import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { loadDeductionPolicy } from "@/lib/supabase/platform-admin-data";
 
 /**
- * The Super Admin's two remaining writes — blueprint 6.1 and 8.1.
+ * The Super Admin's two remaining writes (blueprint 6.1 and 8.1).
  *
  * Both record themselves in the platform audit log through `record_platform_event()`, which is
  * what 6.1 means by "every change here is recorded automatically in the Platform Audit Log". The
@@ -42,7 +42,7 @@ async function requirePlatformAdmin() {
 }
 
 /**
- * Deduction Policy Settings — blueprint 6.1.
+ * Deduction Policy Settings (blueprint 6.1).
  *
  * "The single most consequential screen a Super Admin touches": the basis and the cap are the two
  * numbers every eligibility figure in Clarix is computed from, so a change here moves what every
@@ -140,7 +140,7 @@ export async function saveDeductionPolicyAction(
 
 export type AdminState = { error?: string; saved?: string };
 
-/** Add a platform admin — blueprint 8.1. */
+/** Add a platform admin (blueprint 8.1). */
 export async function grantPlatformAdminAction(email: string): Promise<AdminState> {
   const staff = await requirePlatformAdmin();
   if (!staff) return { error: "This account cannot add a platform admin." };
@@ -171,7 +171,7 @@ export async function grantPlatformAdminAction(email: string): Promise<AdminStat
 }
 
 /**
- * Remove a platform admin — blueprint 8.1.
+ * Remove a platform admin (blueprint 8.1).
  *
  * Self-removal is refused by `revoke_platform_admin()` itself, not here. The interface also hides
  * the control on your own row, but that is a courtesy; the function is the safeguard.

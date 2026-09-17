@@ -1,11 +1,11 @@
 /**
- * The cooperative-admin setup sequence — admin blueprint 2.1 to 2.5.
+ * The cooperative-admin setup sequence (admin blueprint 2.1 to 2.5).
  *
  * The employee side keeps its step list in `src/lib/onboarding.ts` for the same reasons, and this
  * is deliberately its sibling rather than a shared abstraction: the two sequences ask for
  * completely different things, and one list with a role flag in it would read as neither.
  *
- * The Welcome tour sits outside the numbered steps, exactly as the employee tour does — it is
+ * The Welcome tour sits outside the numbered steps, exactly as the employee tour does. It is
  * orientation, not a step with state attached.
  */
 

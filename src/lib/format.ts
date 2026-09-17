@@ -1,5 +1,5 @@
 /**
- * Naira formatting helpers. Clarix shows money in Nigerian Naira everywhere — there is no
+ * Naira formatting helpers. Clarix shows money in Nigerian Naira everywhere. There is no
  * multi-currency requirement in scope, so this is deliberately a single fixed formatter
  * rather than a locale abstraction.
  */

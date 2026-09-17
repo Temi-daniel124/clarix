@@ -30,14 +30,14 @@ export type PendingInvitation = {
 };
 
 /**
- * Invite Officers — admin blueprint 2.5, and later Officer Management (7.2).
+ * Invite Officers (admin blueprint 2.5), and later Officer Management (7.2).
  *
  * Two lists rather than one, because they are genuinely different things: people who hold a role
  * at this cooperative, and invitations that have not become roles yet. Collapsing them would mean
  * showing somebody as an officer before they have agreed to be one.
  *
  * The preset is the whole permission decision at this point. Blueprint 2.5 deliberately keeps the
- * finer-grained toggles and the cosmetic title out of this first-run moment — except the title,
+ * finer-grained toggles and the cosmetic title out of this first-run moment, except the title,
  * which is offered here because a cooperative that calls its officer a Treasurer will want to say
  * so while they are thinking about the person, not later.
  */
@@ -67,7 +67,7 @@ export function OfficerInvites({
       {officers.length === 0 && invitations.length === 0 ? (
         <p className="type-body mt-4 max-w-[560px] text-text-secondary">
           Nobody else works on this cooperative yet. Officers record savings, submit loan
-          applications and — if you let them — approve loans. You can add them at any time, so
+          applications and, if you let them, approve loans. You can add them at any time, so
           there is no need to finish this now.
         </p>
       ) : null}
@@ -146,7 +146,7 @@ export function OfficerInvites({
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="officer-title">What this cooperative calls them</Label>
-              <Input id="officer-title" name="title" placeholder="Treasurer, Secretary — optional" />
+              <Input id="officer-title" name="title" placeholder="Treasurer, Secretary, optional" />
             </div>
 
             <fieldset className="flex flex-col gap-3">
@@ -190,8 +190,8 @@ export function OfficerInvites({
           </div>
 
           <p className="type-caption mt-4 text-text-muted">
-            Clarix cannot send the email itself yet — a verified sending domain is still
-            outstanding — so the invitation is recorded and waiting. Tell them it is there, and it
+            Clarix cannot send the email itself yet: a verified sending domain is still
+            outstanding, so the invitation is recorded and waiting. Tell them it is there, and it
             activates when they sign in.
           </p>
         </form>

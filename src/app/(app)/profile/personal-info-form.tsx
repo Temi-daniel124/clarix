@@ -10,7 +10,7 @@ import { updatePersonalInfoAction, type SectionState } from "./actions";
 const INITIAL: SectionState = {};
 
 /**
- * Personal information — blueprint 6.2, first section.
+ * Personal information (blueprint 6.2), first section.
  *
  * Name and contact details only. The staff ID is not editable here on purpose: it is unique
  * within the organization and is what a cooperative matches an employee against, so changing it

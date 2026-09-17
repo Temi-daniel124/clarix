@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  * base-ui accordion, reskinned to DESIGN_SYSTEM.md. Used for the landing page FAQ.
  *
  * The panel animates on its own height rather than a spring, because this is disclosure of
- * static text, not a figure moving against a limit — and the global prefers-reduced-motion
+ * static text, not a figure moving against a limit, and the global prefers-reduced-motion
  * rule in globals.css collapses the transition to nothing when asked.
  */
 

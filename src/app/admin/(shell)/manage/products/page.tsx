@@ -8,7 +8,7 @@ import { loadLoanProducts, loadPeerRatioRange } from "@/lib/supabase/admin-data"
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Loan products" };
 
-/** Loan Products & Policy Settings — admin blueprint 7.1, the same screen as setup step 2.3. */
+/** Loan Products & Policy Settings (admin blueprint 7.1), the same screen as setup step 2.3. */
 export default async function ManageProductsPage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

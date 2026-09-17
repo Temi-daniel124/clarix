@@ -1,4 +1,4 @@
--- Clarix — migration 010: what a cooperative admin needs to set a cooperative up.
+-- Clarix, migration 010: what a cooperative admin needs to set a cooperative up.
 --
 -- DECISIONS.md D027 and D028, both written before this file per the PLAN step in
 -- docs/DEVELOPMENT-WORKFLOW.md. Neither of these tables is in docs/DATA-MODEL.md, and the two
@@ -22,7 +22,7 @@
 -- RLS, as always, in the same migration.
 
 -- ---------------------------------------------------------------------------
--- staff_invitations — an invitation to an email address, not to an account
+-- staff_invitations: an invitation to an email address, not to an account
 -- ---------------------------------------------------------------------------
 
 create table public.staff_invitations (
@@ -42,7 +42,7 @@ create table public.staff_invitations (
   permissions jsonb not null default '{}'::jsonb
     check (jsonb_typeof(permissions) = 'object'),
 
-  -- The cosmetic title a cooperative may use instead of "Officer" — Treasurer, Secretary.
+  -- The cosmetic title a cooperative may use instead of "Officer", Treasurer, Secretary.
   title text,
 
   invited_by uuid references public.users (id) on delete set null,
@@ -84,7 +84,7 @@ grant select, delete on public.staff_invitations to authenticated;
 revoke all on public.staff_invitations from anon;
 
 -- ---------------------------------------------------------------------------
--- member_roster_entries — the cooperative's own record of a member
+-- member_roster_entries: the cooperative's own record of a member
 -- ---------------------------------------------------------------------------
 
 create table public.member_roster_entries (
@@ -118,13 +118,13 @@ create index member_roster_entries_unlinked_idx
   on public.member_roster_entries (employee_id) where membership_id is null;
 
 comment on table public.member_roster_entries is
-  'A cooperative''s imported member roster (blueprint 2.4, DECISIONS.md D028). An entry becomes a cooperative_membership when that person joins Clarix — see the link_roster_entry trigger.';
+  'A cooperative''s imported member roster (blueprint 2.4, DECISIONS.md D028). An entry becomes a cooperative_membership when that person joins Clarix, see the link_roster_entry trigger.';
 
 alter table public.member_roster_entries enable row level security;
 
 -- A roster entry carries another person's IPPIS number and savings balance, so it is staff-only
 -- and cooperative-scoped, exactly like the memberships it turns into. An employee never reads
--- this table — the trigger below acts on their behalf without showing them anything.
+-- this table: the trigger below acts on their behalf without showing them anything.
 create policy member_roster_entries_select_staff
   on public.member_roster_entries for select to authenticated
   using (public.is_active_staff(cooperative_id));
@@ -146,7 +146,7 @@ grant select, insert, update, delete on public.member_roster_entries to authenti
 revoke all on public.member_roster_entries from anon;
 
 -- ---------------------------------------------------------------------------
--- invite_cooperative_staff() — issue an invitation by email
+-- invite_cooperative_staff(), issue an invitation by email
 --
 -- SECURITY.md, "Elevated database privileges". This needs to resolve an email address to an
 -- account across the whole organization, which no RLS policy on `users` permits and none should:
@@ -154,8 +154,8 @@ revoke all on public.member_roster_entries from anon;
 -- belong to their cooperative, and an invitee by definition does not yet.
 --
 -- What keeps it narrow: it verifies the caller is this cooperative's active admin before doing
--- anything, it returns no part of the resolved user's record — only whether an account already
--- existed — and it writes nothing anywhere else.
+-- anything, it returns no part of the resolved user's record: only whether an account already
+-- existed, and it writes nothing anywhere else.
 -- ---------------------------------------------------------------------------
 
 create or replace function public.invite_cooperative_staff(
@@ -241,11 +241,11 @@ revoke execute on function public.invite_cooperative_staff(uuid, text, public.st
 grant execute on function public.invite_cooperative_staff(uuid, text, public.staff_role, jsonb, text) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- claim_staff_invitations() — turn invitations addressed to me into real roles
+-- claim_staff_invitations(), turn invitations addressed to me into real roles
 --
 -- Also elevated, and for the mirror-image reason: the caller must be able to find the rows
 -- addressed to their own email in `staff_invitations`, a table whose only select policy is
--- "staff of that cooperative" — which they are not yet. It reads the caller's email from their
+-- "staff of that cooperative", which they are not yet. It reads the caller's email from their
 -- own `users` row rather than from an argument, so it can only ever claim invitations addressed
 -- to the person calling it.
 -- ---------------------------------------------------------------------------
@@ -298,7 +298,7 @@ revoke execute on function public.claim_staff_invitations() from public, anon;
 grant execute on function public.claim_staff_invitations() to authenticated;
 
 -- ---------------------------------------------------------------------------
--- link_roster_entry() — a membership meets the roster that was waiting for it
+-- link_roster_entry(): a membership meets the roster that was waiting for it
 --
 -- Runs as a trigger on `cooperative_memberships`, SECURITY DEFINER because the employee
 -- inserting their own membership has no read access to `member_roster_entries` and must not
@@ -307,7 +307,7 @@ grant execute on function public.claim_staff_invitations() to authenticated;
 -- What it does is narrow and mechanical: if this cooperative's roster holds an unlinked entry
 -- whose employee_id matches the joining person's own, the two are linked, the savings balance
 -- the cooperative already recorded is carried onto the membership, and the membership is
--- activated — because a cooperative that imported someone has already decided they are a member.
+-- activated, because a cooperative that imported someone has already decided they are a member.
 -- It reads only that one entry and returns nothing to the caller.
 -- ---------------------------------------------------------------------------
 

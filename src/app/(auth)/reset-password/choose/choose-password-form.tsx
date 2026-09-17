@@ -11,7 +11,7 @@ import { chooseNewPasswordAction, type ResetState } from "../actions";
 const INITIAL: ResetState = {};
 
 /**
- * Forgot password, second half — the screen the emailed link lands on.
+ * Forgot password, second half: the screen the emailed link lands on.
  *
  * No current-password field, deliberately. Control of the mailbox is what was proved to get here,
  * and asking for a password the person has by definition forgotten would make this screen useless

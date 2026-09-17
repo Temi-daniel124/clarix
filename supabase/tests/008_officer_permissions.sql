@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 008 — officer permissions, and the reconciliation table.
+-- Clarix pgTAP suite 008, officer permissions, and the reconciliation table.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -91,7 +91,7 @@ select throws_ok(
 
 -- Recording a repayment is the same act under the same permission, not a separate one. Both
 -- blueprints put "Record contribution" and "Record repayment" behind one granted permission, and
--- `savings_transactions_insert_staff` does not look at the row's type — this is the assertion
+-- `savings_transactions_insert_staff` does not look at the row's type. This is the assertion
 -- that keeps those two facts together.
 select throws_ok(
   $$ insert into public.savings_transactions (membership_id, type, amount)

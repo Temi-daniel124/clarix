@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { springStandard } from "@/lib/motion";
 
 /**
- * Welcome to Cooperative Officer — officer blueprint 2.1.
+ * Welcome to Cooperative Officer (officer blueprint 2.1).
  *
  * The same full-screen, swipeable, dot-indicator pattern every role's first run uses, with two
  * slides instead of three and no "skip setup" affordance, "since there's no setup to skip".
@@ -37,14 +37,14 @@ export function OfficerWelcomeTour({
       title: `What you can do at ${cooperativeName}`,
       body:
         granted.length > 0
-          ? `You can ${listOf(granted)}, as set up by your cooperative's admin. This can change, and you will always see exactly what you are able to do — nothing hidden, nothing shown greyed out.`
-          : `Your admin has not switched anything on for you yet, so there is nothing here you can act on. Ask them to grant what you need; it takes effect immediately, and you will always see exactly what you are able to do — nothing hidden, nothing shown greyed out.`,
+          ? `You can ${listOf(granted)}, as set up by your cooperative's admin. This can change, and you will always see exactly what you are able to do. Nothing hidden, nothing shown greyed out.`
+          : `Your admin has not switched anything on for you yet, so there is nothing here you can act on. Ask them to grant what you need; it takes effect immediately, and you will always see exactly what you are able to do. Nothing hidden, nothing shown greyed out.`,
     },
     {
       icon: ShieldCheck,
       title: "You will see what you need, and no more",
       body:
-        "A member's profile shows what they already owe in total across every cooperative they belong to — never which cooperative, never their records elsewhere. That figure is there whenever you open their profile, not only while a loan is being decided.",
+        "A member's profile shows what they already owe in total across every cooperative they belong to, never which cooperative, never their records elsewhere. That figure is there whenever you open their profile, not only while a loan is being decided.",
     },
   ];
 
@@ -127,7 +127,7 @@ export function OfficerWelcomeTour({
   );
 }
 
-/** "a, b and c" — the way a person says a list out loud. */
+/** "a, b and c": the way a person says a list out loud. */
 function listOf(items: string[]): string {
   if (items.length === 1) return items[0];
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;

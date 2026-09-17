@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 export type MarkState = { error?: string };
 
 /**
- * "Mark all as read" — blueprint 6.1.
+ * "Mark all as read" (blueprint 6.1).
  *
  * A real UPDATE, not a client-side flag (DECISIONS.md D025): an employee who clears a backlog
  * on their phone must find it cleared on their laptop. `notifications_update_own` is what scopes

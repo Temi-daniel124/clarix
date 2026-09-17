@@ -1,4 +1,4 @@
--- Clarix — migration 017: the member-import permission.
+-- Clarix, migration 017: the member-import permission.
 --
 -- The cooperative officer blueprint is the first document to require this. Part 3 says the
 -- "Import members" entry appears in an officer's navigation only "if this Officer has been
@@ -32,4 +32,4 @@ create policy member_roster_entries_update_staff
   with check (public.staff_has_permission(cooperative_id, 'can_import_members'));
 
 comment on table public.member_roster_entries is
-  'A cooperative''s imported member roster (blueprint 2.4, DECISIONS.md D028). An entry becomes a cooperative_membership when that person joins Clarix — see the link_roster_entry trigger. Writing one takes the can_import_members permission (migration 017); reading one takes only being staff, since imported members appear on the member list.';
+  'A cooperative''s imported member roster (blueprint 2.4, DECISIONS.md D028). An entry becomes a cooperative_membership when that person joins Clarix, see the link_roster_entry trigger. Writing one takes the can_import_members permission (migration 017); reading one takes only being staff, since imported members appear on the member list.';

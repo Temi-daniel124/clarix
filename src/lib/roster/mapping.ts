@@ -1,5 +1,5 @@
 /**
- * Turning a cooperative's own spreadsheet into rows Clarix can store — blueprint 2.4.
+ * Turning a cooperative's own spreadsheet into rows Clarix can store (blueprint 2.4).
  *
  * Two jobs, both pure and both unit-tested: guess which source column means which Clarix field,
  * and decide whether a given row is ready, needs a look, or cannot be used. Keeping the whole of
@@ -19,7 +19,7 @@ export const ROSTER_FIELD_ORDER: RosterField[] = ["employeeId", "name", "savings
 
 /**
  * The synonym dictionary MVP-SCOPE.md P0 #2 asks for. These are the headings real FMC Abeokuta
- * cooperative sheets actually use — IPPIS is the payroll system's own name for the staff number,
+ * cooperative sheets actually use, IPPIS is the payroll system's own name for the staff number,
  * and "contribution" is the word most cooperatives use for savings.
  */
 const SYNONYMS: Record<RosterField, string[]> = {
@@ -53,7 +53,7 @@ const SYNONYMS: Record<RosterField, string[]> = {
  * Headings that contain one of our synonyms and mean something else entirely.
  *
  * A real cooperative's sheet is not three columns. It has a loan balance, a bank name, a next of
- * kin, a department — and several of those contain the exact words we search for. Without this,
+ * kin, a department, and several of those contain the exact words we search for. Without this,
  * "Loan Balance" is captured as the savings balance whenever it sits to the left of the savings
  * column, and "Next of Kin Name" is captured as the member's name. Both were reproduced against
  * realistic sheets before this list existed; both are silent, and the first imports every member's
@@ -90,7 +90,7 @@ function normalise(header: string): string {
  *
  * Three rules, in order of authority. An exact synonym match wins outright. Failing that, a header
  * that *contains* a synonym counts, which is what catches "IPPIS Number (new)" and "Savings
- * Balance ₦" — but only if the header is not disqualified for that field, and among the survivors
+ * Balance ₦", but only if the header is not disqualified for that field, and among the survivors
  * the **longest** matching synonym wins rather than the leftmost column.
  *
  * That last rule is the one that matters on a real sheet. "Contributions To Date" and "Loan
@@ -153,7 +153,7 @@ export type PreparedRow = {
 };
 
 export type PrepareOptions = {
-  /** `organizations.employee_id_pattern` — the same rule employee onboarding validates against. */
+  /** `organizations.employee_id_pattern`: the same rule employee onboarding validates against. */
   employeeIdPattern: string;
 };
 
@@ -198,7 +198,7 @@ export function prepareRows(
       issues.push("That savings figure is not a number.");
     }
 
-    if (!name) issues.push("No name — the member will show as their staff ID alone.");
+    if (!name) issues.push("No name: the member will show as their staff ID alone.");
 
     const fatal = issues.some(
       (issue) =>
@@ -219,7 +219,7 @@ export function prepareRows(
   });
 }
 
-/** Two source columns pointed at one Clarix field — flagged rather than silently resolved. */
+/** Two source columns pointed at one Clarix field, flagged rather than silently resolved. */
 export function duplicateMappings(mapping: Record<RosterField, number | null>): RosterField[] {
   const used = new Map<number, RosterField[]>();
 

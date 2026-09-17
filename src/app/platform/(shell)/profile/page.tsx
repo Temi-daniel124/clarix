@@ -27,15 +27,15 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Profile" };
 
 /**
- * Profile / Settings — super-admin blueprint 9.2, reached from Part 3's navigation.
+ * Profile / Settings (super-admin blueprint 9.2), reached from Part 3's navigation.
  *
  * Built here, ahead of its own part, for one reason: Part 3 puts Profile in this role's sidebar,
  * and a row that leads nowhere is worse than one assembled from pieces that already exist. It is
  * the same three sections, the same three components and the same server actions every other
- * role's Profile uses — there is nothing role-specific about changing your own name or password.
+ * role's Profile uses. There is nothing role-specific about changing your own name or password.
  *
  * What is absent is any cooperative context, because this account normally holds none. Where it
- * does — an edge case the data model allows and nothing in this role's normal use assumes — the
+ * does: an edge case the data model allows and nothing in this role's normal use assumes, the
  * blueprint asks for the same "switch to my other view" link every other role's Profile carries,
  * and it appears below.
  */

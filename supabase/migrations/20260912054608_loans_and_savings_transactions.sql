@@ -1,4 +1,4 @@
--- Clarix — migration 006: loans and savings_transactions.
+-- Clarix, migration 006: loans and savings_transactions.
 --
 -- docs/DATA-MODEL.md defines both shapes. These are the tables the product exists for: `loans`
 -- holds the monthly obligations that the cross-cooperative capacity calculation sums, and

@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cooperative home" };
 
 /**
- * Home, for both staff roles — admin blueprint 4.1 and officer blueprint 4.1.
+ * Home, for both staff roles (admin blueprint 4.1) and officer blueprint 4.1.
  *
  * Two genuinely different screens rather than one screen with pieces hidden. An admin gets the
  * cooperative's figures and its setup checklist; an officer gets a search field and what is
@@ -27,7 +27,7 @@ export const metadata: Metadata = { title: "Cooperative home" };
  *
  * The admin half is the screen they return to constantly: four figures about the cooperative, what is waiting
  * on a decision, and a short read on the month. The setup checklist stays above it until setup is
- * finished, which is what blueprint 2.1 promises anyone who skipped it — a dashboard that
+ * finished, which is what blueprint 2.1 promises anyone who skipped it: a dashboard that
  * "gently prompts them to finish the remaining setup steps rather than blocking entry".
  *
  * The PWA install prompt lives here (blueprint 1.3), reusing the employee mechanic unchanged.

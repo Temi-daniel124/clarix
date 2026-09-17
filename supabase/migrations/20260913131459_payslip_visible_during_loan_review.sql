@@ -1,4 +1,4 @@
--- Clarix — migration 027: the payslip behind an application under review.
+-- Clarix, migration 027: the payslip behind an application under review.
 --
 -- DECISIONS.md D031. Migration 004 scoped payslips to the uploading employee and nobody else, and
 -- that was right for what it considered. What it did not consider is that the salary figure staff

@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { DirectoryEntry, PlatformOverview } from "@/lib/platform";
 
 /**
- * The reads behind the Super Admin's screens — super-admin blueprint 4.1 and Part 5.
+ * The reads behind the Super Admin's screens (super-admin blueprint 4.1) and Part 5.
  *
  * Every one goes through a SECURITY DEFINER function rather than a table, and that is the whole
  * design rather than an optimisation. A Super Admin cannot read `cooperative_memberships`,

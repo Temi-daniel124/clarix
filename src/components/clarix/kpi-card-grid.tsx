@@ -21,7 +21,7 @@ import { TrendIndicator, type TrendPoint } from "./trend-indicator";
  * Why the animation is shaped like this, since re-tuning the spring would have treated the
  * symptom rather than the cause:
  *
- * A single tap used to start FOUR overlapping animation systems, not one — `layout` on the card
+ * A single tap used to start FOUR overlapping animation systems, not one, `layout` on the card
  * (which fires on every sibling, because changing one card's grid span moves them all), `layout`
  * on the header row inside each card, `layout` on the figure inside each card, and an
  * AnimatePresence height animation from 0 to auto fighting the parent's own resize. Up to twelve
@@ -43,13 +43,13 @@ export type KpiCard = {
   value: number;
   /** "naira" rolls the digits; "count" prints a plain integer, which is what a count is. */
   format?: "naira" | "count";
-  /** One semantic tone per card — never decoration. */
+  /** One semantic tone per card, never decoration. */
   accent: string;
   /** The sentence revealed when the card is expanded. */
   detail: string;
   /** Omitted where movement over time is not a meaningful question for this figure. */
   trend?: { points: TrendPoint[]; emptyLabel: string };
-  /** Anything richer than a sentence — in practice, the capacity meter. */
+  /** Anything richer than a sentence, in practice, the capacity meter. */
   expanded?: ReactNode;
 };
 

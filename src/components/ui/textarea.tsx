@@ -2,7 +2,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 /**
- * A plain textarea wearing the Input primitive's tokens — same border, surface, radius and
+ * A plain textarea wearing the Input primitive's tokens, same border, surface, radius and
  * indigo focus ring, so a multi-line field does not read as a different family of control.
  *
  * base-ui has no textarea primitive, and wrapping its Input in one would misrepresent what it

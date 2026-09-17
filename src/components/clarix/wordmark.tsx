@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 
 /**
  * The Clarix wordmark: the signature capacity meter, curled into a ring, sitting beside the
- * name. Deliberately the same idea as the meter on every screen — the mark is the motif, not
+ * name. Deliberately the same idea as the meter on every screen: the mark is the motif, not
  * a separate piece of branding (DESIGN_SYSTEM.md § The signature motif).
  */
 export function Wordmark({
@@ -34,7 +34,7 @@ export function Wordmark({
 function MeterRing({ trackColor }: { trackColor: string }) {
   const radius = 9;
   const circumference = 2 * Math.PI * radius;
-  // Two-thirds committed, one-third still available — the same relationship the app measures.
+  // Two-thirds committed, one-third still available: the same relationship the app measures.
   const filled = circumference * 0.667;
 
   return (

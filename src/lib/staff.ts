@@ -2,7 +2,7 @@ import type { Database } from "@/lib/supabase/database.types";
 import { readPermissions, type PermissionKey } from "@/lib/permissions";
 
 /**
- * Who a signed-in person is *to a cooperative* — the admin/officer side of the account model.
+ * Who a signed-in person is *to a cooperative*: the admin/officer side of the account model.
  *
  * One account can hold several of these at once, plus ordinary memberships elsewhere
  * (DECISIONS.md D010). Nothing here is a second identity: it is the same user row, wearing a
@@ -18,11 +18,11 @@ export type StaffRole = {
   cooperativeName: string;
   role: StaffRoleName;
   status: StaffRoleStatus;
-  /** The cosmetic name a cooperative uses instead of "Officer" — Treasurer, Secretary. */
+  /** The cosmetic name a cooperative uses instead of "Officer", Treasurer, Secretary. */
   title: string | null;
   canApproveLoans: boolean;
   /**
-   * What this person may actually do here — default-deny, and enforced by the policies named in
+   * What this person may actually do here, default-deny, and enforced by the policies named in
    * `PERMISSIONS`, not by this object. An admin holds everything implicitly, so their row reads
    * as every flag granted rather than as the empty jsonb their record usually carries.
    */
@@ -66,7 +66,7 @@ export const PERMISSION_PRESETS = {
   can_approve: {
     label: "Can also approve loans",
     description:
-      "Everything above, plus deciding loan applications — the cooperative's money, committed against a member's salary.",
+      "Everything above, plus deciding loan applications: the cooperative's money, committed against a member's salary.",
     permissions: {
       can_view_members: true,
       can_record_savings: true,

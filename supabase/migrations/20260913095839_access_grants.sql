@@ -1,4 +1,4 @@
--- Clarix — migration 025: the access-grant exception.
+-- Clarix, migration 025: the access-grant exception.
 --
 -- This is the only place in Clarix where a Super Admin can see a member's savings, loans or
 -- salary, and SECURITY.md states the contract it has to meet: a non-blank, non-generic reason;
@@ -51,7 +51,7 @@ comment on table public.access_grants is
 
 alter table public.access_grants enable row level security;
 
--- Readable by the operator who asked, and by the admin of the cooperative it names — who has the
+-- Readable by the operator who asked, and by the admin of the cooperative it names, who has the
 -- stronger claim of the two. Deliberately NOT readable by the member concerned: they would learn
 -- their records had been examined without being able to tell whether it was routine, which is a
 -- worse outcome than the cooperative being accountable for it.
@@ -68,7 +68,7 @@ grant select on public.access_grants to authenticated;
 revoke all on public.access_grants from anon;
 
 -- ---------------------------------------------------------------------------
--- has_active_access_grant() — the whole boundary, evaluated at read time
+-- has_active_access_grant(): the whole boundary, evaluated at read time
 --
 -- Every policy this migration adds asks this one question, so there is exactly one definition of
 -- what "currently allowed to look" means. Expiry is arithmetic against `now()` rather than a
@@ -105,7 +105,7 @@ revoke execute on function public.has_active_access_grant(uuid, uuid) from publi
 grant execute on function public.has_active_access_grant(uuid, uuid) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- The reads a live grant opens — and nothing else
+-- The reads a live grant opens, and nothing else
 --
 -- These are real select policies on the real tables, not another aggregate function. That is the
 -- point of this whole mechanism: sometimes a row genuinely has to be looked at, and the honest

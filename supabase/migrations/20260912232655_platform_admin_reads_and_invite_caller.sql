@@ -1,10 +1,10 @@
--- Clarix — migration 019: what a Super Admin may see, and one more legitimate caller for the
+-- Clarix, migration 019: what a Super Admin may see, and one more legitimate caller for the
 -- invitation function.
 --
 -- ---------------------------------------------------------------------------
 -- 1. The reading problem this solves
 --
--- A Super Admin can read `cooperatives` — that policy is open to every signed-in user, because
+-- A Super Admin can read `cooperatives`. That policy is open to every signed-in user, because
 -- the discovery screens need it. They can read nothing else that the Platform Dashboard (4.1) and
 -- Cooperative Management (Part 5) ask for: `cooperative_memberships` takes a staff permission,
 -- `cooperative_staff_roles` and `staff_invitations` take being staff of that cooperative, and
@@ -18,7 +18,7 @@
 -- savings balance, to render a number on a card.
 --
 -- So the access is shaped like the question instead of like the table. These functions return
--- counts, a cooperative's own facts, and the name and email of its **staff** Admin — never a row
+-- counts, a cooperative's own facts, and the name and email of its **staff** Admin, never a row
 -- of membership or financial data, never a member's name, never a balance. The Super Admin
 -- blueprint draws its boundary around "any member's savings, loans, or salary detail"; a headcount
 -- and the person you invited to run a cooperative are on the other side of that line.
@@ -30,7 +30,7 @@
 -- 2. Why SECURITY DEFINER, and why that is safe here
 --
 -- Same reasoning as every other elevated function in SECURITY.md. The caller must be able to
--- aggregate over rows they cannot read, so the function runs as its owner — and in exchange it
+-- aggregate over rows they cannot read, so the function runs as its owner, and in exchange it
 -- takes no arguments that could widen it, checks `is_platform_admin()` before doing anything, and
 -- can only ever return the shape declared below. There is no row-returning variant, so there is
 -- nothing to point at a member.
@@ -68,13 +68,13 @@ end;
 $fn$;
 
 comment on function public.platform_overview() is
-  'The four figures on the Platform Dashboard (super-admin blueprint 4.1). Counts only — never a name, a balance, or a row. Elevated because a Super Admin deliberately cannot read the tables being counted; see SECURITY.md.';
+  'The four figures on the Platform Dashboard (super-admin blueprint 4.1). Counts only, never a name, a balance, or a row. Elevated because a Super Admin deliberately cannot read the tables being counted; see SECURITY.md.';
 
 revoke execute on function public.platform_overview() from public, anon;
 grant execute on function public.platform_overview() to authenticated;
 
 -- ---------------------------------------------------------------------------
--- platform_cooperative_directory() — 5.1 and 5.2 in one read
+-- platform_cooperative_directory(): 5.1 and 5.2 in one read
 --
 -- One row per cooperative, carrying what the two screens are specified to show and nothing else.
 -- `member_count` and `officer_count` are aggregates; `admin_name` and `admin_email` describe the
@@ -157,7 +157,7 @@ end;
 $fn$;
 
 comment on function public.platform_cooperative_directory() is
-  'One row per cooperative for super-admin blueprint 5.1 and 5.2: counts, status, and the staff Admin''s name. Carries no member identity and no financial figure — reaching those stays with the access_grants flow (Part 7).';
+  'One row per cooperative for super-admin blueprint 5.1 and 5.2: counts, status, and the staff Admin''s name. Carries no member identity and no financial figure, reaching those stays with the access_grants flow (Part 7).';
 
 revoke execute on function public.platform_cooperative_directory() from public, anon;
 grant execute on function public.platform_cooperative_directory() to authenticated;
@@ -171,7 +171,7 @@ grant execute on function public.platform_cooperative_directory() to authenticat
 --
 -- The function already does exactly that. What it refused was the caller: it required
 -- `is_active_cooperative_admin(target_cooperative_id)`, which a Super Admin creating a brand-new
--- cooperative can never satisfy, because the cooperative has no admin yet — that is the whole
+-- cooperative can never satisfy, because the cooperative has no admin yet. That is the whole
 -- point of the invitation.
 --
 -- The fix is one more legitimate caller, not a second invitation path. D027 settled that

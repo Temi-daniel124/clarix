@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * Monthly Reconciliation — admin blueprint 7.5.
+ * Monthly Reconciliation (admin blueprint 7.5).
  *
  * "Make a deduction shortfall visible on purpose rather than discovered by accident." Every
  * member with something expected of them this month, what Clarix expected, and what the
@@ -14,7 +14,7 @@ export type ReconciliationRow = {
   employeeId: string | null;
   /** The sum of this member's active monthly repayments at this cooperative. */
   expected: number;
-  /** Null until somebody enters it — which is different from zero, and shown differently. */
+  /** Null until somebody enters it, which is different from zero, and shown differently. */
   actual: number | null;
   enteredAt: string | null;
 };
@@ -29,7 +29,7 @@ export type ReconciliationPeriod = {
   entered: number;
 };
 
-/** The last twelve months, newest first — the range a cooperative would realistically enter. */
+/** The last twelve months, newest first: the range a cooperative would realistically enter. */
 export function recentPeriods(count = 12): { period: string; label: string }[] {
   const now = new Date();
 
@@ -111,7 +111,7 @@ export async function loadReconciliation(
         memberName: person?.name ?? null,
         employeeId: person?.employee_id ?? null,
         // A row already entered keeps the figure that was expected AT THE TIME, which is the
-        // point of recording it — a loan completed since must not rewrite last month's history.
+        // point of recording it: a loan completed since must not rewrite last month's history.
         expected: recorded?.expected ?? expectedByMembership.get(membership.id) ?? 0,
         actual: recorded?.actual ?? null,
         enteredAt: recorded?.enteredAt ?? null,

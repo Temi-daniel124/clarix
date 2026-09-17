@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 002 — payslip privacy.
+-- Clarix pgTAP suite 002, payslip privacy.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -65,8 +65,8 @@ insert into public.cooperative_memberships (user_id, cooperative_id, status)
 values ('44444444-4444-4444-4444-444444444444', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'active');
 
 -- Permitted to see members (migration 016 made that an explicit, default-deny flag). This suite
--- is about whether an officer who CAN see a member can also reach their payslip — the answer must
--- be no — so the officer has to be able to see the member for the test to be about anything.
+-- is about whether an officer who CAN see a member can also reach their payslip: the answer must
+-- be no, so the officer has to be able to see the member for the test to be about anything.
 insert into public.cooperative_staff_roles (user_id, cooperative_id, role, status, permissions)
 values ('55555555-5555-5555-5555-555555555555', 'cccccccc-cccc-cccc-cccc-cccccccccccc', 'officer',
         'active', '{"can_view_members": true}'::jsonb);

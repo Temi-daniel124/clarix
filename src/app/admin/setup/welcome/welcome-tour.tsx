@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 import { springStandard } from "@/lib/motion";
 
 /**
- * Welcome to Cooperative Admin — admin blueprint 2.1.
+ * Welcome to Cooperative Admin (admin blueprint 2.1).
  *
  * Same pattern as the employee tour (three slides, dots, swipe, skip on every one) and
  * deliberately different content, because the things an admin needs to know before the next four
@@ -28,7 +28,7 @@ const SLIDES = [
   {
     icon: ShieldCheck,
     title: "You will see what you need, and no more",
-    body: "When you review a loan, Clarix tells you what that member already owes in total across every cooperative — never which cooperative, never their records elsewhere. The same boundary protects your cooperative's records from everyone else.",
+    body: "When you review a loan, Clarix tells you what that member already owes in total across every cooperative. Never which cooperative, and never their records elsewhere. The same boundary protects your cooperative's records from everyone else.",
   },
   {
     icon: UserCog,

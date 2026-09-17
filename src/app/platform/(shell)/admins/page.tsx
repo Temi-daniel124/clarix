@@ -8,9 +8,9 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Platform admins" };
 
 /**
- * Manage Platform Admins — super-admin blueprint 8.1.
+ * Manage Platform Admins (super-admin blueprint 8.1).
  *
- * `platform_admins` held one policy — read your own row — and no insert, update or delete, which
+ * `platform_admins` held one policy, read your own row, and no insert, update or delete, which
  * was correct while the first account was seeded by hand and is what this screen needed a way
  * around. Migration 023 adds three narrow functions rather than a general write policy, so the
  * only things that can happen to this table are the two things this screen does.

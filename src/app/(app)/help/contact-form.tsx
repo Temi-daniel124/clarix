@@ -10,7 +10,7 @@ import { sendSupportMessageAction, type ContactState } from "./actions";
 const INITIAL: ContactState = {};
 
 /**
- * Contact support — blueprint 6.3: "a short message, confirmed with a brief acknowledgment —
+ * Contact support (blueprint 6.3): "a short message, confirmed with a brief acknowledgment,
  * no elaborate ticket-tracking UI".
  *
  * The address sits beside the form rather than behind it. A form is the convenient path and a

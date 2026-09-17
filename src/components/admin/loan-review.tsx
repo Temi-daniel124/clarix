@@ -20,7 +20,7 @@ type Application = LoanApplication & {
 };
 
 /**
- * Loan Application Review / Eligibility Check — admin blueprint 6.2, and Loan Detail (6.4) once
+ * Loan Application Review / Eligibility Check (admin blueprint 6.2), and Loan Detail (6.4) once
  * a decision has been made.
  *
  * The eligibility comparison is the *same* CapacityMeter an employee sees previewing their own
@@ -122,7 +122,7 @@ export function LoanReview({
             <dt className="type-caption text-text-muted">Committed elsewhere</dt>
             <dd className="type-card-title tabular mt-1 text-text">
               {application.committedElsewhere === null
-                ? "—"
+                ? "Not known"
                 : formatNaira(application.committedElsewhere)}
             </dd>
           </div>
@@ -130,7 +130,7 @@ export function LoanReview({
             <dt className="type-caption text-text-muted">Available before this</dt>
             <dd className="type-card-title tabular mt-1 text-text">
               {application.availableBefore === null
-                ? "—"
+                ? "Not known"
                 : formatNaira(application.availableBefore)}
             </dd>
           </div>
@@ -144,7 +144,7 @@ export function LoanReview({
 
         <p className="type-caption mt-4 max-w-[560px] text-text-muted">
           Committed covers every cooperative this member belongs to. Clarix never tells you which
-          ones, or what they hold there — only the total, which is what makes this figure worth
+          ones, or what they hold there: only the total, which is what makes this figure worth
           trusting from both sides.
         </p>
       </section>

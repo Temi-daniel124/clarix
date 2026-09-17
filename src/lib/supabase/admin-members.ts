@@ -5,7 +5,7 @@ import { formatNaira } from "@/lib/format";
  * Reads behind the cooperative dashboard (admin blueprint 4.1) and member management (Part 5).
  *
  * Every query is scoped by `is_active_staff(cooperative_id)` in the policies rather than by a
- * filter here — the `.eq("cooperative_id", ...)` calls below choose WHICH cooperative among the
+ * filter here: the `.eq("cooperative_id", ...)` calls below choose WHICH cooperative among the
  * ones this person may see, they are not what stops them seeing another (SECURITY.md).
  */
 
@@ -25,7 +25,7 @@ export type MemberRow = {
  * Everyone this cooperative considers a member: real memberships, plus roster entries still
  * waiting for their person to sign up.
  *
- * Showing both is the honest answer to "who are my members" — a cooperative that imported 400
+ * Showing both is the honest answer to "who are my members": a cooperative that imported 400
  * people has 400 members from its own point of view, whatever Clarix knows about them yet. The
  * two are visually distinguished rather than merged, so nobody mistakes a roster line for an
  * account.
@@ -214,7 +214,7 @@ export async function loadMemberProfile(membershipId: string): Promise<MemberPro
 }
 
 /* ---------------------------------------------------------------------------
-   The dashboard — blueprint 4.1
+   The dashboard (blueprint 4.1)
 --------------------------------------------------------------------------- */
 
 export type AttentionItem = {

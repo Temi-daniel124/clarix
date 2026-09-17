@@ -15,14 +15,14 @@ import type { PlatformAdminRow } from "@/lib/supabase/platform-admin-data";
 const UNDO_SECONDS = 8;
 
 /**
- * Manage Platform Admins — super-admin blueprint 8.1.
+ * Manage Platform Admins (super-admin blueprint 8.1).
  *
  * Who else operates the platform. Adding someone grants a flag on `platform_admins`, which is a
- * different table and a different thing from cooperative staff — which is why this does not reuse
+ * different table and a different thing from cooperative staff, which is why this does not reuse
  * `invite_cooperative_staff()`. A platform admin belongs to no cooperative.
  *
  * Removal uses the Timed Undo pattern, with the countdown before the write as everywhere else.
- * **You cannot remove yourself**, and the control is absent on your own row — but the absence is
+ * **You cannot remove yourself**, and the control is absent on your own row, but the absence is
  * only a courtesy. `revoke_platform_admin()` refuses self-removal in the database, so the
  * safeguard holds whether or not the button was ever rendered.
  */

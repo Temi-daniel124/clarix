@@ -5,13 +5,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * One row of the monthly reconciliation — admin blueprint 7.5.
+ * One row of the monthly reconciliation (admin blueprint 7.5).
  *
  * Deliberately one row per call. The blueprint asks for rows that save independently as they are
  * filled in, and a cooperative with four hundred members will not enter a month in one sitting.
  *
  * No new policy was needed: `deduction_reconciliation`'s own policies from migration 016 scope
- * this to staff of the member's cooperative who hold the recording permission — the same
+ * this to staff of the member's cooperative who hold the recording permission: the same
  * permission that governs entering a contribution, because it is the same kind of act.
  */
 

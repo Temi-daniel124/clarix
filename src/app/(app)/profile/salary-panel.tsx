@@ -7,7 +7,7 @@ import { RevealCopy } from "@/components/clarix/reveal-copy";
 import { formatNaira } from "@/lib/format";
 
 /**
- * Salary information — blueprint 6.2, second section.
+ * Salary information (blueprint 6.2), second section.
  *
  * The two figures every deduction limit in the product is worked out from, masked until asked
  * for (the Reveal & Copy pattern from docs/planning/clarix-design-system.md § 4) because a
@@ -48,13 +48,13 @@ export function SalaryPanel({
       <div className="divide-y divide-border rounded-card border border-border bg-background">
         <RevealCopy
           label="Gross salary"
-          value={gross === null ? "—" : String(gross)}
-          formatted={gross === null ? "—" : formatNaira(gross)}
+          value={gross === null ? "Not set" : String(gross)}
+          formatted={gross === null ? "Not set" : formatNaira(gross)}
         />
         <RevealCopy
           label="Net salary"
-          value={net === null ? "—" : String(net)}
-          formatted={net === null ? "—" : formatNaira(net)}
+          value={net === null ? "Not set" : String(net)}
+          formatted={net === null ? "Not set" : formatNaira(net)}
         />
       </div>
 
@@ -63,7 +63,7 @@ export function SalaryPanel({
         <span>
           Extracted from your payslip{sourceFilename ? ` (${sourceFilename})` : ""}
           {verifiedAt ? `, confirmed ${formatDate(verifiedAt)}` : ""}. Clarix is not connected to
-          payroll — these figures come only from the document you uploaded.
+          payroll. These figures come only from the document you uploaded.
         </span>
       </p>
 
@@ -73,7 +73,7 @@ export function SalaryPanel({
           Re-upload payslip
         </Button>
         <p className="type-caption text-text-secondary">
-          Do this whenever your pay changes — every limit in Clarix is worked out from it.
+          Do this whenever your pay changes, every limit in Clarix is worked out from it.
         </p>
       </div>
     </div>

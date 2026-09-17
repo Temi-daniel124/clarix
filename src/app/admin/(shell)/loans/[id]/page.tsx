@@ -15,7 +15,7 @@ export const metadata: Metadata = { title: "Loan application" };
 
 /**
  * Loan Application Review (6.2) for a reservation still waiting, and Loan Detail (6.4) for one
- * already decided — one route, because it is one loan, and which half an admin needs depends
+ * already decided. One route, because it is one loan, and which half an admin needs depends
  * only on whether a decision has been made yet.
  */
 export default async function LoanPage({ params }: { params: Promise<{ id: string }> }) {

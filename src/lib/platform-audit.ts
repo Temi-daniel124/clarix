@@ -1,10 +1,10 @@
 /**
- * The vocabulary of the platform audit log — super-admin blueprint 7.1.
+ * The vocabulary of the platform audit log (super-admin blueprint 7.1).
  *
  * Separate from `src/lib/audit.ts` because the two logs are separate records, not two views of
  * one. A cooperative's log carries what its staff did to its members and is read by its own
  * admin; this one carries what the platform's operators did to the platform and is read by them.
- * Migration 023 keeps them apart in the database too — a platform admin can read only rows with
+ * Migration 023 keeps them apart in the database too: a platform admin can read only rows with
  * no cooperative, and a cooperative admin only rows with theirs.
  *
  * Kept apart from the query module for the same reason `audit.ts` is: the table that renders it
@@ -19,7 +19,7 @@ export type PlatformEvent = {
   action: string;
   targetTable: string;
   targetId: string | null;
-  /** Values that existed before and after and differ — old beside new. */
+  /** Values that existed before and after and differ, old beside new. */
   changes: { field: string; from: string; to: string }[];
   /** Facts the event recorded about itself, which were never a "before" of anything. */
   context: { field: string; value: string }[];
@@ -35,7 +35,7 @@ export type PlatformAuditFilters = {
 
 /**
  * The verbs this log records. It is a closed list rather than a prettifier over whatever arrives,
- * because the filter above the table is built from it — an action nobody can name is an action
+ * because the filter above the table is built from it: an action nobody can name is an action
  * nobody can filter for.
  */
 export const PLATFORM_ACTION_LABELS: Record<string, string> = {

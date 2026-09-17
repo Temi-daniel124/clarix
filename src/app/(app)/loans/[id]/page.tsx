@@ -14,7 +14,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Loan" };
 
 /**
- * Loan Detail — blueprint 5.3.
+ * Loan Detail (blueprint 5.3).
  *
  * Scoped to a single cooperative, because loans are never combined across cooperatives in the
  * employee's own detailed view. Only the aggregate capacity figure crosses that line.
@@ -111,7 +111,7 @@ export default async function LoanDetailPage({ params }: { params: Promise<{ id:
               ? formatDate(loan.nextRepaymentOn)
               : loan.completedAt
                 ? `Settled ${formatDate(loan.completedAt)}`
-                : "—"}
+                : "Not scheduled"}
           </dd>
         </div>
       </dl>
@@ -122,7 +122,7 @@ export default async function LoanDetailPage({ params }: { params: Promise<{ id:
         {repayments.length === 0 ? (
           <p className="type-body mt-3 text-text-secondary">
             No repayments recorded yet. Each one appears here after {loan.cooperativeName} records
-            the deduction — Clarix has no payroll connection of its own, so it only knows what
+            the deduction. Clarix has no payroll connection of its own, so it only knows what
             they enter.
           </p>
         ) : (

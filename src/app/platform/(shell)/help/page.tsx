@@ -6,11 +6,11 @@ import { SUPPORT_EMAIL } from "@/lib/support";
 export const metadata: Metadata = { title: "Help" };
 
 /**
- * Help / Support — super-admin blueprint 9.3.
+ * Help / Support (super-admin blueprint 9.3).
  *
  * Deliberately not the FAQ accordion the other three roles get. The blueprint is clear about who
  * holds this role: "the platform's own operator, not an end user needing hand-holding", so this
- * is "less a support desk and more a quick-reference and escalation point" — three reference
+ * is "less a support desk and more a quick-reference and escalation point": three reference
  * notes on the things that are genuinely easy to get wrong, and an address for everything else.
  *
  * It exists mainly so the pattern is complete and can be handed to somebody else later without a
@@ -20,7 +20,7 @@ export const metadata: Metadata = { title: "Help" };
 const NOTES = [
   {
     title: "How the deduction policy affects every cooperative",
-    body: "The basis and the percentage on the Policy screen are what every eligibility figure in Clarix is computed from. Changing either recalculates what every member at every cooperative is told they can borrow, the moment it saves — which is why that change asks before it commits and records the old value beside the new one. Loans already approved are unaffected; what anybody can borrow next is not.",
+    body: "The basis and the percentage on the Policy screen are what every eligibility figure in Clarix is computed from. Changing either recalculates what every member at every cooperative is told they can borrow, the moment it saves, which is why that change asks before it commits and records the old value beside the new one. Loans already approved are unaffected; what anybody can borrow next is not.",
   },
   {
     title: "How access requests work, and why they are time-boxed",

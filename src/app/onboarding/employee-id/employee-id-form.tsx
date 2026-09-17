@@ -13,11 +13,11 @@ import { saveEmployeeIdAction, type StepState } from "../actions";
 const INITIAL: StepState = {};
 
 /**
- * Employee ID Entry — blueprint 2.2.
+ * Employee ID Entry (blueprint 2.2).
  *
  * A single-focus screen: one instructional line, one large field, and a helper line saying where
  * to find the number. The field confirms itself the moment it holds a valid value rather than
- * waiting for a submission to report an error — being told you were right is worth more here
+ * waiting for a submission to report an error, being told you were right is worth more here
  * than being told, after the fact, that you were wrong.
  *
  * The pattern comes from the organization record, so the rule is the employer's, not the app's.

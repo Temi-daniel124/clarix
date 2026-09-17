@@ -5,7 +5,7 @@ import { Wordmark } from "@/components/clarix/wordmark";
 /**
  * Shared shell for Sign Up (1.3) and Log In (1.4).
  *
- * Desktop: two panels — dark navy on the left carrying a subtler, slower version of the
+ * Desktop: two panels, dark navy on the left carrying a subtler, slower version of the
  * landing page's live meter and one short reassuring line; the form vertically centred on the
  * right. Mobile: no left panel at all, just the wordmark and the form, with generous top
  * spacing so the form never sits cramped against the status bar.
@@ -13,7 +13,7 @@ import { Wordmark } from "@/components/clarix/wordmark";
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
     <div className="flex min-h-dvh flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-      {/* Left panel — desktop only. */}
+      {/* Left panel, desktop only. */}
       <aside className="theme-dark relative hidden flex-col justify-between bg-navy-surface p-12 lg:flex">
         <Link href="/" className="w-fit" aria-label="Clarix home">
           <Wordmark tone="onDark" />
@@ -22,7 +22,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
         <div className="max-w-[420px]">
           <EligibilityPreview pace="calm" />
           <p className="type-body mt-8 text-white/60">
-            Built for Federal Medical Centre, Abeokuta&rsquo;s staff cooperatives — so a loan is
+            Built for Federal Medical Centre, Abeokuta&rsquo;s staff cooperatives, so a loan is
             approved against what is actually left, not what one cooperative can see.
           </p>
         </div>

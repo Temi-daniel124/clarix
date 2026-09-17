@@ -19,7 +19,7 @@ export type BrowsableCooperative = {
 };
 
 /**
- * Join a Cooperative — blueprint 2.5.
+ * Join a Cooperative (blueprint 2.5).
  *
  * The browsing layer, not the decision layer. The blueprint is explicit that tapping a row opens
  * the full Cooperative Discovery Profile (4.4), "which is where the actual 'Apply to join'
@@ -55,7 +55,7 @@ export function CooperativeBrowser({ cooperatives }: { cooperatives: BrowsableCo
       <h1 className="type-page-title text-text">Join a cooperative</h1>
       <p className="type-body mt-3 text-text-secondary">
         Open any cooperative to see what it offers and what it asks of members. Each one reviews
-        applications itself — Clarix does not decide who becomes a member.
+        applications itself. Clarix does not decide who becomes a member.
       </p>
 
       {hasAny ? (

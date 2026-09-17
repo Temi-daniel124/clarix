@@ -2,7 +2,7 @@ import { Banknote, BellRing, FileText, KeyRound, Package, type LucideIcon } from
 import type { Database } from "@/lib/supabase/database.types";
 
 /**
- * The notification categories, described once for both screens that need them — the list
+ * The notification categories, described once for both screens that need them: the list
  * (blueprint 6.1) and the preference toggles (6.2).
  *
  * Keeping them here rather than in either screen is what stops the two drifting: a category
@@ -42,7 +42,7 @@ export const NOTIFICATION_CATEGORIES: Record<NotificationCategory, CategoryDescr
     icon: FileText,
   },
   /**
-   * The one staff-facing category, and the one nobody can turn off — see
+   * The one staff-facing category, and the one nobody can turn off, see
    * `NOTIFICATION_CATEGORY_ORDER` below for why it has no toggle.
    */
   access_request: {

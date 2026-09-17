@@ -44,7 +44,7 @@ export async function signUpAction(
     return {
       fieldErrors: {
         identifier:
-          "Phone sign-up isn't available yet — please use your email address for now.",
+          "Phone sign-up isn't available yet, please use your email address for now.",
       },
     };
   }
@@ -63,7 +63,7 @@ export async function signUpAction(
 }
 
 /**
- * Log In — employee blueprint 1.4 and cooperative admin blueprint 1.2, deliberately the same
+ * Log In (employee blueprint 1.4) and cooperative admin blueprint 1.2, deliberately the same
  * screen and the same action.
  *
  * "Clarix does not need a separate login surface per role; the same screen serves everyone, and
@@ -88,7 +88,7 @@ export async function logInAction(
   if (classifyIdentifier(identifier) === "phone") {
     return {
       fieldErrors: {
-        identifier: "Phone sign-in isn't available yet — please use your email address.",
+        identifier: "Phone sign-in isn't available yet, please use your email address.",
       },
     };
   }

@@ -8,7 +8,7 @@ import { preferredRole } from "@/lib/staff";
 import { isPermissionKey, readPermissions } from "@/lib/permissions";
 
 /**
- * Officer Management writes — admin blueprint 7.2.
+ * Officer Management writes (admin blueprint 7.2).
  *
  * No new policy was needed and none was added: `cooperative_staff_roles_update_admin` from
  * migration 001 already lets a cooperative's admin change rows at their own cooperative, which
@@ -38,7 +38,7 @@ async function callerCooperative(): Promise<string | null> {
  * One toggle at a time, merged into whatever is already stored.
  *
  * Sending the whole set back would overwrite a change another admin made in the meantime, and
- * this is a permissions table — the cost of a lost write here is somebody quietly keeping access
+ * this is a permissions table: the cost of a lost write here is somebody quietly keeping access
  * that was meant to be removed.
  */
 export async function setOfficerPermissionAction(
@@ -84,7 +84,7 @@ export async function setOfficerPermissionAction(
   return { saved: enabled ? "Turned on." : "Turned off." };
 }
 
-/** The cosmetic title — a display label, never a permission (docs/DATA-MODEL.md). */
+/** The cosmetic title: a display label, never a permission (docs/DATA-MODEL.md). */
 export async function setOfficerTitleAction(
   roleId: string,
   title: string,
@@ -112,7 +112,7 @@ export async function setOfficerTitleAction(
  *
  * A deleted row takes with it who granted it and when, which is exactly what somebody reviewing
  * a cooperative's history later would want. And revoking has no effect on any other relationship
- * that person holds — an officer role elsewhere, or their own membership at a third cooperative —
+ * that person holds: an officer role elsewhere, or their own membership at a third cooperative,
  * because every one of those is scoped independently to its own cooperative.
  */
 export async function revokeOfficerAction(roleId: string): Promise<OfficerActionState> {

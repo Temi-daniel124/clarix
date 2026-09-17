@@ -7,7 +7,7 @@ import { ONBOARDING_STEPS, stepIndex, type OnboardingStepSlug } from "@/lib/onbo
  * The persistent onboarding progress indicator (blueprint 2.2: "a thin progress bar or
  * 'Step 2 of 4'", visible on every step so the employee always knows how much is left).
  *
- * It reuses MeterBar rather than introducing a second progress visual — the product has one way
+ * It reuses MeterBar rather than introducing a second progress visual: the product has one way
  * of drawing a value against a total and this is it. The track is neutral rather than emerald
  * because the unfilled part here is work still to do, not capacity still available.
  *
@@ -48,7 +48,7 @@ export function StepIndicator({ current }: { current: OnboardingStepSlug }) {
             <li key={step.slug} className="flex items-center gap-2">
               {/* "Account created" is index 0 and is always behind them, so it shows a check
                   and carries no number. Numbering therefore starts at 1 on "Staff ID", which is
-                  what keeps these chips agreeing with the "Step N of 4" line above — they
+                  what keeps these chips agreeing with the "Step N of 4" line above, they
                   disagreed at first, with the caption saying step 1 while the chip said 2. */}
               <span
                 className={cn(

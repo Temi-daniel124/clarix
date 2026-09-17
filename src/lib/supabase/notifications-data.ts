@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { NotificationCategory } from "@/lib/notifications";
 
 /**
- * Reading notifications — blueprint 6.1.
+ * Reading notifications (blueprint 6.1).
  *
  * One query, ordered newest first, scoped by RLS to the signed-in employee
  * (`notifications_select_own`). There is no user filter in the query itself on purpose: the

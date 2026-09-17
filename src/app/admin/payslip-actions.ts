@@ -3,7 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * A short-lived link to the payslip behind an application under review — DECISIONS.md D031.
+ * A short-lived link to the payslip behind an application under review, DECISIONS.md D031.
  *
  * `createSignedUrl` runs on the caller's own session, so the storage policy added in migration 027
  * decides whether a URL comes back at all. There is no permission check here, because a check here
