@@ -139,9 +139,15 @@ access_grants
   member_user_id (fk, nullable)   -- narrows to one member if set, else whole cooperative
   reason                          -- required, free text, cannot be blank/generic
   status                          -- 'pending' | 'active' | 'expired' | 'revoked'
-  granted_at / expires_at / revoked_at
+  requested_at / activates_at / expires_at / revoked_at
   -- The one deliberate, logged exception to Super Admin having no standing access to member
   -- financial data. See SECURITY.md and the Super Admin blueprint for the full flow.
+  --
+  -- Built in migrations 025-026, with two deviations from the sketch above (DECISIONS.md D030):
+  -- `activates_at` replaces `granted_at`, because a grant self-activates after a delay and the
+  -- moment of granting is therefore known in advance; and `status` only ever stores 'pending' or
+  -- 'revoked', because 'active' and 'expired' are functions of the clock and are computed at read
+  -- time exactly as a loan reservation's expiry is (D024).
 
 audit_log
   id (pk)

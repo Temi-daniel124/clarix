@@ -536,6 +536,53 @@ export type Database = {
         }
         Relationships: []
       }
+      access_grants: {
+        Row: {
+          id: string
+          requested_by: string
+          cooperative_id: string
+          member_user_id: string | null
+          reason: string
+          status: Database["public"]["Enums"]["access_grant_status"]
+          requested_at: string
+          activates_at: string
+          expires_at: string
+          revoked_at: string | null
+        }
+        Insert: {
+          id?: string
+          requested_by: string
+          cooperative_id: string
+          member_user_id?: string | null
+          reason: string
+          status?: Database["public"]["Enums"]["access_grant_status"]
+          requested_at?: string
+          activates_at: string
+          expires_at: string
+          revoked_at?: string | null
+        }
+        Update: {
+          id?: string
+          requested_by?: string
+          cooperative_id?: string
+          member_user_id?: string | null
+          reason?: string
+          status?: Database["public"]["Enums"]["access_grant_status"]
+          requested_at?: string
+          activates_at?: string
+          expires_at?: string
+          revoked_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "access_grants_cooperative_id_fkey"
+            columns: ["cooperative_id"]
+            isOneToOne: false
+            referencedRelation: "cooperatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cooperative_internal_notes: {
         Row: {
           cooperative_id: string
@@ -824,6 +871,30 @@ export type Database = {
         }[]
       }
       is_platform_admin: { Args: never; Returns: boolean }
+      request_access_grant: {
+        Args: {
+          target_cooperative_id: string
+          grant_reason: string
+          target_member_user_id?: string | null
+          delay_minutes?: number
+          window_hours?: number
+        }
+        Returns: string
+      }
+      revoke_access_grant: { Args: { grant_id: string }; Returns: boolean }
+      log_elevated_view: {
+        Args: {
+          grant_id: string
+          viewed_table: string
+          viewed_id?: string | null
+          detail?: string | null
+        }
+        Returns: undefined
+      }
+      has_active_access_grant: {
+        Args: { target_cooperative_id: string; target_member?: string | null }
+        Returns: boolean
+      }
       record_platform_event: {
         Args: {
           event_action: string
@@ -899,11 +970,13 @@ export type Database = {
         | "completed"
         | "expired"
       membership_status: "pending" | "active" | "suspended"
+      access_grant_status: "pending" | "active" | "expired" | "revoked"
       notification_category:
         | "loan_decision"
         | "membership_decision"
         | "new_loan_product"
         | "salary_reverification"
+        | "access_request"
       savings_transaction_type:
         | "contribution"
         | "withdrawal_record"
@@ -1043,7 +1116,9 @@ export const Constants = {
       document_type: ["payslip"],
       loan_status: ["draft","reserved","active","rejected","completed","expired"],
       membership_status: ["pending", "active", "suspended"],
+      access_grant_status: ["pending", "active", "expired", "revoked"],
       notification_category: [
+        "access_request",
         "loan_decision",
         "membership_decision",
         "new_loan_product",

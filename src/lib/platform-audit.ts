@@ -46,6 +46,8 @@ export const PLATFORM_ACTION_LABELS: Record<string, string> = {
   update_deduction_policy: "Deduction policy changed",
   grant_platform_admin: "Platform admin added",
   revoke_platform_admin: "Platform admin removed",
+  request_access: "Access requested",
+  revoke_access: "Access ended early",
 };
 
 export function describePlatformAction(action: string): string {
@@ -63,6 +65,10 @@ export function fieldLabel(field: string): string {
     name: "Name",
     status: "Status",
     email: "Email",
+    cooperative: "Cooperative",
+    member: "Member",
+    activates_at: "Starts",
+    reason: "Reason",
   };
 
   return labels[field] ?? field.replace(/_/g, " ");
