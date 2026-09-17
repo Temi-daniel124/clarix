@@ -1,5 +1,5 @@
 /**
- * Shapes and small questions for the access-grant flow — super-admin blueprint 7.2 and 7.3.
+ * Shapes and small questions for the access-grant flow (super-admin blueprint 7.2 and 7.3).
  *
  * Kept apart from the query module because both screens that use these are client components.
  *
@@ -48,7 +48,7 @@ export function millisRemaining(grant: AccessGrant, now: Date = new Date()): num
 }
 
 /**
- * "3 hours 12 minutes", "14 minutes", "under a minute" — written out rather than as a clock,
+ * "3 hours 12 minutes", "14 minutes", "under a minute", written out rather than as a clock,
  * because a banner that has to be read at a glance should not need parsing.
  */
 export function describeRemaining(millis: number): string {
@@ -83,7 +83,7 @@ export const GRANT_STATUS_LABEL: Record<GrantStatus, string> = {
  * What the grant covers, said the way a person would say it.
  *
  * Keyed on `memberUserId` rather than on `memberName`, which matters more than it looks: once a
- * grant lapses, the member's name stops being readable — that is the boundary working — and a
+ * grant lapses, the member's name stops being readable. That is the boundary working, and a
  * version of this that checked the name would quietly describe a narrow, expired grant as having
  * covered the whole cooperative. The row says what it was for; the lookup only says whether we can
  * still put a name to it.

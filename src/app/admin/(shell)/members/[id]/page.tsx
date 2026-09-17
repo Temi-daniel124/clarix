@@ -11,7 +11,7 @@ import { preferredRole } from "@/lib/staff";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Member" };
 
-/** Member Profile, staff view — admin blueprint 5.2. */
+/** Member Profile, staff view (admin blueprint 5.2). */
 export default async function MemberPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const [staff, profile] = await Promise.all([loadStaffContext(), loadMemberProfile(id)]);

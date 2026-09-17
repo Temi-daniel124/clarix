@@ -11,10 +11,10 @@ import { filterMembers } from "@/lib/members";
 import type { MemberRow } from "@/lib/supabase/admin-members";
 
 /**
- * Member Search / List — admin blueprint 5.1.
+ * Member Search / List (admin blueprint 5.1).
  *
  * "The screen an Officer or Admin uses most, day to day", so the search field is always visible
- * rather than behind a shortcut, and the full list is there before anybody types — somebody who
+ * rather than behind a shortcut, and the full list is there before anybody types. Somebody who
  * does not know how a name is spelled should still be able to find it.
  *
  * Filtering happens here rather than in the database. The whole roster is already on the screen,
@@ -149,7 +149,7 @@ export function MemberList({
                       <MemberName member={member} />
                     </td>
                     <td className="py-3 pr-4 type-secondary tabular text-text-secondary">
-                      {member.employeeId ?? "—"}
+                      {member.employeeId ?? "Not on file"}
                     </td>
                     <td className="py-3 pr-4 text-right type-secondary tabular text-text">
                       {formatNaira(member.savingsBalance)}
@@ -158,7 +158,7 @@ export function MemberList({
                       {member.activeLoans > 0
                         ? `${member.activeLoans} active`
                         : member.status === "not_on_clarix"
-                          ? "—"
+                          ? "Not on Clarix"
                           : "None"}
                     </td>
                   </tr>
@@ -179,7 +179,7 @@ export function MemberList({
                   <div className="flex gap-2">
                     <dt className="type-caption text-text-muted">Staff ID</dt>
                     <dd className="type-caption tabular text-text-secondary">
-                      {member.employeeId ?? "—"}
+                      {member.employeeId ?? "Not on file"}
                     </dd>
                   </div>
                   <div className="flex gap-2">

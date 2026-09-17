@@ -7,14 +7,14 @@ import { createClient } from "@/lib/supabase/server";
 import { isNotificationCategory } from "@/lib/notifications";
 
 /**
- * Profile / Settings — blueprint 6.2.
+ * Profile / Settings (blueprint 6.2).
  *
  * Each section saves on its own. The blueprint is explicit about this: "smaller, immediate
  * confirmations rather than a single high-stakes submit", so there is one action per section
  * and no action that writes more than the section the employee was actually editing.
  *
  * Every write here goes through the ordinary authenticated client, so `users_update_own` decides
- * what lands — no service-role key, no elevated function. A section that could not be expressed
+ * what lands: no service-role key, no elevated function. A section that could not be expressed
  * inside that policy would be a section that does not belong on this screen.
  */
 
@@ -41,7 +41,7 @@ const personalSchema = z
     // The database says the same thing in users_contact_present. Catching it here means the
     // employee gets a sentence rather than a constraint violation.
     path: ["email"],
-    message: "Keep at least one way to reach you — an email address or a phone number.",
+    message: "Keep at least one way to reach you: an email address or a phone number.",
   });
 
 export async function updatePersonalInfoAction(
@@ -102,11 +102,11 @@ const passwordSchema = z
   });
 
 /**
- * Change password — Supabase Auth's own `updateUser`, never a password column of our own
+ * Change password, Supabase Auth's own `updateUser`, never a password column of our own
  * (DECISIONS.md D021: credentials live in Auth and nowhere else).
  *
  * The current password is checked first by signing in with it. Supabase does not require that
- * by default — an open session is enough to set a new password — but an unattended unlocked
+ * by default: an open session is enough to set a new password, but an unattended unlocked
  * phone is exactly the case where that default is too generous for a product holding salary
  * data, and proving knowledge of the old password costs the real owner one field.
  */

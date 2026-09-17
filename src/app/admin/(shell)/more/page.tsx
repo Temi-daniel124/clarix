@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "More" };
 
 /**
- * "More" — admin blueprint Part 3, mobile only.
+ * "More", admin blueprint Part 3, mobile only.
  *
  * A space-saving device rather than a fifth area: it holds exactly what the desktop sidebar
  * shows directly, in the same order, so the two densities never become two different products.

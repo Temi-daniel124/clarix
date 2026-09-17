@@ -5,7 +5,7 @@
  * unrelated project that shares the same Supabase organization. If a command or config ever
  * points somewhere other than the ref recorded in docs/ARCHITECTURE.md, stop and confirm it.
  *
- * Values come from the environment — never from a committed file. The service-role key is
+ * Values come from the environment, never from a committed file. The service-role key is
  * deliberately absent from this module: no server code path needs it yet, and SECURITY.md's
  * enumerated list of such paths is still empty.
  */

@@ -8,7 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 export type ApplyState = { error?: string; applied?: boolean };
 
 /**
- * Apply to join a cooperative — the single apply path in the product (blueprint 4.4).
+ * Apply to join a cooperative: the single apply path in the product (blueprint 4.4).
  *
  * The row lands as 'pending'. That is not a UI convention: the RLS policy on
  * cooperative_memberships only lets an employee insert their own row, and only in the pending

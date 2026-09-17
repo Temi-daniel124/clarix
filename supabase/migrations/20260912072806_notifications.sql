@@ -1,4 +1,4 @@
--- Clarix — migration 008: notifications.
+-- Clarix, migration 008: notifications.
 --
 -- DECISIONS.md D025. This table is not in docs/DATA-MODEL.md; the decision entry is what adds
 -- it, and was written before this file, per docs/DEVELOPMENT-WORKFLOW.md's PLAN step.
@@ -10,7 +10,7 @@
 --
 -- Nothing in the employee blueprint writes a row here. Every writer belongs to the cooperative
 -- admin/officer blueprint, which does not exist yet, so this table is genuinely empty in
--- practice and the screen says so. That is expected and stated in D025 — no rows are seeded to
+-- practice and the screen says so. That is expected and stated in D025: no rows are seeded to
 -- make the screen look populated.
 --
 -- RLS, as always, in the same migration.
@@ -37,7 +37,7 @@ create table public.notifications (
   -- keep saying that even if the wording of that event's template changes later.
   message text not null check (length(trim(message)) > 0),
 
-  -- Where tapping it goes — an in-app path such as '/loans/<id>'. Nullable, because not every
+  -- Where tapping it goes: an in-app path such as '/loans/<id>'. Nullable, because not every
   -- notification has somewhere useful to lead.
   target_url text check (target_url is null or target_url like '/%'),
 
@@ -61,12 +61,12 @@ comment on table public.notifications is
 --
 -- The narrowest policy set in the schema, and deliberately so: a notification is addressed to
 -- one person. There is no officer view of it, no admin view of it, and no cooperative-scoped
--- read — unlike `users`, where an officer at the member's own cooperative can legitimately read
+-- read, unlike `users`, where an officer at the member's own cooperative can legitimately read
 -- the eligibility figures. Nothing about a notification is anyone else's business.
 --
 -- There is no insert policy at all, which is the same shape `loans` uses. An employee cannot
 -- write their own notifications: every row records something the system or a cooperative did,
--- so a self-written one would be a claim, not a record. No delete policy either — clearing a
+-- so a self-written one would be a claim, not a record. No delete policy either, clearing a
 -- backlog marks rows read rather than destroying the trail.
 -- ---------------------------------------------------------------------------
 

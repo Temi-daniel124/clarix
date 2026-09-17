@@ -10,7 +10,7 @@ import { springStandard } from "@/lib/motion";
 import { createClient } from "@/lib/supabase/client";
 
 /**
- * Payslip Upload — blueprint 2.3.
+ * Payslip Upload (blueprint 2.3).
  *
  * A large dashed drop zone as the dominant element, doubling as a tap target on mobile so it
  * opens the native file picker or camera. Once a file is chosen it collapses to a preview chip
@@ -18,7 +18,7 @@ import { createClient } from "@/lib/supabase/client";
  *
  * On the processing steps: the blueprint asks for a run-through-the-steps animation that is
  * "honest about the fact that something real is happening". Each step below therefore names
- * something that genuinely happens — the file is uploaded to a private bucket, then a document
+ * something that genuinely happens: the file is uploaded to a private bucket, then a document
  * row is written. There is no extraction step, because automatic extraction is P1 in
  * MVP-SCOPE.md and is not built; inventing a "Reading your payslip" stage for work nothing is
  * doing would be exactly the kind of theatre this product cannot afford. The review screen that
@@ -240,7 +240,7 @@ export function PayslipUpload({
                 Tap to choose a file, or drag one here
               </span>
               <span className="type-caption mt-2 text-text-muted">
-                PDF, JPG, PNG or Word — up to 10 MB
+                PDF, JPG, PNG or Word, up to 10 MB
               </span>
             </button>
 

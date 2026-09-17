@@ -4,8 +4,8 @@ import { isLive, type AccessGrant } from "@/lib/access-grants";
 /**
  * Reads behind Access Requests (7.2) and the Elevated Access View (7.3).
  *
- * `access_grants` is scoped by its own policies — the operator who asked, and the admin of the
- * cooperative named — so neither query below carries a `requested_by` filter. The screen is not
+ * `access_grants` is scoped by its own policies: the operator who asked, and the admin of the
+ * cooperative named, so neither query below carries a `requested_by` filter. The screen is not
  * the boundary, as everywhere else in this product.
  */
 
@@ -37,7 +37,7 @@ export async function loadAccessGrants(): Promise<AccessGrant[]> {
   const rows = (data ?? []) as GrantRow[];
   if (rows.length === 0) return [];
 
-  // Cooperative names come from `cooperatives`, which every signed-in user may read — no elevation
+  // Cooperative names come from `cooperatives`, which every signed-in user may read: no elevation
   // needed and none taken.
   const { data: cooperatives } = await supabase
     .from("cooperatives")
@@ -47,7 +47,7 @@ export async function loadAccessGrants(): Promise<AccessGrant[]> {
   const nameById = new Map((cooperatives ?? []).map((row) => [row.id, row.name]));
 
   // A member's name and their membership id are readable only while a grant is live, which is the
-  // whole point — so a lapsed grant's row shows the cooperative and no person, and that is
+  // whole point, so a lapsed grant's row shows the cooperative and no person, and that is
   // correct rather than a gap.
   const memberIds = rows.map((row) => row.member_user_id).filter(Boolean) as string[];
 

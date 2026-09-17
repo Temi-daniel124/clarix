@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Access requests" };
 
 /**
- * Access Requests — super-admin blueprint 7.2.
+ * Access Requests (super-admin blueprint 7.2).
  *
  * The one deliberate exception to this role having no sight of member data, and the screen is
  * built to make the exception itself the visible thing: every request ever made stays listed,

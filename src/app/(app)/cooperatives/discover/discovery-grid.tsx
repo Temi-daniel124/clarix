@@ -10,7 +10,7 @@ import { springStandard } from "@/lib/motion";
 import type { DiscoveryCard } from "@/lib/supabase/cooperative-discovery";
 
 /**
- * Discovery grid — blueprint 4.3.
+ * Discovery grid (blueprint 4.3).
  *
  * A search field, then a card grid: two columns on mobile, three on desktop. Cards an employee
  * has not joined carry a "Not joined" label and a slightly different accent from the joined
@@ -18,8 +18,8 @@ import type { DiscoveryCard } from "@/lib/supabase/cooperative-discovery";
  * Cooperatives.
  *
  * The blueprint allows a cooperative-supplied logo or accent colour here, as one of the few
- * places a little visual variety is intentional. No cooperative supplies one yet — there is no
- * column for it — so every card uses the neutral mark until that exists, rather than inventing
+ * places a little visual variety is intentional. No cooperative supplies one yet. There is no
+ * column for it, so every card uses the neutral mark until that exists, rather than inventing
  * colours on their behalf.
  */
 export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
@@ -41,7 +41,7 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
       <h1 className="type-page-title text-text">Discover cooperatives</h1>
       <p className="type-body mt-2 max-w-[560px] text-text-secondary">
         Every cooperative at your organization that is on Clarix. Only public information appears
-        here — what a cooperative offers and what it asks of members.
+        here, what a cooperative offers and what it asks of members.
       </p>
 
       <div className="relative mt-8 max-w-[420px]">

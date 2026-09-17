@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 };
 
 /**
- * Verify Contact — the step Sign Up (blueprint 1.3) leads to.
+ * Verify Contact: the step Sign Up (blueprint 1.3) leads to.
  *
  * Included in this slice because Sign Up has to land somewhere honest; the onboarding
  * sequence it precedes (Welcome Tour 2.1 onwards) is built in the next slice.
@@ -32,7 +32,7 @@ export default function VerifyPage() {
 
       <p className="type-body mt-3 text-text-secondary">
         We have sent you a confirmation link. Open it on this device and Clarix will pick up
-        where you left off — your staff ID, then your payslip, then the cooperatives you belong
+        where you left off. Your staff ID, then your payslip, then the cooperatives you belong
         to.
       </p>
 

@@ -9,14 +9,14 @@ import { clampRatio, formatNaira } from "@/lib/format";
 import type { LoanSummaryRow } from "@/lib/supabase/admin-loans";
 
 /**
- * Active Loans — admin blueprint 6.3.
+ * Active Loans (admin blueprint 6.3).
  *
  * "Reusing the same list-and-filter shape as Member Search rather than inventing a new pattern
  * for what is structurally the same kind of screen": a persistent search field, a table on
  * desktop, stacked cards on mobile.
  *
  * Progress is drawn with the same meter the rest of the product uses, and it is repayment against
- * the original amount — money that actually arrived, never months elapsed.
+ * the original amount, money that actually arrived, never months elapsed.
  */
 export function ActiveLoansList({ loans }: { loans: LoanSummaryRow[] }) {
   const [query, setQuery] = useState("");
@@ -111,7 +111,7 @@ export function ActiveLoansList({ loans }: { loans: LoanSummaryRow[] }) {
                   {formatNaira(loan.monthlyRepayment)}
                 </td>
                 <td className="py-3 type-secondary text-text-secondary">
-                  {loan.nextExpected ? formatDate(loan.nextExpected) : "—"}
+                  {loan.nextExpected ? formatDate(loan.nextExpected) : "None due"}
                 </td>
               </tr>
             ))}

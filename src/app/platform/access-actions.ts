@@ -6,7 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 
 /**
- * The access-grant writes — super-admin blueprint 7.2.
+ * The access-grant writes (super-admin blueprint 7.2).
  *
  * Both are thin. `request_access_grant()` and `revoke_access_grant()` do the real work, including
  * the checks, the cooperative admin's notification and the platform audit entry, because
@@ -91,7 +91,7 @@ export async function revokeAccessAction(grantId: string): Promise<AccessState> 
 }
 
 /**
- * Records one record viewed under a live grant — blueprint 7.3's granular logging.
+ * Records one record viewed under a live grant, the granular logging blueprint 7.3 asks for.
  *
  * Called from the Elevated Access View as it renders, not from a button, because what is being
  * recorded is that somebody looked. It writes into the audit log of the cooperative whose data it

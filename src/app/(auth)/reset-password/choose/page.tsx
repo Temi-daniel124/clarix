@@ -9,14 +9,14 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Set a new password" };
 
 /**
- * Forgot password, second half — where the emailed link lands.
+ * Forgot password, second half, where the emailed link lands.
  *
  * Supabase sends a one-time token on the link; exchanging it here is what turns the email into a
  * session, and is the same mechanic the staff invitation screen uses.
  *
  * **Why there is a ticket cookie.** Exchanging that token leaves an ordinary session behind, which
  * means that without something more, this screen would accept *any* signed-in person and let them
- * set a new password with no knowledge of the current one — quietly undoing the check the Profile
+ * set a new password with no knowledge of the current one, quietly undoing the check the Profile
  * security section deliberately makes. That was the behaviour on the first build of this screen
  * and it was wrong. So the token exchange also writes a short-lived, http-only ticket, and the
  * server action refuses without it. Somebody who is merely signed in is sent to Profile instead,

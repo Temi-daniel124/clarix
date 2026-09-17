@@ -40,7 +40,7 @@ export type DashboardData = {
  * Everything the Dashboard (blueprint 4.1) shows, in one place.
  *
  * Every figure here is now real. Capacity comes from `capacity_for_user`, the SECURITY DEFINER
- * function that sums committed obligations across every cooperative the employee belongs to —
+ * function that sums committed obligations across every cooperative the employee belongs to,
  * the one calculation that deliberately crosses cooperative lines, and only ever as an aggregate
  * (DECISIONS.md D003). Active loans and monthly deductions come from the same loan rows.
  *
@@ -258,7 +258,7 @@ function buildInsights({
 /**
  * Month-end savings balance, oldest first, for the sparkline.
  *
- * Only contributions and recorded withdrawals move a savings balance — a loan repayment leaves
+ * Only contributions and recorded withdrawals move a savings balance: a loan repayment leaves
  * the salary and does not add to savings, so it is excluded. Fewer than two months of history
  * returns nothing, and the card shows its honest empty state rather than a single flat point.
  */

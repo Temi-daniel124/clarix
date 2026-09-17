@@ -11,7 +11,7 @@ import { applyToCooperativeAction, type ApplyState } from "./actions";
 const INITIAL: ApplyState = {};
 
 /**
- * "Apply to join" — blueprint 4.4.
+ * "Apply to join" (blueprint 4.4).
  *
  * This is now the ONLY place in the product that creates a membership. Onboarding step 2.5 used
  * to apply inline from its own list, which meant two different apply paths that could drift

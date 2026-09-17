@@ -6,7 +6,7 @@ import { SECONDARY_DESTINATIONS } from "@/components/app-shell/destinations";
 export const metadata: Metadata = { title: "More" };
 
 /**
- * "More" — blueprint Part 3.
+ * "More", blueprint Part 3.
  *
  * A mobile-only space-saving device, not a fifth functional area: it holds the entries that
  * appear as their own sidebar rows on desktop, where there is width to spare. Anyone reaching

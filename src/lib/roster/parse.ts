@@ -1,11 +1,11 @@
 /**
- * Reading a member roster out of a spreadsheet — blueprint 2.4, MVP-SCOPE.md P0 #2.
+ * Reading a member roster out of a spreadsheet (blueprint 2.4), MVP-SCOPE.md P0 #2.
  *
  * Deliberately dependency-free. A roster carries IPPIS numbers, names and savings balances for
  * every member of a cooperative, which is exactly the category `docs/TOOLING-POLICY.md` item 5
  * says must not reach a new library without a security read first. CSV is a few lines of code,
  * and the XLSX path below reads the two parts of the file that matter using the platform's own
- * `DecompressionStream` — no parser, no vendor, nothing that sees this data but us.
+ * `DecompressionStream`: no parser, no vendor, nothing that sees this data but us.
  *
  * All of it runs in the browser. Nothing is uploaded: the file never leaves the admin's machine,
  * and only the rows they confirm are sent to the database.
@@ -169,7 +169,7 @@ function columnToIndex(reference: string): number {
 }
 
 /* ---------------------------------------------------------------------------
-   A minimal ZIP reader — enough for the parts an .xlsx keeps, and nothing else.
+   A minimal ZIP reader, enough for the parts an .xlsx keeps, and nothing else.
 --------------------------------------------------------------------------- */
 
 async function readZip(buffer: ArrayBuffer): Promise<Map<string, Uint8Array>> {

@@ -29,12 +29,12 @@ export type ApplyTarget = {
 };
 
 /**
- * Loan Application — blueprint 5.5.
+ * Loan Application (blueprint 5.5).
  *
  * "The screen where the product's core promise is delivered directly to the employee": a live,
  * honest answer about whether a loan fits, before they commit to requesting it.
  *
- * The comparison panel updates on every slider move, and it updates LOCALLY — the same
+ * The comparison panel updates on every slider move, and it updates LOCALLY: the same
  * `previewEligibility` from src/lib/eligibility.ts that the unit tests cover, run against the
  * capacity figure the server already sent. That keeps the readout instant and, more importantly,
  * means moving a slider never touches the database. Only pressing Submit does, and only through
@@ -203,7 +203,7 @@ export function ApplicationForm({
         </section>
 
         {/*
-          The button stays enabled either way. Clarix informs, it does not gatekeep — but the
+          The button stays enabled either way. Clarix informs, it does not gatekeep, but the
           label changes so nobody submits an over-limit request without having been told.
         */}
         <motion.div

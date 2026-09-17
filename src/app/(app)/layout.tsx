@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 export const dynamic = "force-dynamic";
 
 /**
- * The authenticated app shell — blueprint Part 3.
+ * The authenticated app shell, blueprint Part 3.
  *
  * Every screen from the Dashboard onwards renders inside this: sidebar beside the content on
  * desktop, bottom tab bar below it on mobile. The content pane scrolls, the navigation does not.

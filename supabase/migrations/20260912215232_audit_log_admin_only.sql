@@ -1,4 +1,4 @@
--- Clarix — migration 018: the audit log is an admin's to read, not any staff member's.
+-- Clarix, migration 018: the audit log is an admin's to read, not any staff member's.
 --
 -- The officer blueprint states the rule twice, and neither statement was true of the database
 -- until now. Part 3: there is "no Audit Log anywhere in this role's navigation, because none of

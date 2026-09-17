@@ -2,14 +2,14 @@
  * The hero's background.
  *
  * hero-32 ships a full-bleed photograph of sunflowers. A stock photo is explicitly on
- * DESIGN_SYSTEM.md's avoid list, and so is the obvious replacement — an overlapping-blob
+ * DESIGN_SYSTEM.md's avoid list, and so is the obvious replacement: an overlapping-blob
  * gradient. This is built instead from the two things the product already owns: the navy ground,
  * and the meter arc that is its signature motif.
  *
  * Three layers, all static, none of them decoration for its own sake:
  *   1. A ruled grid, the density of a ledger, at very low contrast. It reads as accounting
  *      paper rather than as a "tech" grid because the lines are horizontal-dominant.
- *   2. One oversized capacity arc bleeding off the right edge — the same two-thirds-committed
+ *   2. One oversized capacity arc bleeding off the right edge: the same two-thirds-committed
  *      geometry as the wordmark and the app icon, drawn large enough to be texture rather than
  *      illustration.
  *   3. A single soft emerald wash behind the arc, kept under 10% so it lifts the corner without

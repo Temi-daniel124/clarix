@@ -15,11 +15,11 @@ import {
 } from "lucide-react";
 
 /**
- * The cooperative admin's information architecture — admin blueprint Part 3.
+ * The cooperative admin's information architecture, admin blueprint Part 3.
  *
  * A different set of destinations from the employee app, reached by a different role, but the
  * same principle: one information architecture expressed at two densities, never two apps. The
- * four functional areas are Home, Members, Loans, and Manage cooperative — and Manage is the one
+ * four functional areas are Home, Members, Loans, and Manage cooperative, and Manage is the one
  * that differs most between platforms, because desktop has room to list its six sub-items
  * directly while mobile folds them behind More alongside Notifications, Profile and Help.
  *
@@ -43,7 +43,7 @@ export const ADMIN_PRIMARY: AdminDestination[] = [
 ];
 
 /**
- * "Manage cooperative" — its own sidebar section on desktop, and the top of More on mobile.
+ * "Manage cooperative". Its own sidebar section on desktop, and the top of More on mobile.
  * Everything here is a cooperative-level setting rather than a day-to-day task, which is why it
  * is one area rather than four more tabs.
  */
@@ -57,7 +57,7 @@ export const ADMIN_MANAGE: AdminDestination[] = [
 ];
 
 /**
- * The account cluster — admin blueprint Part 8. Their own sidebar entries on desktop, behind More
+ * The account cluster, admin blueprint Part 8. Their own sidebar entries on desktop, behind More
  * on mobile.
  *
  * The audit log sits here rather than under Manage cooperative because Part 8 groups it with the
@@ -83,10 +83,10 @@ export function isMoreActive(pathname: string, nav: StaffNav): boolean {
 }
 
 /**
- * The cooperative officer's information architecture — officer blueprint Part 3.
+ * The cooperative officer's information architecture, officer blueprint Part 3.
  *
  * The same four areas as an admin's, minus one whole section. "Notably absent from an Officer's
- * sidebar, compared to an Admin's, is any 'Manage cooperative' section — there's no Loan Products,
+ * sidebar, compared to an Admin's, is any 'Manage cooperative' section, there's no Loan Products,
  * no Officer Management, no Public Profile Editor, no Reconciliation, no Reports, and no Audit Log
  * anywhere in this role's navigation, because none of those actions are available to an Officer
  * regardless of how their individual permissions are configured."
@@ -94,7 +94,7 @@ export function isMoreActive(pathname: string, nav: StaffNav): boolean {
  * Import is the one exception, and it is conditional rather than absent: an officer whose admin
  * granted `can_import_members` gets it as a direct row, "since desktop has the room to be direct
  * about the one extra thing this particular Officer can do". An officer without it never sees a
- * greyed-out entry — a control they cannot use is not shown at all, which is the same
+ * greyed-out entry: a control they cannot use is not shown at all, which is the same
  * default-deny-and-don't-clutter rule the permission panel follows.
  *
  * Members and Loans point at the same screens an admin uses. That is the point of the role: the
@@ -104,7 +104,7 @@ export function isMoreActive(pathname: string, nav: StaffNav): boolean {
 /**
  * Members and Loans are conditional for the same reason the import row is. Both screens read
  * through `cooperative_memberships`, so an officer without `can_view_members` gets nothing from
- * either — the member list is empty and, because `loans_select_staff` reaches a loan through its
+ * either: the member list is empty and, because `loans_select_staff` reaches a loan through its
  * membership, so is the loan queue. Two tabs that always open onto nothing would be the
  * greyed-out button the blueprint rules out, wearing a different disguise.
  */

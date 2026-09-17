@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
  * and the same indigo focus ring every other control uses.
  *
  * The thumb slides on `--ease-spring`, which is springStandard from src/lib/motion.ts solved as
- * a CSS easing — the same physics as every JavaScript-driven spring in the product rather than
+ * a CSS easing: the same physics as every JavaScript-driven spring in the product rather than
  * a second motion vocabulary. The global prefers-reduced-motion rule in globals.css collapses
  * it to an instant change.
  */

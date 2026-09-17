@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Audit log" };
 
 /**
- * Platform Audit Log — super-admin blueprint 7.1.
+ * Platform Audit Log (super-admin blueprint 7.1).
  *
  * Buildable ahead of the rest of Part 7 because it depends on nothing Part 7 introduces:
  * `audit_log.cooperative_id` has been nullable since migration 014, so a platform event was

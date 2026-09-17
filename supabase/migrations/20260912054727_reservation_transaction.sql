@@ -1,13 +1,13 @@
--- Clarix — migration 007: the capacity calculation and the reservation transaction.
+-- Clarix, migration 007: the capacity calculation and the reservation transaction.
 --
 -- This is the mechanism the product exists for (DECISIONS.md D003, D008; docs/DATA-MODEL.md
--- § "Eligibility & reservation — how it actually runs").
+-- § "Eligibility & reservation, how it actually runs").
 --
 -- Two functions:
 --
---   capacity_for_user()      Step 1 and Step 2 — read-only, safe to call repeatedly, drives the
+--   capacity_for_user()      Step 1 and Step 2, read-only, safe to call repeatedly, drives the
 --                            dashboard figures and the live preview on the application screen.
---   submit_loan_application() Step 3 — the one write path, serialised by an advisory lock.
+--   submit_loan_application() Step 3: the one write path, serialised by an advisory lock.
 --
 -- ---------------------------------------------------------------------------
 -- Why both are SECURITY DEFINER
@@ -15,7 +15,7 @@
 -- Committed obligations have to be summed across EVERY cooperative the employee belongs to.
 -- Per-cooperative RLS on `loans` correctly refuses exactly that: it scopes a staff member to
 -- their own cooperative's rows, and it must keep doing so. The cross-cooperative total is
--- DECISIONS.md D003's deliberate, narrow exception — the minimum necessary figure, and the only
+-- DECISIONS.md D003's deliberate, narrow exception: the minimum necessary figure, and the only
 -- thing that ever crosses between cooperatives.
 --
 -- These functions are the enforcement of that rule rather than a way around it. They return an
@@ -109,7 +109,7 @@ $fn$;
  *
  * Everything below happens in ONE transaction, which is the entire point. pg_advisory_xact_lock
  * only serialises callers inside a single transaction, so this cannot be assembled from
- * sequential client calls — a second submission arriving between the client's read and its write
+ * sequential client calls: a second submission arriving between the client's read and its write
  * would reserve against a figure that was already stale. That race is the exact failure the
  * product exists to close.
  *
@@ -216,7 +216,7 @@ begin
   if v_monthly > v_available then
     -- Nothing is inserted and nothing is held. The caller is told exactly how far past the
     -- limit they are, and the screen decides what to do with that (blueprint 5.5 lets them
-    -- submit anyway — but that is the cooperative's decision to record, not a reservation).
+    -- submit anyway, but that is the cooperative's decision to record, not a reservation).
     return query select
       false,
       null::uuid,

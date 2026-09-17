@@ -19,15 +19,15 @@ export async function generateMetadata({
 }
 
 /**
- * Cooperative Discovery Profile — blueprint 4.4.
+ * Cooperative Discovery Profile (blueprint 4.4).
  *
  * Everything needed to decide whether to join one cooperative: the description in full, a
  * "Benefits and packages" section describing its loan products in plain terms, and a
  * "Requirements to join" section. The primary action sits near the top and is repeated at the
  * bottom, for anyone who reads the whole page first.
  *
- * Minimum-savings ratios are stated the way the blueprint words them — "loans require 35% of the
- * requested amount already saved" — rather than as a bare decimal, because this screen is for
+ * Minimum-savings ratios are stated the way the blueprint words them, "loans require 35% of the
+ * requested amount already saved", rather than as a bare decimal, because this screen is for
  * deciding, not for reading data.
  */
 export default async function DiscoveryProfilePage({

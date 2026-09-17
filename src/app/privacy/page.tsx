@@ -18,7 +18,7 @@ export const metadata: Metadata = {
  * checkable in the schema: the tables named exist, the isolation described is the RLS in
  * `supabase/migrations`, the aggregate-only cross-cooperative figure is `capacity_for_user()`, and
  * the logged access-grant exception is `access_grants` (DECISIONS.md D030). Where Clarix does not
- * yet do something — automatic deletion on a schedule, for instance — this says so plainly rather
+ * yet do something, automatic deletion on a schedule, for instance. This says so plainly rather
  * than describing a policy nobody has implemented. A privacy notice that overstates its own
  * controls is worse than one that admits a gap, because the first is a promise the code does not
  * keep.

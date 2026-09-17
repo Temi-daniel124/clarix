@@ -7,7 +7,7 @@ import type { ManagedOfficer } from "@/components/admin/officer-management";
 
 /**
  * Reads for the cooperative-admin screens. Every one is scoped by the same RLS the employee side
- * uses — `is_active_staff(cooperative_id)` — so these queries return this cooperative's rows
+ * uses, `is_active_staff(cooperative_id)`, so these queries return this cooperative's rows
  * because the policy says so, not because the filter does.
  */
 
@@ -34,7 +34,7 @@ export async function loadLoanProducts(cooperativeId: string): Promise<LoanProdu
  * What other cooperatives require, for the "this looks unusual" warning on blueprint 2.3.
  *
  * It reads only public products, which every signed-in account can already see on Discovery, and
- * only their ratios — no cooperative is named and nothing private is involved. Returns null when
+ * only their ratios: no cooperative is named and nothing private is involved. Returns null when
  * there is nothing to compare against, so the warning stays silent rather than inventing a norm
  * out of one data point.
  */
@@ -56,11 +56,11 @@ export async function loadPeerRatioRange(
 }
 
 /**
- * `cooperative_staff_roles` holds two foreign keys into `users` — `user_id` and `granted_by` —
+ * `cooperative_staff_roles` holds two foreign keys into `users`, `user_id` and `granted_by`,
  * so an unqualified `users(...)` embed is ambiguous and PostgREST refuses the whole request.
  * The refusal arrives as an error with `data` null, which a `data ?? []` turns into "this
  * cooperative has no officers": a wrong answer that looks exactly like a right one. Both are
- * fixed here — the embed names its foreign key, and a query error is thrown rather than shown
+ * fixed here: the embed names its foreign key, and a query error is thrown rather than shown
  * as an empty list.
  */
 export async function loadOfficers(cooperativeId: string): Promise<OfficerRow[]> {
@@ -151,12 +151,12 @@ export function summariseProducts(products: LoanProduct[]): string[] {
     .filter((product) => product.isPublic)
     .map(
       (product) =>
-        `${product.name} — save ${Math.round(product.minSavingsRatio * 100)}% first, repay over up to ${product.maxTenureMonths} months`,
+        `${product.name}, save ${Math.round(product.minSavingsRatio * 100)}% first, repay over up to ${product.maxTenureMonths} months`,
     );
 }
 
 /**
- * The same officers, carrying their full permission set — blueprint 7.2's panel needs every flag
+ * The same officers, carrying their full permission set (blueprint 7.2)'s panel needs every flag
  * rather than the single "can approve" summary the invite list shows.
  */
 export async function loadManagedOfficers(cooperativeId: string): Promise<ManagedOfficer[]> {

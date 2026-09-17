@@ -15,7 +15,7 @@ import { signUpAction, type AuthFormState } from "../actions";
 const INITIAL: AuthFormState = {};
 
 /**
- * Sign Up form — employee blueprint 1.3.
+ * Sign Up form (employee blueprint 1.3).
  *
  * Uses the short sequential-input pattern the blueprint calls for: the contact field settles
  * first, and the password field arrives once there is something valid to attach it to. That
@@ -43,7 +43,7 @@ export function SignUpForm() {
 
   // React resets the form's DOM once a form action settles. The text inputs are controlled by
   // `value` and are restored on the next render, but a checkbox's `checked` is not reapplied
-  // unless its state actually changes — so after a failed submit the box appeared unticked
+  // unless its state actually changes, so after a failed submit the box appeared unticked
   // while the form still considered consent given. Re-asserting the DOM from state after every
   // render keeps what the employee sees and what the form believes the same thing.
   const consentRef = useRef<HTMLInputElement>(null);

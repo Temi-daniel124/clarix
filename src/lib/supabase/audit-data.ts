@@ -2,11 +2,11 @@ import { createClient } from "@/lib/supabase/server";
 import { describeAction, type AuditEntry, type AuditFilters } from "@/lib/audit";
 
 /**
- * Cooperative Audit Log — admin blueprint 8.3.
+ * Cooperative Audit Log (admin blueprint 8.3).
  *
  * Reads `audit_log` directly, scoped by its own policy to the cooperative whose staff the caller
  * is. The table has no insert, update or delete policy at all (migration 014), so this screen is
- * read-only by construction rather than by restraint — there is no write path to withhold.
+ * read-only by construction rather than by restraint. There is no write path to withhold.
  */
 
 export async function loadAuditLog(
@@ -91,7 +91,7 @@ export async function loadAuditLog(
 }
 
 /**
- * What actually changed, old beside new — the blueprint asks for both rather than merely naming
+ * What actually changed, old beside new: the blueprint asks for both rather than merely naming
  * that a change occurred, which is the difference between a log you can review and one you can
  * only count.
  *

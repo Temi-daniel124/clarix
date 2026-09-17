@@ -15,11 +15,11 @@ import { SecurityForm } from "@/app/(app)/profile/security-form";
 import type { NotificationCategory } from "@/lib/notifications";
 
 /**
- * The admin's own Profile / Settings — admin blueprint 8.2.
+ * The admin's own Profile / Settings (admin blueprint 8.2).
  *
  * Deliberately the same three sections as the employee's, through the same three components and
  * the same server actions: personal information, security, notification preferences. This is one
- * account model, not two — the person editing here may well be an ordinary member somewhere else,
+ * account model, not two: the person editing here may well be an ordinary member somewhere else,
  * and their name and password are the same name and password either way.
  *
  * What is absent is the salary section, and its absence is the point: "being an Admin doesn't

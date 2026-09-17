@@ -15,7 +15,7 @@ import { THEME_STORAGE_KEY } from "./theme-script";
  * A plain two-way switch would silently pin the choice on first use.
  *
  * Rendered as a segmented control rather than a cycling button so the current state is legible
- * at a glance — on a toggle that cycles, you cannot tell "dark because I chose dark" from
+ * at a glance. On a toggle that cycles, you cannot tell "dark because I chose dark" from
  * "dark because my phone is dark".
  */
 

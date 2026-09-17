@@ -15,7 +15,7 @@ import { SalaryPanel } from "./salary-panel";
 import { SecurityForm } from "./security-form";
 
 /**
- * The four sections of Profile / Settings — blueprint 6.2.
+ * The four sections of Profile / Settings (blueprint 6.2).
  *
  * The blueprint asks for "a set of clearly labeled sections, each expandable or linking to its
  * own sub-screen rather than one long scrolling form", so each is a card that opens in place.
@@ -26,8 +26,8 @@ import { SecurityForm } from "./security-form";
  * for, and a screen of four closed bars gives no sense of what is inside them.
  *
  * This reuses the same accordion primitive as the landing page and Help rather than inventing a
- * second disclosure control; what differs is the shell it sits in — separate cards here, one
- * divided list there — which is a density choice, not a different component.
+ * second disclosure control; what differs is the shell it sits in, separate cards here, one
+ * divided list there, which is a density choice, not a different component.
  */
 export function ProfileSections({
   name,

@@ -3,7 +3,7 @@ import { Input as InputPrimitive } from "@base-ui/react/input";
 import { cn } from "@/lib/utils";
 
 /**
- * The base-ui input primitive, reskinned to DESIGN_SYSTEM.md tokens — 48px tall to match the
+ * The base-ui input primitive, reskinned to DESIGN_SYSTEM.md tokens: 48px tall to match the
  * button scale, Clarix border and surface colours, and the indigo focus ring used everywhere
  * else in the product. No shadcn preset styling remains.
  */

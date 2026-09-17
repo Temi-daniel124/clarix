@@ -11,7 +11,7 @@ import {
 import { setNotificationPreferenceAction } from "./actions";
 
 /**
- * Notification preferences — blueprint 6.2, fourth section.
+ * Notification preferences (blueprint 6.2), fourth section.
  *
  * Four toggles, each saving on its own the moment it moves. There is no Save button here
  * because there is nothing to review before committing: a toggle IS the decision, and pairing

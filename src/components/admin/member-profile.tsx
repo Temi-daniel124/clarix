@@ -24,12 +24,12 @@ const TAB_LABELS: Record<Tab, string> = {
 };
 
 /**
- * Member Profile, staff view — admin blueprint 5.2.
+ * Member Profile, staff view (admin blueprint 5.2).
  *
  * The Overview tab's eligibility panel is the point of this screen, and it is deliberately the
  * *same* CapacityMeter the member sees on their own dashboard, fed by the same calculation
  * through `capacity_for_membership` (migration 012). Both sides of a lending decision look at one
- * honest number, drawn one honest way — a second visual here would quietly imply a second truth.
+ * honest number, drawn one honest way: a second visual here would quietly imply a second truth.
  *
  * What it never shows is which cooperatives make up the committed figure, or what this member
  * holds at any of them. That is not a UI choice: the function returns an aggregate and nothing
@@ -42,7 +42,7 @@ export function MemberProfileView({
   profile: MemberProfile;
   /**
    * Officer blueprint 5.2: the actions at the bottom of each tab "reflect this Officer's specific
-   * permissions" — Record contribution and Record repayment appear only where that permission is
+   * permissions", Record contribution and Record repayment appear only where that permission is
    * granted. What they read stays identical either way, including the cross-cooperative
    * eligibility panel, "never a lesser or delayed version of it".
    */
@@ -73,7 +73,7 @@ export function MemberProfileView({
       </header>
 
       {/* Continuous Tabs, the pill switcher the design system specifies. The moving pill is a
-          layout animation on the one standard spring — the same physics as everything else. */}
+          layout animation on the one standard spring: the same physics as everything else. */}
       <div
         role="tablist"
         aria-label="Member record"
@@ -179,7 +179,7 @@ function Overview({ profile, loanBalance }: { profile: MemberProfile; loanBalanc
 
             <p className="type-caption mt-5 max-w-[560px] text-text-muted">
               Committed covers every cooperative this member belongs to, including yours. Clarix
-              does not tell you which cooperatives those are, what they hold, or what they lent —
+              does not tell you which cooperatives those are, what they hold, or what they lent,
               only the total, because that is all you need to lend responsibly and all they agreed
               to share.
             </p>
@@ -202,7 +202,7 @@ function Savings({ profile, canRecord }: { profile: MemberProfile; canRecord: bo
   );
 
   // Running balance computed oldest-first, then shown newest-first, so each row reads as the
-  // balance immediately after that entry — the same shape as the member's own statement.
+  // balance immediately after that entry: the same shape as the member's own statement.
   const oldestFirst = [...entries].sort((a, b) => a.recordedAt.localeCompare(b.recordedAt));
   const withBalances = oldestFirst.reduce<Array<(typeof entries)[number] & { balance: number }>>(
     (accumulated, entry) => {
@@ -338,7 +338,7 @@ function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: bool
       )}
 
       <p className="type-caption mt-4 max-w-[560px] text-text-muted">
-        Deciding an application — approving, or turning it down — is the Loans area, which is the
+        Deciding an application, approving, or turning it down, is the Loans area, which is the
         next part of Clarix being built. Recording what payroll has already taken works today.
       </p>
     </div>
@@ -352,7 +352,7 @@ function Deductions() {
       <p className="type-body mt-3 max-w-[560px] text-text-secondary">
         Month by month, what Clarix expected payroll to deduct for this member against what
         actually arrived. It fills from the monthly reconciliation entry, which is part of the
-        cooperative-configuration work still to come — so there is nothing to show here yet
+        cooperative-configuration work still to come, so there is nothing to show here yet
         rather than a table of zeroes.
       </p>
     </div>

@@ -13,10 +13,10 @@ import type { DeductionPolicy } from "@/lib/supabase/platform-admin-data";
 const INITIAL: PolicyState = {};
 
 /**
- * Deduction Policy Settings — super-admin blueprint 6.1.
+ * Deduction Policy Settings (super-admin blueprint 6.1).
  *
- * "The single most consequential screen a Super Admin touches." Two of these four fields — the
- * basis and the cap — are what every eligibility figure in Clarix is computed from, so changing
+ * "The single most consequential screen a Super Admin touches." Two of these four fields, the
+ * basis and the cap, are what every eligibility figure in Clarix is computed from, so changing
  * either moves what every member at every cooperative is told they can borrow, the instant it
  * saves.
  *
@@ -97,8 +97,8 @@ export function DeductionPolicyForm({ policy }: { policy: DeductionPolicy }) {
                 </span>
                 <span className="mt-0.5 block type-caption text-text-muted">
                   {option === "gross"
-                    ? "Before deductions — what the payslip states as total earnings."
-                    : "After statutory deductions — what actually reaches the account."}
+                    ? "Before deductions, what the payslip states as total earnings."
+                    : "After statutory deductions, what actually reaches the account."}
                 </span>
               </span>
             </label>

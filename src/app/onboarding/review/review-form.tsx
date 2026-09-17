@@ -13,7 +13,7 @@ import { confirmSalaryAction, type StepState } from "../actions";
 const INITIAL: StepState = {};
 
 /**
- * Review Extracted Salary — blueprint 2.4.
+ * Review Extracted Salary (blueprint 2.4).
  *
  * Reads like a receipt being confirmed rather than a form being filled in: labelled rows with
  * the figure on the right in the financial-figure type, and a pencil that turns a row editable
@@ -41,7 +41,7 @@ export function ReviewForm({
   employeeId: string | null;
   filename: string | null;
   extracted: { gross: number | null; net: number | null; payPeriod: string | null };
-  /** Which journey this screen is part of — see CONFIRM_DESTINATIONS in ../actions.ts. */
+  /** Which journey this screen is part of, see CONFIRM_DESTINATIONS in ../actions.ts. */
   destination?: "onboarding" | "profile";
   submitLabel?: string;
 }) {
@@ -83,7 +83,7 @@ export function ReviewForm({
         <input type="hidden" name="destination" value={destination} />
 
         <div className="divide-y divide-border rounded-feature border border-border bg-surface">
-          <StaticRow label={employeeIdLabel} value={employeeId ?? "—"} />
+          <StaticRow label={employeeIdLabel} value={employeeId ?? "Not entered"} />
 
           <AmountRow
             name="grossSalary"
@@ -120,7 +120,7 @@ export function ReviewForm({
 
         <p className="mt-3 type-caption text-text-muted">
           Extracted from your payslip{filename ? ` (${filename})` : ""}. Clarix is not connected
-          to payroll — these figures come only from the document you uploaded.
+          to payroll. These figures come only from the document you uploaded.
         </p>
 
         <Button type="submit" disabled={pending} className="mt-10 w-full">
@@ -199,7 +199,7 @@ function AmountRow({
             aria-label={`Edit ${label}`}
           >
             <span className={cn("type-kpi tabular", value ? "text-text" : "text-text-muted")}>
-              {value ? `${NAIRA}${formatAmount(Number(value))}` : "—"}
+              {value ? `${NAIRA}${formatAmount(Number(value))}` : "Not read"}
             </span>
             <Pencil
               aria-hidden

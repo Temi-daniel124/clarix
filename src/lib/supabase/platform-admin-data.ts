@@ -6,7 +6,7 @@ import {
 } from "@/lib/platform-audit";
 
 /**
- * Reads behind the Super Admin's oversight and administration screens — blueprint 6.1, 7.1, 8.1.
+ * Reads behind the Super Admin's oversight and administration screens (blueprint 6.1), 7.1, 8.1.
  *
  * The organization row is readable by anybody signed in (`organizations_select_authenticated`),
  * because onboarding needs the staff-ID pattern and every eligibility figure needs the deduction
@@ -73,7 +73,7 @@ export async function loadPlatformAdmins(): Promise<PlatformAdminRow[]> {
 }
 
 /**
- * Platform Audit Log — blueprint 7.1.
+ * Platform Audit Log (blueprint 7.1).
  *
  * Reads `audit_log` directly. No filter here says "platform rows only": `audit_log_select_platform`
  * does, by admitting a platform admin to rows whose `cooperative_id` is null and nothing else. A
@@ -130,7 +130,7 @@ export async function loadPlatformAuditLog(
 }
 
 /**
- * What changed, old beside new — the same distinction the cooperative log draws. A field present
+ * What changed, old beside new: the same distinction the cooperative log draws. A field present
  * only in the new value is not a change: "the name of the cooperative that was created" never had
  * a before, and drawing an arrow from nothing would invent one.
  */

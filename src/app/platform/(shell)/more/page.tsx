@@ -10,7 +10,7 @@ import {
 export const metadata: Metadata = { title: "More" };
 
 /**
- * "More" — super-admin blueprint Part 3, mobile only.
+ * "More", super-admin blueprint Part 3, mobile only.
  *
  * Holds exactly what the desktop sidebar shows directly, in the same order. The sidebar is flat
  * for this role, so this screen is simply the tail of it rather than a different arrangement of

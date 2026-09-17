@@ -11,12 +11,12 @@ import { ContactForm } from "./contact-form";
 export const metadata: Metadata = { title: "Help" };
 
 /**
- * Help / Support — blueprint 6.3.
+ * Help / Support (blueprint 6.3).
  *
  * "Sized appropriately for a lean pilot rather than a full support desk": a FAQ under two plain
  * categories, then one way to reach a person. No live chat, no ticket tracking.
  *
- * Every answer below describes what Clarix actually does today — the 33.3% cap FMC Abeokuta
+ * Every answer below describes what Clarix actually does today: the 33.3% cap FMC Abeokuta
  * configured, what "reserved" means, the fact that Clarix informs rather than approves, what a
  * cooperative can and cannot see. None of it is filler, and none of it promises a feature that
  * is not built. Where the honest answer is "not yet", it says that.
@@ -28,7 +28,7 @@ const SAVINGS_AND_LOANS: Faq[] = [
   {
     question: "How does Clarix work out how much I can borrow?",
     answer:
-      "FMC Abeokuta sets one ceiling on how much of your salary may go out in deductions each month — 33.3% of your gross pay. Clarix works out that figure from the salary on the payslip you confirmed, then subtracts every monthly repayment you already owe across all your cooperatives. What is left is what a new loan's monthly repayment can be.",
+      "FMC Abeokuta sets one ceiling on how much of your salary may go out in deductions each month: 33.3% of your gross pay. Clarix works out that figure from the salary on the payslip you confirmed, then subtracts every monthly repayment you already owe across all your cooperatives. What is left is what a new loan's monthly repayment can be.",
   },
   {
     question: "Why do loans from my other cooperatives count against my limit?",
@@ -86,7 +86,7 @@ const MY_ACCOUNT: Faq[] = [
   {
     question: "Can I sign in with my phone number?",
     answer:
-      "Not yet — Clarix uses email and password only for now. Sending codes by SMS needs a provider the pilot does not have, so offering it would mean an option that fails at the last step.",
+      "Not yet. Clarix uses email and password only for now. Sending codes by SMS needs a provider the pilot does not have, so offering it would mean an option that fails at the last step.",
   },
   {
     question: "What are the notification toggles for?",

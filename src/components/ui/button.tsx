@@ -16,7 +16,7 @@ const buttonVariants = cva(
     "whitespace-nowrap font-medium select-none",
     "transition-[background-color,border-color,color,opacity] duration-150",
     "outline-none focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-    // Disabled is a real state with its own tokens, not the brand colour at reduced opacity —
+    // Disabled is a real state with its own tokens, not the brand colour at reduced opacity,
     // a faded emerald reads as a broken button rather than an unavailable one, and its label
     // stops being legible. Each filled variant swaps to the neutral border tone below.
     "disabled:pointer-events-none",
@@ -28,7 +28,7 @@ const buttonVariants = cva(
         /** The single primary call to action on a screen. Emerald, per the accent token. */
         primary:
           "bg-emerald text-white hover:bg-emerald/90 active:bg-emerald/95 disabled:bg-border disabled:text-text-muted",
-        /** Dark-surface actions — the landing page top bar, navy panels. */
+        /** Dark-surface actions: the landing page top bar, navy panels. */
         navy: "bg-navy text-background hover:bg-navy/90 disabled:bg-border disabled:text-text-muted",
         outline:
           "border border-border bg-surface text-text hover:bg-background active:bg-background disabled:text-text-muted",
@@ -37,9 +37,9 @@ const buttonVariants = cva(
         danger: "bg-danger text-white hover:bg-danger/90 disabled:bg-border disabled:text-text-muted",
       },
       size: {
-        /** 48px — the standard CTA height, comfortable as a touch target. */
+        /** 48px: the standard CTA height, comfortable as a touch target. */
         default: "h-12 rounded-card px-6 type-body",
-        /** 40px — dense contexts such as a top bar. */
+        /** 40px, dense contexts such as a top bar. */
         sm: "h-10 rounded-card px-4 text-[14px]",
         icon: "size-10 rounded-card",
         inline: "h-auto rounded-none p-0",

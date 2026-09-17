@@ -8,7 +8,7 @@ import { payslipLinkAction } from "@/app/admin/payslip-actions";
 import type { ReviewPayslip } from "@/lib/supabase/payslip-review";
 
 /**
- * The salary evidence behind an application — DECISIONS.md D031.
+ * The salary evidence behind an application, DECISIONS.md D031.
  *
  * This panel exists because the figure every other number on this screen is derived from is
  * **self-reported**: the member uploaded a payslip, confirmed what it said, and that confirmation

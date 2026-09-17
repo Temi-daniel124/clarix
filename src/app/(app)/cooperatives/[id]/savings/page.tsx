@@ -12,13 +12,13 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Savings statement" };
 
 /**
- * Savings Statement — blueprint 5.2.
+ * Savings Statement (blueprint 5.2).
  *
  * "A focused, printable-feeling record": date, description, amount, running balance, and nothing
  * else competing for attention. Read-only, because an employee never edits their own ledger.
  *
  * The running balance is computed forward from the oldest entry and then displayed newest-first,
- * so each row shows the balance as it stood immediately after that entry — which is what a
+ * so each row shows the balance as it stood immediately after that entry, which is what a
  * statement means, and what makes the column reconcilable against a cooperative's own books.
  */
 export default async function SavingsStatementPage({

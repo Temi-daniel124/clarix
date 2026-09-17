@@ -1,4 +1,4 @@
--- Clarix — migration 016: officer permissions that actually bite, and monthly reconciliation.
+-- Clarix, migration 016: officer permissions that actually bite, and monthly reconciliation.
 --
 -- ---------------------------------------------------------------------------
 -- 1. Permissions stop being decoration
@@ -11,7 +11,7 @@
 --
 -- Blueprint 7.2 asks for a panel of toggles that are "default-deny, meaning a permission not
 -- explicitly switched on isn't usable by that officer at all". A toggle that changes a stored
--- value but not what the database permits would be the worst kind of security theatre — it would
+-- value but not what the database permits would be the worst kind of security theatre. It would
 -- read as a control and behave as a label. So the two policies those toggles govern are
 -- rewritten here to check the flag.
 --
@@ -25,7 +25,7 @@
 -- 2. deduction_reconciliation
 --
 -- Specified in docs/DATA-MODEL.md from the beginning, never migrated, and needed by blueprint
--- 7.5 — the screen whose whole purpose is "make a deduction shortfall visible on purpose rather
+-- 7.5: the screen whose whole purpose is "make a deduction shortfall visible on purpose rather
 -- than discovered by accident". It is also, per the strategic plan, the number that eventually
 -- makes the case for the paid plan, which is a poor thing to keep in a spreadsheet.
 
@@ -126,7 +126,7 @@ create index deduction_reconciliation_period_idx
   on public.deduction_reconciliation (period);
 
 comment on table public.deduction_reconciliation is
-  'Expected versus actually-received salary deductions, per member per month (blueprint 7.5, docs/DATA-MODEL.md). The shortfall is derived — expected minus actual — rather than stored, so it can never disagree with the two figures it comes from.';
+  'Expected versus actually-received salary deductions, per member per month (blueprint 7.5, docs/DATA-MODEL.md). The shortfall is derived, expected minus actual, rather than stored, so it can never disagree with the two figures it comes from.';
 
 alter table public.deduction_reconciliation enable row level security;
 

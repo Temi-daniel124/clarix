@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Apply for a loan" };
 
 /**
- * Loan Application — blueprint 5.5.
+ * Loan Application (blueprint 5.5).
  *
  * Reached either from a cooperative (with ?membership=) or from the Loans tab, which per the
  * blueprint opens a cooperative-selection step first for anyone who belongs to more than one.

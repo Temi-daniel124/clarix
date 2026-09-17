@@ -4,7 +4,7 @@ import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
 import { ThemeScript } from "@/components/theme/theme-script";
 
-/** Inter, one family, loaded once — DESIGN_SYSTEM.md § Typography. */
+/** Inter, one family, loaded once, DESIGN_SYSTEM.md § Typography. */
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -13,12 +13,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Clarix — cross-cooperative deduction coordination",
+    default: "Clarix, cross-cooperative deduction coordination",
     template: "%s · Clarix",
   },
   description:
     "Clarix shows a cooperative whether a member's combined deductions across every cooperative " +
-    "they belong to still fit inside the agreed one-third salary cap — before a loan is approved.",
+    "they belong to still fit inside the agreed one-third salary cap, before a loan is approved.",
   applicationName: "Clarix",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
@@ -60,7 +60,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className={`${inter.variable} flex min-h-full flex-col`}>
         {/*
           Chrome fires `beforeinstallprompt` during page load, typically BEFORE React has
-          hydrated — so a listener registered inside a component effect misses it altogether and
+          hydrated, so a listener registered inside a component effect misses it altogether and
           the install banner never appears. This captures the event as early as the document can
           run script, stashes it, and announces it so the banner can pick it up whenever it
           mounts. See src/components/pwa/install-prompt.tsx.

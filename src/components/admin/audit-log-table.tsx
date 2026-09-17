@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { AUDIT_ACTION_LABELS, describeAction, type AuditEntry } from "@/lib/audit";
 
 /**
- * Cooperative Audit Log — admin blueprint 8.3.
+ * Cooperative Audit Log (admin blueprint 8.3).
  *
  * Reverse-chronological, with the filters the blueprint asks for and, for anything that changed a
  * value, the old figure beside the new one rather than a line saying a change occurred. A log

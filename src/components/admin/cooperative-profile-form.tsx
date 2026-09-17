@@ -12,11 +12,11 @@ import { saveCooperativeProfileAction, type AdminState } from "@/app/admin/actio
 const INITIAL: AdminState = {};
 
 /**
- * Cooperative Profile Setup — admin blueprint 2.2, and the same screen later reached as Public
+ * Cooperative Profile Setup (admin blueprint 2.2), and the same screen later reached as Public
  * Profile Editor (7.3).
  *
  * This is the cooperative's front door: everything here is what an employee reads on the
- * Discovery Profile before deciding whether to apply. So the preview is not decoration — it is
+ * Discovery Profile before deciding whether to apply. So the preview is not decoration. It is
  * the only way an admin can see the thing they are actually editing, and it renders from the
  * same values the form holds rather than from a saved copy, so it updates as they type.
  *
@@ -169,7 +169,7 @@ function DiscoveryPreview({
         <h3 className="type-page-title mt-5 text-text">{name || "Your cooperative"}</h3>
 
         <p className="type-body mt-3 max-w-[560px] text-text-secondary">
-          {description.trim() || "No description yet — an employee would see nothing here."}
+          {description.trim() || "No description yet: an employee would see nothing here."}
         </p>
 
         <div className="mt-8 border-t border-border pt-6">
@@ -197,7 +197,7 @@ function DiscoveryPreview({
             Requirements to join
           </h4>
           <p className="type-secondary mt-3 text-text-secondary">
-            {requirements.trim() || "None stated — an employee would see nothing here."}
+            {requirements.trim() || "None stated: an employee would see nothing here."}
           </p>
         </div>
       </div>

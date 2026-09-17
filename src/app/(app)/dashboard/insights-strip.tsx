@@ -7,7 +7,7 @@ import { springStandard } from "@/lib/motion";
 import type { Insight } from "@/lib/supabase/dashboard-data";
 
 /**
- * Clarix Insights — blueprint 4.1.
+ * Clarix Insights (blueprint 4.1).
  *
  * Text-led cards, swipeable on mobile, never autoplaying: the blueprint is explicit that
  * autoplaying content the employee did not ask to see is a small trust cost on a financial

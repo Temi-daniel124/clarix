@@ -1,10 +1,10 @@
--- Clarix — migration 003: table-level privileges for the `authenticated` role.
+-- Clarix, migration 003: table-level privileges for the `authenticated` role.
 --
 -- Found by an RLS isolation probe run against the live project immediately after 001: every
 -- query from the app failed with "permission denied for table cooperative_memberships". RLS
 -- policies decide WHICH ROWS a role may touch, but Postgres still requires a table-level GRANT
 -- before the policy is ever consulted. The tables in 001 were created without one, so the anon
--- key — which is what every browser and server request uses — could read nothing at all.
+-- key, which is what every browser and server request uses, could read nothing at all.
 --
 -- Two rules shape what is granted below:
 --

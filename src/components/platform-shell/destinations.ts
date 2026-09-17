@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 /**
- * The Super Admin's information architecture — super-admin blueprint Part 3.
+ * The Super Admin's information architecture, super-admin blueprint Part 3.
  *
  * Flat on purpose. Every other staff role nests its configuration behind a "Manage cooperative"
  * section; this one does not, because "this role's entire scope is small enough that everything

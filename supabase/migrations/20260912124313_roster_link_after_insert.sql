@@ -1,4 +1,4 @@
--- Clarix — migration 011: the roster link has to happen after the insert, not during it.
+-- Clarix, migration 011: the roster link has to happen after the insert, not during it.
 --
 -- Found by pgTAP suite 005 on its first CI run, which is the first time anything exercised the
 -- path an ordinary employee takes. Migration 010 set `new.status := 'active'` in a BEFORE INSERT
@@ -9,13 +9,13 @@
 --   `with check (user_id = auth.uid() and status = 'pending')`, and a policy's WITH CHECK is
 --   evaluated against the row AFTER BEFORE-triggers have had it. So the trigger rewrote the row
 --   into exactly the shape the policy refuses, and an employee on a roster could not join at
---   all — "new row violates row-level security policy for table cooperative_memberships".
+--   all, "new row violates row-level security policy for table cooperative_memberships".
 --
 -- The live verification in the previous session missed it because the import inserts memberships
 -- as staff, where `cooperative_memberships_insert_staff` permits any status.
 --
--- The fix keeps the employee's insert exactly as the policy intends — it lands as `pending`,
--- written by them, about them — and moves activation into the AFTER trigger, where it belongs:
+-- The fix keeps the employee's insert exactly as the policy intends. It lands as `pending`,
+-- written by them, about them, and moves activation into the AFTER trigger, where it belongs:
 -- activating an imported member is a system action, not something the applicant asserted. The
 -- trigger is SECURITY DEFINER and therefore runs as the table owner, so its update is not
 -- subject to the same policy. Nothing about who may insert what has changed.

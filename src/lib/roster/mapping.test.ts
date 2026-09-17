@@ -9,7 +9,7 @@ import {
 } from "./mapping";
 
 /**
- * The roster import's judgement, tested without a browser or a database — the same split
+ * The roster import's judgement, tested without a browser or a database: the same split
  * docs/DEVELOPMENT-WORKFLOW.md § 3 uses for the eligibility arithmetic.
  *
  * The headings below are the ones real cooperative sheets use: IPPIS is the payroll system's own

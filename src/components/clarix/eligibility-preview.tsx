@@ -12,7 +12,7 @@ import { CapacityMeter } from "./capacity-meter";
  * The landing page's hero visual, and a slower version of the same thing on the auth panel.
  *
  * DESIGN_SYSTEM.md is explicit that the hero must be a real, simplified working preview of the
- * product rather than an illustration of a metaphor for it — so this is the actual eligibility
+ * product rather than an illustration of a metaphor for it, so this is the actual eligibility
  * check, running the actual arithmetic from docs/DATA-MODEL.md § Step 1/Step 2, on a loop:
  *
  *     cap       = gross salary x the organization's maximum deduction percentage
@@ -63,8 +63,8 @@ export function EligibilityPreview({
     return () => window.clearInterval(timer);
   }, [pace, reduceMotion]);
 
-  // Reduced motion: hold the frame that carries the most meaning — a real request being
-  // checked against real remaining capacity — rather than looping through the others.
+  // Reduced motion holds the frame that carries the most meaning: a real request being
+  // checked against real remaining capacity, rather than looping through the others.
   const frame = reduceMotion ? FRAMES[2] : FRAMES[index];
 
   return (
@@ -72,7 +72,7 @@ export function EligibilityPreview({
       className={cn(
         "w-full rounded-feature border border-border bg-surface p-6 md:p-8",
         // The hero variant always sits on the fixed navy ground, so it holds the light palette
-        // in both themes — see the .theme-light note in globals.css.
+        // in both themes, see the .theme-light note in globals.css.
         pace === "hero" && "theme-light",
         pace === "calm" && "border-white/10 bg-white/[0.04]",
         className,
@@ -120,7 +120,7 @@ export function EligibilityPreview({
       {/*
         The caption must never describe a different frame from the one the meter is drawing.
         An AnimatePresence with mode="wait" held the outgoing caption on screen until its exit
-        finished, so the text lagged a frame behind the figures — on a product whose whole
+        finished, so the text lagged a frame behind the figures, on a product whose whole
         promise is telling the truth about a number, a caption disagreeing with the meter is
         exactly the wrong bug to ship. Keying a single element makes React swap it in the same
         commit as the meter, so the two can never disagree.

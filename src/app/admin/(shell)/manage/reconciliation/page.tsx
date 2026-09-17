@@ -8,7 +8,7 @@ import { loadReconciliation, recentPeriods } from "@/lib/supabase/reconciliation
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Reconciliation" };
 
-/** Monthly Reconciliation Entry — admin blueprint 7.5. */
+/** Monthly Reconciliation Entry (admin blueprint 7.5). */
 export default async function ReconciliationPage({
   searchParams,
 }: {

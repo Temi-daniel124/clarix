@@ -10,13 +10,13 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Re-upload payslip" };
 
 /**
- * Re-upload payslip — blueprint 6.2, "a variant of the Payslip Upload/Review pair (2.3–2.4)
+ * Re-upload payslip (blueprint 6.2), "a variant of the Payslip Upload/Review pair (2.3–2.4)
  * scoped to updating rather than onboarding".
  *
  * Scoped means three things and nothing else: it lives inside the app shell rather than the
  * onboarding layout, there is no step indicator because this is not a sequence, and it returns
  * to Profile when the figures are confirmed. The upload component itself is the same one
- * onboarding uses, told where to go next — a second dropzone with its own storage-path rule
+ * onboarding uses, told where to go next: a second dropzone with its own storage-path rule
  * would be a second place for the payslip privacy boundary to go wrong.
  */
 export default async function ProfilePayslipPage() {

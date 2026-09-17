@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cooperative" };
 
 /**
- * Cooperative Detail — blueprint 5.1.
+ * Cooperative Detail (blueprint 5.1).
  *
  * "How am I doing here": the two headline figures side by side, a loan summary that acts as an
  * entry point rather than duplicating Loan Detail, the quick actions, and a reverse-chronological

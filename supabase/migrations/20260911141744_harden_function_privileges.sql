@@ -1,4 +1,4 @@
--- Clarix — migration 002: close the two security-lint findings raised against migration 001.
+-- Clarix, migration 002: close the two security-lint findings raised against migration 001.
 --
 -- Supabase's database linter flagged both of these immediately after 001 was applied; fixing
 -- them here rather than editing 001 in place keeps migration history append-only, the same
@@ -11,7 +11,7 @@
 --
 -- 2. `handle_new_auth_user` is a SECURITY DEFINER trigger function, but PostgreSQL grants
 --    EXECUTE to PUBLIC by default, which PostgREST then exposes as a callable RPC endpoint
---    (lints 0028 / 0029). Nothing should ever invoke it directly — only the auth.users
+--    (lints 0028 / 0029). Nothing should ever invoke it directly: only the auth.users
 --    trigger. Revoking EXECUTE from every client role removes the endpoint without affecting
 --    the trigger, which runs as the function's owner.
 --

@@ -40,7 +40,7 @@ const chooseSchema = z
  * Ask for a reset link.
  *
  * **This always reports success.** Whether or not the address has an account, the screen says the
- * same thing — because a form that answers "no such account" is a form that tells anybody who asks
+ * same thing, because a form that answers "no such account" is a form that tells anybody who asks
  * which of your staff use Clarix. The same reasoning already governs the sign-in screen, which
  * deliberately does not distinguish a wrong password from an unknown address.
  *
@@ -73,7 +73,7 @@ export async function requestResetAction(
  * Choose the new password, on the session the emailed link established.
  *
  * There is deliberately no current-password field. Somebody arriving here has proved control of
- * the mailbox instead, which is the whole point of the flow — asking for a password they have by
+ * the mailbox instead, which is the whole point of the flow, asking for a password they have by
  * definition forgotten would make the screen useless to the only people who need it.
  *
  * What replaces that check is the reset ticket: a short-lived, http-only cookie written only when

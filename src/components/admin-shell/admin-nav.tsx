@@ -24,11 +24,11 @@ export type StaffNavProps = {
 };
 
 /**
- * The cooperative admin's navigation — admin blueprint Part 3.
+ * The cooperative admin's navigation, admin blueprint Part 3.
  *
  * Same chrome as the employee shell, because the two are one product: navy glass, the one
  * standard spring, the same collapsible-rail behaviour and the same floating mobile pill. What
- * differs is what it points at, and one structural thing the employee side does not need — a
+ * differs is what it points at, and one structural thing the employee side does not need, a
  * "Manage cooperative" section that expands into its own sub-items on desktop.
  *
  * The cooperative's name sits under the wordmark rather than in the page, because an admin who

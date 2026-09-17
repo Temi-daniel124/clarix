@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Temporary access" };
 
 /**
- * Elevated Access View — super-admin blueprint 7.3.
+ * Elevated Access View (super-admin blueprint 7.3).
  *
  * Three things make this screen what the blueprint asks for, and each is worth naming.
  *
@@ -18,13 +18,13 @@ export const metadata: Metadata = { title: "Temporary access" };
  * admin and an officer see, over `loadMemberProfile()`, the same loader. That is deliberate: the
  * blueprint asks for "real, correctly-rendered data", and a second read-only rendering of a member
  * would drift from the real one and quietly start showing something subtly different from what the
- * cooperative sees. `canRecord` is false, which removes the two write actions — but that is the
+ * cooperative sees. `canRecord` is false, which removes the two write actions, but that is the
  * cosmetic half. The database has no insert or update policy for a grant holder anywhere, so the
  * writes are refused whether or not a button was ever rendered.
  *
  * **It stops the moment the grant lapses.** `loadLiveGrant()` returns null for anything that is
- * not active at this instant — pending, expired or revoked are indistinguishable from never having
- * existed — and this page redirects. That check runs on every request, and the banner's countdown
+ * not active at this instant, pending, expired or revoked are indistinguishable from never having
+ * existed, and this page redirects. That check runs on every request, and the banner's countdown
  * navigates away on its own when it reaches zero, so neither a stale tab nor a paused clock leaves
  * member data on screen.
  *

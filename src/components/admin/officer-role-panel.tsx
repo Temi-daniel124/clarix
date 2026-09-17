@@ -2,13 +2,13 @@ import { Check, ShieldCheck } from "lucide-react";
 import { PERMISSIONS, type PermissionKey } from "@/lib/permissions";
 
 /**
- * "Your role at [Cooperative Name]" — officer blueprint 8.2.
+ * "Your role at [Cooperative Name]" (officer blueprint 8.2).
  *
  * Read-only, and near the top of the officer's own Profile, because the blueprint makes it the
  * one thing this role's Profile has that no other role's does: "a clear, plain-language summary
  * of exactly what they're currently permitted to do".
  *
- * Anything not granted is simply absent — "never shown crossed out or greyed, matching the same
+ * Anything not granted is simply absent, "never shown crossed out or greyed, matching the same
  * default-deny-and-don't-clutter principle used throughout this role's navigation". A list of
  * things you cannot do is an invitation to ask why, and the answer is never on this screen: it
  * is a decision their admin made, and the line below says so.
@@ -21,7 +21,7 @@ export function OfficerRolePanel({
   permissions,
 }: {
   cooperativeName: string;
-  /** What this cooperative calls them — Treasurer, Secretary — or nothing, which is common. */
+  /** What this cooperative calls them, Treasurer, Secretary, or nothing, which is common. */
   title: string | null;
   permissions: Record<PermissionKey, boolean>;
 }) {

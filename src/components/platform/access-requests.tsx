@@ -23,14 +23,14 @@ import { requestAccessAction, revokeAccessAction, type AccessState } from "@/app
 const INITIAL: AccessState = {};
 
 /**
- * Access Requests — super-admin blueprint 7.2.
+ * Access Requests (super-admin blueprint 7.2).
  *
  * Past and current requests, each carrying who asked, which cooperative and which member if it was
  * narrowed that far, the stated reason, its status, and the time left on anything live.
  *
  * The reason field is the only part of this screen that matters more than it looks. It is shown to
  * the cooperative whose data is about to be read, kept forever, and attached to every record
- * opened under the grant — so the placeholder and the helper text ask for a sentence a stranger
+ * opened under the grant, so the placeholder and the helper text ask for a sentence a stranger
  * could evaluate, and the database refuses anything under twenty characters.
  */
 export function AccessRequests({

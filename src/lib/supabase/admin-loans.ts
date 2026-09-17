@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * Reads behind Loan Management — admin blueprint Part 6.
+ * Reads behind Loan Management, admin blueprint Part 6.
  *
  * Everything here is scoped by the `loans_select_staff` policy from migration 006: a cooperative's
  * staff see their own cooperative's loans because the policy says so. The membership join below
@@ -94,7 +94,7 @@ function nameOf(memberships: Awaited<ReturnType<typeof loansForCooperative>>["me
 }
 
 /**
- * The applications queue — blueprint 6.1. Oldest first, "since these are waiting".
+ * The applications queue (blueprint 6.1). Oldest first, "since these are waiting".
  *
  * Each row carries the eligibility picture the queue shows at a glance, which means one capacity
  * lookup per application. That is a real cost, and it is the right one: an admin scanning this
@@ -139,7 +139,7 @@ export async function loadApplications(cooperativeId: string): Promise<{
     const capacity = withCapacity ? capacities.get(loan.membership_id) : undefined;
 
     // The application is already counted in `committed` because it is reserved, so it comes back
-    // out to answer "what could they carry without it" — which is what the decision is against.
+    // out to answer "what could they carry without it", which is what the decision is against.
     const availableBefore = capacity
       ? Math.max(capacity.cap - (capacity.committed - Number(loan.monthly_repayment)), 0)
       : null;
@@ -268,7 +268,7 @@ export async function loadApplication(loanId: string): Promise<
   };
 }
 
-/** Active loans — blueprint 6.3. */
+/** Active loans (blueprint 6.3). */
 export async function loadActiveLoans(cooperativeId: string): Promise<LoanSummaryRow[]> {
   const supabase = await createClient();
   const { loans, memberships } = await loansForCooperative(cooperativeId);
@@ -322,7 +322,7 @@ function decidedAt(loan: LoanRecord): string | null {
   return loan.completed_at ?? loan.approved_at ?? loan.rejected_at ?? null;
 }
 
-/** The month after the last thing that happened — what payroll is expected to take next. */
+/** The month after the last thing that happened, what payroll is expected to take next. */
 function nextMonthAfter(iso: string | null): string | null {
   if (!iso) return null;
   const date = new Date(iso);

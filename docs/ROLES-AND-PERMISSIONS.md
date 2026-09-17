@@ -1,4 +1,4 @@
-# ROLES-AND-PERMISSIONS.md — Clarix
+# ROLES-AND-PERMISSIONS.md, Clarix
 
 **Authority level: 3.** Defers to `DECISIONS.md` (see D001, D003, D010). For the screen-by-screen
 experience of each role, see the four role blueprints under `docs/planning/` (Employee,
@@ -8,7 +8,7 @@ Cooperative Admin, Cooperative Officer, Super Admin).
 
 | Role | Scope |
 |---|---|
-| **Super Admin** | Operates the Clarix platform itself. Not a member of any cooperative's financial data by default — see the Access Grant exception below. |
+| **Super Admin** | Operates the Clarix platform itself. Not a member of any cooperative's financial data by default, see the Access Grant exception below. |
 | **Cooperative Admin** | Head/owner of one cooperative. Full control of that cooperative. Invited by Super Admin, never self-registered. |
 | **Cooperative Officer** | Day-to-day staff of one cooperative. Permissions are a subset of Admin's, configured per-officer by that cooperative's own Admin. Invited by their Admin, never by Super Admin. |
 | **User/Employee** | One Clarix account, with zero or more cooperative memberships. Open self-service signup. |
@@ -33,28 +33,28 @@ Cooperative Admin, Cooperative Officer, Super Admin).
 | View audit log | platform-level events only | own cooperative's log | ❌ | ❌ |
 
 *Super Admin has no standing access to member financial detail. A support case requiring it must
-go through the explicit, logged Access Grant flow below — never default visibility. This is a
+go through the explicit, logged Access Grant flow below, never default visibility. This is a
 hard requirement, not a convenience shortcut, even for debugging.
 
 ## Officer permissions are configured per person, default-deny
 
 A Cooperative Admin toggles exactly what each of their officers can do (search/view members,
 record contributions/repayments, submit loan applications, approve/reject loan applications,
-add/import members). A permission not explicitly granted is not usable — the UI must not show a
+add/import members). A permission not explicitly granted is not usable: the UI must not show a
 disabled control for something an officer lacks; it should simply not render that control at all.
 Admins can also set a purely cosmetic `title` per officer (e.g. "Treasurer," "Secretary") that
 never changes the underlying permission set.
 
-## Onboarding differs by role — this is intentional, not an oversight
+## Onboarding differs by role. This is intentional, not an oversight
 
-- **Employee — open self-service signup.** Email/phone → verify contact → employee ID →
+- **Employee, open self-service signup.** Email/phone → verify contact → employee ID →
   payslip upload → review extracted salary → browse/apply to cooperatives. No invitation needed.
-- **Cooperative Admin — invited by Super Admin, never self-registered.** Super Admin creates the
+- **Cooperative Admin, invited by Super Admin, never self-registered.** Super Admin creates the
   `cooperatives` row (part of that cooperative's paid onboarding) and sends a one-time email
   invite via Resend. Accepting it drops the Admin into an Admin-specific setup flow (cooperative
-  profile, loan products, spreadsheet import) — never the Employee payslip/join flow, since being
+  profile, loan products, spreadsheet import), never the Employee payslip/join flow, since being
   an Admin doesn't by itself make someone a beneficiary member anywhere.
-- **Cooperative Officer — invited by their own Admin, not by Super Admin.** Same invite-link
+- **Cooperative Officer, invited by their own Admin, not by Super Admin.** Same invite-link
   mechanic, triggered from the Admin's "manage officers" screen, landing the Officer in a much
   shorter setup (accept invite, set password) since there's no cooperative-level configuration
   for them to do.
@@ -70,10 +70,10 @@ independent per cooperative:
 - A `cooperative_memberships` row (beneficiary) is separate from a `cooperative_staff_roles` row
   (admin/officer). A person can have either, both, or neither, at any given cooperative.
 - The same user can hold `cooperative_staff_roles` rows at *multiple* cooperatives simultaneously
-  — officer at A and officer at B is just two rows, not a special case. Being an officer at B
+, officer at A and officer at B is just two rows, not a special case. Being an officer at B
   carries no permission at A; every check is scoped by `cooperative_id`.
 - A person can be Admin of their own cooperative while also Officer somewhere else and an ordinary
-  contributing member at a third — all under one login.
+  contributing member at a third. All under one login.
 - What an Admin controls (an officer's title, an officer's permission flags) is scoped to staff
   roles granted at *their own* cooperative only. No visibility or control over that same person's
   roles elsewhere.
@@ -91,7 +91,7 @@ justified, and time-boxed:
 3. Once active, the grant is strictly time-boxed (short default window, e.g. 24 hours) and can be
    revoked early by the requesting Super Admin.
 4. The resulting view is read-only, visually distinct (a persistent "temporary access" banner),
-   and every screen/record viewed under it is logged individually — more granular than ordinary
+   and every screen/record viewed under it is logged individually, more granular than ordinary
    platform audit events.
 
 Full schema: `access_grants` table in `docs/DATA-MODEL.md`. Full screen flow: the Super Admin

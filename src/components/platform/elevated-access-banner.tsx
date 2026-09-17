@@ -6,17 +6,17 @@ import { ShieldAlert } from "lucide-react";
 import { describeRemaining, millisRemaining, type AccessGrant } from "@/lib/access-grants";
 
 /**
- * The temporary-access banner — super-admin blueprint 7.3.
+ * The temporary-access banner (super-admin blueprint 7.3).
  *
  * "A persistent, non-dismissible banner across the top of the screen for the entire duration of
- * the grant — amber/warning-toned, stating plainly 'Temporary access active — [reason] — expires
+ * the grant, amber/warning-toned, stating plainly 'Temporary access active, [reason], expires
  * in [time remaining]'."
  *
  * **Why it looks like this.** This is the only amber surface in Clarix and the only banner that
  * cannot be dismissed, and both are deliberate. DESIGN_SYSTEM.md's rule is that nothing is
  * decoration for its own sake, so the weight here is doing work: it has to be impossible to
  * mistake this screen for the ordinary member profile it otherwise is. It is sticky rather than
- * scrolled away, it carries the reason the operator themselves wrote, and it counts down — a
+ * scrolled away, it carries the reason the operator themselves wrote, and it counts down. A
  * banner that said only "temporary access" would fade into furniture within a minute of reading
  * it, while one that visibly loses a minute every minute does not.
  *

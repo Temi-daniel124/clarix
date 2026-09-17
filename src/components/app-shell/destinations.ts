@@ -9,12 +9,12 @@ import {
 } from "lucide-react";
 
 /**
- * The employee app's information architecture — blueprint Part 3.
+ * The employee app's information architecture, blueprint Part 3.
  *
  * There is one set of functional areas, expressed two ways. Mobile gets a four-item bottom bar
  * with Notifications, Profile and Help folded behind "More", because five items in a bottom bar
  * is crowded and "More" is a space-saving device. Desktop has the width, so those three become
- * their own sidebar rows and "More" does not exist there at all — blueprint 6.3 is explicit that
+ * their own sidebar rows and "More" does not exist there at all (blueprint 6.3) is explicit that
  * Help is reached "from the mobile More menu or the desktop sidebar".
  *
  * The blueprint is explicit that this must never become two different information architectures,
