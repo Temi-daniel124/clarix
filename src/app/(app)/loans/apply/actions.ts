@@ -13,6 +13,10 @@ export type SubmitState = {
     available: number;
     shortfall: number;
     reservationExpiresAt: string | null;
+    // The cooperative's own rule, null when the application named no product.
+    savingsRequired: number | null;
+    savingsShortfall: number | null;
+    meetsSavingsRatio: boolean | null;
   };
 };
 
@@ -33,7 +37,9 @@ const schema = z.object({
  *
  * A request that exceeds capacity is NOT rejected here. Clarix informs, it does not gatekeep
  * (PRODUCT.md principle 3): the function simply reserves nothing and reports the shortfall, and
- * the cooperative decides what to do about it.
+ * the cooperative decides what to do about it. The same is true of the product's savings ratio,
+ * which the function now reports alongside the cap: a member short of it still reaches the
+ * cooperative, carrying that fact with them.
  */
 export async function submitLoanApplicationAction(
   _previous: SubmitState,
@@ -81,8 +87,17 @@ export async function submitLoanApplicationAction(
       available: Number(row.available),
       shortfall: Number(row.shortfall),
       reservationExpiresAt: row.reservation_expires_at,
+      // The generated types cannot express nullability for a set-returning function's columns,
+      // and these three are genuinely null when the application named no product.
+      savingsRequired: nullableNumber(row.savings_required),
+      savingsShortfall: nullableNumber(row.savings_shortfall),
+      meetsSavingsRatio: (row.meets_savings_ratio ?? null) as boolean | null,
     },
   };
+}
+
+function nullableNumber(value: number | null | undefined): number | null {
+  return value === null || value === undefined ? null : Number(value);
 }
 
 /** Step 2 preview: read-only, safe on every slider move, reserves nothing. */

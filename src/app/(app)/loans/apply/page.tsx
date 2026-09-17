@@ -102,8 +102,9 @@ export default async function ApplyPage({
 
   const { data: products } = await supabase
     .from("cooperative_loan_products")
-    .select("id, name, min_savings_ratio, max_tenure_months")
-    .eq("cooperative_id", chosen.cooperative_id);
+    .select("id, name, min_savings_ratio, max_tenure_months, interest_terms")
+    .eq("cooperative_id", chosen.cooperative_id)
+    .order("name");
 
   const capacity = await loadCapacity();
   const cooperative = Array.isArray(chosen.cooperatives)
@@ -120,6 +121,7 @@ export default async function ApplyPage({
       name: p.name,
       minSavingsRatio: Number(p.min_savings_ratio),
       maxTenureMonths: p.max_tenure_months,
+      interestTerms: p.interest_terms,
     })),
   };
 
