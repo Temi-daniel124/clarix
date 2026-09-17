@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Cooperative" };
 
 /**
- * Cooperative Detail — super-admin blueprint 5.2.
+ * Cooperative Detail (super-admin blueprint 5.2).
  *
  * Reads the same directory function the list does and picks one row, rather than adding a second
  * elevated function for a single record. The function is already scoped to platform admins and

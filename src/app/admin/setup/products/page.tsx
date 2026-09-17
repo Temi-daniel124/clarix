@@ -13,7 +13,7 @@ import { nextAdminStepHref } from "@/lib/admin-setup";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Loan products" };
 
-/** Loan Product & Policy Configuration — admin blueprint 2.3. */
+/** Loan Product & Policy Configuration (admin blueprint 2.3). */
 export default async function SetupProductsPage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;
@@ -31,7 +31,7 @@ export default async function SetupProductsPage() {
       <h1 className="type-page-title mt-8 text-text">What this cooperative lends</h1>
       <p className="type-body mt-3 max-w-[560px] text-text-secondary">
         Every eligibility check Clarix runs measures a loan against these rules. A cooperative can
-        have several products — an emergency loan and a development loan work differently, and
+        have several products: an emergency loan and a development loan work differently, and
         both belong here.
       </p>
 

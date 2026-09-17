@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Platform" };
 
 /**
- * Platform Dashboard — super-admin blueprint 4.1.
+ * Platform Dashboard (super-admin blueprint 4.1).
  *
  * The PWA install prompt lives here (blueprint 1.3), reusing the same mechanic every other role
  * uses. The blueprint notes plainly that installing matters less for this role, which is used

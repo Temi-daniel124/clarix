@@ -9,7 +9,7 @@ import { preferredRole } from "@/lib/staff";
 import { matchesEmployeeIdPattern } from "@/lib/onboarding";
 
 /**
- * Member management writes — admin blueprint 5.3 and 5.4.
+ * Member management writes (admin blueprint 5.3 and 5.4).
  *
  * Both go through the ordinary authenticated client, and both were checked against the policies
  * that already existed before anything new was written:
@@ -18,7 +18,7 @@ import { matchesEmployeeIdPattern } from "@/lib/onboarding";
  *     staff to write a ledger row against any membership at that cooperative. No new policy was
  *     needed for 5.4, and none was added.
  *   - `member_roster_entries_insert_staff` (migration 010) already covers adding a single member
- *     by hand, which is the same act as importing one — 5.3 is a one-row import, so it writes the
+ *     by hand, which is the same act as importing one: 5.3 is a one-row import, so it writes the
  *     same row the wizard does and the same trigger links it later.
  *
  * An officer may do both. These are the day-to-day recording tasks the officer role exists for,
@@ -170,7 +170,7 @@ const recordSchema = z.object({
  *
  * The membership's savings balance is not written here. Migration 012 recomputes it from the
  * ledger whenever a row lands, so the figure on screen can never drift from the entries behind
- * it — which is the whole reason a member would trust it.
+ * it, which is the whole reason a member would trust it.
  */
 export async function recordSavingsAction(
   _previous: MemberActionState,

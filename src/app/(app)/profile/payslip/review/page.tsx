@@ -12,12 +12,12 @@ export const metadata: Metadata = { title: "Check your salary" };
 type ExtractedFields = { gross?: number; net?: number; payPeriod?: string };
 
 /**
- * The review half of the scoped re-upload pair — blueprint 6.2, reusing 2.4.
+ * The review half of the scoped re-upload pair (blueprint 6.2), reusing 2.4.
  *
  * Identical to the onboarding review screen in everything that matters, because the human
  * checkpoint DECISIONS.md D006 requires is the same checkpoint whichever direction an employee
  * arrived from: nothing reaches `users.salary_gross` without someone reading it on screen.
- * What differs is only where it returns to, and the button's wording — this is a replacement,
+ * What differs is only where it returns to, and the button's wording. This is a replacement,
  * not a first entry.
  */
 export default async function ProfilePayslipReviewPage() {

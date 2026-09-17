@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Officers" };
 
 /**
- * Officer Management — admin blueprint 7.2.
+ * Officer Management (admin blueprint 7.2).
  *
  * Two things, in the order an admin needs them: the people who already act on this cooperative,
  * each opening into their own permission panel, and beneath that the invite form from setup 2.5.

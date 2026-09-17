@@ -11,7 +11,7 @@ import { springStandard } from "@/lib/motion";
 import type { LoanApplication } from "@/lib/supabase/admin-loans";
 
 /**
- * Loan Applications Queue — admin blueprint 6.1.
+ * Loan Applications Queue (admin blueprint 6.1).
  *
  * Oldest first, "since these are waiting". Each card carries the eligibility answer at a glance
  * rather than behind a tap, because the question that decides which application to open first is

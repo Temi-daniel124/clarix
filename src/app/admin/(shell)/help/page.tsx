@@ -14,16 +14,16 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Help" };
 
 /**
- * Help / Support — admin blueprint 8.4, officer blueprint 8.3.
+ * Help / Support (admin blueprint 8.4), officer blueprint 8.3.
  *
- * Same pattern, same contact form, same address — different questions, because the two roles do
+ * Same pattern, same contact form, same address, different questions, because the two roles do
  * not have the same ones. The officer blueprint names its categories outright ("Finding and
  * helping members", "Submitting and checking loan applications") and asks for something "sized
  * for a lean pilot rather than a full support desk", so an officer gets ten answers rather than
  * the admin's fifteen, and none of them is about a screen they cannot open.
  *
  * "Structurally identical to the Employee role's Help/Support screen", with the categories the
- * blueprint names for this role and the same contact form component beneath — one support path,
+ * blueprint names for this role and the same contact form component beneath. One support path,
  * one address (DECISIONS.md D026, still provisional until the domain question is settled).
  *
  * Every answer describes what an admin can actually do in Clarix today. Where the honest answer
@@ -37,7 +37,7 @@ const MEMBERS: Faq[] = [
   {
     question: "Why do some members show as “not on Clarix yet”?",
     answer:
-      "Because you imported them and they have not signed up. Your roster is what your cooperative knows; a Clarix account is what that person creates. The moment they sign up and enter the staff ID you imported, their membership and the savings balance you recorded appear on their side automatically — you do not have to do anything.",
+      "Because you imported them and they have not signed up. Your roster is what your cooperative knows; a Clarix account is what that person creates. The moment they sign up and enter the staff ID you imported, their membership and the savings balance you recorded appear on their side automatically. You do not have to do anything.",
   },
   {
     question: "How do I add one member without running the whole import again?",
@@ -47,7 +47,7 @@ const MEMBERS: Faq[] = [
   {
     question: "What does recording a contribution actually do?",
     answer:
-      "It writes an entry in that member's ledger and moves their balance to match. Clarix holds no money and transfers none — you are recording what payroll has already delivered, in a book the member can also see.",
+      "It writes an entry in that member's ledger and moves their balance to match. Clarix holds no money and transfers none. You are recording what payroll has already delivered, in a book the member can also see.",
   },
   {
     question: "Can I correct a figure I entered wrongly?",
@@ -70,7 +70,7 @@ const LOANS: Faq[] = [
   {
     question: "Can I approve a loan that exceeds the member's limit?",
     answer:
-      "Yes. Clarix informs, it does not gatekeep your cooperative's decisions. The button says “Approve anyway” and asks for a short reason, which is recorded in your audit log against that decision. The reason is required — the database refuses the approval without one.",
+      "Yes. Clarix informs, it does not gatekeep your cooperative's decisions. The button says “Approve anyway” and asks for a short reason, which is recorded in your audit log against that decision. The reason is required: the database refuses the approval without one.",
   },
   {
     question: "What happens when I reject an application?",
@@ -80,7 +80,7 @@ const LOANS: Faq[] = [
   {
     question: "An application disappeared before I decided. Why?",
     answer:
-      "A reservation holds capacity for a limited window — seven days by default — so that one cooperative cannot freeze a member's salary indefinitely by sitting on a request. Once it lapses, the capacity returns to the member. The queue flags anything close to lapsing in amber before that happens.",
+      "A reservation holds capacity for a limited window: seven days by default, so that one cooperative cannot freeze a member's salary indefinitely by sitting on a request. Once it lapses, the capacity returns to the member. The queue flags anything close to lapsing in amber before that happens.",
   },
   {
     question: "How do I mark a loan as fully repaid?",
@@ -98,7 +98,7 @@ const SETTINGS: Faq[] = [
   {
     question: "I invited an officer and nothing happened.",
     answer:
-      "The invitation is recorded and waiting, but Clarix cannot send the email yet — a verified sending domain is still outstanding. Tell them it is there; it becomes a real role the first time they sign in with that address.",
+      "The invitation is recorded and waiting, but Clarix cannot send the email yet: a verified sending domain is still outstanding. Tell them it is there; it becomes a real role the first time they sign in with that address.",
   },
   {
     question: "What is the difference between the title and the permissions?",
@@ -113,7 +113,7 @@ const SETTINGS: Faq[] = [
   {
     question: "What is reconciliation for?",
     answer:
-      "Recording what payroll actually deducted against what Clarix expected, month by month. A shortfall entered there is a shortfall somebody can act on, rather than one discovered a year later — and it builds the evidence of how much is going missing.",
+      "Recording what payroll actually deducted against what Clarix expected, month by month. A shortfall entered there is a shortfall somebody can act on, rather than one discovered a year later, and it builds the evidence of how much is going missing.",
   },
 ];
 
@@ -131,7 +131,7 @@ const OFFICER_MEMBERS: Faq[] = [
   {
     question: "What does recording a contribution actually do?",
     answer:
-      "It writes an entry in that member's ledger and moves their balance to match. Clarix holds no money and transfers none — you are recording what payroll has already delivered, in a book the member can also see. Their balance updates the moment you save.",
+      "It writes an entry in that member's ledger and moves their balance to match. Clarix holds no money and transfers none. You are recording what payroll has already delivered, in a book the member can also see. Their balance updates the moment you save.",
   },
   {
     question: "Can I correct a figure I entered wrongly?",
@@ -141,7 +141,7 @@ const OFFICER_MEMBERS: Faq[] = [
   {
     question: "Where does the capacity figure on a member's profile come from?",
     answer:
-      "FMC Abeokuta caps total salary deductions at 33.3% of gross pay. Clarix works that out from the member's confirmed payslip, subtracts every monthly repayment they already owe across all their cooperatives, and shows what is left. You see one combined total and never which other cooperative it came from — the member sees the same number on their own screen.",
+      "FMC Abeokuta caps total salary deductions at 33.3% of gross pay. Clarix works that out from the member's confirmed payslip, subtracts every monthly repayment they already owe across all their cooperatives, and shows what is left. You see one combined total and never which other cooperative it came from: the member sees the same number on their own screen.",
   },
 ];
 
@@ -149,7 +149,7 @@ const OFFICER_LOANS: Faq[] = [
   {
     question: "How do I start an application on a member's behalf?",
     answer:
-      "You cannot yet. Starting an application for somebody else is not built — members apply for themselves from their own account, and those applications arrive in the queue here. This is a missing screen rather than a permission you are lacking.",
+      "You cannot yet. Starting an application for somebody else is not built, members apply for themselves from their own account, and those applications arrive in the queue here. This is a missing screen rather than a permission you are lacking.",
   },
   {
     question: "Can I approve or reject an application?",
@@ -164,12 +164,12 @@ const OFFICER_LOANS: Faq[] = [
   {
     question: "An application vanished before anyone decided it. Why?",
     answer:
-      "A reservation holds capacity for a limited window — seven days by default — so one cooperative cannot freeze a member's salary indefinitely by sitting on a request. Once it lapses, the capacity returns to the member. The queue flags anything close to lapsing in amber first.",
+      "A reservation holds capacity for a limited window: seven days by default, so one cooperative cannot freeze a member's salary indefinitely by sitting on a request. Once it lapses, the capacity returns to the member. The queue flags anything close to lapsing in amber first.",
   },
   {
     question: "Why can I not see the audit log?",
     answer:
-      "It is the admin's record of what staff did, and reading it is theirs alone. Everything you record is written into it exactly as an admin's entries are — the log does not treat your work differently, it is only read by somebody else.",
+      "It is the admin's record of what staff did, and reading it is theirs alone. Everything you record is written into it exactly as an admin's entries are: the log does not treat your work differently, it is only read by somebody else.",
   },
 ];
 

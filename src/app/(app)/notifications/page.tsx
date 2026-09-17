@@ -9,20 +9,20 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Notifications" };
 
 /**
- * Notifications — blueprint 6.1.
+ * Notifications (blueprint 6.1).
  *
  * One place for anything that needs the employee's attention, newest first, each row leading
  * straight to the thing it concerns.
  *
  * **This screen is genuinely empty today, and that is expected** (DECISIONS.md D025). The table,
  * its RLS and this list are all real, but nothing in the employee blueprint writes a row: every
- * writer — a loan approved or rejected, a membership accepted, a new package published — belongs
+ * writer: a loan approved or rejected, a membership accepted, a new package published, belongs
  * to the cooperative admin/officer blueprint, which does not exist yet. No rows are seeded to
  * make the screen demonstrate better, for the same reason the dashboard's trend indicator said
  * "No history yet" rather than drawing an invented line.
  *
  * So the empty state below says what will appear here and why nothing has, rather than "no
- * data" — DESIGN_SYSTEM.md asks an empty state to explain what happens next.
+ * data", DESIGN_SYSTEM.md asks an empty state to explain what happens next.
  */
 export default async function NotificationsPage() {
   const notifications = await loadNotifications();
@@ -55,7 +55,7 @@ export default async function NotificationsPage() {
 
           <p className="type-secondary mx-auto mt-4 max-w-[440px] text-text-muted">
             Cooperatives cannot make those decisions inside Clarix yet, so there is nothing
-            waiting for you. This page stays empty until they can — it is not hiding anything.
+            waiting for you. This page stays empty until they can. It is not hiding anything.
           </p>
 
           <Button variant="outline" size="sm" className="mt-8" render={<Link href="/profile" />}>

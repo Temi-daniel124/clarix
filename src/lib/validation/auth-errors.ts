@@ -18,7 +18,7 @@ export function describeAuthError(error: AuthErrorLike): string {
 
   if (code === "over_email_send_rate_limit" || raw.includes("rate limit")) {
     return (
-      "We couldn't send your confirmation email just now — too many have gone out in the last " +
+      "We couldn't send your confirmation email just now, too many have gone out in the last " +
       "hour. Please wait a few minutes and try again."
     );
   }

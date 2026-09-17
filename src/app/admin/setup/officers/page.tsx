@@ -12,7 +12,7 @@ import { loadOfficers, loadPendingInvitations } from "@/lib/supabase/admin-data"
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Invite officers" };
 
-/** Invite Officers — admin blueprint 2.5, the last step before the dashboard. */
+/** Invite Officers (admin blueprint 2.5), the last step before the dashboard. */
 export default async function SetupOfficersPage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

@@ -1,10 +1,10 @@
--- Clarix pgTAP suite 012 — the access-grant exception.
+-- Clarix pgTAP suite 012: the access-grant exception.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
 -- SECURITY.md names five properties this flow must have and adds: "If this flow is ever
 -- implemented without every one of the above properties, it is a security bug, not a shortcut."
--- This suite is that sentence turned into assertions — no access without a grant, access that
+-- This suite is that sentence turned into assertions: no access without a grant, access that
 -- ends by itself, read-only while it lasts, the cooperative told the moment it is requested, and
 -- every record opened written down.
 
@@ -57,7 +57,7 @@ insert into public.savings_transactions (membership_id, type, amount)
 values ('ce111111-bbbb-1111-1111-111111111111', 'contribution', 50000);
 
 -- ---------------------------------------------------------------------------
--- No grant, no access. Not a hidden menu — a refusal.
+-- No grant, no access. Not a hidden menu: a refusal.
 -- ---------------------------------------------------------------------------
 
 set local role authenticated;

@@ -9,7 +9,7 @@ import { formatNaira } from "@/lib/format";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Record an entry" };
 
-/** Record Savings Contribution / Repayment — admin blueprint 5.4. */
+/** Record Savings Contribution / Repayment (admin blueprint 5.4). */
 export default async function RecordEntryPage({
   params,
   searchParams,

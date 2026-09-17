@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 
 /**
- * PWA manifest — docs/ARCHITECTURE.md § PWA behavior and DECISIONS.md D014 (a well-built PWA
+ * PWA manifest, docs/ARCHITECTURE.md § PWA behavior and DECISIONS.md D014 (a well-built PWA
  * is the entire mobile strategy; there is no native app).
  *
  * Theme and background colours are the DESIGN_SYSTEM.md tokens, so the splash screen and the
@@ -9,7 +9,7 @@ import type { MetadataRoute } from "next";
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Clarix — cross-cooperative deduction coordination",
+    name: "Clarix, cross-cooperative deduction coordination",
     short_name: "Clarix",
     description:
       "See every cooperative you belong to in one place, and know before you borrow whether a " +

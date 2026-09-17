@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 009 — the member-import permission (migration 017).
+-- Clarix pgTAP suite 009: the member-import permission (migration 017).
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -14,7 +14,7 @@ select plan(6);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures: one cooperative, its admin, and an officer allowed to do the day-to-day work but not
--- to write the roster — the most common shape this permission will actually take.
+-- to write the roster: the most common shape this permission will actually take.
 -- ---------------------------------------------------------------------------
 
 insert into auth.users (id, instance_id, aud, role, email, encrypted_password,
@@ -80,7 +80,7 @@ select throws_ok(
      values ('c9999999-9999-9999-9999-999999999999', '900002', 'Should Not Land') $$,
   '42501',
   null,
-  'but cannot add a member without the import permission — the hidden button is not the boundary'
+  'but cannot add a member without the import permission: the hidden button is not the boundary'
 );
 
 -- An update is the other half of the same act: re-importing a corrected sheet rewrites rows.

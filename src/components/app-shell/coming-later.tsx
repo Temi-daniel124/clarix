@@ -5,7 +5,7 @@ import type { LucideIcon } from "lucide-react";
  * blueprint.
  *
  * It exists so the shell has no dead tabs. It says plainly what will be here and does not
- * imitate the screen it is standing in for — a fake dashboard of zeroes would be worse than an
+ * imitate the screen it is standing in for: a fake dashboard of zeroes would be worse than an
  * honest sentence, and DESIGN_SYSTEM.md asks empty states to explain what happens next rather
  * than say "no data".
  */

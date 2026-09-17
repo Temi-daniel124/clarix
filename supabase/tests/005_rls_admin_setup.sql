@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 005 — staff invitations and the imported member roster.
+-- Clarix pgTAP suite 005, staff invitations and the imported member roster.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -112,7 +112,7 @@ select set_config(
   true
 );
 
--- The outsider now holds an INVITED role at Cooperative One, which is not access to anything —
+-- The outsider now holds an INVITED role at Cooperative One, which is not access to anything,
 -- and they are nothing at all at Cooperative Two.
 select throws_ok(
   $$ select * from public.invite_cooperative_staff('c2222222-2222-2222-2222-222222222222', 'anyone@example.test') $$,

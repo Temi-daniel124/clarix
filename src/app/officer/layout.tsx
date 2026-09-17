@@ -9,15 +9,15 @@ import { pendingInvites, preferredRole } from "@/lib/staff";
 export const dynamic = "force-dynamic";
 
 /**
- * Shell for the officer's first-run tour — officer blueprint 2.1.
+ * Shell for the officer's first-run tour (officer blueprint 2.1).
  *
  * The same quiet single column the admin setup sequence uses, and outside the app shell for the
  * same reason: a first-run screen wrapped in a navigation bar invites wandering off before it has
  * said the one thing it exists to say.
  *
  * The day-to-day officer screens are not here. An officer works in the same screens an admin
- * works in, behind the same policies, with a navigation that leaves out the configuration layer
- * — so this route group holds only what is genuinely the officer's own.
+ * works in, behind the same policies, with a navigation that leaves out the configuration layer.
+ * So this route group holds only what is genuinely the officer's own.
  */
 export default async function OfficerLayout({ children }: { children: ReactNode }) {
   const staff = await loadStaffContext();

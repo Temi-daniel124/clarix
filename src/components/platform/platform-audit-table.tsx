@@ -12,16 +12,16 @@ import {
 } from "@/lib/platform-audit";
 
 /**
- * Platform Audit Log — super-admin blueprint 7.1.
+ * Platform Audit Log (super-admin blueprint 7.1).
  *
- * Reverse-chronological, with a date range and an action filter, and — for anything that changed
- * a value — the old figure beside the new one. A log that only names its events is a log you can
+ * Reverse-chronological, with a date range and an action filter, and, for anything that changed
+ * a value: the old figure beside the new one. A log that only names its events is a log you can
  * count; one that carries the values is a log you can review, which is the point when the value
  * in question is the percentage every member's borrowing limit is computed from.
  *
  * Read-only, and not by restraint: `audit_log` has no insert, update or delete policy, so there
  * is no write path for this screen to withhold. What it does not carry is any cooperative's own
- * entries — migration 023 admits a platform admin to rows with no cooperative and nothing else,
+ * entries, migration 023 admits a platform admin to rows with no cooperative and nothing else,
  * which is the same boundary that keeps this role away from member data everywhere.
  */
 export function PlatformAuditTable({

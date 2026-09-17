@@ -1,4 +1,4 @@
--- Clarix — migration 022: remember who an invitation was addressed to, by name.
+-- Clarix, migration 022: remember who an invitation was addressed to, by name.
 --
 -- Super-admin blueprint 5.3 asks the create form for "the intended Admin's name and email
 -- address", and 5.1 lists "the name of its current Admin" as a directory column. Those two only
@@ -92,7 +92,7 @@ end;
 $fn$;
 
 comment on function public.platform_cooperative_directory() is
-  'One row per cooperative for super-admin blueprint 5.1 and 5.2: counts, status, the staff Admin''s name, and the operator''s own private note. Carries no member identity and no financial figure — reaching those stays with the access_grants flow (Part 7).';
+  'One row per cooperative for super-admin blueprint 5.1 and 5.2: counts, status, the staff Admin''s name, and the operator''s own private note. Carries no member identity and no financial figure, reaching those stays with the access_grants flow (Part 7).';
 
 revoke execute on function public.platform_cooperative_directory() from public, anon;
 grant execute on function public.platform_cooperative_directory() to authenticated;

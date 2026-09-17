@@ -1,17 +1,17 @@
-# PROJECT-STATE.md — Clarix
+# PROJECT-STATE.md, Clarix
 
-**Authority level: 3.** This is a **living document** — unlike every other file in `docs/`, it is
+**Authority level: 3.** This is a **living document**, unlike every other file in `docs/`, it is
 expected to change constantly. Update it at the end of every work session, and especially at
 every milestone (an account created, a repo initialized, a schema pushed, a feature accepted). An
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-13 (the access-grant flow, 7.2 and 7.3 — **every screen in every
+**Last updated:** 2026-09-13 (the access-grant flow, 7.2 and 7.3, **every screen in every
 blueprint is now built**).
 
 ## Phase
 
-**Planning complete. Infra live. The employee blueprint is complete — Parts 1 to 6, every
+**Planning complete. Infra live. The employee blueprint is complete, Parts 1 to 6, every
 screen built.** Landing page, auth, onboarding, the persistent navigation shell, the home-base
 screens, the loan side with the reservation transaction that is the product's core mechanism,
 and now the account cluster: Notifications, Profile / Settings and Help / Support. Every screen
@@ -23,7 +23,7 @@ no holding screens left anywhere in the employee app.
 app, and the branch is deleted. `clarix-3w5i.vercel.app` is served by a production deployment
 off `main` rather than a Preview.
 
-**The cooperative admin blueprint is complete — Parts 1 to 8, every screen built.** Parts 1 to 7
+**The cooperative admin blueprint is complete, Parts 1 to 8, every screen built.** Parts 1 to 7
 are on `main` already (pull requests #2 to #5, each merged after the pgTAP suites passed). Part 8
 adds the account cluster: Notifications, Profile / Settings, the Cooperative Audit Log, and
 Help / Support.
@@ -33,16 +33,16 @@ and the expiry sweep have no screen assigned yet, and Reports (7.6) is deferred 
 blueprint's own P1 marking rather than by omission.
 
 **The product now does something it has never done before.** A reservation can become an active
-loan or be turned down — the first transition past `reserved` anywhere in Clarix — and an
+loan or be turned down: the first transition past `reserved` anywhere in Clarix, and an
 approval writes a real notification to the member, the first row anything has ever put in
 `notifications` since D025 created the table. Walked end to end against the live project: an
 approval on the admin side, and the member's own Notifications screen showing it unread a moment
 later.
 
-**The cooperative officer blueprint is complete — Parts 1 to 8, every screen.** Most of that role
+**The cooperative officer blueprint is complete, Parts 1 to 8, every screen.** Most of that role
 was already standing: an officer works in the admin's own screens, and the difference is which
 navigation they get, which controls appear, and what the policies let them write (D029). Parts 1
-and 2 of that blueprint needed no new authentication code at all — a real officer invitation was
+and 2 of that blueprint needed no new authentication code at all: a real officer invitation was
 issued from the admin's own Officers screen, accepted through the existing invitation screen, and
 the account landed on its own home. What was genuinely new is the two-slide orientation tour, the
 officer's navigation, and Officer Home itself.
@@ -53,7 +53,7 @@ rather than in the interface: importing or adding a member takes a granted permi
 previously open to any active staff member, which was invisible while officers had no screens.
 
 **Every screen in all four blueprints is built.** Employee Parts 1 to 6, cooperative admin Parts
-1 to 8, cooperative officer Parts 1 to 8, and super admin Parts 1 to 9 — including the last and
+1 to 8, cooperative officer Parts 1 to 8, and super admin Parts 1 to 9, including the last and
 most sensitive of them, the access-grant flow that is the only way a platform operator can ever
 see a member's savings, loans or salary.
 
@@ -64,15 +64,15 @@ application on a member's behalf (officer 6.2) exists in no role.
 Earlier in the same day, Parts 1 to 5 landed: The platform shell, its
 one-screen orientation, the Platform Dashboard, and Cooperative Management in full: the
 directory, a deliberately shallow detail screen, and creating a cooperative with its admin's
-invitation in one action. Parts 6 to 9 — Policy, the platform Audit Log, Access Requests,
-Platform Admins and this role's own account cluster — are not built, and every one of them is a
+invitation in one action. Parts 6 to 9, Policy, the platform Audit Log, Access Requests,
+Platform Admins and this role's own account cluster, are not built, and every one of them is a
 navigation row that says so rather than a dead link.
 
 **All four blueprints' earlier parts are now built end to end.** What remains is not a part of
 the employee, admin or officer documents:
 loan completion and the expiry sweep have no screen assigned, Reports (7.6) is deferred by the
 blueprint's own P1 marking, and submitting a loan application on a member's behalf (officer 6.2)
-is a screen neither role has — it is named in the permission panel as unavailable rather than
+is a screen neither role has. It is named in the permission panel as unavailable rather than
 quietly dropped.
 
 Reports (7.6) stays deferred, and that is the blueprint's own call rather than a gap: it is
@@ -99,7 +99,7 @@ marked P1 there.
 
 ## What now exists (done in this session)
 
-- [x] **Next.js app scaffolded** — Next 16 (App Router, Turbopack), TypeScript, Tailwind v4,
+- [x] **Next.js app scaffolded**: Next 16 (App Router, Turbopack), TypeScript, Tailwind v4,
       `src/` layout, per `BUILD.md`. shadcn initialised on the **base-ui** base with
       `lucide` as its icon library, plus `motion`, `@supabase/ssr`, `zod`.
 - [x] **Design tokens built exactly to `DESIGN_SYSTEM.md`** in `src/app/globals.css`: the full
@@ -112,7 +112,7 @@ marked P1 there.
       sanctioned heavier spring), `MeterBar` (committed / requested / overshoot in a single
       track) and `CapacityMeter`, which composes them with the eligible / not-eligible verdict.
       Everything showing a number against a limit goes through these.
-- [x] **Eligibility arithmetic extracted and unit-tested** — `src/lib/eligibility.ts` implements
+- [x] **Eligibility arithmetic extracted and unit-tested**: `src/lib/eligibility.ts` implements
       Steps 1 and 2 of `docs/DATA-MODEL.md`; 19 Vitest cases pass (`npm test`), including the
       gross-vs-net divergence that motivates D007 and the `capOverride` path the loan
       application screen uses to preview against the cap the database computed.
@@ -121,27 +121,27 @@ marked P1 there.
       D009 reservation-ceiling trigger, 23 RLS policies, the signup trigger, and the seeded FMC
       Abeokuta organization row); `20260911141744_harden_function_privileges.sql`;
       `20260911144045_grant_table_privileges.sql`; `20260911211501_documents_and_payslip_storage.sql`.
-      Local filenames were reconciled to the versions the database recorded, per D023 — three
+      Local filenames were reconciled to the versions the database recorded, per D023, three
       had drifted, which is exactly the failure that rule exists to catch.
-- [x] **FMC Abeokuta seeded** — `deduction_basis='gross'`, `deduction_max_percentage=33.30`,
+- [x] **FMC Abeokuta seeded**: `deduction_basis='gross'`, `deduction_max_percentage=33.30`,
       `employee_id_pattern='^[0-9]{6}$'`, `reservation_expiry_days_default=7`.
 - [x] **RLS verified against the live project**, not just written: an officer of cooperative A
       sees only A's memberships, sees no B rows, cannot write into B, and `anon` reaches nothing.
       The same assertions are committed as pgTAP at
       `supabase/tests/001_rls_cooperative_isolation.sql` for CI.
-- [x] **Screens built** — Landing Page (blueprint 1.1), Sign Up (1.3), Log In (1.4) and the
+- [x] **Screens built**: Landing Page (blueprint 1.1), Sign Up (1.3), Log In (1.4) and the
       Verify Contact screen (1.5) that Sign Up leads to. Sign Up creates a real Supabase auth
       user; the matching `public.users` row is created by a database trigger (D021), verified
       end-to-end against the live project.
-- [x] **PWA** — manifest at `/manifest.webmanifest`, meter-ring app icons (standard and
+- [x] **PWA**: manifest at `/manifest.webmanifest`, meter-ring app icons (standard and
       maskable), an app-shell service worker that never caches a financial figure, an offline
       fallback screen, and the install-prompt banner (blueprint 1.2) mounted on the dashboard
       route only.
-- [x] **Three new decision entries** — D021 (credentials live in Supabase Auth), D022 (email-only
+- [x] **Three new decision entries**: D021 (credentials live in Supabase Auth), D022 (email-only
       authentication for v1) and D023 (agent-applied migrations go through the Supabase
       Management API; `supabase db push` remains the human path). `DEVELOPMENT-WORKFLOW.md` §2
       was rewritten to describe both paths rather than contradicting what actually happened.
-- [x] **Local environment configured** — `.env.local` holds the Supabase URL and anon key only.
+- [x] **Local environment configured**: `.env.local` holds the Supabase URL and anon key only.
       The service-role, Resend and AI keys are deliberately absent until a code path needs them.
 - [x] **Log In verified end to end in a real browser**: a confirmed test account signs in, the
       session cookie is issued, the dashboard server component reads that user's own `users` row
@@ -158,7 +158,7 @@ marked P1 there.
       button read as broken rather than unavailable; and the consent checkbox visually unticked
       itself after a failed submit while the form still considered consent given. Raw Supabase
       error text shown to employees was also replaced with plain-language wording.
-- [x] **PWA install prompt verified working** — it now captures `beforeinstallprompt` from an
+- [x] **PWA install prompt verified working**. It now captures `beforeinstallprompt` from an
       inline script in the document, because Chrome fires that event before React hydrates and a
       listener registered in a component effect missed it entirely. The banner appears on the
       dashboard, never on the landing page, and a dismissal is honoured for a week.
@@ -172,8 +172,8 @@ marked P1 there.
       component whose resting state is visible.
 
 - [x] **Landing page visual pass** (D017, P0). The nav is rebuilt from Watermelon's
-      navigation-5 — floating pill and mobile sheet kept, the four-column mega-menu cut as
-      clarix-design-system.md § 4 instructs — fixed at page level, glass over backdrop-blur, and
+      navigation-5, floating pill and mobile sheet kept, the four-column mega-menu cut as
+      clarix-design-system.md § 4 instructs, fixed at page level, glass over backdrop-blur, and
       carrying the product's first colour-scheme control (light / system / dark, applied before
       first paint so there is no flash). The hero is rebuilt from hero-32: its staggered
       entrance kept, its four bespoke springs collapsed into the one Clarix spring expressed as
@@ -207,7 +207,7 @@ marked P1 there.
 - [x] **Migration 005** adds `cooperative_loan_products` with RLS. Read access is deliberately
       wider than the rest of the schema and that is safe: a loan product describes what a
       cooperative offers, not what any member owes. Verified in the browser that the
-      `is_public` policy genuinely filters — a cooperative's unadvertised product does not
+      `is_public` policy genuinely filters: a cooperative's unadvertised product does not
       reach the profile screen, and no query filters for it.
 - [x] **The two apply paths are now one.** Onboarding 2.5 used to create memberships inline
       because 4.4 did not exist; it now links into the real profile with `?from=onboarding`, and
@@ -215,7 +215,7 @@ marked P1 there.
 
 - [x] **Navigation rebuilt to match the landing page.** The mobile bar is now a floating navy
       glass pill whose active tab widens to show its label, and the desktop sidebar is a navy
-      rail that collapses to icons. Both use the one standard spring — the rail's width
+      rail that collapses to icons. Both use the one standard spring: the rail's width
       transition uses `--ease-spring`, which is that same spring solved as a CSS easing, so
       there is still only one motion vocabulary in the product. The rail's state is remembered
       per device.
@@ -235,7 +235,7 @@ marked P1 there.
       four, since one card's span change moves every sibling), two more nested inside each card,
       and an AnimatePresence height animation fighting the parent's own resize. Up to twelve
       layout animations plus a height animation settled at slightly different moments, and that
-      compounding — not the spring — is what read as bouncy. Now there is one layout animation
+      compounding, not the spring, is what read as bouncy. Now there is one layout animation
       on the card, `layout="position"` on its content so text moves rather than stretches, and
       a plain fade for the detail. Measured over 52 frames: a single 2.9% overshoot, settled by
       470ms, no oscillation. The expanded card also rises to the top of the grid, because a
@@ -245,7 +245,7 @@ marked P1 there.
       concurrency rather than asserted.** `submit_loan_application` takes
       `pg_advisory_xact_lock` on a key derived from the caller, recomputes committed obligations
       across every cooperative *inside* that lock, and either reserves or reports the exact
-      shortfall — all in a single `supabase.rpc()` call, because the lock only serialises within
+      shortfall. All in a single `supabase.rpc()` call, because the lock only serialises within
       one transaction and sequential client calls would not have it. Two independent clients
       fired it simultaneously against the live project: the first reserved 50,000 a month against
       an 83,250 cap, the second queued on the lock and recomputed, and it saw 33,250 available,
@@ -259,8 +259,8 @@ marked P1 there.
       function is the only path to a reservation.
 - [x] **Migration 006** adds `loans` and `savings_transactions` with their RLS in the same file;
       **migration 007** adds the two functions. Local filenames were reconciled to the versions
-      the database recorded, per D023 — both had drifted, again.
-- [x] **Screens built** — Loan Application (5.5) with the live CapacityMeter readout that updates
+      the database recorded, per D023. Both had drifted, again.
+- [x] **Screens built**: Loan Application (5.5) with the live CapacityMeter readout that updates
       locally on every slider move and touches the database only on submit; Cooperative Detail
       (5.1); Savings Statement (5.2); Loan Detail (5.3); and the cross-cooperative Loans overview
       (5.4). Repayment progress is derived from ledger rows, never from elapsed time.
@@ -275,17 +275,17 @@ marked P1 there.
       parallel connections, records what the live parallel run proved, and asserts every figure
       that run produced, including a foreign `membership_id` being refused with `42501`.
 
-- [x] **Notifications (6.1)** — the `notifications` table with the narrowest RLS in the schema
+- [x] **Notifications (6.1)**: the `notifications` table with the narrowest RLS in the schema
       (`user_id = auth.uid()`, select and update only, and deliberately no insert policy at all),
       the reverse-chronological list with its small unread dot rather than a badge count, rows
       that lead to whatever they concern, and "Mark all as read" as a real UPDATE so a backlog
       cleared on a phone is cleared on a laptop too. **This screen is genuinely empty in
-      practice, and that is expected, not a bug** — every writer (loan approved or rejected,
+      practice, and that is expected, not a bug**, every writer (loan approved or rejected,
       membership accepted, new package published) belongs to the cooperative admin/officer
       blueprint, which does not exist yet. No rows were seeded and none were invented, the same
       call already made for the dashboard's trend indicator. The empty state says why it is
       empty rather than saying "no data".
-- [x] **Profile / Settings (6.2)** — an identity summary, then four sections that each save on
+- [x] **Profile / Settings (6.2)**: an identity summary, then four sections that each save on
       their own with their own small confirmation: Personal information, Salary information,
       Security, and Notification preferences. Log out sits apart at the bottom in a muted style,
       because signing out of a device is ordinary and reversible and the danger tone belongs to
@@ -296,13 +296,13 @@ marked P1 there.
       it was built once as a shared primitive rather than inline on this screen. The digits are
       absent from the DOM until revealed, so masking holds against a screen reader and a copy of
       the page source, not just against a glance.
-- [x] **Changing a password asks for the current one first.** Supabase does not require that — an
-      open session is enough — but an unattended unlocked phone is exactly the case where that
+- [x] **Changing a password asks for the current one first.** Supabase does not require that, an
+      open session is enough, but an unattended unlocked phone is exactly the case where that
       default is too generous for a product holding salary data.
 - [x] **Re-upload payslip** reopens the onboarding Upload/Review pair (2.3–2.4) scoped to
       updating: same components, no step indicator, inside the app shell, returning to Profile.
       The destination is an allowlist rather than a free-form redirect field.
-- [x] **Help / Support (6.3)** — thirteen FAQ answers under "About my savings and loans" and
+- [x] **Help / Support (6.3)**: thirteen FAQ answers under "About my savings and loans" and
       "About my account", each describing what Clarix actually does (the 33.3% cap, what
       "reserved" means, that Clarix informs rather than approves, what a cooperative can and
       cannot see), plus a short contact form. No filler, and where the honest answer is "not
@@ -314,8 +314,8 @@ marked P1 there.
       `docs/DEVELOPMENT-WORKFLOW.md`: D025 covers the notifications table and where preferences
       live, D026 settles the support address.
 - [x] **The desktop rail is now sticky and full-height.** It previously stretched to the page
-      rather than the viewport, so on a long screen its foot — including the appearance control
-      — sat below the fold. The blueprint calls this navigation persistent.
+      rather than the viewport, so on a long screen its foot, including the appearance control
+, sat below the fold. The blueprint calls this navigation persistent.
 
 - [x] **The pgTAP suites have executed.** Pull request #1 ran
       `.github/workflows/db-tests.yml` for the first time: `supabase start`, `supabase db reset`
@@ -349,18 +349,18 @@ marked P1 there.
       the existing-user path, `auth.users` still holds exactly one row, and its `updated_at` did
       not move.
 
-- [x] **Cooperative admin Part 1** — Accept Invite / Set Password (1.1) serving both arrivals the
+- [x] **Cooperative admin Part 1**: Accept Invite / Set Password (1.1) serving both arrivals the
       blueprint describes: a brand-new account setting a password from an invitation link, and an
       existing account told plainly that the role has been added to it. Log In (1.2) is the *same
-      screen and the same action* as the employee's, with one thing added — where it sends you.
+      screen and the same action* as the employee's, with one thing added, where it sends you.
       An active staff role goes to the cooperative, an unaccepted invitation goes to the screen
       that accepts it, everyone else to the employee dashboard. The PWA prompt (1.3) reuses the
       employee mechanic unchanged.
-- [x] **A new app shell, not a variant of the employee one** — Home, Members, Loans and a Manage
+- [x] **A new app shell, not a variant of the employee one**: Home, Members, Loans and a Manage
       cooperative section that expands into six sub-items on desktop and folds behind More on
       mobile. Same tokens, same spring, same navy glass, same collapsible rail; a different
       information architecture, in its own destination list.
-- [x] **Cooperative admin Part 2, the setup sequence** — an admin-specific three-slide welcome
+- [x] **Cooperative admin Part 2, the setup sequence**: an admin-specific three-slide welcome
       (2.1), the public profile with a live Discovery preview that renders from what is in the
       form rather than what was saved (2.2), loan products with progressive disclosure and an
       out-of-range warning drawn from what other cooperatives actually require (2.3), the roster
@@ -380,7 +380,7 @@ marked P1 there.
 - [x] **CI caught a real defect on suite 005's first run, and migration 011 fixes the cause.**
       Migration 010 activated an imported member from a BEFORE INSERT trigger. A policy's
       WITH CHECK is evaluated after BEFORE-triggers have had the row, so the trigger rewrote it
-      into exactly the shape `cooperative_memberships_insert_own_pending` refuses — an employee
+      into exactly the shape `cooperative_memberships_insert_own_pending` refuses: an employee
       on a roster could not join their own cooperative at all. The live check in the previous
       session missed it because the import inserts memberships as staff, where the staff policy
       permits any status; only the employee path fails, and only CI exercised it. Activation now
@@ -396,18 +396,18 @@ marked P1 there.
       invite API was the obvious path and would have made an invitation the first thing in this
       codebase holding a key that bypasses RLS on every table. Two narrow functions cost less.
 
-- [x] **Cooperative Dashboard (4.1)** — the same tap-to-expand KPI row as the employee
+- [x] **Cooperative Dashboard (4.1)**: the same tap-to-expand KPI row as the employee
       dashboard, through the same component, over four figures about the cooperative: members,
       savings held, active loans, and what is waiting on a decision. Then the section the
       blueprint calls this screen's defining feature, "Attention required", and a short read on
       the month. The setup checklist stays above it until setup is finished, which is what
       blueprint 2.1 promises anyone who skips it.
 - [x] **Attention required shows its honest empty state.** At the one cooperative this admin
-      oversees, no loan application has ever been submitted, so nothing is pending — and the
+      oversees, no loan application has ever been submitted, so nothing is pending, and the
       section says so rather than being seeded with a fake item to look populated. What it does
       surface is real: a member imported without a name. The same call as the trend indicator and
       Notifications.
-- [x] **Member management (5.1 to 5.4)** — the always-visible search and full list, including
+- [x] **Member management (5.1 to 5.4)**: the always-visible search and full list, including
       roster entries marked "Not on Clarix yet" and deliberately not dressed as links; the member
       profile with its four tabs; adding one person by hand, which writes the same roster row the
       import does; and recording a contribution, withdrawal or repayment.
@@ -417,11 +417,11 @@ marked P1 there.
       `capacity_for_membership()` is the staff door, which refuses unless the caller is active
       staff at that membership's cooperative. Member Profile renders it with the *same*
       CapacityMeter the member sees. Verified against live data: an 83,250 cap, 40,000 committed
-      across two cooperatives, 43,250 available — identical figures on either side.
+      across two cooperatives, 43,250 available, identical figures on either side.
 - [x] **`savings_transactions` needed no new policy**, which was checked before anything was
       written: `savings_transactions_insert_staff` from migration 006 already lets a
       cooperative's active staff record against any membership at that cooperative. Same outcome
-      as the `cooperative_staff_roles` check behind D027 — the policy was already right.
+      as the `cooperative_staff_roles` check behind D027: the policy was already right.
 - [x] **The savings balance now follows the ledger** (migration 012). It had been two independent
       facts kept in step by whoever wrote them; recording became routine with 5.4, so a balance
       that could disagree with the entries behind it stopped being tenable.
@@ -436,22 +436,22 @@ marked P1 there.
       withdrawals and repayments correctly, the pre-existing insert policy refusing a foreign
       membership, and an imported member arriving with their balance explained.
 
-- [x] **Loan management (6.1 to 6.4)** — the queue, oldest first, each card carrying the
+- [x] **Loan management (6.1 to 6.4)**: the queue, oldest first, each card carrying the
       eligibility answer at a glance and flagging a reservation close to lapsing; the review
       screen; the active-loans list with repayment progress drawn from money that actually
       arrived; and the admin's view of one loan. The review screen shows the *same* CapacityMeter
-      the member saw when they applied, because it is the same calculation — and beside it, the
+      the member saw when they applied, because it is the same calculation, and beside it, the
       cooperative's own savings-ratio rule, which is a separate question that can disagree with
       the first.
 - [x] **`audit_log` is built** (migration 014), which the blueprint had been quietly assuming
-      since 5.4. Scoped to what Part 6 needs — actor, action, target, old and new value, and the
-      note — with RLS that lets a cooperative's staff read their own entries and **no insert,
+      since 5.4. Scoped to what Part 6 needs, actor, action, target, old and new value, and the
+      note, with RLS that lets a cooperative's staff read their own entries and **no insert,
       update or delete policy at all**: it is written only by SECURITY DEFINER functions, so
       append-only means append-only. Reading it back (the Audit Log screen, 8.3) stays deferred,
       because recording a decision is urgent and reading the record is not.
 - [x] **The over-cap note is enforced by the database, not the form.** Approving beyond what is
-      left of a member's limit is allowed — Clarix informs, it never gatekeeps a cooperative's
-      own decision — but `decide_loan_application` refuses it without a reason, and the reason
+      left of a member's limit is allowed. Clarix informs, it never gatekeeps a cooperative's
+      own decision, but `decide_loan_application` refuses it without a reason, and the reason
       lands in `audit_log.note`. The outcome ruled out was asking for a justification and
       dropping it on the floor.
 - [x] **One function makes the whole decision** (migration 014): the loan's status, the audit
@@ -460,7 +460,7 @@ marked P1 there.
       set atomic. It also refuses an officer whose permissions do not include approving loans,
       which is the first time the preset from blueprint 2.5 actually bites.
 - [x] **Rejecting releases the hold immediately.** A rejected loan counts towards nothing, so the
-      member's capacity is free for their other requests the moment it commits — proven in pgTAP
+      member's capacity is free for their other requests the moment it commits, proven in pgTAP
       suite 007, which watches the figure fall and come back.
 - [x] **The Timed Undo runs before the write, not after it.** Approve or Reject starts an
       eight-second countdown during which nothing has reached the database and the member has
@@ -477,7 +477,7 @@ marked P1 there.
 - [x] **7.3 and 7.4 were already permanent, and that was verified rather than assumed.** Public
       Profile Editor and the ongoing Member Roster Import are real routes under Manage
       cooperative (`/admin/manage/profile` and `/admin/manage/import`), rendering the same
-      components the setup sequence uses without the wizard chrome — which is what the blueprint
+      components the setup sequence uses without the wizard chrome, which is what the blueprint
       describes: 2.2 and 2.4 are a first run through screens that live on as 7.3 and 7.4.
 - [x] **Officer Management (7.2) is now the fuller screen the blueprint describes**, not the
       lightweight invite form setup gave it: every officer opens into a panel with individual
@@ -491,7 +491,7 @@ marked P1 there.
       and behave as a label.
 - [x] **The change reached further than intended, and CI is what said so.** Three older
       assertions failed: an officer with an empty permissions object now sees nothing. That is
-      the change working, not a regression — but it also surfaced that the `users` policy reaches
+      the change working, not a regression, but it also surfaced that the `users` policy reaches
       members *through* `cooperative_memberships`, so gating that table also gates reading a
       member's own record. Coherent, and worth writing down: "can see the member list" means "can
       see member records". No assertion was weakened; each suite now gives its officer the
@@ -501,21 +501,21 @@ marked P1 there.
       check implicitly, per `docs/DATA-MODEL.md`, which is what stops an admin locking themselves
       out of their own cooperative with a mis-tap. No officer exists anywhere yet, so default-deny
       cost nobody their access.
-- [x] **Removal revokes rather than deletes**, keeping who granted the role and when — and it
+- [x] **Removal revokes rather than deletes**, keeping who granted the role and when, and it
       touches nothing else that person holds, because every relationship in Clarix is scoped to
       its own cooperative.
 - [x] **Monthly Reconciliation Entry (7.5)** with the period selector, the expected-versus-received
       table, per-row saves as each figure is entered, and an automatic shortfall flag. The
       shortfall is arithmetic where it is displayed, never a third stored number that could
       disagree. The expected figure IS stored, because what was expected at the time is the fact
-      worth keeping — a loan completed since must not rewrite last month's history.
+      worth keeping: a loan completed since must not rewrite last month's history.
 - [x] **Migration 016** adds `deduction_reconciliation`, specified in `docs/DATA-MODEL.md` from
       the start and never migrated until now, with RLS that lets a cooperative's staff read their
       own rows and the member read their own months. pgTAP suite 008 covers the permission
       boundary and the table.
 
 - [x] **Notifications (8.1) is the employee screen's component over the same query.** One
-      notifications table, one read-and-mark-read pattern, one unread dot — a second list UI would
+      notifications table, one read-and-mark-read pattern, one unread dot: a second list UI would
       have been two things to keep in step for no gain. Nothing writes an admin-facing
       notification yet and the screen says so rather than being padded: the only writer,
       `decide_loan_application`, notifies the member whose loan was decided. What an admin needs
@@ -523,24 +523,24 @@ marked P1 there.
 - [x] **Cooperative Audit Log (8.3) reads the real table**, scoped by policy to the admin's own
       cooperative, with the date-range, action and search filters the blueprint asks for. It
       already has something to show: the approval walked through last session. Entries carry the
-      old value beside the new — a log that only names its events is one you can count, not one
+      old value beside the new: a log that only names its events is one you can count, not one
       you can review.
 - [x] **Fields that only exist after an action are shown as context, not as changes.** Drawing
       `over_cap` or `available_before` with an arrow from nothing would invent a "before" that
       never existed. Caught by looking at the screen, and fixed in the reader rather than by
       changing what is recorded.
-- [x] **Profile / Settings (8.2)** — the same three sections as the employee's, through the same
+- [x] **Profile / Settings (8.2)**: the same three sections as the employee's, through the same
       components and the same server actions, deliberately without a salary section: being an
       admin does not imply being a beneficiary member anywhere. An account that also holds
       memberships gets the "Switch to my member view" link the blueprint describes, which is the
       multi-role model made visible rather than explained.
-- [x] **Help / Support (8.4)** — fifteen answers under Managing members, Loans and eligibility,
+- [x] **Help / Support (8.4)**: fifteen answers under Managing members, Loans and eligibility,
       and Cooperative settings, each describing what an admin can actually do today, plus the
       same contact form and the same provisional support address (D026). Where the honest answer
-      is that something is not built — correcting a recorded figure, marking a loan repaid — it
+      is that something is not built, correcting a recorded figure, marking a loan repaid, it
       says so.
 - [x] **The audit log's read scope is covered by pgTAP** (suite 007, extended): a cooperative's
-      own staff read their own entries, and nobody else reads any of it — including the member
+      own staff read their own entries, and nobody else reads any of it, including the member
       the entries are about, because this is a staff record.
 
 ### Cooperative officer, Parts 1 to 4
@@ -549,33 +549,33 @@ marked P1 there.
       assumed.** `staff_invitations` and `invite_cooperative_staff()` were written generically by
       role from the start. An officer invitation was issued from the admin's own Officers screen
       (7.2), and because that email already had an account the function took its existing-account
-      branch and wrote a `cooperative_staff_roles` row at `invited` — exactly the case the
+      branch and wrote a `cooperative_staff_roles` row at `invited`: exactly the case the
       officer blueprint describes. Signing in routed straight to the invitation screen, which
-      showed "Welcome back — this invitation is on your account", named the cooperative and the
+      showed "Welcome back. This invitation is on your account", named the cooperative and the
       title the admin had set, and activated the role on one tap. The only change was where it
       leads afterwards: a brand-new officer account now goes to the tour, an existing one goes
       straight to Officer Home, per blueprint 1.1.
-- [x] **Welcome to Cooperative Officer (2.1)** at `/officer/welcome` — two slides rather than
+- [x] **Welcome to Cooperative Officer (2.1)** at `/officer/welcome`: two slides rather than
       three, no "skip setup" language because there is no setup to skip. Slide one is assembled
       per person rather than per role: it lists what this officer has actually been granted, and
       says so in plain words. An officer granted nothing is told that plainly instead of being
       shown an empty promise.
-- [x] **The officer's navigation (Part 3)** — Home, Members, Loans, and the account cluster, with
+- [x] **The officer's navigation (Part 3)**: Home, Members, Loans, and the account cluster, with
       no "Manage cooperative" section and no audit log anywhere. "Import members" appears as a
       direct row only when `can_import_members` is granted. Verified as a real officer: the
       sidebar carried three primary rows plus Notifications, Profile and Help, More showed only
       the Account group, and the import row appeared the moment the permission was switched on.
-- [x] **Officer Home (4.1)** — a greeting, then a persistent search field above everything else,
+- [x] **Officer Home (4.1)**: a greeting, then a persistent search field above everything else,
       because finding a member fast is this role's most common single action. Below it a pending
       task list that adapts: an officer who can decide loans sees the applications waiting, one
       who cannot is told what would appear there and why nothing does. Then a light "Today"
-      strip — members this officer recorded against today, applications the cooperative received
-      today — rather than the admin's cooperative-wide figures.
+      strip, members this officer recorded against today, applications the cooperative received
+      today, rather than the admin's cooperative-wide figures.
 - [x] **Every screen an officer may not use turns them away, not just the menu.** `/admin/manage/*`
       and `/admin/audit` redirect to the officer's home, and `/admin/members/new` to the member
       list. Checked by requesting each URL directly while signed in as an officer.
 - [x] **Two boundaries the blueprint exposed are now in the database.** Migration 017 makes
-      writing a roster entry — importing, or adding one member — take `can_import_members`, which
+      writing a roster entry, importing, or adding one member, take `can_import_members`, which
       had been available to any active staff member. Migration 018 makes the audit log readable by
       that cooperative's admin alone, which blueprint 5.4 states outright. pgTAP suite 009 covers
       the first, and suite 007 was extended for the second.
@@ -594,7 +594,7 @@ marked P1 there.
 - [x] **Every one of those screens also turns an officer away by URL**, and the database refuses
       underneath. Probed as the real officer account: an import raised `42501`, and both
       `decide_loan_application` calls were refused with the same sentence the screen shows, while
-      the application itself stayed readable — which is correct, since reading is what the
+      the application itself stayed readable, which is correct, since reading is what the
       blueprint gives every officer who can see members.
 - [x] **Recording a repayment shares one permission with recording a contribution**, which was
       checked rather than assumed. `savings_transactions_insert_staff` never looks at the row's
@@ -603,22 +603,22 @@ marked P1 there.
       not move the savings balance.
 - [x] **An officer's decision was taken end to end, with the permission granted through the real
       Officer Management screen and set back afterwards.** The approval moved the loan to active,
-      wrote the member's notification, and wrote an audit row naming the officer as the actor —
+      wrote the member's notification, and wrote an audit row naming the officer as the actor,
       then that same officer could not read the entry they had just caused, while the admin could.
       That is officer blueprint 5.4 ("written regardless of which role recorded it, even though
       only an Admin can later view that log") demonstrated rather than asserted.
-- [x] **Notifications (8.1) needed no new code** — the same table, query and component every role
+- [x] **Notifications (8.1) needed no new code**: the same table, query and component every role
       shares, scoped by who a notification is addressed to rather than by any role. Only the empty
       state is role-aware, because the events an officer is waiting for are different ones.
 - [x] **Profile (8.2) gained the one genuinely new piece:** a read-only "Your role at
       [Cooperative]" panel carrying the title the admin set and a plain-language list of what is
-      currently granted. Nothing ungranted is shown crossed out or greyed — it is simply absent,
+      currently granted. Nothing ungranted is shown crossed out or greyed. It is simply absent,
       and a line underneath says who decides. Reviewed in both themes.
-- [x] **Help (8.3)** — ten answers under the two categories the officer blueprint names, none of
+- [x] **Help (8.3)**: ten answers under the two categories the officer blueprint names, none of
       them about a screen this role cannot open, and each honest where the answer is that
       something is not built. Same contact form, same provisional support address (D026).
 - [x] **A real bug was found and fixed while verifying this.** `cooperative_staff_roles` has two
-      foreign keys into `users` — `user_id` and `granted_by` — so the unqualified `users(...)`
+      foreign keys into `users`, `user_id` and `granted_by`, so the unqualified `users(...)`
       embed the officer queries used was ambiguous and PostgREST refused the whole request. The
       refusal arrived as an error with null data, which `data ?? []` turned into "nobody works on
       this cooperative yet": a wrong answer that looked exactly like a right one, and which had
@@ -641,7 +641,7 @@ marked P1 there.
       being staff there, and another person's `users` row takes staffing a cooperative they belong
       to. Member counts, officer counts, the admin's name and the pending-invite count would all
       have come back empty. Fixed with two aggregate-only functions rather than a policy exception
-      — see below.
+, see below.
 
 **Built this session:**
 
@@ -650,21 +650,21 @@ marked P1 there.
       platform is this account's primary purpose "even if this account also happens to hold an
       ordinary cooperative membership or staff role somewhere". The PWA prompt (1.3) is the same
       component every other role uses.
-- [x] **Welcome (2.1)** — one screen, one Continue button, no slides, because this role belongs to
+- [x] **Welcome (2.1)**. One screen, one Continue button, no slides, because this role belongs to
       the operator "who already understands the product deeply". Its only job is the boundary: this
       account manages cooperatives, not their members' money.
 - [x] **The navigation (Part 3) is flat, and the flatness is the design.** Eight direct rows, no
       "Manage" submenu and no collapsible rail, per the blueprint's own reasoning that this role's
       scope "is small enough that everything fits as a direct, visible entry". Nothing in it
       reaches a member's savings, loans or salary.
-- [x] **Platform Dashboard (4.1)** — the same tap-to-expand KPI row every dashboard uses, over four
+- [x] **Platform Dashboard (4.1)**: the same tap-to-expand KPI row every dashboard uses, over four
       counts rather than money. The employee figure is organization-wide headcount and can only
       ever be a count: the function behind it returns a single integer, so there is no version of
       that card that becomes a directory of people. "Attention required" watches invitations and
       says plainly that access requests are not built rather than implying it watches them.
 - [x] **Cooperative Directory (5.1), Detail (5.2) and Create (5.3)**, walked end to end against the
       live project: a cooperative was created, its note stored, its admin invitation issued, and it
-      was deactivated and reactivated through the Timed Undo — which runs before the write, so the
+      was deactivated and reactivated through the Timed Undo, which runs before the write, so the
       undo genuinely undoes.
 - [x] **5.2 has no view-members or view-loans action, and that absence is load-bearing.** Verified
       by eye rather than assumed: the screen carries counts and a status, and there is nothing on
@@ -673,11 +673,11 @@ marked P1 there.
 - [x] **Creating a cooperative reuses the real invitation path.** `invite_cooperative_staff()`
       already did exactly what 5.3 needs; what it refused was the caller, since a Super Admin
       creating a brand-new cooperative can never be its active admin. Migration 019 widened that
-      one check to admit a platform admin — one function, two legitimate callers, rather than a
+      one check to admit a platform admin. One function, two legitimate callers, rather than a
       second invitation path for D027 to drift away from.
 - [x] **Two fields the blueprint asks for had nowhere to live, and neither was quietly dropped.**
       The operator's internal note now has its own platform-admin-only table (migration 021, after
-      migration 020 put it on `cooperatives` and that proved unscopable — the cooperatives row is
+      migration 020 put it on `cooperatives` and that proved unscopable: the cooperatives row is
       readable by every signed-in user and RLS cannot hide one column). The intended admin's name
       is kept on the invitation (migration 022), so a freshly created cooperative reads as
       somebody's in the directory rather than nobody's while the invitation sits unaccepted.
@@ -690,12 +690,12 @@ marked P1 there.
 
 **A correction to the entry above, since the previous session's checklist was incomplete:**
 Notifications (9.1) and Profile (9.2) were written as **working screens** in that session, not
-routing placeholders — 9.1 over the shared notification loader and list component, 9.2 over the
+routing placeholders: 9.1 over the shared notification loader and list component, 9.2 over the
 same three forms and server actions every role's Profile uses. The checklist simply failed to
 mention them. Both have since gained what they were missing: 9.2 now carries the
 "switch to my other view" link the blueprint asks for when the account holds another relationship.
 
-- [x] **Deduction Policy Settings (6.1)** — a form over four organization columns that were
+- [x] **Deduction Policy Settings (6.1)**: a form over four organization columns that were
       already seeded and had never been editable by anything. `organizations_update_platform_admin`
       has permitted this since migration 001; no screen had ever offered it.
 - [x] **The confirmation on 6.1 is a step, not a toast.** Changing the basis or the percentage
@@ -704,7 +704,7 @@ mention them. Both have since gained what they were missing: 9.2 now carries the
       the write without the confirmation flag, so the friction cannot be posted around either.
       Walked end to end: the cap was moved to 30%, confirmed, verified in the database, and
       restored to 33.3% the same way.
-- [x] **Platform Audit Log (7.1)** — built this session because it turned out not to depend on
+- [x] **Platform Audit Log (7.1)**: built this session because it turned out not to depend on
       anything Part 7 introduces. `audit_log.cooperative_id` has been nullable since migration 014,
       so a platform event was always storable; what was missing was a policy that could read one
       and a function that could write one.
@@ -714,7 +714,7 @@ mention them. Both have since gained what they were missing: 9.2 now carries the
       Verified live: the operator sees the platform's events and zero of the cooperative's.
 - [x] **Cooperative creation, activation, deactivation and invite reissues now record themselves**
       in that log, which is what 7.1 lists as platform events.
-- [x] **Manage Platform Admins (8.1)** — a list, an add-by-email action, and removal through the
+- [x] **Manage Platform Admins (8.1)**: a list, an add-by-email action, and removal through the
       Timed Undo pattern. Deliberately **not** `invite_cooperative_staff()`: a platform admin is not
       cooperative staff, lives in a different table, and is scoped to no cooperative.
 - [x] **The self-removal safeguard is enforced in the database.** `revoke_platform_admin()` raises
@@ -728,7 +728,7 @@ mention them. Both have since gained what they were missing: 9.2 now carries the
 - [x] **pgTAP suite 011** pins the log separation, the grant and revoke round trip, the honest
       refusal when an address has no Clarix account, and the self-removal safeguard.
 
-### Super Admin, Parts 7.2 and 7.3 — the access-grant flow
+### Super Admin, Parts 7.2 and 7.3: the access-grant flow
 
 The last screen in any blueprint, and the only mechanism in Clarix that deliberately crosses the
 "no standing sight of member data" line. SECURITY.md names five properties it must have and adds
@@ -737,7 +737,7 @@ verified against the live project from both directions.
 
 - [x] **The self-activation question was settled by the data model, not guessed.** `access_grants`
       has `requested_by`, `granted_at`, `expires_at` and `revoked_at` and **no approver column at
-      all** — a schema describing a flow with no approver. D030 records that reasoning, the
+      all**: a schema describing a flow with no approver. D030 records that reasoning, the
       one-hour delay, the 24-hour window, and why an approval gate would fail in exactly the case
       this mechanism exists for.
 - [x] **No access without a live grant, enforced by RLS rather than by an absent menu.** Probed as
@@ -758,7 +758,7 @@ verified against the live project from both directions.
       the past: the rows became unreadable immediately and the Elevated Access View redirected back
       to Access Requests on the next request, with nothing having run.
 - [x] **Every record opened is logged into the cooperative's own audit log**, where its admin reads
-      it — not the platform's, where only the person who looked could. Verified: the cooperative
+      it, not the platform's, where only the person who looked could. Verified: the cooperative
       admin sees the `elevated_view` row, the reason, the grant and the notification.
 - [x] **The Elevated Access View is the real Member Profile** under a sticky, non-dismissible amber
       banner carrying the reason and a live countdown. Reviewed in both themes. It reuses
@@ -766,11 +766,145 @@ verified against the live project from both directions.
       operator sees cannot drift from what the cooperative sees.
 - [x] **One copy bug found and fixed while reviewing.** A lapsed grant that had named one member
       described itself as covering the whole cooperative, because the wording keyed off the
-      member's *name* — which stops being readable the moment the grant lapses. It now keys off the
+      member's *name*, which stops being readable the moment the grant lapses. It now keys off the
       grant's own column and says "one member at …" when it cannot name them.
 - [x] **pgTAP suite 012** covers all four properties asked for: no access without a grant, access
       ending at read time with no sweep, the granular per-record logging writing rows, and the
       cooperative admin's notification firing on submission.
+
+### Auth gaps closed: password reset and the privacy notice
+
+- [x] **`/reset-password`**, both halves: ask for a link, and the screen the link lands on. Thin
+      over Supabase's own `resetPasswordForEmail` and `updateUser`, because Clarix never holds a
+      password of its own (D021).
+- [x] **The request screen never says whether an address has an account.** It reports the same
+      thing either way, for the same reason the sign-in screen refuses to distinguish a wrong
+      password from an unknown address: a form that answered honestly would tell anybody who asked
+      which of a cooperative's staff use Clarix.
+- [x] **A real hole was found and closed while testing it.** The first build of the confirm screen
+      accepted *any* live session, so anybody already signed in could set a new password without
+      knowing the current one, quietly undoing the check the Profile security section makes on
+      purpose. I hit this by accident, on a session left over from an earlier test. The token
+      exchange now also writes a short-lived, http-only, single-use ticket cookie, and the server
+      action refuses without it. Somebody who is merely signed in is sent to Profile, where
+      changing a password asks for the old one. Verified: `/reset-password/choose` redirects a
+      signed-in visitor to `/profile`.
+- [x] **The flow cannot complete end to end yet, and it is not this code's fault.** Supabase's
+      `/auth/v1/recover` returns `500 Error sending recovery email` for any address but the Resend
+      account owner's, and rolls the token back: the same blocker that already stops self-service
+      signup. Probed directly to confirm it rather than inferring it from an empty token column.
+      The screen says so plainly instead of implying a message is on its way.
+- [x] **Change password, while signed in, reconfirmed end to end.** Changed the platform operator's
+      password through Profile, verified the new hash in the database, and changed it back the same
+      way. The current-password check is real: it re-authenticates before allowing the change.
+- [x] **`/privacy`**: a complete NDPA 2023 notice written against what this system actually does.
+      Names consent at signup as the lawful basis, lists what is collected and why, describes the
+      per-cooperative isolation, the aggregate-only cross-cooperative figure and the logged
+      access-grant model, and gives the D026 support address as the contact route. Where Clarix
+      does not do something it says so: there is no automatic deletion on a schedule, and the
+      notice admits that rather than describing a retention policy nobody implemented.
+
+### The payslip fraud gap, closed (D031)
+
+The salary figure every eligibility calculation in Clarix rests on is **self-reported**: a member
+uploads a payslip, confirms the numbers on a review screen, and those numbers become the deduction
+cap every cooperative then lends against. Migration 004 scoped payslips to the uploading employee
+and nobody else, which was right for what it considered and left nobody able to compare the
+confirmation with the document. A member who overstated their gross pay raised their own cap, and
+the cooperative approving money against it had no way to notice.
+
+- [x] **Scoped to the review, not granted generally.** Three conditions hold at once or the window
+      is shut: an application still awaiting decision at that cooperative, the permission to decide
+      it, and the document being the salary evidence rather than any file the member ever uploaded.
+      All three live in one function, `payslip_under_review()`, so there is one definition rather
+      than two that could drift.
+- [x] **Both halves, row and file.** A policy on `documents` and another on `storage.objects`. A
+      reviewer who could see the metadata but not open the file would be the worst of both.
+- [x] **Read-only.** No insert, update or delete policy for a reviewer anywhere. pgTAP asserts that
+      an attempted write leaves the document untouched.
+- [x] **The window closes by itself**, with nothing having to run: expiry is arithmetic against
+      `now()`, as everywhere else (D024).
+- [x] **Verified live, in four directions.** The reviewing admin sees the document while an
+      application waits; the platform operator sees nothing at the same moment; the same admin sees
+      nothing once the application is decided; and in the browser the evidence panel is present
+      during review and gone afterwards. A signed URL was issued and lasts sixty seconds.
+- [x] **pgTAP suite 002 was rewritten rather than widened.** It keeps its original assertion, that
+      an officer who may see members cannot reach a payslip, because D031 deliberately leaves that
+      true. What it gains is the shape of the doorway: the permission alone opens nothing, both
+      together open it, the read is read-only, and the decision closes it.
+- [x] **The reviewer sees the confirmed figures beside the document**, which is the point of the
+      panel: the comparison, not the link.
+- [ ] **Periodic re-verification of an aging payslip is explicitly deferred** (D031). A salary
+      confirmed two years ago is weak evidence regardless of who can read it, and prompting for a
+      fresh one on a schedule is a real control worth having later. It is not what closed this gap.
+- [ ] **Automatic extraction and machine verification stay P1-deferred** where `docs/MVP-SCOPE.md`
+      already puts them. D031 deliberately does not touch them.
+
+### Two things checked rather than assumed
+
+**The roster import against a real cooperative's spreadsheet.** Extra columns were never the
+problem: the importer maps by header name and reads only the columns it mapped, so a five-column
+or thirteen-column sheet works and everything else is ignored. Ragged rows, where trailing blanks
+leave a row shorter than the header, are also safe.
+
+What the check did find was worse than a crash, because it was silent:
+
+- [x] **"Loan Balance" was being imported as the savings balance** whenever it sat to the left of
+      the savings column and no exact synonym matched. The old matcher took the leftmost header
+      containing any synonym, and "loan balance" contains "balance". Every member's debt would have
+      been recorded as their savings.
+- [x] **"Next of Kin Name" was being imported as the member's name**, for the same reason.
+- [x] **Fixed two ways at once.** A disqualifier list means a header containing "loan",
+      "outstanding", "repayment", "kin", "bank" and so on is never *guessed* at for the field it
+      would corrupt, though an admin can still choose it by hand. And among the headers that
+      survive, the **longest** matching synonym wins rather than the leftmost column, so
+      "Contributions To Date" beats "Loan Balance" wherever the two sit relative to each other.
+- [x] **Both are now permanent regression tests** in `src/lib/roster/mapping.test.ts`, alongside the
+      five- and thirteen-column sheets and the ragged-row case. 27 tests pass.
+
+**The deduction policy propagates instantly, with nothing cached or duplicated.** There is exactly
+one copy of these values, the `organizations` row. Every reader joins it at query time:
+`capacity_core()` and both halves of `submit_loan_application()` in SQL, and the employee
+dashboard's loader in TypeScript. Nothing denormalises it onto a user, a cooperative or a loan, and
+there is no `unstable_cache`, no fetch revalidation and no route cache in front of it: the screens
+that show eligibility are all `force-dynamic`.
+
+- [x] **Verified live, twice.** In SQL, `capacity_for_user()` for a real member returned a cap of
+      ₦83,250 at 33.3%, ₦62,500 the moment the figure changed to 25%, and ₦83,250 again on the way
+      back. Through the product, the cap was changed to 25% on the Policy screen with its
+      confirmation step, and the member's own dashboard showed available capacity fall from ₦34,917
+      to ₦14,167 on the next load; it was then restored to 33.3% through the same screen.
+- [x] **A second organization's policy is independent by construction**, and needs no new code:
+      `capacity_core()` reaches the policy through `users.organization_id`, so a member is always
+      measured against their own organization's basis and cap and never another's. Only one
+      organization exists today (FMC Abeokuta, D019), so this is a statement about the scoping
+      rather than an observation of two live rows.
+
+### The em dash sweep
+
+Every em dash in the repository is gone, 1,649 of them across 264 files, replaced one at a time by
+the punctuation the sentence actually wanted rather than by a single blind substitution. The
+breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15 in CSS.
+
+- [x] **Replaced by meaning, not by rule.** A dash before a conjunction or a subordinator became a
+      comma; one before a new independent clause became a full stop and a capital; one introducing
+      a definition or a list became a colon; a mid-sentence aside became a pair of commas or
+      parentheses. Citations of the form `— admin blueprint 5.2` became `(admin blueprint 5.2)`.
+- [x] **UI copy first.** Fourteen dashes were standing in for a missing value on screen, where no
+      punctuation is the right answer at all: those became words a member can read, "Not set",
+      "Not scheduled", "None due", "Not known", "Not on file", "Not on Clarix", "Not entered" and
+      "Not read", and one empty amount field became `placeholder="0.00"`.
+- [x] **Nothing but prose changed in SQL.** The `.sql` pass touched comments and comment strings
+      only. No DDL, no policy expression and no function body differs.
+- [x] **The mechanical pass was checked by hand afterwards.** Rewriting line by line mangles a
+      sentence that wraps across two lines, and it did: six of those, a possessive, two accidental
+      double colons and thirty-one lines left with trailing whitespace were all repaired
+      individually.
+- [x] **One block is deliberately left alone.** `CLAUDE.md`'s `nextjs-agent-rules` section is
+      written by `next dev` on every run, so editing it only produces a dirty tree. It keeps its
+      dashes, and that is the only place any remain.
+- [x] **Verified.** `tsc --noEmit`, `eslint`, `next build` and all 46 unit tests pass, and a
+      repository-wide search for the character returns nothing outside that managed block.
 
 ## What does not exist yet
 
@@ -785,14 +919,14 @@ verified against the live project from both directions.
       confirmed** by the production round trip described above, rather than by reading the values
       back, which Secret-type entries do not allow.
 - [ ] **Automatic payslip extraction.** MVP-SCOPE.md puts this at P1, and it is not built, so
-      every account currently lands on the review screen with the fields blank and editable —
+      every account currently lands on the review screen with the fields blank and editable,
       which is the degradation path blueprint 2.4 already specifies for a failed read. The
       upload itself is real, and the processing steps name only work that genuinely happens
       rather than inventing a "reading your payslip" stage for something nothing is doing.
       Building it means adding a PDF text-extraction dependency, which needs a TOOLING-POLICY.md
       check and a SECURITY.md entry first, because it would see payslip files in cleartext.
 - [ ] **A cooperative-admin invitation for `coop.admin@fmcabeokuta.org.ng`**, holding an
-      `invited` admin role at Staff Multipurpose Cooperative (test data) — the one seeded
+      `invited` admin role at Staff Multipurpose Cooperative (test data): the one seeded
       cooperative with nothing set up, so the setup sequence has somewhere real to run. **Delete
       it with the rest of the test data before go-live.**
 
@@ -804,7 +938,7 @@ verified against the live project from both directions.
 - [ ] **Four roster entries and one staff invitation at that same cooperative**, written through
       the real screens while reviewing them: staff IDs 204817, 300121, 300122 and 300123, of
       which 204817 matched the pilot tester and became an active membership carrying the imported
-      145,000 — the roster-linking trigger doing its job, and also why that account now shows a
+      145,000: the roster-linking trigger doing its job, and also why that account now shows a
       third cooperative. The invitation to `test.officer@fmcabeokuta.org.ng` is still unclaimed,
       and cannot be claimed: creating that account needs either a sending domain or one permitted
       `insert` into `auth.users`, neither of which exists yet. All of it goes before go-live with
@@ -829,8 +963,8 @@ verified against the live project from both directions.
 - [ ] **A test Super Admin, `super.admin@fmcabeokuta.org.ng`**, seeded directly into
       `auth.users` and `platform_admins` because blueprint 1.1 describes the first one as a
       one-time database entry and there is no screen that could create it. Its password is
-      `ClarixTest-Platform-2026`. **This is provisional on purpose** — the real operator account
-      is a deliberate decision to be made closer to go-live, not guessed at now — so delete this
+      `ClarixTest-Platform-2026`. **This is provisional on purpose**: the real operator account
+      is a deliberate decision to be made closer to go-live, not guessed at now, so delete this
       one with the rest of the test data.
 
       Worth knowing for the next account created this way: GoTrue refuses to sign in a row whose
@@ -843,8 +977,8 @@ verified against the live project from both directions.
       invitation to `nursing.admin@fmcabeokuta.org.ng` in the name of "Folake Adeniyi". It sits
       inactive, which is correct for a cooperative whose admin has not accepted. Goes with the
       rest of the test data.
-- [ ] **Two access grants against Staff Multipurpose Cooperative (test data)**, both now ended —
-      one revoked, one expired — plus the notifications they sent that cooperative's admin, the
+- [ ] **Two access grants against Staff Multipurpose Cooperative (test data)**, both now ended,
+      one revoked, one expired, plus the notifications they sent that cooperative's admin, the
       platform events recording them, and two `elevated_view` rows in that cooperative's own audit
       log. They stay: a record of exceptions you can tidy away is not a record. They go with the
       rest of the test data before go-live.
@@ -858,7 +992,7 @@ verified against the live project from both directions.
       cooperatives carrying a "(test data)" suffix so they cannot be mistaken for real FMC
       Abeokuta cooperatives; nine loan products across them, six public; the pilot tester holding
       an active membership at two of them plus one pending application; four loans against those
-      memberships — an active 360,000 over 24 months, a reserved 180,000 over 12 months, a
+      memberships: an active 360,000 over 24 months, a reserved 180,000 over 12 months, a
       completed 120,000, and a 120,000 reservation created through the application screen during
       verification; and 26 `savings_transactions` rows backing 330,000 of savings and the
       repayment history the active loan's progress is computed from. **One of those reservations
@@ -871,14 +1005,16 @@ verified against the live project from both directions.
       (D025). Expected, and stated on the screen itself.
 - [ ] **The Help contact form cannot deliver yet.** It posts to Resend's API against
       `RESEND_API_KEY`, which is not provisioned, and even once it is, Resend will only deliver
-      to the account owner until a sending domain is verified — the same blocker holding up
+      to the account owner until a sending domain is verified: the same blocker holding up
       signup mail. Until then the form fails honestly and the screen shows `support@clarix.ng` as
       a mailto link, which is the path that works. The address itself is provisional (D026) and
       needs the domain question settled.
 - [ ] `src/app/dashboard/page.tsx` is a **deliberate placeholder**, not blueprint 6.1. It exists
       so Log In lands somewhere honest and so the install prompt has its correct home. Replace it
       wholesale when the real dashboard is built.
-- [ ] `/privacy` and `/reset-password` are linked from the auth screens but not built.
+- [x] **`/privacy` and `/reset-password` are built.** Both had been dead links from the auth
+      screens since the first slice. See the section below for what each covers and the one real
+      hole the reset flow turned up on its way in.
 - [ ] Notification preferences govern email that nothing sends yet. The toggles write to the
       database and are read back correctly; what reads them at send time arrives with the
       notification writers.
@@ -900,15 +1036,15 @@ verified against the live project from both directions.
       (D024). Deciding where that work lands is the next thing to settle.
 - [ ] **Nothing writes an admin-facing notification.** A new application arriving, a reservation
       nearing expiry and an officer accepting an invitation are all real events with no writer,
-      and the notification categories for them do not exist in the enum either — adding them
+      and the notification categories for them do not exist in the enum either, adding them
       before something writes them would be speculative schema. The dashboard's Attention
       required covers the same ground today.
 - [ ] **Reports (7.6)**, deferred by the blueprint's own P1 marking rather than by omission.
-- [ ] Every loan transition after reservation — approve, reject, complete, and the expiry sweep.
+- [ ] Every loan transition after reservation, approve, reject, complete, and the expiry sweep.
       Those belong to the cooperative admin/officer blueprint, and the employee-facing flow
       deliberately only ever produces `reserved`.
 - [ ] The pgTAP workflow still only runs on a pull request touching `supabase/migrations/**`
-      or `supabase/tests/**`. That is deliberate — it is the only expensive check — but it means
+      or `supabase/tests/**`. That is deliberate. It is the only expensive check, but it means
       a pull request touching neither gets no database coverage at all.
 - [ ] Branch protection is not turned on, so nothing yet *requires* the database check to pass
       before a merge. `docs/DEVELOPMENT-WORKFLOW.md` §3 already assumes it ("blocking merge, once
@@ -931,7 +1067,7 @@ verified against the live project from both directions.
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Fourteen tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
 | GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
-| Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists — possibly redundant, still to be confirmed and removed. |
+| Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists, possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
 | AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                               | P1 feature.                                                                                               |
 
@@ -940,7 +1076,7 @@ verified against the live project from both directions.
 1. **Verify a sending domain in Resend and point the sender at it.** Custom SMTP is already
    wired to `smtp.resend.com:465` and the built-in rate limiter is gone, but the sender is
    still `onboarding@resend.dev`, which Resend restricts to the account owner's own address.
-   Signing up any other address now fails with "Error sending confirmation email" — a different
+   Signing up any other address now fails with "Error sending confirmation email": a different
    failure from before, and the last thing blocking self-service signup.
 2. Review the production site on an actual phone, which the iframe-based review cannot stand
    in for. A password-verified sign-in there closes the last part of the environment check.
@@ -970,5 +1106,5 @@ verified against the live project from both directions.
 
 Before starting any new work session, re-read `DECISIONS.md` in full and skim this file's
 checklist. If something in the codebase already contradicts a locked decision, that's a bug to
-fix, not a signal to update the decision — update the decision only through a new dated entry in
+fix, not a signal to update the decision. Update the decision only through a new dated entry in
 `DECISIONS.md` if the change is genuinely deliberate.

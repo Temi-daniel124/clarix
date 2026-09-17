@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Accept your invitation" };
 
 /**
- * Accept Invite — cooperative admin blueprint 1.1.
+ * Accept Invite, cooperative admin blueprint 1.1.
  *
  * The blueprint describes two arrivals and this screen serves both, because they are the same
  * moment seen from either side of having an account already:
@@ -20,8 +20,8 @@ export const metadata: Metadata = { title: "Accept your invitation" };
  *   - **A brand-new account**, arriving from the link in the invitation email. Supabase's own
  *     invite/recovery link carries a token that establishes a session; this page then asks for a
  *     password and activates the role.
- *   - **An account that already exists** — the person is an employee-member somewhere, or an
- *     officer at another cooperative. The blueprint is explicit: "Welcome back — this invite has
+ *   - **An account that already exists**: the person is an employee-member somewhere, or an
+ *     officer at another cooperative. The blueprint is explicit: "Welcome back. This invite has
  *     been added to your existing account", and no password step, because one email always
  *     resolves to one account however many roles it holds (DECISIONS.md D010).
  *
@@ -62,7 +62,7 @@ export default async function InvitePage({
         <h1 className="type-page-title mt-6 text-text">This invitation needs its own link</h1>
         <p className="type-body mt-3 text-text-secondary">
           Open the link from the email the cooperative sent you, on this device. If you already
-          have a Clarix account, signing in is enough — the invitation is attached to your email
+          have a Clarix account, signing in is enough: the invitation is attached to your email
           address and will be waiting.
         </p>
 

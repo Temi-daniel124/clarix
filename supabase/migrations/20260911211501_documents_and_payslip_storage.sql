@@ -1,4 +1,4 @@
--- Clarix — migration 004: the `documents` table and the private payslip bucket.
+-- Clarix, migration 004: the `documents` table and the private payslip bucket.
 --
 -- Adds the last piece of schema employee onboarding needs (docs/DATA-MODEL.md § documents), the
 -- `users.salary_source_doc_id` link that DATA-MODEL describes but migration 001 could not create
@@ -8,7 +8,7 @@
 --
 -- A payslip is the most sensitive artefact in the product: it carries a named individual's
 -- salary and their IPPIS number. SECURITY.md scopes access to the uploading employee, so the
--- policies below are deliberately narrower than anything else in the schema — cooperative staff
+-- policies below are deliberately narrower than anything else in the schema, cooperative staff
 -- have NO access to these rows or these files, not even for members of their own cooperative.
 -- The eligibility figures they are entitled to see come from `users.salary_gross` and the loan
 -- ledger, never from the document itself. Super Admin likewise has no standing access; a support
@@ -50,7 +50,7 @@ create index documents_user_id_idx on public.documents (user_id);
 create index documents_user_status_idx on public.documents (user_id, review_status);
 
 comment on table public.documents is
-  'Uploaded payslips. Readable only by the employee who uploaded them — never by cooperative staff and never by Super Admin (SECURITY.md).';
+  'Uploaded payslips. Readable only by the employee who uploaded them, never by cooperative staff and never by Super Admin (SECURITY.md).';
 
 -- The salary figure's provenance. DATA-MODEL.md lists this on `users`; it could not be added in
 -- migration 001 because it references a table created here.
@@ -61,7 +61,7 @@ comment on column public.users.salary_source_doc_id is
   'The confirmed payslip a salary figure came from, so "Extracted from your payslip" stays traceable.';
 
 -- ---------------------------------------------------------------------------
--- Row-Level Security — own rows only, in every direction
+-- Row-Level Security, own rows only, in every direction
 -- ---------------------------------------------------------------------------
 
 alter table public.documents enable row level security;

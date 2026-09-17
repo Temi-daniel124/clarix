@@ -7,7 +7,7 @@ import {
 } from "./eligibility";
 
 /**
- * Unit tests for the eligibility arithmetic — docs/DEVELOPMENT-WORKFLOW.md § 3: the formulas
+ * Unit tests for the eligibility arithmetic, docs/DEVELOPMENT-WORKFLOW.md § 3: the formulas
  * are pure functions and get tested here, locally and in CI, with no database involved. RLS
  * behaviour and the advisory-lock reservation are tested separately with pgTAP, on the hosted
  * runner only.
@@ -67,7 +67,7 @@ describe("computeCapacity", () => {
     expect(capacity.available).toBe(0);
   });
 
-  it("produces a very different answer on a net basis — which is why D007 fixes it to gross", () => {
+  it("produces a very different answer on a net basis, which is why D007 fixes it to gross", () => {
     const onNet = computeCapacity({
       salary: SALARY,
       policy: { basis: "net", maxPercentage: 33.3 },
@@ -127,7 +127,7 @@ describe("previewEligibility", () => {
     expect(preview.shortfall).toBe(1);
   });
 
-  it("does not mutate or reserve anything — repeated calls give the same answer", () => {
+  it("does not mutate or reserve anything, repeated calls give the same answer", () => {
     const first = previewEligibility({ ...base, requestedMonthlyRepayment: 18_000 });
     const second = previewEligibility({ ...base, requestedMonthlyRepayment: 18_000 });
 

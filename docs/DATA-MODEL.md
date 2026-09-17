@@ -1,10 +1,10 @@
-# DATA-MODEL.md — Clarix
+# DATA-MODEL.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md`. This is the canonical schema — if code and this
+**Authority level: 3.** Defers to `DECISIONS.md`. This is the canonical schema, if code and this
 document disagree, this document is right and the code has drifted; fix the code (and, if the
 fix reveals the model itself needs to change, add a new `DECISIONS.md` entry first).
 
-Written for Postgres/Supabase. Types below are illustrative, not exhaustive DDL — treat this as
+Written for Postgres/Supabase. Types below are illustrative, not exhaustive DDL, treat this as
 the contract for what each table means and how it's scoped, and write the actual migration SQL to
 match it.
 
@@ -13,9 +13,9 @@ organizations
   id (pk)
   name                        -- "Federal Medical Centre, Abeokuta"
   employee_id_format          -- e.g. "IPPIS", pattern = 6-digit numeric; configurable per org
-  deduction_basis             -- 'gross' | 'net' — default 'gross' (DECISIONS.md D007)
+  deduction_basis             -- 'gross' | 'net', default 'gross' (DECISIONS.md D007)
   deduction_max_percentage    -- e.g. 33.3, editable by Super Admin only
-  reservation_expiry_days_default   -- e.g. 7 — the org-wide default AND ceiling
+  reservation_expiry_days_default   -- e.g. 7: the org-wide default AND ceiling
   created_at
 
 cooperatives
@@ -77,7 +77,7 @@ cooperative_staff_roles
   cooperative_id (fk)
   role                          -- 'admin' | 'officer'
   title                         -- free-text display label set by the cooperative's admin,
-                                 -- e.g. 'Treasurer' — cosmetic only, never changes permissions
+                                 -- e.g. 'Treasurer', cosmetic only, never changes permissions
   permissions (jsonb)           -- boolean flags, meaningful only when role='officer';
                                  -- admins implicitly have full cooperative permissions.
                                  -- Live keys: can_view_members, can_record_savings,
@@ -89,7 +89,7 @@ cooperative_staff_roles
   UNIQUE(user_id, cooperative_id, role)
   -- One person can hold rows here for MULTIPLE cooperatives at once (officer at A, officer at B,
   -- admin of their own C), and simultaneously hold ordinary cooperative_memberships elsewhere.
-  -- Same email, same single account, throughout — DECISIONS.md D010.
+  -- Same email, same single account, throughout, DECISIONS.md D010.
 
 platform_admins
   user_id (fk, pk)
@@ -160,25 +160,25 @@ audit_log
   created_at
 ```
 
-## Row-Level Security — the actual enforcement of data isolation
+## Row-Level Security: the actual enforcement of data isolation
 
 Every table keyed by `cooperative_id` gets an RLS policy that checks the requesting user's
 `cooperative_staff_roles` row (`status='active'`) against that same `cooperative_id`. A
 Cooperative Admin or Officer can only read/write rows where they hold an active staff role at
 *that specific* cooperative; holding one at a different cooperative grants nothing on this table.
-This is what prevents the "`/member/1234` → `/member/1235`" leak — the boundary lives in the
+This is what prevents the "`/member/1234` → `/member/1235`" leak: the boundary lives in the
 database policy, not a UI guard a client could bypass (`DECISIONS.md` D011).
 
 The `access_grants` table is the one deliberate exception path: a Super Admin's read access to a
 specific cooperative's member data is only ever valid while a matching `access_grants` row exists
 with `status='active'` and the current time is before `expires_at`. Write `RLS` policies for
-Super Admin remain `false` everywhere in this domain — Super Admin never gets write access to
+Super Admin remain `false` everywhere in this domain, Super Admin never gets write access to
 cooperative financial data through this mechanism, only time-boxed read access. See
 `SECURITY.md`.
 
-## Eligibility & reservation — how it actually runs
+## Eligibility & reservation, how it actually runs
 
-**Step 1 — Compute available capacity for an employee (read-only, safe to run any time):**
+**Step 1, Compute available capacity for an employee (read-only, safe to run any time):**
 
 ```sql
 cap = salary_basis_amount(user, organization.deduction_basis) * organization.deduction_max_percentage
@@ -194,15 +194,15 @@ available = cap - committed
 
 This powers the "look up an employee, see eligibility" lookup (available any time, per
 `DECISIONS.md` D003) and the employee's own dashboard. It never exposes another cooperative's
-savings balance — only the *sum* of monthly obligations, which is exactly the field the cap math
+savings balance: only the *sum* of monthly obligations, which is exactly the field the cap math
 needs.
 
-**Step 2 — Preview (no side effect):** re-run Step 1's formula with a hypothetical
+**Step 2, Preview (no side effect):** re-run Step 1's formula with a hypothetical
 `requested_monthly_repayment` added, return eligible/not-eligible plus the shortfall or headroom.
 Read-only, safe to call repeatedly (this is what drives the live slider/meter on the loan
 application screen).
 
-**Step 3 — Reservation (the concurrency-safe step, only on actual submission):**
+**Step 3, Reservation (the concurrency-safe step, only on actual submission):**
 
 ```sql
 BEGIN transaction;
@@ -226,11 +226,11 @@ COMMIT;
 
 The advisory lock means a second cooperative's submission for the *same employee*, arriving
 milliseconds later, waits for the first transaction to finish and then recomputes `committed`
-including the just-reserved loan — so it correctly sees the reduced `available`, not a stale
+including the just-reserved loan, so it correctly sees the reduced `available`, not a stale
 number. This is the mechanism that makes "capacity reservation" hold under real concurrent use,
 not just in a happy-path demo (`DECISIONS.md` D008).
 
-**Step 4 — Resolution:** Admin/Officer approves → `status='active'` (reservation becomes a real
+**Step 4, Resolution:** Admin/Officer approves → `status='active'` (reservation becomes a real
 obligation, no change to the capacity math). Rejects → `status='rejected'`, excluded from
 `committed` going forward, capacity released immediately. Un-actioned past
 `reservation_expires_at` → a scheduled job flips `status='expired'`, same release effect, and
@@ -239,7 +239,7 @@ obligation, no change to the capacity math). Rejects → `status='rejected'`, ex
 ## Migration discipline
 
 - Every schema change is a `supabase/migrations/*.sql` file, applied via `supabase db push`
-  against the linked remote project — never a manual dashboard edit. See `DEVELOPMENT-WORKFLOW.md`
+  against the linked remote project, never a manual dashboard edit. See `DEVELOPMENT-WORKFLOW.md`
   and `BUILD.md` for the exact commands and the no-local-Docker constraint.
 - Every table with a `cooperative_id` or `organization_id` column ships its RLS policy in the same
-  migration that creates the table — never as a follow-up "add security later" step.
+  migration that creates the table, never as a follow-up "add security later" step.

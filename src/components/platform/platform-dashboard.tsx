@@ -7,12 +7,12 @@ import { cn } from "@/lib/utils";
 import type { PlatformOverview } from "@/lib/platform";
 
 /**
- * Platform Dashboard — super-admin blueprint 4.1.
+ * Platform Dashboard (super-admin blueprint 4.1).
  *
  * The same tap-to-expand KPI row every other dashboard uses, over four figures that are counts
  * rather than money. That is the constraint the whole role is built around: "without ever
  * surfacing a single member's financial detail, since none of that belongs at the platform
- * level". Total Employees in particular is a headcount and can only ever be one — the function
+ * level". Total Employees in particular is a headcount and can only ever be one: the function
  * behind it returns a single integer, so there is no version of this screen that becomes a
  * directory of people.
  *
@@ -73,7 +73,7 @@ export function PlatformDashboard({
       format: "count",
       accent: "var(--clarix-brand-primary)",
       detail:
-        "Everyone across FMC Abeokuta with a Clarix account and a staff ID on file. A count, and only ever a count — this screen holds no list of people.",
+        "Everyone across FMC Abeokuta with a Clarix account and a staff ID on file. A count, and only ever a count. This screen holds no list of people.",
     },
     {
       key: "invites",
@@ -170,7 +170,7 @@ export function PlatformDashboard({
           )}
         >
           <ScrollText aria-hidden className="mr-1.5 inline size-3.5" strokeWidth={1.75} />
-          Read from what the platform records about itself — cooperatives created, and admins
+          Read from what the platform records about itself, cooperatives created, and admins
           taking up their invitations. The full audit log, which will carry policy changes and
           access requests too, is not built yet.
         </p>

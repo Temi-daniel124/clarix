@@ -10,8 +10,8 @@ const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
 /**
  * Half of Clarix's signature motif (DESIGN_SYSTEM.md § The signature motif).
  *
- * Every financial figure that can change — savings balance, loan balance, available capacity, a
- * requested amount moving under a slider — renders through this component, so that a number
+ * Every financial figure that can change, savings balance, loan balance, available capacity, a
+ * requested amount moving under a slider, renders through this component, so that a number
  * visibly rolls into place rather than sitting there like a screenshot.
  *
  * On the baseline, which is fiddly and was wrong the first time: an inline-block with

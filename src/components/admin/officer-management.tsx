@@ -32,11 +32,11 @@ export type ManagedOfficer = {
 };
 
 /**
- * Officer Management — admin blueprint 7.2.
+ * Officer Management (admin blueprint 7.2).
  *
  * The list from setup 2.5 grew up: each officer's row opens a panel with the permission toggles,
- * the editable title, and removal. What 2.5 offers is still the right thing for a first run — two
- * presets and an email address — and this is where that starting point gets refined.
+ * the editable title, and removal. What 2.5 offers is still the right thing for a first run, two
+ * presets and an email address, and this is where that starting point gets refined.
  *
  * Each toggle saves on its own and each one moves a real boundary: migration 016 rewired the
  * policies behind them, so switching off "see the member list" means Postgres refuses the rows,
@@ -289,7 +289,7 @@ function OfficerRow({
                   id={`title-${officer.id}`}
                   value={title}
                   onChange={(event) => setTitle(event.target.value)}
-                  placeholder="Treasurer, Secretary — optional"
+                  placeholder="Treasurer, Secretary, optional"
                   className="max-w-[280px]"
                 />
                 <Button variant="outline" size="sm" onClick={saveTitle}>
@@ -328,8 +328,8 @@ function OfficerRow({
 
               <p className="type-caption mt-3 max-w-[560px] text-text-muted">
                 Removing access here affects this cooperative only. Anything the same person holds
-                elsewhere in Clarix — an officer role at another cooperative, or their own
-                membership somewhere — is scoped separately and stays exactly as it was.
+                elsewhere in Clarix: an officer role at another cooperative, or their own
+                membership somewhere, is scoped separately and stays exactly as it was.
               </p>
             </div>
           </motion.div>

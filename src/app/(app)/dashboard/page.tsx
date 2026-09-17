@@ -14,10 +14,10 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Home" };
 
 /**
- * Dashboard — blueprint 4.1 (also referenced as 6.1).
+ * Dashboard (blueprint 4.1) (also referenced as 6.1).
  *
  * The screen an employee returns to most often: one honest snapshot of where they stand across
- * every cooperative, in the order the blueprint sets out — greeting, KPI row, freshness line,
+ * every cooperative, in the order the blueprint sets out, greeting, KPI row, freshness line,
  * Insights strip, and a quiet prompt to browse Discovery if they have joined fewer cooperatives
  * than exist.
  *

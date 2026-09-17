@@ -24,7 +24,7 @@ const schema = z.object({
 });
 
 /**
- * Submit a loan application — blueprint 5.5.
+ * Submit a loan application (blueprint 5.5).
  *
  * One RPC, never a read-then-write from here. `submit_loan_application` takes an advisory lock
  * on the employee and recomputes their committed obligations inside it, which only works because

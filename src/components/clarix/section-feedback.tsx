@@ -8,7 +8,7 @@ import { springStandard } from "@/lib/motion";
  * The small per-section confirmation blueprint 6.2 asks for, instead of one high-stakes submit
  * at the foot of a long form.
  *
- * It appears beside the button that caused it and says what changed, then stays — a confirmation
+ * It appears beside the button that caused it and says what changed, then stays: a confirmation
  * that fades itself out after a second or two is a confirmation someone can miss, and this
  * screen is not short of room for one line of text. It is announced politely rather than
  * asserted, because saving a phone number is not an alert.

@@ -1,19 +1,19 @@
--- Clarix — migration 023: platform-level audit events, and adding or removing a platform admin.
+-- Clarix, migration 023: platform-level audit events, and adding or removing a platform admin.
 --
 -- ---------------------------------------------------------------------------
 -- 1. audit_log already holds a platform event; nothing could read or write one
 --
 -- `audit_log.cooperative_id` has been nullable since migration 014, so a row describing something
--- that belongs to no cooperative — a cooperative created, the organization's deduction policy
--- edited, a platform admin added — fits the existing table without a schema change. What was
+-- that belongs to no cooperative: a cooperative created, the organization's deduction policy
+-- edited, a platform admin added, fits the existing table without a schema change. What was
 -- missing was both ends of it: no policy could read such a row, because
 -- `audit_log_select_admin` asks `is_active_cooperative_admin(cooperative_id)` and that is false
 -- for NULL, and nothing could write one, because the table has no insert policy at all by design.
 --
 -- The read is deliberately narrow: a platform admin reads platform rows ONLY. They do not gain
 -- sight of any cooperative's own entries, which stay with that cooperative's admin (migration
--- 018). Blueprint 7.1 asks for exactly this — a record "deliberately excluding any cooperative's
--- internal member-level activity" — and it is also the same boundary the whole role rests on: a
+-- 018). Blueprint 7.1 asks for exactly this: a record "deliberately excluding any cooperative's
+-- internal member-level activity", and it is also the same boundary the whole role rests on: a
 -- Super Admin reading every loan decision on the platform would be standing access to financial
 -- actions by another name.
 
@@ -22,11 +22,11 @@ create policy audit_log_select_platform
   using (cooperative_id is null and public.is_platform_admin());
 
 -- ---------------------------------------------------------------------------
--- record_platform_event() — the only way a platform row is written
+-- record_platform_event(): the only way a platform row is written
 --
 -- Elevated for the same reason `decide_loan_application` is: `audit_log` has no insert policy,
 -- so every row in it arrives through a function that decided it was entitled to. This one refuses
--- anybody who is not a platform admin, and cannot write a cooperative-scoped row at all — it
+-- anybody who is not a platform admin, and cannot write a cooperative-scoped row at all, it
 -- hard-codes `cooperative_id` as NULL, so it can never be used to forge an entry into a
 -- cooperative's own log.
 -- ---------------------------------------------------------------------------
@@ -80,7 +80,7 @@ grant execute on function public.record_platform_event(text, text, uuid, jsonb, 
 -- says not to multiply invitation paths for the same act; this is a different act.
 --
 -- `list_platform_admins()` exists because `platform_admins_select_own` shows a caller only their
--- own row — a list of operators is not member data, but it is still not readable without help.
+-- own row: a list of operators is not member data, but it is still not readable without help.
 -- ---------------------------------------------------------------------------
 
 create or replace function public.list_platform_admins()
@@ -115,7 +115,7 @@ revoke execute on function public.list_platform_admins() from public, anon;
 grant execute on function public.list_platform_admins() to authenticated;
 
 -- ---------------------------------------------------------------------------
--- grant_platform_admin() — by email, against an account that already exists
+-- grant_platform_admin(), by email, against an account that already exists
 --
 -- Clarix cannot create an account for somebody (D021: Supabase Auth owns identity, and there is
 -- no self-signup into this role). So this grants the flag to an address that already has a Clarix
@@ -170,9 +170,9 @@ revoke execute on function public.grant_platform_admin(text) from public, anon;
 grant execute on function public.grant_platform_admin(text) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- revoke_platform_admin() — and the self-removal safeguard, enforced here
+-- revoke_platform_admin(), and the self-removal safeguard, enforced here
 --
--- Blueprint 8.1: "A Super Admin cannot remove their own account from this screen — that would
+-- Blueprint 8.1: "A Super Admin cannot remove their own account from this screen. That would
 -- require a separate, deliberately harder-to-reach safeguard, avoiding the mistake of a single
 -- operator locking themselves out entirely."
 --

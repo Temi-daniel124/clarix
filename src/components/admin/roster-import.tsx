@@ -30,14 +30,14 @@ import {
 import { importRosterAction, type ImportResult } from "@/app/admin/actions";
 
 /**
- * Member Roster Import — admin blueprint 2.4, and later 7.4.
+ * Member Roster Import (admin blueprint 2.4), and later 7.4.
  *
  * The blueprint is explicit that this is a sequence rather than an upload: read the file, map the
  * columns, look at every row, then commit exactly what was confirmed. Each of those stages is
  * visible here, in that order, and nothing is written until the last button.
  *
  * The file never leaves the admin's machine. Reading, mapping and validation all happen in the
- * browser, and only the rows they confirmed are sent — which keeps a spreadsheet full of IPPIS
+ * browser, and only the rows they confirmed are sent, which keeps a spreadsheet full of IPPIS
  * numbers and savings balances out of every log, bucket and network hop that an upload would
  * have touched.
  */
@@ -102,7 +102,7 @@ export function RosterImport({
         setStages(null);
         setFile(null);
         setError(
-          "We could not read that file. Clarix reads CSV and XLSX — if this came from another " +
+          "We could not read that file. Clarix reads CSV and XLSX, if this came from another " +
             "program, save it as CSV and try again.",
         );
       }
@@ -312,7 +312,7 @@ export function RosterImport({
                 Choose your member list, or drag it here
               </span>
               <span className="type-caption mt-2 text-text-muted">
-                CSV or XLSX. Nothing is uploaded — Clarix reads it here and only imports what you
+                CSV or XLSX. Nothing is uploaded. Clarix reads it here and only imports what you
                 confirm.
               </span>
             </button>

@@ -12,11 +12,11 @@ export type MeterTone = "healthy" | "tight" | "exceeded";
  *
  * A single horizontal fill showing what is already committed against the deduction cap, the
  * remainder reading as available capacity. This is the ONLY way Clarix ever draws "a number
- * relative to a limit" — no second pattern may appear anywhere in the product.
+ * relative to a limit": no second pattern may appear anywhere in the product.
  *
  * How an over-cap request is drawn, which is the whole difficulty of this component: a request
  * that exceeds the cap cannot simply be appended to the track, because the three segments would
- * then sum past 100% and flex would quietly shrink all of them — the committed segment would
+ * then sum past 100% and flex would quietly shrink all of them: the committed segment would
  * stop being proportionally true, which on this product is a correctness bug, not a cosmetic
  * one. Instead the track rescales to the new total and a cap marker is drawn at the limit, so
  * the bar visibly runs PAST a marked line. Every segment stays honest about its own share.
@@ -40,7 +40,7 @@ export function MeterBar({
    * What the unfilled remainder MEANS, which decides its colour.
    *
    * "capacity" tints the track emerald, because on a deduction meter the empty part is real
-   * available headroom — something good that is genuinely there. "neutral" is for meters where
+   * available headroom, something good that is genuinely there. "neutral" is for meters where
    * the remainder is merely unachieved rather than available (password strength): an
    * emerald-tinted empty track there reads as a full, healthy bar before anything is typed,
    * which is the opposite of the truth.
@@ -94,7 +94,7 @@ export function MeterBar({
       aria-label={label ?? "Share of the deduction cap already committed"}
     >
       <div className="absolute inset-0 flex">
-        {/* Committed — the neutral segment. */}
+        {/* Committed: the neutral segment. */}
         <motion.div
           className="h-full shrink-0"
           style={{ backgroundColor: "var(--clarix-brand-primary)" }}

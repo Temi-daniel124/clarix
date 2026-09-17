@@ -1,5 +1,5 @@
 /**
- * What an officer may be allowed to do — admin blueprint 7.2.
+ * What an officer may be allowed to do (admin blueprint 7.2).
  *
  * Default-deny: a flag that is not explicitly true is false, and the database agrees. Migration
  * 016 rewired the policies these govern so each toggle changes what Postgres permits, not just
@@ -57,7 +57,7 @@ export const PERMISSIONS: PermissionSpec[] = [
     key: "can_approve_loans",
     label: "Approve or reject loan applications",
     description:
-      "Decide applications — the cooperative's money, committed against a member's salary.",
+      "Decide applications: the cooperative's money, committed against a member's salary.",
     enforcedBy: "decide_loan_application",
     plain: "Approve or reject loan applications",
     phrase: "decide loan applications",
@@ -84,7 +84,7 @@ export const UNBUILT_PERMISSIONS = [
   {
     label: "Submit applications for a member",
     description:
-      "Starting an application on somebody's behalf is not built yet — members apply for themselves.",
+      "Starting an application on somebody's behalf is not built yet, members apply for themselves.",
   },
 ];
 

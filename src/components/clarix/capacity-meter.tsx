@@ -12,7 +12,7 @@ import { RollingNumber } from "./rolling-number";
  * The signature motif assembled: a rolling figure sitting above the used-vs-available meter.
  *
  * This is the component every screen reaches for when it shows a number against the deduction
- * cap — the employee dashboard's available capacity, the loan application's live preview, the
+ * cap: the employee dashboard's available capacity, the loan application's live preview, the
  * cooperative admin's KPI cards, the staff-side eligibility panel. Deliberately identical on
  * both sides of a loan decision: employee and officer see the same picture of the same number,
  * which is itself the trust signal (docs/planning/clarix-design-system.md § 6).
@@ -30,12 +30,12 @@ export function CapacityMeter({
   cap: number;
   /** Monthly obligations already reserved or active, summed across every cooperative. */
   committed: number;
-  /** A monthly repayment being previewed. Read-only — previewing never reserves anything. */
+  /** A monthly repayment being previewed. Read-only, previewing never reserves anything. */
   proposed?: number;
   caption?: string;
   showVerdict?: boolean;
   /**
-   * Set false when the surrounding card already states the label and the figure — the KPI
+   * Set false when the surrounding card already states the label and the figure: the KPI
    * card does, and rendering them again made "Available capacity" and the amount appear twice
    * in the same card. The meter, its legend and its caption still render.
    */

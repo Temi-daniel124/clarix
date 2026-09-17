@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 007 — deciding a loan application.
+-- Clarix pgTAP suite 007, deciding a loan application.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -132,7 +132,7 @@ select is(
 );
 
 -- Asserted from the MEMBER's own session, because `notifications_select_own` deliberately hides
--- the row from everyone else — including the admin who caused it. Checking it as the admin
+-- the row from everyone else, including the admin who caused it. Checking it as the admin
 -- returned zero on the first CI run, which was the policy working rather than the write failing.
 select set_config(
   'request.jwt.claims',
@@ -213,7 +213,7 @@ select is(
   (select status from public.decide_loan_application(
      'd8888888-8888-8888-8888-888888888888', 'approve', 'Committee approved on 12 September.')),
   'active',
-  'with a reason recorded, the cooperative''s own call goes through — Clarix informs, it does not gatekeep'
+  'with a reason recorded, the cooperative''s own call goes through. Clarix informs, it does not gatekeep'
 );
 
 select is(
@@ -249,7 +249,7 @@ select is(
 
 -- An officer at that very cooperative is also outside it. Officer blueprint 5.4: every entry is
 -- written "regardless of which role recorded it, even though only an Admin can later view that
--- log" — so the log is admin-only rather than staff-wide (migration 018).
+-- log", so the log is admin-only rather than staff-wide (migration 018).
 select set_config(
   'request.jwt.claims',
   '{"sub":"a2222222-2222-2222-2222-222222222222","role":"authenticated"}',

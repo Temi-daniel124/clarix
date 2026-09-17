@@ -13,7 +13,7 @@ import { nextAdminStepHref } from "@/lib/admin-setup";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Import members" };
 
-/** Member Roster Import — admin blueprint 2.4. */
+/** Member Roster Import (admin blueprint 2.4). */
 export default async function SetupImportPage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

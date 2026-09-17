@@ -13,7 +13,7 @@ import { logInAction, type AuthFormState } from "../actions";
 const INITIAL: AuthFormState = {};
 
 /**
- * Log In form — employee blueprint 1.4.
+ * Log In form (employee blueprint 1.4).
  *
  * The same shell as Sign Up, two fields, and no strength indicator: this is not account
  * creation. Both fields are shown at once rather than sequentially, because a returning user

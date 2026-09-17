@@ -1,11 +1,11 @@
--- Clarix pgTAP suite 011 — platform events, and who may operate the platform.
+-- Clarix pgTAP suite 011, platform events, and who may operate the platform.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
 -- Two claims from the super-admin blueprint are pinned here. The platform audit log and a
 -- cooperative's own audit log are separate records that never leak into each other (7.1). And a
 -- platform admin cannot remove their own access, "avoiding the mistake of a single operator
--- locking themselves out entirely" (8.1) — a safeguard that has to live in the database, since a
+-- locking themselves out entirely" (8.1): a safeguard that has to live in the database, since a
 -- hidden button is not a safeguard.
 
 create extension if not exists pgtap with schema extensions;

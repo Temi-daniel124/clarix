@@ -1,9 +1,9 @@
 /**
- * Employee onboarding — the step sequence and the rule for where a given account belongs.
+ * Employee onboarding: the step sequence and the rule for where a given account belongs.
  *
  * The sequence is the one in docs/planning/clarix-design-system.md § 6: account created, then
  * employee ID, then payslip, then review, then join a cooperative. The Welcome Tour (blueprint
- * 2.1) deliberately sits outside the numbered steps — it is skippable orientation, not a step
+ * 2.1) deliberately sits outside the numbered steps. It is skippable orientation, not a step
  * with state attached.
  *
  * Which step someone lands on is derived from their record rather than stored as a cursor. An
@@ -37,7 +37,7 @@ export function nextOnboardingStep(state: OnboardingState): OnboardingStepSlug {
   return "cooperatives";
 }
 
-/** True once there is nothing left to ask for — the dashboard can stand on its own. */
+/** True once there is nothing left to ask for: the dashboard can stand on its own. */
 export function isOnboardingComplete(state: OnboardingState): boolean {
   return Boolean(state.employeeId) && state.salaryConfirmed;
 }
@@ -51,7 +51,7 @@ export function stepIndex(slug: OnboardingStepSlug): number {
  * (`organizations.employee_id_pattern`; for FMC Abeokuta that is six digits).
  *
  * The pattern is applied rather than hard-coded so a second organization is a row, not a code
- * change — DECISIONS.md D019 keeps the scoping columns even though v1 populates one row.
+ * change, DECISIONS.md D019 keeps the scoping columns even though v1 populates one row.
  */
 export function matchesEmployeeIdPattern(value: string, pattern: string): boolean {
   const trimmed = value.trim();

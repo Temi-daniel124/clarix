@@ -44,7 +44,7 @@ export type LedgerEntry = {
  *
  * This deliberately calls `capacity_for_user` rather than summing loans in TypeScript. The sum
  * has to cross every cooperative the employee belongs to, and per-cooperative RLS correctly
- * refuses that to a normal query — the SECURITY DEFINER function is the sanctioned narrow
+ * refuses that to a normal query: the SECURITY DEFINER function is the sanctioned narrow
  * exception (DECISIONS.md D003). `src/lib/eligibility.ts` still owns the arithmetic and is what
  * the unit tests cover; this is the same formula executed where the data is legible.
  */
@@ -175,7 +175,7 @@ export async function loadLedger(membershipId: string): Promise<LedgerEntry[]> {
 /**
  * When the next deduction is expected: one month after the last one recorded.
  *
- * Presented as an expectation, never as a fact — Clarix has no payroll connection (D005) and
+ * Presented as an expectation, never as a fact. Clarix has no payroll connection (D005) and
  * cannot know a deduction happened until a cooperative records it.
  */
 function nextMonthAfter(iso: string | null): string | null {

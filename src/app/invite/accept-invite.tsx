@@ -22,7 +22,7 @@ export type InviteSummary = {
  * headline, not by shape.
  *
  * The password is set through Supabase Auth's own `updateUser`, on the session the invitation
- * link established — Clarix never holds a password of its own (DECISIONS.md D021). The email
+ * link established. Clarix never holds a password of its own (DECISIONS.md D021). The email
  * address is shown and not editable: it is the identity the invitation was issued to, and
  * letting it be changed here would defeat the point of an invitation.
  */
@@ -96,7 +96,7 @@ export function AcceptInvite({
       <h1 className="type-page-title mt-6 text-text">
         {needsPassword
           ? `You have been invited to ${roleLabel} ${first.cooperativeName}`
-          : "Welcome back — this invitation is on your account"}
+          : "Welcome back. This invitation is on your account"}
       </h1>
 
       <p className="type-body mt-3 text-text-secondary">
@@ -108,7 +108,7 @@ export function AcceptInvite({
         ) : (
           <>
             {first.cooperativeName} added you as its {first.title ?? first.role}. Your existing
-            Clarix account gains this role — nothing else about it changes, and your other
+            Clarix account gains this role. Nothing else about it changes, and your other
             cooperatives are unaffected.
           </>
         )}
@@ -118,7 +118,7 @@ export function AcceptInvite({
         <ul className="mt-5 flex flex-col gap-2">
           {invites.map((invite) => (
             <li key={invite.id} className="type-secondary text-text-secondary">
-              {invite.cooperativeName} — {invite.title ?? invite.role}
+              {invite.cooperativeName}, {invite.title ?? invite.role}
             </li>
           ))}
         </ul>
@@ -203,7 +203,7 @@ export function AcceptInvite({
         >
           This wasn&apos;t meant for me
         </Link>{" "}
-        — nothing is activated until you choose to.
+. Nothing is activated until you choose to.
       </p>
     </div>
   );

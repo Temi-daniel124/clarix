@@ -11,7 +11,7 @@ import { changePasswordAction, type SectionState } from "./actions";
 const INITIAL: SectionState = {};
 
 /**
- * Security — blueprint 6.2, third section.
+ * Security (blueprint 6.2), third section.
  *
  * Changing a password is the one action on this screen where the current value has to be proved
  * as well as the new one chosen, so it asks for three fields rather than two. The reveal toggle

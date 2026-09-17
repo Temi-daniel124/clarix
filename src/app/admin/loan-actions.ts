@@ -5,14 +5,14 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 
 /**
- * Deciding a loan application — admin blueprint 6.2.
+ * Deciding a loan application (admin blueprint 6.2).
  *
  * One call, because approving is four writes that must not come apart: the loan's status, the
  * audit entry, the notification to the member, and the reason where one was required. Two of
  * those tables have no insert policy at all by design, so `decide_loan_application` (migration
  * 014) is the only way any of it happens.
  *
- * Nothing is written until the admin's undo window has elapsed — the screen holds the decision
+ * Nothing is written until the admin's undo window has elapsed: the screen holds the decision
  * for a few seconds first (the Timed Undo pattern the blueprint asks for), which is why this
  * action is called late rather than optimistically.
  */

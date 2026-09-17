@@ -8,7 +8,7 @@ import type { TrendPoint } from "./trend-indicator";
 import type { Capacity } from "@/lib/eligibility";
 
 /**
- * The employee Dashboard KPI row — employee blueprint 4.1.
+ * The employee Dashboard KPI row (employee blueprint 4.1).
  *
  * The interaction lives in KpiCardGrid, which the cooperative dashboard uses too; this file is
  * only the four cards an employee sees and what each of them means.

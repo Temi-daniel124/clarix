@@ -9,7 +9,7 @@ import { pendingInvites, preferredRole } from "@/lib/staff";
 export const dynamic = "force-dynamic";
 
 /**
- * Shell for the admin setup sequence — admin blueprint 2.1 to 2.5.
+ * Shell for the admin setup sequence (admin blueprint 2.1 to 2.5).
  *
  * Single-column and quiet, and deliberately outside the admin app shell: a wizard wrapped in a
  * navigation bar invites wandering off halfway through, which is exactly what the employee

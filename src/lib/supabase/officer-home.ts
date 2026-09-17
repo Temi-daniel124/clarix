@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
 
 /**
- * The read behind Officer Home — officer blueprint 4.1.
+ * The read behind Officer Home (officer blueprint 4.1).
  *
  * Deliberately not `loadCooperativeSummary`. That query answers "how is this cooperative doing",
  * and the blueprint is explicit that an officer's home is not that screen: "cooperative-wide
@@ -12,7 +12,7 @@ import { formatNaira } from "@/lib/format";
  *
  * Scoping, as everywhere else, is the policies' job. An officer without `can_view_members` cannot
  * read `cooperative_memberships`, and because `loans_select_staff` reaches the loan through its
- * membership, they cannot read the loans either — the empty result below is Postgres's answer,
+ * membership, they cannot read the loans either: the empty result below is Postgres's answer,
  * not a filter written here (SECURITY.md).
  */
 

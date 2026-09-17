@@ -8,7 +8,7 @@ import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { PERMISSION_PRESETS, isPermissionPreset, preferredRole } from "@/lib/staff";
 
 /**
- * Everything the cooperative-admin setup sequence writes — blueprint 2.2 to 2.5.
+ * Everything the cooperative-admin setup sequence writes (blueprint 2.2 to 2.5).
  *
  * Each action resolves the caller's own cooperative from their staff role rather than trusting a
  * cooperative id from the form. RLS would refuse a write to somebody else's cooperative anyway,
@@ -42,7 +42,7 @@ const profileSchema = z.object({
   description: z
     .string()
     .trim()
-    .max(600, "Keep this under 600 characters — it is a summary, not a constitution."),
+    .max(600, "Keep this under 600 characters. It is a summary, not a constitution."),
   requirements: z.string().trim().max(600, "Keep this under 600 characters."),
 });
 
@@ -198,8 +198,8 @@ export type ImportResult = {
 };
 
 /**
- * Commits the rows an admin confirmed. Everything before this — reading the file, mapping the
- * columns, validating each row — happens in the browser, because none of it needs the database
+ * Commits the rows an admin confirmed. Everything before this, reading the file, mapping the
+ * columns, validating each row, happens in the browser, because none of it needs the database
  * and a 500-row spreadsheet has no business being uploaded three times while somebody fixes a
  * column mapping.
  *

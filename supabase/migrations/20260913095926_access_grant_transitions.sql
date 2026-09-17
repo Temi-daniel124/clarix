@@ -1,4 +1,4 @@
--- Clarix — migration 026: everything that can happen to an access grant.
+-- Clarix, migration 026: everything that can happen to an access grant.
 --
 -- `access_grants` has no write policy, so these four functions are the complete list of ways a
 -- row in it can come into being or change. That is the same construction as `audit_log`, for the
@@ -6,7 +6,7 @@
 -- did not check anything.
 
 -- ---------------------------------------------------------------------------
--- access_grant_state() — the effective status, right now
+-- access_grant_state(): the effective status, right now
 --
 -- 'active' and 'expired' are never stored (D030). This is where they come from, and it is the
 -- only place, so a screen and a policy can never disagree about whether a grant is live.
@@ -29,7 +29,7 @@ comment on function public.access_grant_state(public.access_grants) is
   'The effective status of a grant at this instant. Stored status only ever says pending or revoked; active and expired are arithmetic against now() (DECISIONS.md D030).';
 
 -- ---------------------------------------------------------------------------
--- request_access_grant() — submit, notify, record. Never grants anything immediately.
+-- request_access_grant(), submit, notify, record. Never grants anything immediately.
 -- ---------------------------------------------------------------------------
 
 create or replace function public.request_access_grant(
@@ -131,7 +131,7 @@ revoke execute on function public.request_access_grant(uuid, text, uuid, integer
 grant execute on function public.request_access_grant(uuid, text, uuid, integer, integer) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- revoke_access_grant() — the requester ending it early
+-- revoke_access_grant(): the requester ending it early
 -- ---------------------------------------------------------------------------
 
 create or replace function public.revoke_access_grant(grant_id uuid)
@@ -181,7 +181,7 @@ revoke execute on function public.revoke_access_grant(uuid) from public, anon;
 grant execute on function public.revoke_access_grant(uuid) to authenticated;
 
 -- ---------------------------------------------------------------------------
--- log_elevated_view() — the granular record, written into the COOPERATIVE's log
+-- log_elevated_view(): the granular record, written into the COOPERATIVE's log
 --
 -- Blueprint 7.3: "Every screen view and specific record opened during an active grant is logged
 -- individually, more granularly than ordinary platform events, precisely because this is the one

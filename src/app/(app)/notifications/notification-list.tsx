@@ -10,7 +10,7 @@ import type { NotificationItem } from "@/lib/supabase/notifications-data";
 import { markAllReadAction, markReadAction } from "./actions";
 
 /**
- * The notification list — blueprint 6.1.
+ * The notification list (blueprint 6.1).
  *
  * Reverse chronological, each row a category icon, the message, and a relative timestamp.
  * Unread is "a small dot rather than a loud badge count", which is the blueprint's own wording
@@ -134,7 +134,7 @@ function Row({ item, timestamp }: { item: NotificationItem; timestamp: string })
     <Link
       href={item.targetUrl}
       onClick={(event) => {
-        // Mark read on the way through, then navigate — so the dot is gone when they come back.
+        // Mark read on the way through, then navigate, so the dot is gone when they come back.
         if (unread) {
           event.preventDefault();
           startTransition(async () => {

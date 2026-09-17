@@ -8,7 +8,7 @@ import { loadEmployeeIdPattern } from "@/lib/supabase/admin-data";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Import members" };
 
-/** Member Roster Import (ongoing) — admin blueprint 7.4, the same screen as setup step 2.4. */
+/** Member Roster Import (ongoing) (admin blueprint 7.4), the same screen as setup step 2.4. */
 export default async function ManageImportPage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

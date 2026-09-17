@@ -9,7 +9,7 @@ import { Wordmark } from "@/components/clarix/wordmark";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 /**
- * Landing page navigation — employee blueprint 1.1, built on the Watermelon navigation-5
+ * Landing page navigation (employee blueprint 1.1), built on the Watermelon navigation-5
  * structure and then reskinned completely.
  *
  * What was kept from it: the floating pill shape, and the mobile sheet.
@@ -18,7 +18,7 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
  * sharply"): the four-column "Solutions" mega-menu, which is real over-engineering for a
  * marketing page with four links. With it went the navigation-menu and badge primitives it
  * needed, the demo's `href="#"` placeholders, its Watermelon wordmark and orange logo mark, its
- * blue/sky palette, and its Cpu/Layers/GitBranch/Terminal product icons — none of which
+ * blue/sky palette, and its Cpu/Layers/GitBranch/Terminal product icons, none of which
  * describe anything Clarix does.
  *
  * The pill is fixed and rendered at page level rather than inside the hero. Sticky inside the

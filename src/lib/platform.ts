@@ -1,5 +1,5 @@
 /**
- * The Super Admin's own shapes and the small questions asked of them — super-admin blueprint
+ * The Super Admin's own shapes and the small questions asked of them, super-admin blueprint
  * Parts 4 and 5.
  *
  * Split from `src/lib/supabase/platform-data.ts` for the same reason `src/lib/audit.ts` is split

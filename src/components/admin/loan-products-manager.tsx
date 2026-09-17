@@ -27,11 +27,11 @@ export type LoanProduct = {
 };
 
 /**
- * Loan Product & Policy Configuration — admin blueprint 2.3, and later 7.1.
+ * Loan Product & Policy Configuration (admin blueprint 2.3), and later 7.1.
  *
  * The rules set here are what every eligibility check in the product measures a loan against, so
  * the screen is deliberately plain: the two figures that matter are visible immediately, and the
- * things that only some cooperatives need — interest wording, whether the product is advertised —
+ * things that only some cooperatives need, interest wording, whether the product is advertised,
  * sit behind an Advanced toggle rather than crowding the decision.
  *
  * The out-of-range warning never blocks a save. A cooperative's rules are its own; the warning
@@ -270,7 +270,7 @@ function ProductForm({
             <span>
               {percentage}% sits well outside what other cooperatives here require (
               {Math.round(peerRatioRange!.min * 100)}–{Math.round(peerRatioRange!.max * 100)}%).
-              That is allowed — your rules are your own — but it is worth a second look in case a
+              That is allowed. Your rules are your own, but it is worth a second look in case a
               digit slipped.
             </span>
           </p>
@@ -299,7 +299,7 @@ function ProductForm({
                   id="interest-terms"
                   name="interestTerms"
                   defaultValue={product?.interestTerms ?? ""}
-                  placeholder="In your own words — Clarix records this and shows it to members, and never calculates from it."
+                  placeholder="In your own words. Clarix records this and shows it to members, and never calculates from it."
                   className="min-h-24"
                 />
                 <p className="type-caption text-text-muted">

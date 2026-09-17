@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Notifications" };
 
 /**
- * Notifications — super-admin blueprint 9.1, reached from Part 3's navigation.
+ * Notifications (super-admin blueprint 9.1), reached from Part 3's navigation.
  *
  * The same table, query and component every other role uses, scoped by who a notification is
  * addressed to rather than by any role. It is here because the navigation this session built
@@ -42,7 +42,7 @@ export default async function PlatformNotificationsPage() {
 
           <p className="type-body mx-auto mt-3 max-w-[460px] text-text-secondary">
             An admin taking up an invitation, and another platform admin asking for access to a
-            cooperative&apos;s records, will appear here. Neither sends a notification yet — what
+            cooperative&apos;s records, will appear here. Neither sends a notification yet, what
             needs you today is on the home screen instead.
           </p>
         </div>

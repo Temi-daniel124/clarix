@@ -1,4 +1,4 @@
--- Clarix — migration 015: the naira sign in a decision notification.
+-- Clarix, migration 015: the naira sign in a decision notification.
 --
 -- Caught on screen while walking an approval end to end: the member's notification read
 -- "approved your loan of 120,000". On a product whose entire subject is money, a figure without

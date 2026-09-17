@@ -12,19 +12,19 @@ import type { MemberRow } from "@/lib/supabase/admin-members";
 import type { OfficerTask } from "@/lib/supabase/officer-home";
 
 /**
- * Officer Home — officer blueprint 4.1.
+ * Officer Home (officer blueprint 4.1).
  *
  * Not a smaller cooperative dashboard. The blueprint builds this screen around "the two things
  * their job actually consists of: finding a member fast, and seeing what's currently waiting on
- * them", which is why the search field sits above everything — "higher up than on the Admin's
- * dashboard, since this is genuinely the Officer's most common single action" — and why there is
+ * them", which is why the search field sits above everything, "higher up than on the Admin's
+ * dashboard, since this is genuinely the Officer's most common single action", and why there is
  * no KPI row: total savings held and total membership are cooperative-wide figures, and those
  * belong to the person who runs the cooperative rather than the person who works in it.
  *
  * The task list adapts to what this officer can actually act on. Somebody who cannot decide loans
  * is not shown a queue of decisions; they are told plainly what would appear there instead. The
- * alternative — showing every officer the same list and letting the refusal happen on the next
- * screen — would be the interface making a promise the database then breaks.
+ * alternative, showing every officer the same list and letting the refusal happen on the next
+ * screen, would be the interface making a promise the database then breaks.
  */
 export function OfficerHome({
   cooperativeName,
@@ -55,7 +55,7 @@ export function OfficerHome({
     <div className="mx-auto w-full max-w-[880px] px-5 py-8 md:px-8 md:py-10">
       <h1 className="type-page-title text-text">
         {greeting()}
-        {firstName ? `, ${firstName}` : ""} — here&rsquo;s what&rsquo;s waiting at{" "}
+        {firstName ? `, ${firstName}` : ""}, here&rsquo;s what&rsquo;s waiting at{" "}
         {cooperativeName}
       </h1>
 
@@ -154,7 +154,7 @@ export function OfficerHome({
         ) : (
           <EmptyTasks
             title="Nothing is waiting on you"
-            body="This list holds the applications you started on a member's behalf, until somebody with approval permission decides them. Starting an application for a member is not built yet, so there is nothing here — members apply for themselves in the meantime."
+            body="This list holds the applications you started on a member's behalf, until somebody with approval permission decides them. Starting an application for a member is not built yet, so there is nothing here, members apply for themselves in the meantime."
           />
         )}
       </section>
@@ -205,7 +205,7 @@ function MemberResult({ member }: { member: MemberRow }) {
     </>
   );
 
-  // A roster entry has no profile to open — that person has not signed up yet, and inventing a
+  // A roster entry has no profile to open. That person has not signed up yet, and inventing a
   // link to a screen that would 404 is worse than showing them as findable but not openable.
   if (!member.membershipId) {
     return <span className="flex items-center gap-4 px-5 py-3.5">{body}</span>;

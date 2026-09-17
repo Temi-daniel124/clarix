@@ -10,10 +10,10 @@ import { recordReconciliationAction } from "@/app/admin/reconciliation-actions";
 import type { ReconciliationPeriod, ReconciliationRow } from "@/lib/supabase/reconciliation-data";
 
 /**
- * Monthly Reconciliation Entry — admin blueprint 7.5.
+ * Monthly Reconciliation Entry (admin blueprint 7.5).
  *
  * Each row saves on its own as it is filled in, "rather than requiring the whole month to be
- * entered in one sitting before anything is recorded" — a cooperative reconciling four hundred
+ * entered in one sitting before anything is recorded": a cooperative reconciling four hundred
  * members will not do it in one sitting, and a form that loses everything when they stop would
  * guarantee the screen goes unused.
  *
@@ -205,7 +205,7 @@ function Row({ row, period }: { row: ReconciliationRow; period: string }) {
             inputMode="decimal"
             aria-label={`Amount received for ${row.memberName ?? "this member"}`}
             className="h-10 w-32 tabular"
-            placeholder="—"
+            placeholder="0.00"
           />
           {pending ? (
             <span className="type-caption text-text-muted">Saving…</span>

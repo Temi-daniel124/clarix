@@ -12,7 +12,7 @@ import { LandingHero } from "@/components/landing/landing-hero";
 import { LandingNav } from "@/components/landing/landing-nav";
 
 /**
- * Landing Page — employee blueprint 1.1.
+ * Landing Page (employee blueprint 1.1).
  *
  * The only screen in the employee journey where marketing language is appropriate. Its hero
  * visual is a real, running miniature of the eligibility check rather than an illustration,
@@ -27,7 +27,7 @@ const SECTIONS = [
   {
     icon: Landmark,
     heading: "What you see",
-    body: "Every cooperative you belong to in one place — savings, loans and what is being deducted from your salary each month, added up correctly across all of them.",
+    body: "Every cooperative you belong to in one place, savings, loans and what is being deducted from your salary each month, added up correctly across all of them.",
   },
   {
     icon: Building2,
@@ -37,7 +37,7 @@ const SECTIONS = [
   {
     icon: ShieldCheck,
     heading: "What stays private",
-    body: "No cooperative ever sees another's records. Only the combined monthly total the limit calculation needs crosses between them — never savings balances, never anyone else's loan.",
+    body: "No cooperative ever sees another's records. Only the combined monthly total the limit calculation needs crosses between them, never savings balances, never anyone else's loan.",
   },
 ];
 
@@ -65,7 +65,7 @@ const FAQ = [
   {
     question: "How does a cooperative join Clarix?",
     answer:
-      "Cooperatives do not sign up themselves. A cooperative is set up during its own onboarding, and its head is invited by email to complete the setup — profile, loan products and an import of the existing member roster from a spreadsheet.",
+      "Cooperatives do not sign up themselves. A cooperative is set up during its own onboarding, and its head is invited by email to complete the setup, profile, loan products and an import of the existing member roster from a spreadsheet.",
   },
 ];
 
@@ -75,7 +75,7 @@ export default function LandingPage() {
       <LandingNav />
       <LandingHero />
 
-      {/* Three short sections: a heading and one sentence each — blueprint 1.1. */}
+      {/* Three short sections: a heading and one sentence each (blueprint 1.1). */}
       <section
         id="how-it-works"
         className="mx-auto w-full max-w-[1160px] scroll-mt-24 px-5 py-16 md:px-8 md:py-24"
@@ -99,7 +99,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* For cooperatives — no self-registration, per ROLES-AND-PERMISSIONS.md. */}
+      {/* For cooperatives: no self-registration, per ROLES-AND-PERMISSIONS.md. */}
       <section
         id="for-cooperatives"
         className="border-y border-border bg-surface"
@@ -118,7 +118,7 @@ export default function LandingPage() {
             <div>
               <p className="type-body text-text-secondary">
                 Cooperatives do not register themselves on Clarix. Each one is set up during its
-                own onboarding, and its head is invited by email to complete it — the cooperative
+                own onboarding, and its head is invited by email to complete it: the cooperative
                 profile members see, its loan products, and an import of the existing member
                 roster straight from the spreadsheet it already lives in.
               </p>
@@ -132,7 +132,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* FAQ — blueprint 1.1. */}
+      {/* FAQ (blueprint 1.1). */}
       <section
         id="faq"
         className="mx-auto w-full max-w-[760px] scroll-mt-24 px-5 py-16 md:px-8 md:py-24"
@@ -149,7 +149,7 @@ export default function LandingPage() {
         </Accordion>
       </section>
 
-      {/* Footer, repeating the single call to action — blueprint 1.1. */}
+      {/* Footer, repeating the single call to action (blueprint 1.1). */}
       <footer className="border-t border-border bg-surface">
         <div className="mx-auto w-full max-w-[1160px] px-5 py-16 md:px-8">
           <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">

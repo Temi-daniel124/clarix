@@ -12,7 +12,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Welcome to Clarix platform administration" };
 
 /**
- * Welcome to Clarix Platform Administration — super-admin blueprint 2.1.
+ * Welcome to Clarix Platform Administration (super-admin blueprint 2.1).
  *
  * One screen, one button, no slides. The blueprint is explicit that this role belongs to the
  * platform's own operator, "who already understands the product deeply, so an extended

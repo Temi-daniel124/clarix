@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
  *
  * The tint is chosen deterministically from the name, so the same person always gets the same
  * colour and it never looks randomly assigned between visits. It picks only from the Clarix
- * palette — emerald, indigo, navy — because no other hue enters the product, not even here.
+ * palette, emerald, indigo, navy, because no other hue enters the product, not even here.
  */
 
 const TINTS = [

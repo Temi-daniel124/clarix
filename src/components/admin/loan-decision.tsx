@@ -15,14 +15,14 @@ import { decideLoanAction } from "@/app/admin/loan-actions";
 const UNDO_SECONDS = 8;
 
 /**
- * Approve / Reject — admin blueprint 6.2.
+ * Approve / Reject (admin blueprint 6.2).
  *
  * The Timed Undo pattern the blueprint asks for, and implemented the honest way round: the
  * countdown runs BEFORE the write, not after it. Nothing reaches the database and no notification
  * reaches the member until the window closes, so "undo" genuinely undoes rather than compensating
  * for something already done.
  *
- * The two actions are deliberately separated rather than stacked as a primary/danger pair —
+ * The two actions are deliberately separated rather than stacked as a primary/danger pair,
  * mis-tapping the wrong one here costs a member their loan or a cooperative its money.
  *
  * Over-cap approvals require a reason. The field is not decoration: the database refuses the
@@ -171,7 +171,7 @@ export function LoanDecision({
           <p className="type-caption mt-2 max-w-[520px] text-text-muted">
             This request is {formatNaira(monthlyRepayment)} a month against{" "}
             {formatNaira(availableBefore ?? 0)} of room. Approving is your cooperative&apos;s call
-            to make — Clarix records the reason rather than blocking it.
+            to make. Clarix records the reason rather than blocking it.
           </p>
         </div>
       ) : null}

@@ -9,11 +9,11 @@ import { cn } from "@/lib/utils";
 import { invitePending, type DirectoryEntry } from "@/lib/platform";
 
 /**
- * Cooperative Directory — super-admin blueprint 5.1.
+ * Cooperative Directory (super-admin blueprint 5.1).
  *
  * A table on desktop, a stacked list on mobile, and a search field and status filter above both.
  * Four columns, exactly the four the blueprint names: name, status, member count, and who runs
- * it. There is no column here that could carry a member's name or a figure of anybody's money —
+ * it. There is no column here that could carry a member's name or a figure of anybody's money,
  * the member column is a count, and the person named is the cooperative's staff Admin.
  *
  * Plain on purpose. This is the one part of Clarix the design system asks to read as calm

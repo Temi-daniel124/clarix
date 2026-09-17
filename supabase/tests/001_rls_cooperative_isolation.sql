@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 001 — per-cooperative isolation.
+-- Clarix pgTAP suite 001, per-cooperative isolation.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (.github/workflows/db-tests.yml), never on a
 -- developer machine: DECISIONS.md D015 and docs/DEVELOPMENT-WORKFLOW.md §2–3.
@@ -85,7 +85,7 @@ values
 -- The officer is given the permission that lets them see members at all. Before migration 016
 -- that was implied by being staff; it is now an explicit flag, default-deny (blueprint 7.2). The
 -- subject of this suite is isolation BETWEEN cooperatives, so the officer needs to be permitted
--- to see their own cooperative's members for the isolation assertions to mean anything — an
+-- to see their own cooperative's members for the isolation assertions to mean anything, an
 -- officer who can see nothing proves nothing about boundaries.
 insert into public.cooperative_staff_roles (user_id, cooperative_id, role, status, permissions)
 values

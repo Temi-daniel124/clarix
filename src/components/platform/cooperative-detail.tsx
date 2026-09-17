@@ -21,7 +21,7 @@ import {
 const UNDO_SECONDS = 8;
 
 /**
- * Cooperative Detail — super-admin blueprint 5.2.
+ * Cooperative Detail (super-admin blueprint 5.2).
  *
  * "Deliberately shallow on purpose, since anything deeper than status and contact information
  * belongs to that cooperative's own Admin, not to the Super Admin."
@@ -34,7 +34,7 @@ const UNDO_SECONDS = 8;
  * nothing on this page to click through to a person.
  *
  * Deactivation uses the Timed Undo pattern rather than a confirm dialog, and the countdown runs
- * BEFORE the write — so the undo genuinely undoes, because nothing has happened yet.
+ * BEFORE the write, so the undo genuinely undoes, because nothing has happened yet.
  */
 export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
   const router = useRouter();
@@ -153,8 +153,8 @@ export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
               invitation
             </p>
             <p className="type-secondary mt-2 max-w-[520px] text-text-secondary">
-              Sent {formatDate(inviteSentAt(entry))}. Clarix cannot deliver the email itself yet —
-              a verified sending domain is still outstanding — so reissuing refreshes the
+              Sent {formatDate(inviteSentAt(entry))}. Clarix cannot deliver the email itself yet,
+              a verified sending domain is still outstanding, so reissuing refreshes the
               invitation rather than putting a message in front of them. It becomes a real role
               the first time they sign in with that address.
             </p>

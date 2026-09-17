@@ -10,7 +10,7 @@ import { springStandard } from "@/lib/motion";
 const DISMISS_KEY = "clarix.dashboard.join-prompt-dismissed";
 
 /**
- * The quiet prompt to browse Discovery — blueprint 4.1, which asks for exactly this and is
+ * The quiet prompt to browse Discovery (blueprint 4.1), which asks for exactly this and is
  * explicit that it "never appears as an aggressive banner". So: no colour fill, no icon shouting
  * at the reader, a plain dismiss, and it does not come back once dismissed.
  *

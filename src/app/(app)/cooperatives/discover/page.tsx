@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Discover cooperatives" };
 
 /**
- * Discovery — blueprint 4.3. The browsing layer for cooperatives not yet joined.
+ * Discovery (blueprint 4.3). The browsing layer for cooperatives not yet joined.
  */
 export default async function DiscoverPage() {
   const cards = await loadDiscoveryCards();

@@ -8,7 +8,7 @@ import { preferredRole } from "@/lib/staff";
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Active loans" };
 
-/** Active Loans — admin blueprint 6.3. */
+/** Active Loans (admin blueprint 6.3). */
 export default async function ActiveLoansPage() {
   const staff = await loadStaffContext();
   const role = staff ? preferredRole(staff.roles) : null;

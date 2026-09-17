@@ -15,14 +15,14 @@ const messageSchema = z
   .string()
   .trim()
   .min(10, "A sentence or two, so support knows what to look at.")
-  .max(2000, "That is longer than 2,000 characters — send the short version.");
+  .max(2000, "That is longer than 2,000 characters, send the short version.");
 
 /**
- * The Help contact form — blueprint 6.3.
+ * The Help contact form (blueprint 6.3).
  *
  * Asks for a message and nothing else. Who is writing is already known: the action reads the
  * name and email address off the signed-in account rather than making someone retype details
- * Clarix is holding. It stops there — the IPPIS number stays inside Clarix rather than travelling
+ * Clarix is holding. It stops there: the IPPIS number stays inside Clarix rather than travelling
  * to a third-party mail provider over a support question (SECURITY.md).
  *
  * If Resend has no key yet, this returns an honest failure rather than a confirmation for a
@@ -61,7 +61,7 @@ export async function sendSupportMessageAction(
     return {
       error:
         result.reason === "not_configured"
-          ? "Clarix cannot send mail yet, so this did not go through. Please email support directly using the address below — your message is still in the box, ready to copy."
+          ? "Clarix cannot send mail yet, so this did not go through. Please email support directly using the address below. Your message is still in the box, ready to copy."
           : "That did not send. Please try again, or email support directly using the address below.",
     };
   }

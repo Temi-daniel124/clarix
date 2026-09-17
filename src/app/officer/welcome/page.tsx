@@ -8,7 +8,7 @@ import { OfficerWelcomeTour } from "./welcome-tour";
 export const metadata: Metadata = { title: "Welcome to Clarix" };
 
 /**
- * Welcome to Cooperative Officer — officer blueprint 2.1.
+ * Welcome to Cooperative Officer (officer blueprint 2.1).
  *
  * Two slides rather than three, "since there's no setup wizard to prepare for here". The first
  * one is assembled on the server because the blueprint asks for it to be true of this person

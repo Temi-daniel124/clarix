@@ -1,4 +1,4 @@
--- Clarix — migration 005: cooperative_loan_products.
+-- Clarix, migration 005: cooperative_loan_products.
 --
 -- docs/DATA-MODEL.md § cooperative_loan_products. Needed by the Cooperative Discovery Profile's
 -- "Benefits and packages" section (employee blueprint 4.4), which describes a cooperative's loan
@@ -18,7 +18,7 @@ create table public.cooperative_loan_products (
 
   -- The share of the requested amount a member must already hold in savings. Stored as a
   -- fraction (0.35), rendered as a percentage. Defaults are inherited from the cooperative's
-  -- min_savings_ratio_default when a product does not override it — the application decides
+  -- min_savings_ratio_default when a product does not override it: the application decides
   -- that, so the column stays required here and explicit per product.
   min_savings_ratio numeric(4, 3) not null
     check (min_savings_ratio > 0 and min_savings_ratio <= 1),

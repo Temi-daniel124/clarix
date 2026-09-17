@@ -62,8 +62,8 @@ export type PasswordStrength = {
 };
 
 /**
- * Drives the strength indicator on Sign Up. Scored on the things that actually matter —
- * length first, then variety — rather than punishing a long passphrase for lacking a symbol.
+ * Drives the strength indicator on Sign Up. Scored on the things that actually matter,
+ * length first, then variety, rather than punishing a long passphrase for lacking a symbol.
  */
 export function scorePassword(password: string): PasswordStrength {
   if (!password) return { score: 0, label: "Enter a password" };

@@ -8,7 +8,7 @@ export type TrendPoint = { at: string; value: number };
  * A movement-over-time indicator for a KPI card: a sparkline plus the change since the first
  * point.
  *
- * This is NOT a second way of drawing a number against a limit — that stays the meter, and only
+ * This is NOT a second way of drawing a number against a limit. That stays the meter, and only
  * the meter. A sparkline answers a different question: which way has this been going. Nothing
  * here compares a value to a ceiling.
  *

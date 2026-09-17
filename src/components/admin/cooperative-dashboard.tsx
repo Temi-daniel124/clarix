@@ -8,7 +8,7 @@ import { formatNaira } from "@/lib/format";
 import type { AttentionItem, CooperativeSummary } from "@/lib/supabase/admin-members";
 
 /**
- * The Cooperative Dashboard — admin blueprint 4.1.
+ * The Cooperative Dashboard (admin blueprint 4.1).
  *
  * Same tap-to-expand KPI row as the employee dashboard, through the same component, over the
  * four figures that matter to a cooperative rather than to a person. Then the section the
@@ -82,7 +82,7 @@ export function CooperativeDashboard({
       <header className="mt-2">
         <h1 className="type-page-title text-text">
           {greeting()}
-          {firstName ? `, ${firstName}` : ""} — here is {cooperativeName} today.
+          {firstName ? `, ${firstName}` : ""}, here is {cooperativeName} today.
         </h1>
       </header>
 
@@ -127,7 +127,7 @@ export function CooperativeDashboard({
 }
 
 /**
- * "Attention required" — the blueprint's words for what makes this screen worth returning to.
+ * "Attention required": the blueprint's words for what makes this screen worth returning to.
  *
  * When it is empty it says so rather than disappearing, because an admin needs to know the
  * difference between "nothing is waiting" and "this section did not load". Nothing is ever

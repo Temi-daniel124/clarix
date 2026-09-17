@@ -5,7 +5,7 @@ import { EligibilityPreview } from "@/components/clarix/eligibility-preview";
 import { HeroBackdrop } from "./hero-backdrop";
 
 /**
- * Landing hero — employee blueprint 1.1, built on the Watermelon hero-32 structure.
+ * Landing hero (employee blueprint 1.1), built on the Watermelon hero-32 structure.
  *
  * Kept from it: the staggered entrance choreography. Nav drops in first, the title rises with
  * more weight behind it, the subtitle follows lighter and quicker, the call to action scales
@@ -14,7 +14,7 @@ import { HeroBackdrop } from "./hero-backdrop";
  *
  * Replaced entirely: the sunflower photograph, the "Haven / Seamless AI Solutions" copy, the
  * serif display face, the sky-blue palette, the white glass buttons, and the play-button CTA
- * that pointed at a video that does not exist. hero-32 also ships no carousel, which suits —
+ * that pointed at a video that does not exist. hero-32 also ships no carousel, which suits,
  * this is one composed static background, built from the product's own motif.
  *
  * The hero's visual is the real eligibility check running, not an illustration of one, which is

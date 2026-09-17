@@ -28,7 +28,7 @@ const TYPE_LABELS: Record<EntryType, string> = {
 };
 
 /**
- * Record Savings Contribution / Repayment — admin blueprint 5.4.
+ * Record Savings Contribution / Repayment (admin blueprint 5.4).
  *
  * "A ledger entry, never a live transaction, consistent with Clarix never moving money itself"
  * (DECISIONS.md D004). The wording on the screen says so plainly rather than leaving it implied,
@@ -195,7 +195,7 @@ export function RecordEntryForm({
           <Input
             id="description"
             name="description"
-            placeholder="Optional — e.g. September deduction"
+            placeholder="Optional, e.g. September deduction"
           />
         </div>
 
@@ -208,7 +208,7 @@ export function RecordEntryForm({
 
         <p className="type-caption max-w-[520px] text-text-muted">
           This records money that has already moved through payroll. Clarix holds no funds and
-          transfers nothing — the entry is the cooperative&apos;s own book, kept where the member
+          transfers nothing: the entry is the cooperative&apos;s own book, kept where the member
           can see it too.
         </p>
       </form>

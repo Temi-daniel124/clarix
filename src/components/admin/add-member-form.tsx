@@ -13,11 +13,11 @@ import { addMemberAction, type MemberActionState } from "@/app/admin/member-acti
 const INITIAL: MemberActionState = {};
 
 /**
- * Add Member — admin blueprint 5.3.
+ * Add Member (admin blueprint 5.3).
  *
  * "The ordinary, low-drama case of one new person joining after the bulk import already ran."
- * Three fields, and the staff ID validated as it is typed against the organization's own pattern
- * — the same rule, from the same column, that employee onboarding validates against, so a
+ * Three fields, and the staff ID validated as it is typed against the organization's own pattern.
+ * It is the same rule, from the same column, that employee onboarding validates against, so a
  * cooperative cannot record an ID the member could never match.
  *
  * What this writes is a roster entry, exactly as the import does. If that staff ID already has a
@@ -46,7 +46,7 @@ export function AddMemberForm({
 
       <h1 className="type-page-title mt-6 text-text">Add a member</h1>
       <p className="type-body mt-3 max-w-[520px] text-text-secondary">
-        For somebody joining after your import already ran. One person, three fields — no need to
+        For somebody joining after your import already ran. One person, three fields: no need to
         reopen the whole import for a single row.
       </p>
 
@@ -91,7 +91,7 @@ export function AddMemberForm({
             id="savingsBalance"
             name="savingsBalance"
             inputMode="decimal"
-            placeholder="Optional — leave blank for zero"
+            placeholder="Optional, leave blank for zero"
             aria-invalid={Boolean(state.fieldErrors?.savingsBalance)}
             className="tabular"
           />

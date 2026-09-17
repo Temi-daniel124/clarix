@@ -1,4 +1,4 @@
--- Clarix pgTAP suite 006 — the staff view of a member, and recording against them.
+-- Clarix pgTAP suite 006: the staff view of a member, and recording against them.
 --
 -- Runs ONLY on the GitHub Actions hosted runner (DECISIONS.md D015).
 --
@@ -116,7 +116,7 @@ select set_config(
 select is(
   (select available from public.capacity_for_user()),
   43250::numeric,
-  'the member''s own dashboard reports exactly the same remainder — one calculation, two doors'
+  'the member''s own dashboard reports exactly the same remainder. One calculation, two doors'
 );
 
 -- ---------------------------------------------------------------------------

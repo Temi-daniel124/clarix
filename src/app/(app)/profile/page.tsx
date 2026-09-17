@@ -14,13 +14,13 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Profile" };
 
 /**
- * Profile / Settings — blueprint 6.2.
+ * Profile / Settings (blueprint 6.2).
  *
  * Where an employee manages their own account, and deliberately nothing cooperative-specific:
  * every figure on this screen belongs to the person, not to any cooperative they have joined.
  *
  * A short identity summary at the top, then the four sections, then Log out set apart at the
- * bottom. Each section saves independently — there is no Save button for this page as a whole,
+ * bottom. Each section saves independently. There is no Save button for this page as a whole,
  * because there is no state on this page as a whole.
  */
 export default async function ProfilePage() {
