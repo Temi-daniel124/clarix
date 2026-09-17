@@ -24,7 +24,7 @@ const NOTES = [
   },
   {
     title: "How access requests work, and why they are time-boxed",
-    body: "This account has no standing sight of any member's savings, loans or salary. When a support case genuinely needs it, the way in is an access request naming the cooperative and the reason, which that cooperative's admin is told about, which expires on its own, and under which every record viewed is logged individually. That flow is not built yet, so today there is no path at all from this account to a member's records.",
+    body: "This account has no standing sight of any member's savings, loans or salary. When a support case genuinely needs it, the way in is an access request naming the cooperative and the reason, which that cooperative's admin is told about, which expires on its own, and under which every record viewed is logged individually. Outside a live grant there is no path at all from this account to a member's records.",
   },
   {
     title: "How to deactivate a cooperative safely",

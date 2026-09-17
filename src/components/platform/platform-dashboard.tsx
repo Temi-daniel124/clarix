@@ -104,9 +104,8 @@ export function PlatformDashboard({
           <div className="mt-4 rounded-feature border border-border bg-surface px-6 py-8">
             <p className="type-body text-text">Nothing needs you</p>
             <p className="type-secondary mt-2 max-w-[520px] text-text-secondary">
-              Invitations nobody has taken up, and access requests waiting on your decision,
-              appear here. Access requests are not built yet, so for now this section watches
-              invitations only.
+              Invitations nobody has taken up, and access requests still to activate, appear
+              here.
             </p>
           </div>
         ) : (
@@ -170,9 +169,9 @@ export function PlatformDashboard({
           )}
         >
           <ScrollText aria-hidden className="mr-1.5 inline size-3.5" strokeWidth={1.75} />
-          Read from what the platform records about itself, cooperatives created, and admins
-          taking up their invitations. The full audit log, which will carry policy changes and
-          access requests too, is not built yet.
+          Read from what the platform records about itself: cooperatives created, admins taking
+          up their invitations, policy changes, and access requests. The full log is under Audit
+          log.
         </p>
       </section>
     </div>

@@ -11,6 +11,15 @@ blueprint is now built**).
 
 ## Phase
 
+**Everything described below is on `main`.** The access-grant flow merged as pull request #11,
+and Parts 1 to 4 of the follow-up work (the `/reset-password` and `/privacy` screens plus the
+session hole found testing them, the payslip review window D031 opens, the roster-import and
+deduction-policy verifications, and the em dash sweep) merged as #13. #12 carried those four
+commits first and was closed automatically when its base branch disappeared on merging #11;
+GitHub refuses to reopen a pull request whose base is gone, so the same commits were rebased onto
+`main` with identical content and merged under the new number. Both feature branches,
+`slice-16-access-grants` and `slice-17-auth-gaps`, are deleted. No pull request is open.
+
 **Planning complete. Infra live. The employee blueprint is complete, Parts 1 to 6, every
 screen built.** Landing page, auth, onboarding, the persistent navigation shell, the home-base
 screens, the loan side with the reservation transaction that is the product's core mechanism,
@@ -889,7 +898,7 @@ breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15
 - [x] **Replaced by meaning, not by rule.** A dash before a conjunction or a subordinator became a
       comma; one before a new independent clause became a full stop and a capital; one introducing
       a definition or a list became a colon; a mid-sentence aside became a pair of commas or
-      parentheses. Citations of the form `— admin blueprint 5.2` became `(admin blueprint 5.2)`.
+      parentheses. A trailing citation of a blueprint section became `(admin blueprint 5.2)`.
 - [x] **UI copy first.** Fourteen dashes were standing in for a missing value on screen, where no
       punctuation is the right answer at all: those became words a member can read, "Not set",
       "Not scheduled", "None due", "Not known", "Not on file", "Not on Clarix", "Not entered" and
@@ -925,84 +934,96 @@ breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15
       rather than inventing a "reading your payslip" stage for something nothing is doing.
       Building it means adding a PDF text-extraction dependency, which needs a TOOLING-POLICY.md
       check and a SECURITY.md entry first, because it would see payslip files in cleartext.
-- [ ] **A cooperative-admin invitation for `coop.admin@fmcabeokuta.org.ng`**, holding an
-      `invited` admin role at Staff Multipurpose Cooperative (test data): the one seeded
-      cooperative with nothing set up, so the setup sequence has somewhere real to run. **Delete
-      it with the rest of the test data before go-live.**
+- [x] **Every seeded test record listed here previously has been deleted from the live project.**
+      Each entry was cross-checked against this inventory first, then removed: the four
+      "(test data)" cooperatives and everything that cascaded from them (nine loan products,
+      three memberships, five loans, twenty-eight savings rows, five roster entries, two staff
+      roles, two invitations, twelve audit entries, two access grants and the internal note), the
+      three catalogued accounts `pilot.tester@`, `coop.admin@` and `super.admin@fmcabeokuta.org.ng`
+      with their documents, notifications and platform-admin row, and the eight platform-level
+      audit entries that hang off no cooperative. Only the `organizations` row survived, which is
+      real (D019) and is at its statutory 33.3% of gross.
+- [ ] **One uploaded payslip file is orphaned in the `payslips` bucket.** Its `documents` row went
+      with the account that owned it, but Storage refuses a direct SQL delete
+      (`storage.protect_delete()`: "Use the Storage API instead"), and the Storage API needs
+      either that member's own session or the service-role key, which D027 keeps out of reach.
+      The file is `d42ed2e2-b221-4250-a6c8-22e55e76789c/591af24c-49f1-407f-92f0-b7bba931ffaa.pdf`
+      and it is unreferenced by anything. **Delete it from the Storage browser in the Supabase
+      dashboard.**
+- [ ] **An account this file never catalogued was found during the cleanup and deliberately left
+      alone.** `testcoopadmin@gmail.com` was created on 14 September, is confirmed, has never
+      signed in, and holds no membership, staff role, loan or platform-admin row. It appears in no
+      session record here, and it is an external address rather than an `fmcabeokuta.org.ng` test
+      one, so removing it was not this cleanup's call to make. **Decide whether it is yours and
+      delete it if not.**
 
-      Its password was generated inside the database from `gen_random_uuid()` and unseen by
-      anybody, so it was set by a one-off administrative statement against the live project and
-      the role has since been activated: the account is now an **active** cooperative admin. The
-      password is `ClarixTest-Coop-2026`, which is safe to write down here only because this
-      account is test data that goes before go-live.
-- [ ] **Four roster entries and one staff invitation at that same cooperative**, written through
-      the real screens while reviewing them: staff IDs 204817, 300121, 300122 and 300123, of
-      which 204817 matched the pilot tester and became an active membership carrying the imported
-      145,000: the roster-linking trigger doing its job, and also why that account now shows a
-      third cooperative. The invitation to `test.officer@fmcabeokuta.org.ng` is still unclaimed,
-      and cannot be claimed: creating that account needs either a sending domain or one permitted
-      `insert` into `auth.users`, neither of which exists yet. All of it goes before go-live with
-      everything else.
-- [ ] **The pilot tester now also holds an active officer role** at Staff Multipurpose
-      Cooperative (test data), titled Secretary, invited through the admin's own Officers screen
-      and accepted through the real invitation screen while verifying the officer blueprint.
-      Its permissions are the record-only preset: see members, record entries, no approving and
-      no importing. Two consequences worth knowing before using that account for employee-side
-      testing: its password was reset to `ClarixTest-Officer-2026`, and signing in now lands on
-      the officer home at `/admin` rather than the employee dashboard, which is still reachable
-      at `/dashboard`. Remove the role, or the whole account, with the rest of the test data.
+### The demo environment
 
-      That role was used to verify Parts 5 to 8 and left four things behind at that cooperative,
-      all of which go with the rest of the test data: a fifth roster entry, staff ID 300124
-      ("Kemi Alabi"), added through the officer's own Add member screen; a ₦100,000 loan
-      submitted by that account on the employee side and then **approved by it on the staff
-      side**, which is now active at ₨8,333 a month; the member notification that approval wrote;
-      and the audit-log entry naming the officer as the actor. Its permissions were temporarily
-      widened to all four through the real Officer Management screen and set back to record-only
-      afterwards, so what is stored now is what that screen actually granted.
-- [ ] **A test Super Admin, `super.admin@fmcabeokuta.org.ng`**, seeded directly into
-      `auth.users` and `platform_admins` because blueprint 1.1 describes the first one as a
-      one-time database entry and there is no screen that could create it. Its password is
-      `ClarixTest-Platform-2026`. **This is provisional on purpose**: the real operator account
-      is a deliberate decision to be made closer to go-live, not guessed at now, so delete this
-      one with the rest of the test data.
+Everything below was written by administrative SQL against the live project, the same way every
+prior account was and never through the service-role key. **All of it is demo data and goes before
+go-live**, but nothing carries a "(test data)" suffix any more: the names are plausible so the
+product can be shown to somebody without the seams showing.
 
-      Worth knowing for the next account created this way: GoTrue refuses to sign in a row whose
-      token columns are NULL, which reads as "that email address and password don't match an
-      account" even though the hash is correct. Set `confirmation_token`, `recovery_token`,
-      `email_change`, `email_change_token_new`, `email_change_token_current`, `phone_change`,
-      `phone_change_token` and `reauthentication_token` to empty strings.
-- [ ] **A fourth cooperative, `Nursing Staff Cooperative (test data)`**, created through the real
-      5.3 screen while verifying it, along with its internal note and an unclaimed admin
-      invitation to `nursing.admin@fmcabeokuta.org.ng` in the name of "Folake Adeniyi". It sits
-      inactive, which is correct for a cooperative whose admin has not accepted. Goes with the
-      rest of the test data.
-- [ ] **Two access grants against Staff Multipurpose Cooperative (test data)**, both now ended,
-      one revoked, one expired, plus the notifications they sent that cooperative's admin, the
-      platform events recording them, and two `elevated_view` rows in that cooperative's own audit
-      log. They stay: a record of exceptions you can tidy away is not a record. They go with the
-      rest of the test data before go-live.
-- [ ] **Four platform audit entries**, written while verifying Parts 6 and 8: the deduction cap
-      moved from 33.3% to 30% and back again through the real confirmation step, and one platform
-      admin granted and revoked. The cap is back at its statutory value; the entries stay, because
-      an audit log you can tidy is not an audit log. They go with the rest of the test data.
-- [ ] **Test data is seeded in the live database and must be deleted before go-live.** All of
-      it was written directly rather than in a migration, the same way the pilot test account
-      was, so none of it will follow the schema into production by accident. What exists: three
-      cooperatives carrying a "(test data)" suffix so they cannot be mistaken for real FMC
-      Abeokuta cooperatives; nine loan products across them, six public; the pilot tester holding
-      an active membership at two of them plus one pending application; four loans against those
-      memberships: an active 360,000 over 24 months, a reserved 180,000 over 12 months, a
-      completed 120,000, and a 120,000 reservation created through the application screen during
-      verification; and 26 `savings_transactions` rows backing 330,000 of savings and the
-      repayment history the active loan's progress is computed from. **One of those reservations
-      is now an approved, active loan**: the 120,000 at Allied Health Savings Cooperative was
-      approved through the real review screen while checking Part 6, which also produced the
+- [x] **Five cooperatives**, each with a description and joining requirements in its own voice:
+      FMC Abeokuta Staff Multipurpose Cooperative Society, Medical and Health Workers Thrift and
+      Credit Society, Allied Health Professionals Savings and Loans Cooperative, Nurses and
+      Midwives Cooperative Society, and Administrative Staff Savings Cooperative.
+- [x] **Twenty-eight loan products**, five or six per cooperative, each with its own savings ratio,
+      maximum tenure and interest terms written the way a Nigerian cooperative writes them
+      ("5% flat per annum, deducted at source with the monthly contribution"). Six are private to
+      their committee rather than public.
+- [x] **Seventy member and roster rows.** Twenty-four memberships (twenty-two active, two pending
+      so the admin's applications queue is not empty) and forty-six roster entries, of which
+      twenty-two are linked to a membership exactly as the roster trigger would have linked them
+      and twenty-four are staff the cooperative carries on its books who have not joined Clarix,
+      which is the ordinary state of a roster after an import.
+- [x] **Believable histories, not round numbers.** 229 savings rows: 148 monthly contributions
+      scaled to each member's salary and their cooperative's minimum, 77 loan repayments tied to
+      the loan each one is paying down, and four recorded part-withdrawals so no ledger is a
+      straight line upward.
+- [x] **Twenty loans across the whole lifecycle**, and now twenty-one: active, reserved and
+      awaiting a decision, completed, and one rejected. Every member's committed total sits under
+      their own cap, checked with `capacity_core()` for all fourteen: the tightest is Blessing Eze
+      at ₦30,000 committed against a ₦50,882 cap, which is what a member close to the limit is
+      supposed to look like.
+- [x] **Salaries and staff IDs that match the employer.** Six-digit IPPIS numbers against the
+      organization's own `^[0-9]{6}$` pattern, and gross pay from ₦152,800 for an administrative
+      officer to ₦642,000 for a consultant.
+- [x] **One outstanding officer invitation** and three of the platform operator's private internal
+      notes, so the Officers screen and the cooperative detail screen both have real rows.
+
+- [x] **Walked end to end through the real product, on the production deployment.** Signed in as
+      Adebayo Ogunleye, whose dashboard read ₦594,000 saved, two active loans, ₦46,600 deducted
+      and ₦115,238 available, every figure matching `capacity_core()` exactly. Applied for
+      ₦345,000 over 24 months at the multipurpose society; the live preview showed the request at
+      ₦14,375 against a ₦161,838 cap and said ₦100,863 would still be free. Submitted, and the
+      reservation was created with a seven-day hold. Signed in as the officer Chidi Okonkwo, whose
+      navigation correctly lacks the Manage cooperative section the admin gets, opened the
+      application, saw the same meter and the same ₦46,600 "committed elsewhere" without any
+      cooperative being named, and approved it through the Timed Undo. The database then held the
+      loan `active`, approved by that officer, with the member's notification and the audit entry
+      carrying the capacity snapshot. Signed in as the admin and as the platform operator and both
+      read their own screens correctly.
+
+- [x] **Two stale statements were found during that walk and corrected.** The Platform Dashboard
+      and this role's Help screen both still said the access-grant flow was not built, which
+      stopped being true when it merged. The Help wording mattered most: it told a platform
+      operator there was "no path at all from this account to a member's records", which is now
+      the opposite of the truth outside a live grant.
+- [ ] **A loan application does not record which product it is for.** The apply screen (5.5) has no
+      product picker, so `loan_product_id` is null and the reviewer's savings-ratio panel says
+      there is no ratio to check against. The cooperative's own rule is therefore never applied to
+      an application, only the deduction cap is. Worth a decision before go-live: either the apply
+      screen picks a product, or the ratio panel stops implying one was expected.
+- [ ] **No demo member has a payslip on file**, because a file cannot be put into Storage by SQL.
+      Salary figures are set and marked verified, so every screen that reads a salary works, but
+      the payslip-review window D031 opens has nothing to show until somebody uploads one through
+      the real screen.
       project's first notification row and first audit-log entry.
-- [ ] **Nothing writes a notification row.** The table, its policies and the screen are real and
-      were exercised against the live project, but the list will stay empty until the cooperative
-      admin/officer blueprint can approve a loan, accept a membership, or publish a package
-      (D025). Expected, and stated on the screen itself.
+- [x] **Notifications are written and read.** A loan decision writes the member's row, and an
+      access request writes the cooperative admin's, both in the same statement as the thing they
+      describe. What is still missing is the email: the toggles govern mail nothing sends, and
+      that waits on the same verified sending domain everything else does.
 - [ ] **The Help contact form cannot deliver yet.** It posts to Resend's API against
       `RESEND_API_KEY`, which is not provisioned, and even once it is, Resend will only deliver
       to the account owner until a sending domain is verified: the same blocker holding up
@@ -1018,8 +1039,9 @@ breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15
 - [ ] Notification preferences govern email that nothing sends yet. The toggles write to the
       database and are read back correctly; what reads them at send time arrives with the
       notification writers.
-- [ ] The remaining tables from `docs/DATA-MODEL.md`: `deduction_reconciliation`,
-      `access_grants`, `audit_log`.
+- [ ] `deduction_reconciliation` is the last table in `docs/DATA-MODEL.md` with no rows in it.
+      The screen that fills it is built; nothing has been reconciled against a real payroll file
+      yet, because there has not been one.
 - [ ] **XLSX import is written but has only been exercised against CSV.** The reader unzips and
       parses the two XML parts a roster needs, which covers a plain sheet out of Excel,
       LibreOffice or Google Sheets; a file using dates, formulas or a second worksheet is not
@@ -1055,8 +1077,9 @@ breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15
       so completing a real login on `clarix-3w5i.vercel.app` is a one-minute check only you can
       do.
 - [ ] `RESEND_API_KEY` / `AI_PAYSLIP_API_KEY` not provisioned.
-- [ ] A test account, `pilot.tester@fmcabeokuta.org.ng`, exists in `auth.users` and was created
-      directly in the database rather than through signup. **Delete it before go-live.**
+- [ ] Fifteen demo accounts exist in `auth.users`, created directly in the database rather than
+      through signup, because signup still cannot complete. **Delete all of them before go-live**;
+      they are listed in the demo environment section above.
 - [ ] No screen has been reviewed on a real phone. The 390px review was done in a same-origin
       iframe, which gives CSS media queries a genuine narrow viewport but not real touch
       targets, real safe-area insets, or iOS Safari's own rendering.
@@ -1084,10 +1107,10 @@ breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15
    it is not serving anything.
 4. Turn on branch protection for `main`, so the database check blocks a merge rather than merely
    reporting.
-5. Delete the `pilot.tester@fmcabeokuta.org.ng` account, its uploaded probe payslip, and all
-   the seeded test data catalogued above, before go-live. That account now also carries a
-   fictional phone number and one muted-then-restored notification preference, both written
-   through the Profile screen while verifying it.
+5. Delete the whole demo environment before go-live: fifteen accounts, five cooperatives and
+   everything hanging off them, all catalogued above. Two loose ends need you rather than SQL: one
+   orphaned payslip file in Storage, which only the dashboard's Storage browser can remove, and
+   the uncatalogued `testcoopadmin@gmail.com` account, which was left alone deliberately.
 6. **No blueprint screen is left to build.** What remains is the three gaps none of them assigns
    a screen to: loan completion and the expiry sweep, Reports (admin 7.6, deferred by its own P1
    marking), and submitting a loan application on a member's behalf (officer 6.2). Each needs a
