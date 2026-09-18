@@ -121,5 +121,9 @@ function formatUpdated(iso: string): string {
     month: "long",
     hour: "numeric",
     minute: "2-digit",
+    // Rendered on the server, which runs in UTC in production. Without this the label reads an
+    // hour behind for every member, and a whole day behind between midnight and 1am Lagos time.
+    // Every figure on this screen is about a Nigerian payroll; the clock beside them should be too.
+    timeZone: "Africa/Lagos",
   }).format(new Date(iso));
 }
