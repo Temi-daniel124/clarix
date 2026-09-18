@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getRequestUser } from "@/lib/supabase/server";
 import type { Capacity } from "@/lib/eligibility";
 
 export type LoanStatus =
@@ -76,9 +76,7 @@ export async function loadCapacity(proposedMonthlyRepayment = 0): Promise<Capaci
 export async function loadLoans(): Promise<LoanSummary[]> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) return [];
 
   const { data: memberships } = await supabase

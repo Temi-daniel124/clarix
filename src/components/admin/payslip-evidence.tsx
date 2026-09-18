@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { ExternalLink, FileText, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { formatNaira } from "@/lib/format";
+import { formatNaira, formatShortDate } from "@/lib/format";
 import { payslipLinkAction } from "@/app/admin/payslip-actions";
 import type { ReviewPayslip } from "@/lib/supabase/payslip-review";
 
@@ -112,9 +112,5 @@ function Fact({ label, value }: { label: string; value: string }) {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatShortDate(iso);
 }

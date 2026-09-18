@@ -1,3 +1,4 @@
+import { formatDayMonth, formatFullDate } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
 import type { NotificationCategory } from "@/lib/notifications";
 
@@ -63,9 +64,9 @@ export function relativeTime(iso: string, now: Date = new Date()): string {
   if (days === 1) return "yesterday";
   if (days < 7) return `${days} days ago`;
 
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "long",
-    ...(then.getFullYear() === now.getFullYear() ? {} : { year: "numeric" }),
-  }).format(then);
+  // Older than a week: the date itself. The year is dropped inside the current one, where it
+  // would be noise, and kept beyond it, where it is the whole point.
+  return then.getFullYear() === now.getFullYear()
+    ? formatDayMonth(then)
+    : formatFullDate(then);
 }

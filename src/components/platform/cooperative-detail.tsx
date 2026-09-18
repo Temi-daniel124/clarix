@@ -17,6 +17,7 @@ import {
   resendAdminInviteAction,
   setCooperativeStatusAction,
 } from "@/app/platform/actions";
+import { formatFullDate } from "@/lib/format";
 
 const UNDO_SECONDS = 8;
 
@@ -221,9 +222,5 @@ function Fact({ label, value, note }: { label: string; value: string; note?: str
 
 function formatDate(iso: string | null): string {
   if (!iso) return "Unknown";
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatFullDate(iso);
 }

@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { formatMonthYear } from "@/lib/format";
 
 /**
  * Reports (admin blueprint 7.6).
@@ -33,7 +34,7 @@ function monthKey(iso: string): string {
 }
 
 function monthLabel(month: string): string {
-  return new Date(month).toLocaleDateString("en-NG", { month: "short", year: "numeric" });
+  return formatMonthYear(month);
 }
 
 /**

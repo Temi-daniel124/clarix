@@ -43,6 +43,22 @@ const SCRIPT = `(function(){
   }
 })();`;
 
+/**
+ * A bare inline `<script>`, deliberately, and it has to stay one.
+ *
+ * `next/script` with `beforeInteractive` was tried here and reverted. Next injects that form
+ * through its own runtime rather than leaving it in the head to be parsed, so it runs at
+ * `document.readyState === "interactive"`, after the body exists: measured, not assumed. Anyone
+ * who has chosen a theme would get a flash of the other one on every page load, which is the
+ * exact problem this file exists to prevent.
+ *
+ * The cost of keeping it bare is a React warning, "Encountered a script tag while rendering React
+ * component", logged whenever React renders this element on the client. That happens on the 404
+ * and error boundaries and nowhere else, it is a development-build message that production never
+ * emits, and it describes something already true and intended: the script is meant to run from
+ * the server-rendered HTML, never from a client render. A visible flash for every member is not
+ * worth trading for a console line no member sees.
+ */
 export function ThemeScript() {
   return <script dangerouslySetInnerHTML={{ __html: SCRIPT }} />;
 }

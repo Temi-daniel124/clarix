@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight, Clock } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { formatNaira } from "@/lib/format";
+import { formatFullDate, formatNaira } from "@/lib/format";
 import { MeterBar } from "./meter-bar";
 import type { LoanSummary } from "@/lib/supabase/loans-data";
 
@@ -90,5 +90,5 @@ export function StatusPill({ status }: { status: string }) {
 }
 
 export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-NG", { day: "numeric", month: "long", year: "numeric" });
+  return formatFullDate(iso);
 }

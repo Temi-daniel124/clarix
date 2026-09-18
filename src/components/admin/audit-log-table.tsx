@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, ScrollText, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { AUDIT_ACTION_LABELS, describeAction, type AuditEntry } from "@/lib/audit";
+import { formatShortDateTime } from "@/lib/format";
 
 /**
  * Cooperative Audit Log (admin blueprint 8.3).
@@ -201,11 +202,5 @@ export function AuditLogTable({
 }
 
 function formatWhen(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(iso));
+  return formatShortDateTime(iso);
 }

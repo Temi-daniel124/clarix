@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Receipt, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { MeterBar } from "@/components/clarix/meter-bar";
-import { clampRatio, formatNaira } from "@/lib/format";
+import { clampRatio, formatNaira, formatShortDate } from "@/lib/format";
 import type { LoanSummaryRow } from "@/lib/supabase/admin-loans";
 
 /**
@@ -147,7 +147,5 @@ export function ActiveLoansList({ loans }: { loans: LoanSummaryRow[] }) {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", { day: "numeric", month: "short", year: "numeric" }).format(
-    new Date(iso),
-  );
+  return formatShortDate(iso);
 }

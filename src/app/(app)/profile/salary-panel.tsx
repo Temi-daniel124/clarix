@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FileText, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RevealCopy } from "@/components/clarix/reveal-copy";
-import { formatNaira } from "@/lib/format";
+import { formatFullDate, formatNaira } from "@/lib/format";
 
 /**
  * Salary information (blueprint 6.2), second section.
@@ -81,9 +81,5 @@ export function SalaryPanel({
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatFullDate(iso);
 }

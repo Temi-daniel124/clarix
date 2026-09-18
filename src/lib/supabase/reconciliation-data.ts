@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { formatMonthYearLong } from "@/lib/format";
 
 /**
  * Monthly Reconciliation (admin blueprint 7.5).
@@ -39,16 +40,16 @@ export function recentPeriods(count = 12): { period: string; label: string }[] {
 
     return {
       period,
-      label: new Intl.DateTimeFormat("en-NG", { month: "long", year: "numeric" }).format(date),
+      label: formatMonthYearLong(date),
     };
   });
 }
 
 export function periodLabel(period: string): string {
   const [year, month] = period.split("-").map(Number);
-  return new Intl.DateTimeFormat("en-NG", { month: "long", year: "numeric" }).format(
-    new Date(year, month - 1, 1),
-  );
+  // Built from the period's own year and month rather than parsed from a string, so this one is
+  // already a local date and needs no zone applied to it beyond the shared formatter's.
+  return formatMonthYearLong(new Date(year, month - 1, 1));
 }
 
 export async function loadReconciliation(
