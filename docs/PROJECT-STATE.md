@@ -915,6 +915,43 @@ breakdown was 373 in `.tsx`, 172 in `.ts`, 142 in `.sql`, 947 in Markdown and 15
 - [x] **Verified.** `tsc --noEmit`, `eslint`, `next build` and all 46 unit tests pass, and a
       repository-wide search for the character returns nothing outside that managed block.
 
+### Both ends of the loan lifecycle (migration 029)
+
+`loan_status` has carried `completed` and `expired` since migration 006 and nothing could write
+either. The two turned out to be different problems, and the work is clearer for keeping them
+apart.
+
+- [x] **Closing a loan was the one that mattered to the numbers.** An active loan counts against
+      the member's deduction cap at *every* cooperative they belong to, and nothing ever moved one
+      on, so a loan repaid in 2025 was still holding capacity. `complete_loan()` releases it, takes
+      `can_approve_loans` rather than `can_record_savings` (closing a loan is a loan decision, not
+      a bookkeeping entry), and records in the audit log how much was actually recorded against the
+      loan, which may be less than it was for.
+- [x] **The expiry sweep was the one that mattered to the record, and it exposed something worse
+      than a stale status.** A lapsed reservation was excluded from the waiting list, because it
+      cannot be decided, and was not in the decided list either, because its stored status still
+      said `reserved`. It appeared on no screen at all. `expire_lapsed_reservations()` moves it to
+      `expired`, where the queue's Recently decided view shows it as "The hold lapsed before a
+      decision", and the loader now returns the lapsed set so the queue can say how many there are
+      rather than silently dropping them.
+- [x] **Tidying frees nothing, and the screen says so.** A lapsed hold stopped counting the moment
+      it lapsed (D024), so every figure was already right. The notice on the queue states that
+      plainly rather than implying capacity was recovered.
+- [x] **Blueprint 6.4's Loan Detail is now real.** An active loan shows what has been repaid
+      against what was borrowed on the same used-against-a-limit meter used everywhere else, the
+      repayment history behind it, and the closing action. Where the ledger does not add up, the
+      closing form requires a short note and keeps it with the audit entry.
+- [x] **Neither runs on a timer.** There is no scheduler in this project, and a sweep firing
+      unwatched is a worse answer than one an admin performs and the log remembers.
+- [x] **pgTAP suite 013** holds the asymmetry in place: closing must move capacity, tidying must
+      not, and both must refuse an officer who can record money but not decide loans. Sixteen
+      assertions.
+- [x] **Verified against the live demo data.** A reservation whose hold ran out four days earlier
+      was swept from the admin's own queue, landing as `expired` with an audit entry naming
+      Funmilayo Adeyemi as the actor. A ₦400,000 loan with ₦109,800 recorded against it was closed
+      through the Timed Undo with a note explaining the ₦290,200 gap; the audit entry carries both
+      figures, and the member's committed total fell from ₦18,300 to zero.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -1132,19 +1169,14 @@ product can be shown to somebody without the seams showing.
    everything hanging off them, all catalogued above. Two loose ends need you rather than SQL: one
    orphaned payslip file in Storage, which only the dashboard's Storage browser can remove, and
    the uncatalogued `testcoopadmin@gmail.com` account, which was left alone deliberately.
-6. **No blueprint screen is left to build.** What remains is the three gaps none of them assigns
-   a screen to: loan completion and the expiry sweep, Reports (admin 7.6, deferred by its own P1
-   marking), and submitting a loan application on a member's behalf (officer 6.2). Each needs a
-   decision about where it belongs before it needs code.
+6. **No blueprint screen is left to build.** Loan completion and the expiry sweep are now built
+   (below). What remains is Reports (admin 7.6, deferred by its own P1 marking) and submitting a
+   loan application on a member's behalf (officer 6.2).
 7. Decide what happens to **submitting a loan application on a member's behalf** (officer
    blueprint 6.2). It is the one screen no role has: members apply for themselves, staff can only
    read and decide. The permission panel already names it as not built rather than pretending
    otherwise, so this is a scheduling decision rather than a hidden gap.
-7. Settle where **loan completion and the expiry sweep** live. Neither blueprint assigns them a
-   screen: marking a loan repaid in full and tidying a lapsed reservation to `expired` are real
-   gaps in the loan lifecycle rather than deferred features. Capacity is already correct without
-   the sweep, because expiry is evaluated at read time (D024), so this is about the record
-   reading true rather than about the arithmetic.
+7. Nothing further on the loan lifecycle: both ends are built and verified (below).
 
 ## Decision/scope drift check
 

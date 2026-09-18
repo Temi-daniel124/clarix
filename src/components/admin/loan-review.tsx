@@ -9,14 +9,17 @@ import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
 import { clampRatio, formatNaira } from "@/lib/format";
 import { LoanDecision } from "./loan-decision";
+import { LoanClose } from "./loan-close";
 import { PayslipEvidence } from "./payslip-evidence";
 import type { ReviewPayslip } from "@/lib/supabase/payslip-review";
-import type { LoanApplication } from "@/lib/supabase/admin-loans";
+import type { LoanApplication, RepaymentEntry } from "@/lib/supabase/admin-loans";
 
 type Application = LoanApplication & {
   savingsBalance: number;
   product: { name: string; minSavingsRatio: number; maxTenureMonths: number } | null;
   salaryConfirmed: boolean;
+  repaid: number;
+  repayments: RepaymentEntry[];
 };
 
 /**
@@ -237,6 +240,20 @@ export function LoanReview({
             </p>
           </div>
         )}
+
+        {/* Blueprint 6.4: what is outstanding, the history behind it, and the one action that
+            ends the loan. Only while it is running, since a closed loan has nothing left to do. */}
+        {application.status === "active" ? (
+          <LoanClose
+            loanId={application.id}
+            memberName={application.memberName ?? "this member"}
+            requestedAmount={application.requestedAmount}
+            monthlyRepayment={application.monthlyRepayment}
+            repaid={application.repaid}
+            repayments={application.repayments}
+            canClose={canDecide}
+          />
+        ) : null}
       </div>
 
       <div className="mt-6">
