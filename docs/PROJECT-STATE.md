@@ -952,6 +952,39 @@ apart.
       through the Timed Undo with a note explaining the ₦290,200 gap; the audit entry carries both
       figures, and the member's committed total fell from ₦18,300 to zero.
 
+### Reports (admin blueprint 7.6)
+
+The blueprint's own spec for this is four lines long, and deliberately so: it calls Reports a P1
+fast-follow and asks for "a short list of a few pre-built views (member growth over time, total
+savings held, reconciliation shortfall trend), each opening a simple chart-plus-table page rather
+than a configurable report-builder". What is built is exactly that list and nothing beside it. No
+date-range picker, no grouping, no export, all of which the blueprint calls reasonable later
+additions rather than part of this.
+
+- [x] **Three reports, each reading the records that already exist.** Member growth counts
+      memberships by the month each joined; total savings held is rebuilt from the ledger month by
+      month rather than read off today's balance, applying the same rule the balance trigger does
+      (contributions add, recorded withdrawals subtract, loan repayments are neither); deduction
+      shortfall compares expected against received per period, derived rather than stored as
+      docs/DATA-MODEL.md specifies.
+- [x] **No new grant, and none needed.** Every read goes through the ordinary authenticated client
+      and the policies that already existed. A report is a different arrangement of rows this staff
+      member could already open one at a time, and `can_view_members` gates the screen for the same
+      reason it gates the member list.
+- [x] **The chart is hand-drawn SVG, not a library.** TOOLING-POLICY.md sets a bar a dependency has
+      to clear, and three read-only line charts do not clear it. It also keeps the palette on design
+      tokens rather than a library's defaults.
+- [x] **It is not a second meter.** DESIGN_SYSTEM.md reserves the meter and rolling number for a
+      value against a ceiling. Nothing in a report has a ceiling: these answer which way something
+      has gone, which is the question the dashboard sparkline already answers in miniature.
+- [x] **The shortfall report has no data, and says why.** `deduction_reconciliation` has never been
+      written to, so rather than draw an empty axis that reads as a flat trend, the screen explains
+      that a month has to be entered on the Reconciliation screen first, and that an empty chart
+      would imply payroll sent nothing, which is a different claim entirely.
+- [x] **Verified against the live demo data.** Savings held reads ₦910,000 today from ₦960,000
+      contributed less ₦50,000 withdrawn, with fifteen months of month-end figures behind it;
+      member growth reads seven active members with the month each joined.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is
@@ -1169,9 +1202,9 @@ product can be shown to somebody without the seams showing.
    everything hanging off them, all catalogued above. Two loose ends need you rather than SQL: one
    orphaned payslip file in Storage, which only the dashboard's Storage browser can remove, and
    the uncatalogued `testcoopadmin@gmail.com` account, which was left alone deliberately.
-6. **No blueprint screen is left to build.** Loan completion and the expiry sweep are now built
-   (below). What remains is Reports (admin 7.6, deferred by its own P1 marking) and submitting a
-   loan application on a member's behalf (officer 6.2).
+6. **No blueprint screen is left to build.** Loan completion, the expiry sweep and Reports are
+   all built (below). The only thing any blueprint names that does not exist is submitting a loan
+   application on a member's behalf (officer 6.2).
 7. Decide what happens to **submitting a loan application on a member's behalf** (officer
    blueprint 6.2). It is the one screen no role has: members apply for themselves, staff can only
    read and decide. The permission panel already names it as not built rather than pretending
