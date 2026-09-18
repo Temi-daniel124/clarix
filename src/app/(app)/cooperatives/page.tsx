@@ -71,7 +71,7 @@ export default async function MyCooperativesPage() {
                 {cooperative.status === "active" ? (
                   <p className="type-caption mt-1 text-text-muted">Savings balance</p>
                 ) : (
-                  <p className="type-caption mt-1 flex items-center gap-1.5 text-warning">
+                  <p className="type-caption mt-1 flex items-center gap-2 text-warning">
                     <Clock aria-hidden strokeWidth={2} className="size-3.5" />
                     {cooperative.status === "pending"
                       ? "Waiting for this cooperative to review your application"

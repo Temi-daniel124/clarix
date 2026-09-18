@@ -60,7 +60,7 @@ export function LoanCard({ loan, showCooperative = true }: { loan: LoanSummary; 
         ) : null}
 
         {loan.status === "reserved" && loan.reservationExpiresAt ? (
-          <p className="type-caption mt-2 flex items-center gap-1.5 text-warning">
+          <p className="type-caption mt-2 flex items-center gap-2 text-warning">
             <Clock aria-hidden strokeWidth={2} className="size-3.5" />
             Held until {formatDate(loan.reservationExpiresAt)}
           </p>
@@ -83,7 +83,7 @@ export function StatusPill({ status }: { status: string }) {
           : "border-border text-text-muted";
 
   return (
-    <span className={cn("inline-flex rounded-full border px-2.5 py-0.5 type-caption", tone)}>
+    <span className={cn("inline-flex rounded-full border px-3 py-1 type-caption", tone)}>
       {STATUS_LABEL[status] ?? status}
     </span>
   );

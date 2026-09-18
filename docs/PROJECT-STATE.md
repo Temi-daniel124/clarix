@@ -1025,11 +1025,8 @@ than a cookie read.
 - [x] **Nothing about behaviour or appearance changed.** Every caller receives exactly what it
       received before; the only difference is that the second caller is served from the first
       caller's result rather than repeating the work.
-- [ ] **The remaining cost is structural, and fixing it needs a decision rather than a commit.**
-      Every staff page is `force-dynamic`, so Next cannot prefetch any of it, and with no loading
-      boundary the previous screen simply sits there until the whole payload arrives. The largest
-      remaining win is showing something immediately on click, and that is a visible change to how
-      the product behaves, so it is flagged here rather than taken unilaterally.
+- [x] **The loading boundary is built**, as the next section describes. It was flagged rather
+      than taken last round because it changes what appears between a click and a screen.
 
 ### The visual QA pass, and what it could not cover
 
@@ -1041,11 +1038,108 @@ than a cookie read.
       re-upload, notifications, profile and help; the staff side covered members, applications,
       loan products, officers, the public profile, import, reconciliation, reports, the audit log,
       notifications, profile and help.
-- [ ] **The mobile half of this pass did not happen, and should not be recorded as though it
-      did.** Resizing the browser window is ignored in this environment: `resize_window` reports
-      success while `window.outerWidth` stays at 1280, so the media queries that drive the mobile
-      layout never engage and there is nothing to inspect. A genuine mobile pass needs either a
-      device, or a driver that can set the viewport, and it remains outstanding.
+- [x] **The mobile half of this pass is done**, recorded in its own section below. It was
+      outstanding at the end of the previous round because resizing the browser window is ignored
+      in this environment.
+
+### A loading state for every shell
+
+Every screen behind a signed-in shell is `force-dynamic`, so Next has nothing it can prefetch and
+nothing to show between a click and the answer. On a slow connection the previous screen simply
+sat there, and the product read as frozen rather than busy.
+
+- [x] **`loading.tsx` in all three shells**: `(app)` for members, `admin/(shell)` for cooperative
+      admins and officers, and `platform/(shell)` for the operator. One boundary per shell covers
+      every route beneath it, so the loading state is consistent across the whole product rather
+      than only on the routes that were profiled.
+- [x] **It is the motif the design system already specified, not a new one.** DESIGN_SYSTEM.md
+      lists, under the signature motif, "the app's own splash/loading state, as a small ring
+      filling", and nothing had built it. `LoadingRing` is the wordmark's own ring (same radius,
+      stroke and viewBox) with its arc filling on a loop. It fills rather than spins, because a
+      meter filling says "working" in this product's own vocabulary.
+- [x] **It honours reduced motion**: the ring is drawn at rest, two thirds filled, exactly as the
+      wordmark draws it.
+- [x] **Nothing about a loaded screen changes.** The boundary renders inside the shell's own
+      `<main>`, so the navigation stays put and only the content area shows the ring, and it is
+      replaced the instant the real screen is ready. It is deliberately not a skeleton: a skeleton
+      guesses the shape of what is coming and is wrong the moment a screen changes.
+- [x] **Verified in all three shells at mobile and desktop width.** A click was followed by polling
+      for the ring under the server's real latency: it appeared in all six cases, carrying the
+      navigation with it (the destination tab already active), and was gone once the screen landed.
+      With the boundaries present, `main`'s first child is each page's own root element on all
+      twelve screens checked, so the boundary contributes no DOM to a loaded screen, which is what a
+      Suspense boundary is.
+- [ ] **Two things were not verified, and should not be read as though they were.** A pixel diff of
+      loaded screens with and without the boundaries could not run: removing them forces a recompile
+      that exhausted this machine's memory twice. And in development the ring appeared about a
+      second after the click, because each shell's layout awaits the signed-in context before the
+      boundary can stream and development does not prefetch. In production `<Link>` prefetches a
+      dynamic route's loading boundary, which should make it near-instant, but that was not measured
+      on a production build.
+
+### The mobile visual QA pass, done properly this time
+
+**How it was driven.** Neither route the previous round tried gave a real viewport: resizing the
+browser is ignored here, and the Playwright MCP server's browser was wedged on a locked profile.
+The pass instead drove the system Chrome directly with `playwright-core` from a scratch directory
+outside the project, with genuine device emulation: a fixed viewport, `isMobile`, `hasTouch` and a
+2x pixel ratio. That is stronger than the same-origin iframe the earlier 390px review used,
+because it also emulates touch. What it still cannot give is real safe-area insets or a physical
+screen, which need a device.
+
+**Coverage.** 48 screens across all four blueprints plus the public pages (the landing page, sign
+in, sign up, password reset and the privacy notice; ten employee screens; sixteen admin; seven
+officer; ten platform), at 360px, the common budget-Android width in the market this is for, and
+at 390px and 414px.
+
+**What was checked, per screen.** Horizontal page scroll; any element past the viewport; any
+element escaping its own parent's box, which the viewport check cannot see; leaf text clipped by
+its own box; single-line placeholders wider than their input; and, at 360px, pills whose text had
+wrapped onto a second line. Every screen was then looked at by eye on contact sheets at true CSS
+size.
+
+**Result: all 48 screens clean at all three widths.** The only remaining flags are two intentional
+ones: the landing hero's decorative glow bleeding past the edge (clipped by its container, with no
+horizontal scroll), and the `-ml-2` idiom that aligns a ghost back button's icon with the content
+edge. The final confirming run at 390px and 414px, after the last pill fix, was stopped by Claude
+Code under memory pressure; the run before it was clean at both widths on every other check, and
+the pill check is clean at 360px, where wrapping is most likely.
+
+- [x] **KPI figures overran their cards, by up to 19px.** Six-figure balances do not fit a
+      two-column card grid at phone width, and a seven-figure one, which a real cooperative will
+      hold, would have been worse. A new `type-kpi-fit` utility keeps type-kpi's 28px and 36px as
+      the ceiling and shrinks a figure only when its character count would not fit, measured
+      against the card with a container query. A figure that fits renders exactly as before.
+- [x] **KPI labels overran by up to 11.6px at 360px.** "DEDUCTIONS" and "COOPERATIVES" are single
+      uppercase words and cannot wrap. Card padding went from 16px to 12px on mobile, and below a
+      144px card the icon stacks above the label. Wider cards are unchanged.
+- [x] **The trend delta ran out of its card by 15px.** The row now wraps, so the amount drops under
+      the sparkline instead.
+- [x] **Accordion triggers overran by 1.9px** on every profile screen: the classic flexbox trap, a
+      `flex-1` item that cannot shrink below its content. Fixed with `min-w-0`.
+- [x] **Two-column discovery cards were 2px short** for their status row at 360px. Their padding
+      went from 20px to 16px on mobile.
+- [x] **"Requirements apply" wrapped onto two lines inside a fully rounded pill**, which turns a pill
+      into a blob. It now reads "Requirements" and never wraps, on both screens that show it.
+- [x] **Two search placeholders were cut off mid-word**, on the cooperative and platform audit logs.
+      Both are shortened to fit.
+- [x] **The audit log showed raw machine values**: "monthly repayment 18300", "available before
+      115238.00", and the two actions migration 029 introduced as bare lowercase verbs. Fields now
+      have readable labels, money shows in naira, timestamps show in Lagos time, and "Loan marked
+      repaid in full" and "Lapsed request moved out of the queue" are named properly.
+- [x] **Spacing moved onto the 4/8/12/16/20/24/32/40/48/64 scale.** Seventeen 2px gaps between text
+      blocks became 4px; search-input icon clearance went from 44px to 48px, symmetric about the
+      icon; currency prefixes and the IPPIS confirmation tick were given on-scale clearance; and the
+      remaining half-step internals of rows, pills, badges, icon-label gaps and the floating tab
+      bar were moved to their nearest scale value.
+- [x] **The sub-grid values that remain are deliberate.** A 2px nudge on an icon or radio beside
+      text centres a 16px glyph on a 20px line, so rounding it to the grid would misalign it. The
+      switch's 2px thumb inset, the segmented theme toggle's inset and the trend arrow's gap are
+      control geometry, fitting one element inside another. RollingNumber's 1px and 2px are glyph
+      kerning. The landing hero's 112px and 144px top padding clear the fixed floating nav, which
+      the scale, topping out at 64, cannot express.
+- [x] **One icon set.** Every icon is `lucide-react`; the only inline SVG outside the Clarix motif
+      components is the reports chart and the landing backdrop, both drawings rather than icons.
 
 ## What does not exist yet
 

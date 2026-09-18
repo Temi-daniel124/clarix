@@ -47,7 +47,9 @@ export function TrendIndicator({
     direction === "up" ? "text-emerald" : direction === "down" ? "text-danger" : "text-text-muted";
 
   return (
-    <div className={cn("flex items-center gap-2", className)}>
+    // Wraps rather than overflowing: in the two-column mobile grid a six-figure delta ran out of
+    // its card by 15px. On a wide card the two sit side by side exactly as before.
+    <div className={cn("flex flex-wrap items-center gap-x-2 gap-y-1", className)}>
       <Sparkline values={values} direction={direction} />
       <span className={cn("type-caption inline-flex items-center gap-0.5 tabular", tone)}>
         <Arrow aria-hidden strokeWidth={2.5} className="size-3" />

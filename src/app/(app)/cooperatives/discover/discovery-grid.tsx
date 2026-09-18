@@ -56,7 +56,7 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by name or description"
           aria-label="Search cooperatives"
-          className="pl-11"
+          className="pl-12"
         />
       </div>
 
@@ -93,7 +93,7 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
               <Link
                 href={`/cooperatives/discover/${card.id}`}
                 className={cn(
-                  "flex h-full flex-col rounded-card border bg-surface p-5 transition-colors duration-150",
+                  "flex h-full flex-col rounded-card border bg-surface p-4 transition-colors duration-150 md:p-5",
                   "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
                   card.joined
                     ? "border-emerald/30 hover:border-emerald/50"
@@ -125,8 +125,11 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
                 ) : null}
 
                 {card.requirements ? (
-                  <span className="mt-4 inline-flex w-fit rounded-full border border-border px-3 py-1 type-caption text-text-secondary">
-                    Requirements apply
+                  /* One word, and never wrapped: "Requirements apply" needed 134px and a
+                     two-column card at 360px has 122, so it broke onto two lines inside a fully
+                     rounded border. The card itself links through to what the requirements are. */
+                  <span className="mt-4 inline-flex w-fit whitespace-nowrap rounded-full border border-border px-3 py-1 type-caption text-text-secondary">
+                    Requirements
                   </span>
                 ) : null}
               </Link>
@@ -141,7 +144,7 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
 function StatusLabel({ card }: { card: DiscoveryCard }) {
   if (card.membershipStatus === "active") {
     return (
-      <span className="flex shrink-0 items-center gap-1.5 type-caption text-emerald">
+      <span className="flex shrink-0 items-center gap-2 type-caption text-emerald">
         <Check className="size-3.5" strokeWidth={3} aria-hidden />
         Joined
       </span>
@@ -150,7 +153,7 @@ function StatusLabel({ card }: { card: DiscoveryCard }) {
 
   if (card.membershipStatus === "pending") {
     return (
-      <span className="flex shrink-0 items-center gap-1.5 type-caption text-warning">
+      <span className="flex shrink-0 items-center gap-2 type-caption text-warning">
         <Clock className="size-3.5" strokeWidth={2} aria-hidden />
         Applied
       </span>

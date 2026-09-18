@@ -123,7 +123,7 @@ function Section({
             <span className="block truncate type-card-title text-text transition-colors duration-150 group-hover/accordion-trigger:text-emerald">
               {title}
             </span>
-            <span className="mt-0.5 block type-caption font-normal text-text-muted">
+            <span className="mt-1 block type-caption font-normal text-text-muted">
               {summary}
             </span>
           </span>

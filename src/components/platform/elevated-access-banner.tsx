@@ -53,7 +53,7 @@ export function ElevatedAccessBanner({ grant }: { grant: AccessGrant }) {
       className="sticky top-0 z-50 border-b border-warning/45"
       style={{ backgroundColor: "color-mix(in srgb, var(--clarix-warning) 14%, var(--clarix-surface))" }}
     >
-      <div className="mx-auto flex w-full max-w-[860px] items-start gap-3 px-5 py-3.5 md:px-8">
+      <div className="mx-auto flex w-full max-w-[860px] items-start gap-3 px-5 py-4 md:px-8">
         <span aria-hidden className="mt-0.5 shrink-0 text-warning">
           <ShieldAlert className="size-5" strokeWidth={2} />
         </span>
@@ -65,7 +65,7 @@ export function ElevatedAccessBanner({ grant }: { grant: AccessGrant }) {
           <p className="type-secondary mt-1 max-w-[640px] text-text-secondary">
             {grant.reason}
           </p>
-          <p className="type-caption mt-1.5 text-text-muted">
+          <p className="type-caption mt-2 text-text-muted">
             Read-only. Everything you open here is recorded in{" "}
             {grant.cooperativeName}&rsquo;s own audit log.
           </p>

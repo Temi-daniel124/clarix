@@ -39,14 +39,14 @@ export function OfficerRolePanel({
 
         <div className="min-w-0">
           <h2 className="type-card-title text-text">Your role at {cooperativeName}</h2>
-          <p className="type-caption mt-0.5 text-text-muted">
+          <p className="type-caption mt-1 text-text-muted">
             {title ?? "Cooperative officer"}
           </p>
         </div>
       </div>
 
       {granted.length > 0 ? (
-        <ul className="mt-5 flex flex-col gap-2.5">
+        <ul className="mt-5 flex flex-col gap-2">
           {granted.map((permission) => (
             <li key={permission.key} className="flex items-start gap-3">
               <span

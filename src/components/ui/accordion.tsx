@@ -36,7 +36,7 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
       <AccordionPrimitive.Trigger
         data-slot="accordion-trigger"
         className={cn(
-          "group/accordion-trigger flex flex-1 items-center justify-between gap-4 py-5 text-left",
+          "group/accordion-trigger flex min-w-0 flex-1 items-center justify-between gap-4 py-5 text-left",
           "type-card-title text-text transition-colors duration-150",
           "outline-none hover:text-emerald focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
           className,

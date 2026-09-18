@@ -100,7 +100,7 @@ export default async function AdminHomePage() {
                 <li key={step.slug}>
                   <Link
                     href={step.href}
-                    className="flex items-center gap-4 px-4 py-3.5 transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-indigo focus-visible:-outline-offset-2"
+                    className="flex items-center gap-4 px-4 py-4 transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-indigo focus-visible:-outline-offset-2"
                   >
                     <span
                       aria-hidden

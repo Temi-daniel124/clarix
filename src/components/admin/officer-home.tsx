@@ -70,7 +70,7 @@ export function OfficerHome({
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Find a member by name or staff ID"
           aria-label="Find a member"
-          className="h-14 pl-11 type-body"
+          className="h-14 pl-12 type-body"
         />
       </div>
 
@@ -131,7 +131,7 @@ export function OfficerHome({
 
                     <span className="min-w-0 flex-1">
                       <span className="block type-card-title text-text">{task.title}</span>
-                      <span className="mt-0.5 block type-secondary text-text-secondary">
+                      <span className="mt-1 block type-secondary text-text-secondary">
                         {task.detail}
                       </span>
                     </span>
@@ -193,7 +193,7 @@ function MemberResult({ member }: { member: MemberRow }) {
         <span className="block truncate type-body text-text">
           {member.name ?? member.employeeId ?? "Unnamed member"}
         </span>
-        <span className="mt-0.5 block type-caption text-text-muted">
+        <span className="mt-1 block type-caption text-text-muted">
           {member.employeeId ? `Staff ID ${member.employeeId}` : "No staff ID on file"}
           {member.status === "not_on_clarix" ? " · not on Clarix yet" : ""}
         </span>
@@ -208,13 +208,13 @@ function MemberResult({ member }: { member: MemberRow }) {
   // A roster entry has no profile to open. That person has not signed up yet, and inventing a
   // link to a screen that would 404 is worse than showing them as findable but not openable.
   if (!member.membershipId) {
-    return <span className="flex items-center gap-4 px-5 py-3.5">{body}</span>;
+    return <span className="flex items-center gap-4 px-5 py-4">{body}</span>;
   }
 
   return (
     <Link
       href={`/admin/members/${member.membershipId}`}
-      className="flex items-center gap-4 px-5 py-3.5 transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-indigo focus-visible:-outline-offset-2"
+      className="flex items-center gap-4 px-5 py-4 transition-colors duration-150 hover:bg-background focus-visible:outline-2 focus-visible:outline-indigo focus-visible:-outline-offset-2"
     >
       {body}
     </Link>

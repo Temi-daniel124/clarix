@@ -106,7 +106,7 @@ function Fact({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <dt className="type-caption text-text-muted">{label}</dt>
-      <dd className="type-secondary mt-0.5 tabular text-text">{value}</dd>
+      <dd className="type-secondary mt-1 tabular text-text">{value}</dd>
     </div>
   );
 }

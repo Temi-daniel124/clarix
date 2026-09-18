@@ -131,7 +131,7 @@ export default async function LoanDetailPage({ params }: { params: Promise<{ id:
               <li key={entry.id} className="flex items-center justify-between gap-4 px-5 py-4">
                 <div className="min-w-0">
                   <p className="type-body text-text">{entry.description ?? "Repayment"}</p>
-                  <p className="type-caption mt-0.5 text-text-muted">
+                  <p className="type-caption mt-1 text-text-muted">
                     {formatDate(entry.recordedAt)}
                   </p>
                 </div>

@@ -94,7 +94,7 @@ export function OfficerInvites({
               </div>
 
               {officer.status === "invited" ? (
-                <span className="flex items-center gap-1.5 type-caption text-text-muted">
+                <span className="flex items-center gap-2 type-caption text-text-muted">
                   <Clock aria-hidden strokeWidth={1.75} className="size-3.5" />
                   Not accepted yet
                 </span>

@@ -71,7 +71,7 @@ export default async function DashboardPage() {
           </h2>
 
           {data.lastUpdated ? (
-            <p className="flex items-center gap-1.5 type-caption text-text-muted">
+            <p className="flex items-center gap-2 type-caption text-text-muted">
               <Clock aria-hidden strokeWidth={1.75} className="size-3.5" />
               Current as of {formatUpdated(data.lastUpdated)}
             </p>

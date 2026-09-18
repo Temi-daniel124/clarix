@@ -74,7 +74,7 @@ export function EmployeeIdForm({
             onChange={(event) => setValue(normaliseEmployeeId(event.target.value))}
             aria-invalid={Boolean(fieldError)}
             aria-describedby={fieldError ? "employee-id-error" : "employee-id-hint"}
-            className="h-16 pr-14 text-center text-[28px] font-700 tracking-[0.28em] tabular md:text-[32px]"
+            className="h-16 pr-12 text-center text-[28px] font-700 tracking-[0.28em] tabular md:text-[32px]"
             style={{ fontWeight: 700 }}
           />
 

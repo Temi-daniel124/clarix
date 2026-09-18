@@ -95,7 +95,7 @@ export default async function InvitePage({
   const needsPassword = Boolean(params.token_hash) || !user.last_sign_in_at;
 
   return (
-    <div className="mx-auto w-full max-w-[520px] px-5 py-14 md:px-8">
+    <div className="mx-auto w-full max-w-[520px] px-5 py-16 md:px-8">
       <span
         aria-hidden
         className="flex size-12 items-center justify-center rounded-card text-emerald"

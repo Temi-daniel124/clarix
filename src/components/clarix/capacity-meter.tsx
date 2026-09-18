@@ -133,7 +133,7 @@ function Verdict({ eligible, reduceMotion }: { eligible: boolean; reduceMotion: 
       animate={{ opacity: 1, y: 0 }}
       transition={reduceMotion ? { duration: 0 } : springStandard}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 type-caption",
+        "inline-flex items-center gap-2 rounded-full border px-3 py-1 type-caption",
         eligible
           ? "border-emerald/30 text-emerald"
           : "border-danger/30 text-danger",

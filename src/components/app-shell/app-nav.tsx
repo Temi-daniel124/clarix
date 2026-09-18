@@ -182,7 +182,7 @@ export function AppBottomTabs() {
     >
       <nav
         aria-label="Main"
-        className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border border-white/10 bg-navy-surface/88 p-1.5 shadow-[0_8px_30px_rgba(11,18,32,0.28)] backdrop-blur-xl"
+        className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border border-white/10 bg-navy-surface/88 p-2 shadow-[0_8px_30px_rgba(11,18,32,0.28)] backdrop-blur-xl"
       >
         {PRIMARY_DESTINATIONS.map((destination) => (
           <TabPill
@@ -234,7 +234,7 @@ function TabPill({
         aria-current={active ? "page" : undefined}
         aria-label={label}
         className={cn(
-          "flex h-11 items-center gap-2 rounded-full px-3.5 transition-colors duration-150",
+          "flex h-11 items-center gap-2 rounded-full px-4 transition-colors duration-150",
           "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
           active ? "text-emerald" : "text-white/55 hover:text-white/80",
         )}

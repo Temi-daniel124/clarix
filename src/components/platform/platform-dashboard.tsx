@@ -125,7 +125,7 @@ export function PlatformDashboard({
 
                   <span className="min-w-0 flex-1">
                     <span className="block type-card-title text-text">{item.title}</span>
-                    <span className="mt-0.5 block type-secondary text-text-secondary">
+                    <span className="mt-1 block type-secondary text-text-secondary">
                       {item.detail}
                     </span>
                   </span>
@@ -168,7 +168,7 @@ export function PlatformDashboard({
             activity.length === 0 && "mt-3",
           )}
         >
-          <ScrollText aria-hidden className="mr-1.5 inline size-3.5" strokeWidth={1.75} />
+          <ScrollText aria-hidden className="mr-2 inline size-3.5" strokeWidth={1.75} />
           Read from what the platform records about itself: cooperatives created, admins taking
           up their invitations, policy changes, and access requests. The full log is under Audit
           log.

@@ -64,9 +64,9 @@ export function PlatformAuditTable({
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by operator, cooperative or value"
+            placeholder="Search operator, cooperative or value"
             aria-label="Search the platform audit log"
-            className="pl-11"
+            className="pl-12"
           />
         </form>
 
@@ -162,7 +162,7 @@ export function PlatformAuditTable({
                     {event.changes.map((change) => (
                       <div key={change.field} className="flex items-center gap-2">
                         <dt className="type-caption text-text-muted">{fieldLabel(change.field)}</dt>
-                        <dd className="flex items-center gap-1.5 type-caption tabular text-text">
+                        <dd className="flex items-center gap-2 type-caption tabular text-text">
                           <span className="text-text-muted line-through">{change.from}</span>
                           <ArrowRight aria-hidden strokeWidth={2} className="size-3 text-text-muted" />
                           <span className="font-medium">{change.to}</span>

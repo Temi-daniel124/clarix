@@ -188,7 +188,7 @@ function AmountRow({
               value={value}
               onChange={(event) => onChange(event.target.value.replace(/[^0-9.]/g, ""))}
               aria-invalid={Boolean(error)}
-              className="h-11 pl-7 text-right type-card-title tabular"
+              className="h-11 pl-8 text-right type-card-title tabular"
             />
           </motion.div>
         ) : (

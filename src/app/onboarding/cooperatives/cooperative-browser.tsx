@@ -72,7 +72,7 @@ export function CooperativeBrowser({ cooperatives }: { cooperatives: BrowsableCo
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search cooperatives"
               aria-label="Search cooperatives"
-              className="pl-11"
+              className="pl-12"
             />
           </div>
 
@@ -123,14 +123,14 @@ export function CooperativeBrowser({ cooperatives }: { cooperatives: BrowsableCo
                       ) : null}
 
                       {cooperative.requirements ? (
-                        <span className="mt-3 inline-flex rounded-full border border-border px-3 py-1 type-caption text-text-secondary">
-                          Requirements apply
+                        <span className="mt-3 inline-flex whitespace-nowrap rounded-full border border-border px-3 py-1 type-caption text-text-secondary">
+                          Requirements
                         </span>
                       ) : null}
                     </div>
 
                     {cooperative.applied ? (
-                      <span className="flex shrink-0 items-center gap-1.5 type-caption text-warning">
+                      <span className="flex shrink-0 items-center gap-2 type-caption text-warning">
                         <Clock className="size-3.5" strokeWidth={2} aria-hidden />
                         Applied
                       </span>

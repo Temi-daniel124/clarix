@@ -168,7 +168,7 @@ export default async function CooperativeDetailPage({
                     {entry.description ??
                       (entry.type === "loan_repayment" ? "Loan repayment" : "Contribution")}
                   </p>
-                  <p className="type-caption mt-0.5 text-text-muted">
+                  <p className="type-caption mt-1 text-text-muted">
                     {formatDate(entry.recordedAt)}
                   </p>
                 </div>

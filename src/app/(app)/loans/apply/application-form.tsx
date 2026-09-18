@@ -183,7 +183,7 @@ export function ApplicationForm({
                   />
                   <span className="min-w-0">
                     <span className="block type-body text-text">{row.name}</span>
-                    <span className="mt-0.5 block type-caption text-text-muted">
+                    <span className="mt-1 block type-caption text-text-muted">
                       {Math.round(row.minSavingsRatio * 100)}% of the amount must already be
                       saved, up to {row.maxTenureMonths} months
                       {row.interestTerms ? `. ${row.interestTerms}` : "."}

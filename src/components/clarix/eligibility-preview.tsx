@@ -144,7 +144,7 @@ function CooperativeCount({ count, calm }: { count: number; calm: boolean }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 py-1.5 type-caption",
+        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 type-caption",
         calm ? "border-white/12 text-white/70" : "border-border text-text-secondary",
       )}
     >
