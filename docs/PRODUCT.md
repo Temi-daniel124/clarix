@@ -66,6 +66,31 @@ No money movement. No payroll/IPPIS integration. No external lender/loan-shark t
 reliable, legal data source exists). No native mobile app. No multi-organization support in v1.
 No AI/ML in the eligibility decision itself. No organization-level roles (HR, payroll, auditor).
 
+## The limit of what Clarix can see
+
+Clarix coordinates across the cooperatives that are on Clarix. It has no way of knowing about a
+loan taken anywhere else.
+
+If Cooperative A and Cooperative B are both on the platform and Cooperative C is not, a member who
+borrows from C and then applies at B will be assessed by B against a picture that does not include
+the loan from C. B will see the member's obligations at A and at B, add them correctly, and give an
+honest answer to the wrong question. Nothing in the design hides this and nothing can fix it from
+inside the product: there is no legal, reliable source for another cooperative's private loan book,
+which is the same reason external lender tracking is a non-goal above.
+
+Two things follow, and both should be said plainly to any cooperative considering joining:
+
+- **The protection is real but partial, and it scales with adoption.** Every cooperative that joins
+  makes the figure more complete for every other cooperative already on it. With one cooperative
+  the deduction cap is only a solo check; the cross-cooperative answer that makes this product worth
+  having only exists once several are in.
+- **It is incomplete until they are all in.** An organization where most cooperatives have joined
+  gets most of the benefit, not all of it, and the gap is exactly the cooperatives still outside.
+
+This is written here rather than only in a pitch because it is a standing fact about how the system
+works, not a talking point. Any claim that Clarix prevents over-borrowing, made without this
+qualification, is a claim the product cannot support.
+
 ## Business model (context, not a spec to build against)
 
 Paid MVP delivery (price already agreed with FMC Abeokuta cooperative heads) → free hook month
