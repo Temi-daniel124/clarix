@@ -20,7 +20,7 @@ create extension if not exists pgtap with schema extensions;
 
 begin;
 
-select plan(16);
+select plan(18);
 
 select has_function('public', 'complete_loan', array['uuid', 'text'], 'complete_loan exists');
 select has_function('public', 'expire_lapsed_reservations', array['uuid'],
@@ -148,12 +148,20 @@ select is(
   'and now says so, rather than sitting in the queue as though it were still waiting'
 );
 
+-- `audit_log_select_admin` (migration 018) lets a cooperative's admin read this table and nobody
+-- else, and the actor here is an officer. The row is written by a SECURITY DEFINER function
+-- regardless of who can read it, so its existence is asserted as the superuser rather than by
+-- loosening a policy to suit a test.
+reset role;
+
 select is(
   (select count(*)::int from public.audit_log
     where action = 'expire_reservation' and target_id = 'd0000004-1111-1111-1111-111111111111'),
   1,
   'with an audit entry naming what happened to it'
 );
+
+set local role authenticated;
 
 select is(
   public.expire_lapsed_reservations('d0000001-1111-1111-1111-111111111111'),
@@ -192,12 +200,18 @@ select is(
 
 -- Six repayments of ₦20,000 against a ₦480,000 loan: the ledger is ₦360,000 short, and the log
 -- records that rather than implying the loan added up.
+reset role;
+
 select is(
   (select (new_value ->> 'shortfall_in_ledger')::numeric from public.audit_log
     where action = 'complete_loan' and target_id = 'd0000003-1111-1111-1111-111111111111'),
   360000::numeric,
   'and the audit entry records how much of it was never recorded as repaid'
 );
+
+set local role authenticated;
+select set_config('request.jwt.claims',
+  '{"sub":"d2222222-2222-2222-2222-222222222222","role":"authenticated"}', true);
 
 select throws_ok(
   $$ select * from public.complete_loan('d0000003-1111-1111-1111-111111111111') $$,
