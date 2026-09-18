@@ -1,4 +1,5 @@
-import { createClient } from "@/lib/supabase/server";
+import { cache } from "react";
+import { createClient, getRequestUser } from "@/lib/supabase/server";
 import { effectivePermissions, type StaffRole } from "@/lib/staff";
 
 /**
@@ -24,12 +25,23 @@ export type StaffContext = {
   isPlatformAdmin: boolean;
 };
 
-export async function loadStaffContext(): Promise<StaffContext | null> {
+/**
+ * Wrapped in React's `cache()`, and that is a correctness-neutral performance fix worth
+ * explaining, because the waste it removes was invisible.
+ *
+ * Every staff screen is composed of a shell layout and a page, and both of them need to know who
+ * is signed in and what they may do: the layout to draw the navigation, the page to decide
+ * whether to render at all. Both called this function, so every tab switch paid for the same
+ * answer twice, and the expensive part is not the queries but the `auth.getUser()` in front of
+ * them, which is a network round trip to the auth server.
+ *
+ * `cache()` is scoped to a single request, so the second caller gets the first caller's result.
+ * Nothing about what either caller sees changes.
+ */
+export const loadStaffContext = cache(async function loadStaffContext(): Promise<StaffContext | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) return null;
 
   const [{ data: profile }, { data: rows }, { data: platform }] = await Promise.all([
@@ -67,7 +79,7 @@ export async function loadStaffContext(): Promise<StaffContext | null> {
     roles,
     isPlatformAdmin: Boolean(platform),
   };
-}
+});
 
 /**
  * How far through the setup sequence (blueprint 2.2–2.5) a cooperative actually is.

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { AppBottomTabs, AppSidebar, AppTopBar } from "@/components/app-shell/app-nav";
-import { createClient } from "@/lib/supabase/server";
+import { getRequestUser } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -15,10 +15,7 @@ export const dynamic = "force-dynamic";
  * (SECURITY.md: "no feature may rely on a UI-side check alone").
  */
 export default async function AppLayout({ children }: LayoutProps<"/">) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
 
   if (!user) redirect("/login");
 

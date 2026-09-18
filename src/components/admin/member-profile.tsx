@@ -9,7 +9,7 @@ import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { IdentityMark } from "@/components/clarix/identity-mark";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
-import { formatNaira } from "@/lib/format";
+import { formatNaira, formatShortDate } from "@/lib/format";
 import { springStandard } from "@/lib/motion";
 import type { MemberProfile } from "@/lib/supabase/admin-members";
 
@@ -372,9 +372,5 @@ function describeStatus(status: string, expiresAt: string | null): string {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatShortDate(iso);
 }

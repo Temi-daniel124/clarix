@@ -985,6 +985,68 @@ additions rather than part of this.
       contributed less ₦50,000 withdrawn, with fifteen months of month-end figures behind it;
       member growth reads seven active members with the month each joined.
 
+### Dates, the console error, and why tab switches were slow
+
+**Every date in the product now formats in Africa/Lagos.** One label was fixed last round; the
+other nineteen call sites were not, and rather than adding `timeZone` nineteen times the
+formatters moved into `src/lib/format.ts` beside `formatNaira`. There are six shapes
+(`formatFullDate`, `formatShortDate`, `formatDayMonth`, `formatDayMonthTime`,
+`formatShortDateTime`, `formatMonthYear`, plus `formatMonthYearLong` for a reconciliation
+period), every one pinned to Lagos, and no call site constructs its own `Intl.DateTimeFormat`
+any more. A future screen cannot reintroduce the bug by forgetting.
+
+**The console error was real, and the fix for it was worse than the error.** It comes from the
+inline theme script: React logs "Encountered a script tag while rendering React component"
+whenever it renders that element on the client, which happens on the 404 and error boundaries and
+nowhere else. That is why it only ever appeared beside a different failure.
+
+`next/script` with `beforeInteractive` was tried, and reverted after measuring it. Next injects
+that form through its own runtime rather than leaving it in the head to be parsed: a probe
+recorded it executing at `document.readyState === "interactive"`, with `document.body` already
+present, which means after first paint. Anyone who has chosen light or dark would get a flash of
+the other on every page load. The script stays a bare inline tag, the reasoning is written into
+the file so the next person does not repeat the experiment, and it was confirmed that a
+production build emits nothing at all on the same 404 that logs the error in development.
+
+**Tab switching was slow because every navigation did the same work twice.** Measured on a
+production build rather than guessed at: a switch took 2 to 3 seconds, of which the RSC request
+was 1.0 to 2.6 seconds, so the cost was server-side rather than rendering or bundle size.
+
+Each staff screen is a shell layout plus a page, and both need to know who is signed in and what
+they may do: the layout to draw the navigation, the page to decide whether to render. Both called
+`loadStaffContext()`, so every navigation paid twice for the same answer, and the expensive part
+is the `auth.getUser()` in front of it, which is a network round trip to the auth server rather
+than a cookie read.
+
+- [x] **`createClient()`, `getRequestUser()` and `loadStaffContext()` are wrapped in React's
+      `cache()`**, which is scoped to one request. Verified by instrumenting them and counting: a
+      navigation that previously made two client constructions, two auth round trips and two
+      context loads now makes one of each.
+- [x] **Nothing about behaviour or appearance changed.** Every caller receives exactly what it
+      received before; the only difference is that the second caller is served from the first
+      caller's result rather than repeating the work.
+- [ ] **The remaining cost is structural, and fixing it needs a decision rather than a commit.**
+      Every staff page is `force-dynamic`, so Next cannot prefetch any of it, and with no loading
+      boundary the previous screen simply sits there until the whole payload arrives. The largest
+      remaining win is showing something immediately on click, and that is a visible change to how
+      the product behaves, so it is flagged here rather than taken unilaterally.
+
+### The visual QA pass, and what it could not cover
+
+- [x] **An automated overflow and clipping audit ran against seventeen routes** across the
+      employee and cooperative-staff blueprints, checking every element under `main` for text
+      clipped by its own box, anything escaping the viewport left or right, and any page that
+      scrolls horizontally when it should not. Every route came back clean. The employee side
+      covered the dashboard, cooperatives, discovery, loans, the application flow, payslip
+      re-upload, notifications, profile and help; the staff side covered members, applications,
+      loan products, officers, the public profile, import, reconciliation, reports, the audit log,
+      notifications, profile and help.
+- [ ] **The mobile half of this pass did not happen, and should not be recorded as though it
+      did.** Resizing the browser window is ignored in this environment: `resize_window` reports
+      success while `window.outerWidth` stays at 1280, so the media queries that drive the mobile
+      layout never engage and there is nothing to inspect. A genuine mobile pass needs either a
+      device, or a driver that can set the viewport, and it remains outstanding.
+
 ## What does not exist yet
 
 - [ ] **Self-service signup still cannot complete**, though it has moved forward. Custom SMTP is

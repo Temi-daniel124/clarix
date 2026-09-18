@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getRequestUser } from "@/lib/supabase/server";
 
 export type DiscoveryCard = {
   id: string;
@@ -38,9 +38,7 @@ export type DiscoveryProfile = {
 export async function loadDiscoveryCards(): Promise<DiscoveryCard[] | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) return null;
 
   const { data: profile } = await supabase
@@ -86,9 +84,7 @@ export async function loadDiscoveryProfile(
 ): Promise<DiscoveryProfile | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) return null;
 
   const [{ data: cooperative }, { data: products }, { data: membership }] = await Promise.all([

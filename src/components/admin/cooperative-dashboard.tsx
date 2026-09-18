@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Landmark, PiggyBank, Receipt, TriangleAlert, Users } from "lucide-react";
 import { KpiCardGrid, type KpiCard } from "@/components/clarix/kpi-card-grid";
 import { cn } from "@/lib/utils";
-import { formatNaira } from "@/lib/format";
+import { formatDayMonthTime, formatNaira } from "@/lib/format";
 import type { AttentionItem, CooperativeSummary } from "@/lib/supabase/admin-members";
 
 /**
@@ -230,10 +230,5 @@ function greeting(): string {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "long",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(iso));
+  return formatDayMonthTime(iso);
 }

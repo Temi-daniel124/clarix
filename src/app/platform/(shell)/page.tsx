@@ -7,6 +7,7 @@ import {
 import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { daysSince, inviteAddressee, inviteSentAt, invitePending } from "@/lib/platform";
 import { loadCooperativeDirectory, loadPlatformOverview } from "@/lib/supabase/platform-data";
+import { formatShortDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Platform" };
@@ -77,9 +78,5 @@ export default async function PlatformHomePage() {
 }
 
 function formatWhen(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatShortDate(iso);
 }

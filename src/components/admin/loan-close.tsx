@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
-import { clampRatio, formatNaira } from "@/lib/format";
+import { clampRatio, formatFullDate, formatNaira } from "@/lib/format";
 import { completeLoanAction } from "@/app/admin/loan-actions";
 import type { RepaymentEntry } from "@/lib/supabase/admin-loans";
 
@@ -130,11 +130,7 @@ export function LoanClose({
             {repayments.slice(0, 8).map((entry) => (
               <li key={entry.id} className="flex items-baseline justify-between gap-4 py-2.5">
                 <span className="type-secondary text-text-secondary">
-                  {new Date(entry.recordedAt).toLocaleDateString("en-NG", {
-                    day: "numeric",
-                    month: "long",
-                    year: "numeric",
-                  })}
+                  {formatFullDate(entry.recordedAt)}
                 </span>
                 <span className="type-secondary tabular text-text">
                   {formatNaira(entry.amount)}

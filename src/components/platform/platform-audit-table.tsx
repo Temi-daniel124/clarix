@@ -10,6 +10,7 @@ import {
   fieldLabel,
   type PlatformEvent,
 } from "@/lib/platform-audit";
+import { formatShortDateTime } from "@/lib/format";
 
 /**
  * Platform Audit Log (super-admin blueprint 7.1).
@@ -197,11 +198,5 @@ export function PlatformAuditTable({
 }
 
 function formatWhen(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(iso));
+  return formatShortDateTime(iso);
 }

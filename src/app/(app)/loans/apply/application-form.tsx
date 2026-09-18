@@ -9,7 +9,7 @@ import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
-import { clampRatio, formatNaira } from "@/lib/format";
+import { clampRatio, formatDayMonth, formatNaira } from "@/lib/format";
 import { previewEligibility } from "@/lib/eligibility";
 import { springStandard } from "@/lib/motion";
 import { submitLoanApplicationAction, type SubmitState } from "./actions";
@@ -447,10 +447,7 @@ function SubmittedPanel({
       {result.eligible && result.reservationExpiresAt ? (
         <p className="type-secondary mt-4 flex items-center gap-2 text-text-muted">
           <Clock aria-hidden strokeWidth={1.75} className="size-4" />
-          That hold lapses on {new Date(result.reservationExpiresAt).toLocaleDateString("en-NG", {
-            day: "numeric",
-            month: "long",
-          })}{" "}
+          That hold lapses on {formatDayMonth(result.reservationExpiresAt)}{" "}
           if they have not decided by then.
         </p>
       ) : null}

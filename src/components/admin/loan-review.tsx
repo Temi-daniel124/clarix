@@ -7,7 +7,7 @@ import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
-import { clampRatio, formatNaira } from "@/lib/format";
+import { clampRatio, formatFullDate, formatNaira } from "@/lib/format";
 import { LoanDecision } from "./loan-decision";
 import { LoanClose } from "./loan-close";
 import { PayslipEvidence } from "./payslip-evidence";
@@ -280,9 +280,5 @@ function describeStatus(status: string): string {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatFullDate(iso);
 }

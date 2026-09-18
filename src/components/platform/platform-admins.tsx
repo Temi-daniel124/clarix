@@ -11,6 +11,7 @@ import {
   revokePlatformAdminAction,
 } from "@/app/platform/admin-actions";
 import type { PlatformAdminRow } from "@/lib/supabase/platform-admin-data";
+import { formatShortDate } from "@/lib/format";
 
 const UNDO_SECONDS = 8;
 
@@ -221,9 +222,5 @@ function AdminRow({
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatShortDate(iso);
 }

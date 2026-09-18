@@ -19,6 +19,7 @@ import {
   type GrantStatus,
 } from "@/lib/access-grants";
 import { requestAccessAction, revokeAccessAction, type AccessState } from "@/app/platform/access-actions";
+import { formatShortDate, formatShortDateTime } from "@/lib/format";
 
 const INITIAL: AccessState = {};
 
@@ -258,18 +259,9 @@ function StatusBadge({ state }: { state: GrantStatus }) {
 }
 
 function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(iso));
+  return formatShortDate(iso);
 }
 
 function formatDateTime(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "short",
-    hour: "numeric",
-    minute: "2-digit",
-  }).format(new Date(iso));
+  return formatShortDateTime(iso);
 }

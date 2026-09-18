@@ -9,6 +9,7 @@ import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { loadDashboardData } from "@/lib/supabase/dashboard-data";
 import { InsightsStrip } from "./insights-strip";
 import { JoinPrompt } from "./join-prompt";
+import { formatDayMonthTime } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Home" };
@@ -116,14 +117,5 @@ function greeting(): string {
 }
 
 function formatUpdated(iso: string): string {
-  return new Intl.DateTimeFormat("en-NG", {
-    day: "numeric",
-    month: "long",
-    hour: "numeric",
-    minute: "2-digit",
-    // Rendered on the server, which runs in UTC in production. Without this the label reads an
-    // hour behind for every member, and a whole day behind between midnight and 1am Lagos time.
-    // Every figure on this screen is about a Nigerian payroll; the clock beside them should be too.
-    timeZone: "Africa/Lagos",
-  }).format(new Date(iso));
+  return formatDayMonthTime(iso);
 }

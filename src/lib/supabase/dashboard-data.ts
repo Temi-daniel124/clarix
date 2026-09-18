@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createClient, getRequestUser } from "@/lib/supabase/server";
 import { computeCapacity, type Capacity } from "@/lib/eligibility";
 import type { TrendPoint } from "@/components/clarix/trend-indicator";
 import { loadCapacity, loadLoans, type LoanSummary } from "./loans-data";
@@ -49,9 +49,7 @@ export type DashboardData = {
 export async function loadDashboardData(): Promise<DashboardData | null> {
   const supabase = await createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getRequestUser();
   if (!user) return null;
 
   const { data: profile } = await supabase
