@@ -58,9 +58,9 @@ export function AuditLogTable({
           <Input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search by member, staff member, or reason"
+            placeholder="Search member, staff or reason"
             aria-label="Search the audit log"
-            className="pl-11"
+            className="pl-12"
           />
         </form>
 
@@ -155,7 +155,7 @@ export function AuditLogTable({
                     {entry.changes.map((change) => (
                       <div key={change.field} className="flex items-center gap-2">
                         <dt className="type-caption text-text-muted">{change.field}</dt>
-                        <dd className="flex items-center gap-1.5 type-caption tabular text-text">
+                        <dd className="flex items-center gap-2 type-caption tabular text-text">
                           <span className="text-text-muted line-through">{change.from}</span>
                           <ArrowRight aria-hidden strokeWidth={2} className="size-3 text-text-muted" />
                           <span className="font-medium">{change.to}</span>
@@ -186,7 +186,7 @@ export function AuditLogTable({
                 {entry.subjectMembershipId ? (
                   <Link
                     href={`/admin/members/${entry.subjectMembershipId}`}
-                    className="mt-3 inline-flex items-center gap-1.5 type-caption font-medium text-indigo underline-offset-4 transition-colors duration-150 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+                    className="mt-3 inline-flex items-center gap-2 type-caption font-medium text-indigo underline-offset-4 transition-colors duration-150 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
                   >
                     Open this member
                     <ArrowRight aria-hidden strokeWidth={2} className="size-3" />

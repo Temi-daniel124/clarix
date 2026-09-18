@@ -52,7 +52,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by cooperative or admin"
             aria-label="Search cooperatives"
-            className="pl-11"
+            className="pl-12"
           />
         </div>
 
@@ -77,7 +77,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
               onClick={() => setFilter(option)}
               aria-pressed={filter === option}
               className={cn(
-                "rounded-full px-3 py-1.5 type-caption transition-colors duration-150",
+                "rounded-full px-3 py-2 type-caption transition-colors duration-150",
                 "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
                 filter === option
                   ? "bg-text/8 font-medium text-text"
@@ -127,7 +127,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
               <tbody>
                 {filtered.map((entry) => (
                   <tr key={entry.id} className="border-b border-border last:border-b-0">
-                    <td className="py-3.5 pr-4">
+                    <td className="py-4 pr-4">
                       <Link
                         href={`/platform/cooperatives/${entry.id}`}
                         className="type-body text-text underline-offset-4 transition-colors duration-150 hover:text-emerald hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
@@ -135,13 +135,13 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
                         {entry.name}
                       </Link>
                     </td>
-                    <td className="py-3.5 pr-4">
+                    <td className="py-4 pr-4">
                       <StatusBadge entry={entry} />
                     </td>
-                    <td className="py-3.5 pr-4 type-secondary tabular text-text-secondary">
+                    <td className="py-4 pr-4 type-secondary tabular text-text-secondary">
                       {entry.memberCount}
                     </td>
-                    <td className="py-3.5 type-secondary text-text-secondary">
+                    <td className="py-4 type-secondary text-text-secondary">
                       {entry.adminName ?? entry.adminEmail ?? "Nobody named yet"}
                     </td>
                   </tr>
@@ -183,7 +183,7 @@ export function StatusBadge({ entry }: { entry: DirectoryEntry }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full border px-2.5 py-0.5 type-caption font-medium",
+        "inline-flex items-center rounded-full border px-3 py-1 type-caption font-medium",
         pending
           ? "border-warning/40 text-warning"
           : entry.status === "active"

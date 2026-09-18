@@ -140,7 +140,7 @@ function ApplicationCard({
         ) : (
           <span
             className={cn(
-              "flex items-center gap-1.5 type-caption whitespace-nowrap",
+              "flex items-center gap-2 type-caption whitespace-nowrap",
               expiringSoon ? "text-warning" : "text-text-muted",
             )}
           >

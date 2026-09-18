@@ -57,7 +57,7 @@ export function ActiveLoansList({ loans }: { loans: LoanSummaryRow[] }) {
           onChange={(event) => setQuery(event.target.value)}
           placeholder="Search by member name"
           aria-label="Search active loans"
-          className="pl-11"
+          className="pl-12"
         />
       </div>
 

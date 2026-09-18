@@ -215,7 +215,7 @@ function Fact({ label, value, note }: { label: string; value: string; note?: str
     <div className="bg-surface px-5 py-4">
       <dt className="type-caption uppercase tracking-[0.08em] text-text-muted">{label}</dt>
       <dd className="type-body mt-1 text-text">{value}</dd>
-      {note ? <dd className="type-caption mt-0.5 text-text-muted">{note}</dd> : null}
+      {note ? <dd className="type-caption mt-1 text-text-muted">{note}</dd> : null}
     </div>
   );
 }

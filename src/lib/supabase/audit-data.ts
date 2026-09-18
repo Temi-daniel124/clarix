@@ -1,5 +1,6 @@
+import { formatNaira, formatShortDateTime } from "@/lib/format";
 import { createClient } from "@/lib/supabase/server";
-import { describeAction, type AuditEntry, type AuditFilters } from "@/lib/audit";
+import { AUDIT_DATE_FIELDS, AUDIT_FIELD_LABELS, AUDIT_MONEY_FIELDS, describeAction, type AuditEntry, type AuditFilters } from "@/lib/audit";
 
 /**
  * Cooperative Audit Log (admin blueprint 8.3).
@@ -110,9 +111,9 @@ function diff(
   const context: AuditEntry["context"] = [];
 
   for (const field of new Set([...Object.keys(before), ...Object.keys(after)])) {
-    const from = format(before[field]);
-    const to = format(after[field]);
-    const label = field.replace(/_/g, " ");
+    const from = format(field, before[field]);
+    const to = format(field, after[field]);
+    const label = AUDIT_FIELD_LABELS[field] ?? field.replace(/_/g, " ");
 
     if (from !== null && to !== null) {
       if (from !== to) changes.push({ field: label, from, to });
@@ -130,8 +131,14 @@ function asRecord(value: unknown): Record<string, unknown> {
   return value && typeof value === "object" ? (value as Record<string, unknown>) : {};
 }
 
-function format(value: unknown): string | null {
+function format(field: string, value: unknown): string | null {
   if (value === undefined || value === null) return null;
   if (typeof value === "boolean") return value ? "yes" : "no";
+  if (AUDIT_MONEY_FIELDS.has(field) && Number.isFinite(Number(value))) {
+    return formatNaira(Number(value));
+  }
+  if (AUDIT_DATE_FIELDS.has(field) && typeof value === "string" && !Number.isNaN(Date.parse(value))) {
+    return formatShortDateTime(value);
+  }
   return String(value);
 }

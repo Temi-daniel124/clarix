@@ -242,6 +242,29 @@
   font-weight: 500;
 }
 
+/*
+ * A KPI figure that fits its card at any width.
+ *
+ * Same ceiling as type-kpi, 28px on mobile and 36px from 48rem, and the same weight, tracking and
+ * tabular figures, so a figure that fits renders exactly as type-kpi would. It only ever shrinks,
+ * and only when its character count would otherwise run past the card: six-figure balances in the
+ * two-column mobile grid did exactly that, by up to 19px.
+ *
+ * Needs a container ancestor (Tailwind's `@container`) and `--kpi-chars` set to the rendered
+ * length of the figure. 0.72em is the measured advance per character of a tabular Inter figure
+ * with its naira sign and separators, rounded up so the fit is never exact to the pixel.
+ */
+@utility type-kpi-fit {
+  font-size: min(28px, calc(100cqi / (var(--kpi-chars, 8) * 0.72)));
+  line-height: 1.1;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+  @media (width >= 48rem) {
+    font-size: min(36px, calc(100cqi / (var(--kpi-chars, 8) * 0.72)));
+  }
+}
+
 @utility type-kpi {
   font-size: 28px;
   line-height: 1.1;

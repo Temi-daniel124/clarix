@@ -228,7 +228,7 @@ function Row({ row, period }: { row: ReconciliationRow; period: string }) {
         ) : (
           <span
             className={cn(
-              "flex items-center gap-1.5 type-secondary tabular",
+              "flex items-center gap-2 type-secondary tabular",
               short ? "text-warning" : "text-text-secondary",
             )}
           >

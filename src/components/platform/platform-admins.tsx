@@ -192,7 +192,7 @@ function AdminRow({
           {admin.name ?? admin.email ?? "A platform admin"}
           {isSelf ? <span className="ml-2 type-caption text-text-muted">You</span> : null}
         </p>
-        <p className="type-caption mt-0.5 truncate text-text-muted">
+        <p className="type-caption mt-1 truncate text-text-muted">
           {admin.email}
           {" · added "}
           {formatDate(admin.grantedAt)}

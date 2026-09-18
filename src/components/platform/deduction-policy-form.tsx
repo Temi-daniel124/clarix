@@ -95,7 +95,7 @@ export function DeductionPolicyForm({ policy }: { policy: DeductionPolicy }) {
                 <span className="block type-body text-text">
                   {option === "gross" ? "Gross salary" : "Net salary"}
                 </span>
-                <span className="mt-0.5 block type-caption text-text-muted">
+                <span className="mt-1 block type-caption text-text-muted">
                   {option === "gross"
                     ? "Before deductions, what the payslip states as total earnings."
                     : "After statutory deductions, what actually reaches the account."}

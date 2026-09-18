@@ -59,7 +59,7 @@ export function MemberList({
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search by name or staff ID"
             aria-label="Search members"
-            className="pl-11"
+            className="pl-12"
           />
         </div>
 
@@ -86,7 +86,7 @@ export function MemberList({
               onClick={() => setSort(option)}
               aria-pressed={sort === option}
               className={cn(
-                "rounded-full px-3 py-1.5 type-caption font-medium transition-colors duration-150",
+                "rounded-full px-3 py-2 type-caption font-medium transition-colors duration-150",
                 "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
                 sort === option
                   ? "bg-text/8 text-text"
@@ -213,7 +213,7 @@ function MemberName({ member }: { member: MemberRow }) {
     return (
       <span className="flex flex-wrap items-center gap-2">
         <span className="type-body text-text-secondary">{member.name ?? "Unnamed"}</span>
-        <span className="rounded-full border border-border px-2 py-0.5 type-caption text-text-muted">
+        <span className="rounded-full border border-border px-2 py-1 type-caption text-text-muted">
           Not on Clarix yet
         </span>
       </span>

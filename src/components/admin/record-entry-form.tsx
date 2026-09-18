@@ -169,7 +169,7 @@ export function RecordEntryForm({
               value={amount}
               onChange={(event) => setAmount(event.target.value.replace(/[^0-9.,]/g, ""))}
               aria-invalid={Boolean(state.fieldErrors?.amount)}
-              className="pl-9 tabular"
+              className="pl-10 tabular"
             />
           </div>
           <FieldError message={state.fieldErrors?.amount} />

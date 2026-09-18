@@ -282,7 +282,7 @@ export function RosterImport({
             key="dropzone"
             initial={false}
             className={cn(
-              "mt-6 rounded-feature border-2 border-dashed p-10 text-center transition-colors duration-150 md:p-14",
+              "mt-6 rounded-feature border-2 border-dashed p-10 text-center transition-colors duration-150 md:p-16",
               dragging ? "border-emerald bg-emerald/5" : "border-border bg-surface",
             )}
             onDragOver={(event) => {
@@ -536,7 +536,7 @@ function StatusBadge({ status }: { status: PreparedRow["status"] }) {
 
   return (
     <span
-      className="inline-flex items-center rounded-full px-2.5 py-1 type-caption font-medium"
+      className="inline-flex items-center rounded-full px-3 py-1 type-caption font-medium"
       style={{
         backgroundColor: `color-mix(in srgb, ${tone.color} 14%, transparent)`,
         color: tone.color,

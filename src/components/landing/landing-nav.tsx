@@ -51,7 +51,7 @@ export function LandingNav() {
           <Wordmark tone="onDark" />
         </Link>
 
-        <div className="hidden items-center gap-7 px-4 md:flex">
+        <div className="hidden items-center gap-8 px-4 md:flex">
           {LINKS.map((link) => (
             <a
               key={link.href}

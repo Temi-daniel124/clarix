@@ -211,7 +211,7 @@ export function PayslipUpload({
             key="dropzone"
             initial={false}
             className={cn(
-              "mt-8 rounded-feature border-2 border-dashed p-10 text-center transition-colors duration-150 md:p-14",
+              "mt-8 rounded-feature border-2 border-dashed p-10 text-center transition-colors duration-150 md:p-16",
               dragging ? "border-emerald bg-emerald/5" : "border-border bg-surface",
             )}
             onDragOver={(event) => {

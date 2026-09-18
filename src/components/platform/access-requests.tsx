@@ -240,7 +240,7 @@ function StatusBadge({ state }: { state: GrantStatus }) {
   return (
     <span
       className={cn(
-        "inline-flex shrink-0 items-center rounded-full border px-2.5 py-0.5 type-caption font-medium",
+        "inline-flex shrink-0 items-center rounded-full border px-3 py-1 type-caption font-medium",
         state === "active"
           ? "border-warning/45 text-warning"
           : state === "pending"

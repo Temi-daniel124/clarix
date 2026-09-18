@@ -4,6 +4,7 @@ import { useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import type { LucideProps } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatNaira } from "@/lib/format";
 import { springStandard } from "@/lib/motion";
 import { RollingNumber } from "./rolling-number";
 import { TrendIndicator, type TrendPoint } from "./trend-indicator";
@@ -72,7 +73,7 @@ export function KpiCardGrid({ cards }: { cards: KpiCard[] }) {
             onClick={() => setExpanded(isExpanded ? null : card.key)}
             aria-expanded={isExpanded}
             className={cn(
-              "flex flex-col rounded-card border bg-surface p-4 text-left md:p-5",
+              "flex flex-col rounded-card border bg-surface p-3 text-left md:p-5",
               "transition-colors duration-150",
               "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
               /* `order-first` keeps the layout predictable. Without it, expanding a middle card
@@ -83,8 +84,8 @@ export function KpiCardGrid({ cards }: { cards: KpiCard[] }) {
                 : "border-border hover:border-text-muted/40",
             )}
           >
-            <motion.div layout={reduceMotion ? false : "position"}>
-              <span className="flex min-h-[34px] items-start gap-2.5">
+            <motion.div layout={reduceMotion ? false : "position"} className="@container">
+              <span className="flex min-h-[34px] flex-col items-start gap-2 @[9rem]:flex-row">
                 <span
                   aria-hidden
                   className="flex size-7 shrink-0 items-center justify-center rounded-full"
@@ -100,11 +101,22 @@ export function KpiCardGrid({ cards }: { cards: KpiCard[] }) {
                 </span>
               </span>
 
-              <div className="mt-3">
+              {/* The card is the container the figure fits itself to (type-kpi-fit). */}
+              <div
+                className="@container mt-3"
+                style={
+                  {
+                    "--kpi-chars":
+                      card.format === "count"
+                        ? String(card.value).length
+                        : formatNaira(card.value).length,
+                  } as React.CSSProperties
+                }
+              >
                 {card.format === "count" ? (
-                  <span className="type-kpi tabular text-text">{card.value}</span>
+                  <span className="type-kpi-fit tabular text-text">{card.value}</span>
                 ) : (
-                  <RollingNumber value={card.value} className="type-kpi text-text" />
+                  <RollingNumber value={card.value} className="type-kpi-fit text-text" />
                 )}
               </div>
 

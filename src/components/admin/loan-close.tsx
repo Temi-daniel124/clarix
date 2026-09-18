@@ -128,7 +128,7 @@ export function LoanClose({
           </h3>
           <ul className="mt-3 divide-y divide-border">
             {repayments.slice(0, 8).map((entry) => (
-              <li key={entry.id} className="flex items-baseline justify-between gap-4 py-2.5">
+              <li key={entry.id} className="flex items-baseline justify-between gap-4 py-3">
                 <span className="type-secondary text-text-secondary">
                   {formatFullDate(entry.recordedAt)}
                 </span>

@@ -131,7 +131,7 @@ export function SignUpForm() {
                 {/* The label sits under the bar rather than beside it: "Enter a password" and
                     "Very strong" are different enough in length that any fixed-width column
                     either wraps or leaves a gap. */}
-                <div className="mt-1 flex flex-col gap-1.5" id="password-strength">
+                <div className="mt-1 flex flex-col gap-2" id="password-strength">
                   <MeterBar
                     size="compact"
                     usedRatio={0}

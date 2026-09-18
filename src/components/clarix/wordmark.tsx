@@ -17,7 +17,7 @@ export function Wordmark({
   const trackColor = tone === "onDark" ? "rgba(255,255,255,0.22)" : "var(--clarix-border)";
 
   return (
-    <span className={cn("inline-flex items-center gap-2.5", className)}>
+    <span className={cn("inline-flex items-center gap-2", className)}>
       <MeterRing trackColor={trackColor} />
       <span
         className={cn(
