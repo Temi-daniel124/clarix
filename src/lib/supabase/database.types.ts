@@ -832,8 +832,11 @@ export type Database = {
           committed: number
           eligible: boolean
           loan_id: string
+          meets_savings_ratio: boolean
           monthly_repayment: number
           reservation_expires_at: string
+          savings_required: number
+          savings_shortfall: number
           shortfall: number
         }[]
       }

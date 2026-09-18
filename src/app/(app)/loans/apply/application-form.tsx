@@ -6,26 +6,30 @@ import { motion, useReducedMotion } from "motion/react";
 import { ArrowRight, Check, Clock, Minus, Plus, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CapacityMeter } from "@/components/clarix/capacity-meter";
+import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
-import { formatNaira } from "@/lib/format";
+import { clampRatio, formatNaira } from "@/lib/format";
 import { previewEligibility } from "@/lib/eligibility";
 import { springStandard } from "@/lib/motion";
 import { submitLoanApplicationAction, type SubmitState } from "./actions";
 
 const INITIAL: SubmitState = {};
 
+export type ApplyProduct = {
+  id: string;
+  name: string;
+  minSavingsRatio: number;
+  maxTenureMonths: number;
+  interestTerms: string | null;
+};
+
 export type ApplyTarget = {
   membershipId: string;
   cooperativeId: string;
   cooperativeName: string;
   savingsBalance: number;
-  products: Array<{
-    id: string;
-    name: string;
-    minSavingsRatio: number;
-    maxTenureMonths: number;
-  }>;
+  products: ApplyProduct[];
 };
 
 /**
@@ -34,11 +38,18 @@ export type ApplyTarget = {
  * "The screen where the product's core promise is delivered directly to the employee": a live,
  * honest answer about whether a loan fits, before they commit to requesting it.
  *
+ * There are two separate questions here, and the admin blueprint insists they stay separate:
+ * whether the repayment fits inside the employer's deduction cap, and whether the member has
+ * saved enough to satisfy the cooperative's own rule for the product they are asking for. The
+ * first is the same arithmetic every screen in Clarix shows; the second belongs to this
+ * cooperative alone, and until the product picker below existed it was never asked at all.
+ *
  * The comparison panel updates on every slider move, and it updates LOCALLY: the same
  * `previewEligibility` from src/lib/eligibility.ts that the unit tests cover, run against the
  * capacity figure the server already sent. That keeps the readout instant and, more importantly,
  * means moving a slider never touches the database. Only pressing Submit does, and only through
- * the locked transaction.
+ * the locked transaction, which recomputes both checks server-side rather than trusting any of
+ * the figures drawn here.
  *
  * The result uses CapacityMeter, the same component the cooperative's own staff will see. The
  * admin blueprint is explicit that both sides must see the same visual result, and that shared
@@ -56,18 +67,44 @@ export function ApplicationForm({
   const reduceMotion = useReducedMotion();
   const [state, formAction, pending] = useActionState(submitLoanApplicationAction, INITIAL);
 
-  const maxTenure = Math.max(...target.products.map((p) => p.maxTenureMonths), 12);
-  const [amount, setAmount] = useState(100_000);
-  const [tenure, setTenure] = useState(12);
-
-  // The cooperative's own bound: the product with the gentlest savings requirement decides the
-  // most an employee with this balance could ask for.
-  const bestRatio = useMemo(
-    () => Math.min(...target.products.map((p) => p.minSavingsRatio), 1),
+  // The default when there is a choice: the product asking least of a member's savings, which is
+  // the one most of them qualify for. Named and selected in the list below rather than applied
+  // invisibly, so the rule being measured against is always on screen.
+  const ordered = useMemo(
+    () => [...target.products].sort((a, b) => a.minSavingsRatio - b.minSavingsRatio),
     [target.products],
   );
-  const maxBySavings = bestRatio > 0 ? Math.floor(target.savingsBalance / bestRatio) : 0;
-  const sliderMax = Math.max(50_000, Math.min(5_000_000, maxBySavings || 1_000_000));
+
+  // How far the amount slider runs: the most this member's remaining capacity could repay over
+  // the product's longest tenure.
+  //
+  // It deliberately is NOT the savings ratio, which is what bounded this slider before. Capping
+  // the amount at savings ÷ ratio meant the savings rule could never be broken, so the check
+  // below could never fail and the member was silently stopped from even asking. That is
+  // gatekeeping, and blueprint 5.5 asks for the opposite. Both checks are now reachable: the
+  // savings one by asking for more than the balance supports, the capacity one by shortening the
+  // tenure until the monthly repayment outruns what is left.
+  const available = Math.max(cap - committed, 0);
+  const boundFor = (row: ApplyProduct | null) =>
+    Math.max(50_000, Math.min(5_000_000, Math.floor(available * (row?.maxTenureMonths ?? 12))));
+
+  const [productId, setProductId] = useState<string | null>(ordered[0]?.id ?? null);
+  const product = ordered.find((row) => row.id === productId) ?? null;
+
+  const maxTenure = product?.maxTenureMonths ?? 36;
+  const sliderMax = boundFor(product);
+
+  const [amount, setAmount] = useState(() => Math.min(100_000, boundFor(ordered[0] ?? null)));
+  const [tenure, setTenure] = useState(() => Math.min(12, ordered[0]?.maxTenureMonths ?? 12));
+
+  // Switching product can leave the amount or the tenure past what the new one allows, and the
+  // server refuses both outright. Correcting them here, as part of the choice itself, keeps the
+  // submission from failing on a bound the member was never shown.
+  const chooseProduct = (row: ApplyProduct) => {
+    setProductId(row.id);
+    setAmount((value) => Math.min(value, boundFor(row)));
+    setTenure((value) => Math.min(value, row.maxTenureMonths));
+  };
 
   const preview = previewEligibility({
     salary: { gross: null, net: null },
@@ -80,6 +117,14 @@ export function ApplicationForm({
   });
 
   const monthly = preview.requestedMonthlyRepayment;
+
+  // The second check. Same arithmetic the server runs and the reviewer sees.
+  const requiredSavings = product ? Math.round(amount * product.minSavingsRatio * 100) / 100 : null;
+  const savingsShortfall =
+    requiredSavings === null ? null : Math.max(requiredSavings - target.savingsBalance, 0);
+  const meetsSavings = savingsShortfall === null ? true : savingsShortfall <= 0;
+
+  const flagged = !preview.eligible || !meetsSavings;
 
   if (state.submitted) {
     return <SubmittedPanel result={state.submitted} target={target} />;
@@ -105,6 +150,57 @@ export function ApplicationForm({
         <input type="hidden" name="membershipId" value={target.membershipId} />
         <input type="hidden" name="amount" value={amount} />
         <input type="hidden" name="tenureMonths" value={tenure} />
+        {productId ? <input type="hidden" name="loanProductId" value={productId} /> : null}
+
+        {/*
+          The picker, and only when there is something to pick. One product is not a choice, and a
+          cooperative that has configured none is not a reason to show an empty control.
+        */}
+        {ordered.length > 1 ? (
+          <fieldset className="mt-10">
+            <legend className="type-caption uppercase tracking-[0.08em] text-text-muted">
+              Which loan?
+            </legend>
+
+            <div className="mt-3 flex flex-col gap-2">
+              {ordered.map((row) => (
+                <label
+                  key={row.id}
+                  className={cn(
+                    "flex cursor-pointer items-start gap-3 rounded-card border p-4 transition-colors duration-150",
+                    row.id === productId
+                      ? "border-emerald/50 bg-surface"
+                      : "border-border bg-surface hover:border-text-muted",
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="product"
+                    value={row.id}
+                    checked={row.id === productId}
+                    onChange={() => chooseProduct(row)}
+                    className="mt-0.5 size-4 shrink-0 accent-[var(--clarix-brand-accent)]"
+                  />
+                  <span className="min-w-0">
+                    <span className="block type-body text-text">{row.name}</span>
+                    <span className="mt-0.5 block type-caption text-text-muted">
+                      {Math.round(row.minSavingsRatio * 100)}% of the amount must already be
+                      saved, up to {row.maxTenureMonths} months
+                      {row.interestTerms ? `. ${row.interestTerms}` : "."}
+                    </span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+        ) : null}
+
+        {ordered.length === 1 && product ? (
+          <p className="mt-10 type-secondary text-text-secondary">
+            <span className="text-text">{product.name}</span> is the only loan{" "}
+            {target.cooperativeName} offers, so this application is for that.
+          </p>
+        ) : null}
 
         {/* Amount */}
         <section className="mt-10">
@@ -173,7 +269,7 @@ export function ApplicationForm({
           </div>
         </section>
 
-        {/* The live comparison. */}
+        {/* The live comparison against the employer's cap. */}
         <section
           className="mt-10 rounded-feature border border-border bg-surface p-5 md:p-6"
           aria-live="polite"
@@ -203,8 +299,58 @@ export function ApplicationForm({
         </section>
 
         {/*
+          And the cooperative's own rule, kept visibly separate from the cap above because they
+          answer different questions and can disagree: a request can sit comfortably inside the
+          salary limit and still be short of what this cooperative asks you to have saved.
+        */}
+        {product && requiredSavings !== null && savingsShortfall !== null ? (
+          <section
+            className="mt-4 rounded-feature border border-border bg-surface p-5 md:p-6"
+            aria-live="polite"
+          >
+            <h2 className="type-section text-text">{target.cooperativeName}&rsquo;s savings rule</h2>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="type-caption text-text-muted">Saved with them</p>
+                <p className="type-card-title tabular mt-1 text-text">
+                  {formatNaira(target.savingsBalance)}
+                </p>
+              </div>
+              <div>
+                <p className="type-caption text-text-muted">
+                  {product.name} requires {Math.round(product.minSavingsRatio * 100)}%
+                </p>
+                <p className="type-card-title tabular mt-1 text-text">
+                  {formatNaira(requiredSavings)}
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5">
+              <MeterBar
+                size="compact"
+                track="neutral"
+                usedRatio={
+                  requiredSavings > 0
+                    ? clampRatio(target.savingsBalance / requiredSavings)
+                    : 1
+                }
+                label={`${formatNaira(target.savingsBalance)} saved against ${formatNaira(requiredSavings)} required`}
+              />
+            </div>
+
+            <p className={cn("mt-3 type-secondary", meetsSavings ? "text-emerald" : "text-warning")}>
+              {meetsSavings
+                ? "You meet their savings requirement for this loan."
+                : `${formatNaira(savingsShortfall)} short of what they ask you to have saved.`}
+            </p>
+          </section>
+        ) : null}
+
+        {/*
           The button stays enabled either way. Clarix informs, it does not gatekeep, but the
-          label changes so nobody submits an over-limit request without having been told.
+          label changes so nobody submits a request that failed either check without being told.
         */}
         <motion.div
           initial={false}
@@ -218,21 +364,22 @@ export function ApplicationForm({
             disabled={pending}
             className="w-full"
           >
-            {pending
-              ? "Sending…"
-              : preview.eligible
-                ? "Submit application"
-                : "Submit anyway"}
+            {pending ? "Sending…" : flagged ? "Submit anyway" : "Submit application"}
             {pending ? null : <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />}
           </Button>
         </motion.div>
 
-        {preview.eligible ? null : (
+        {flagged ? (
           <p className="type-caption mt-3 text-text-secondary">
             You can still send this. {target.cooperativeName} decides whether to approve it, and
-            they will see the same figures you are seeing.
+            they will see the same figures you are seeing
+            {!preview.eligible && !meetsSavings
+              ? ", both the limit and their savings rule."
+              : !preview.eligible
+                ? "."
+                : ", their savings rule included."}
           </p>
-        )}
+        ) : null}
       </form>
     </div>
   );
@@ -245,21 +392,25 @@ function SubmittedPanel({
   result: NonNullable<SubmitState["submitted"]>;
   target: ApplyTarget;
 }) {
+  // Two checks, either of which can flag an application without stopping it.
+  const savingsShort = result.meetsSavingsRatio === false;
+  const clean = result.eligible && !savingsShort;
+
   return (
     <div className="py-6">
       <span
         aria-hidden
         className={cn(
           "flex size-12 items-center justify-center rounded-card",
-          result.eligible ? "text-emerald" : "text-warning",
+          clean ? "text-emerald" : "text-warning",
         )}
         style={{
-          backgroundColor: result.eligible
+          backgroundColor: clean
             ? "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)"
             : "color-mix(in srgb, var(--clarix-warning) 14%, transparent)",
         }}
       >
-        {result.eligible ? (
+        {clean ? (
           <Check className="size-6" strokeWidth={2.5} />
         ) : (
           <TriangleAlert className="size-6" strokeWidth={2} />
@@ -267,7 +418,7 @@ function SubmittedPanel({
       </span>
 
       <h1 className="type-page-title mt-6 text-text">
-        {result.eligible ? "Application sent" : "Sent, and flagged"}
+        {clean ? "Application sent" : "Sent, and flagged"}
       </h1>
 
       <p className="type-body mt-3 max-w-[520px] text-text-secondary">
@@ -284,6 +435,14 @@ function SubmittedPanel({
           </>
         )}
       </p>
+
+      {savingsShort && result.savingsShortfall !== null ? (
+        <p className="type-body mt-3 max-w-[520px] text-warning">
+          It is also {formatNaira(result.savingsShortfall)} short of the{" "}
+          {formatNaira(result.savingsRequired ?? 0)} this loan asks you to have saved with them.
+          That is their own rule rather than the salary limit, and it is theirs to waive or not.
+        </p>
+      ) : null}
 
       {result.eligible && result.reservationExpiresAt ? (
         <p className="type-secondary mt-4 flex items-center gap-2 text-text-muted">
