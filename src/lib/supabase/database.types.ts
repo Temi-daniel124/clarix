@@ -849,6 +849,19 @@ export type Database = {
         Returns: boolean
       }
       claim_staff_invitations: { Args: never; Returns: number }
+      complete_loan: {
+        Args: { note?: string; target_loan_id: string }
+        Returns: {
+          completed: boolean
+          released_monthly: number
+          repaid_total: number
+          requested_amount: number
+        }[]
+      }
+      expire_lapsed_reservations: {
+        Args: { target_cooperative_id: string }
+        Returns: number
+      }
       decide_loan_application: {
         Args: { decision: string; note?: string; target_loan_id: string }
         Returns: {

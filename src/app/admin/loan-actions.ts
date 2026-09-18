@@ -71,3 +71,84 @@ export async function decideLoanAction(
     },
   };
 }
+
+/**
+ * Marking an active loan repaid in full (admin blueprint 6.4).
+ *
+ * This one matters to more than this cooperative's own records. An active loan counts against the
+ * member's deduction cap at every cooperative they belong to, so a loan left open after its last
+ * repayment quietly holds capacity the member should have back. `complete_loan` (migration 029)
+ * releases it and logs what was actually recorded against the loan, which may be less than it was
+ * for if some of it was settled outside Clarix.
+ */
+export async function completeLoanAction(
+  loanId: string,
+  note: string,
+): Promise<{ error?: string; completed?: { releasedMonthly: number; repaidTotal: number } }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data, error } = await supabase.rpc("complete_loan", {
+    target_loan_id: loanId,
+    note: note.trim() || undefined,
+  });
+
+  if (error) {
+    if (error.message.includes("permission")) {
+      return { error: "Closing a loan is not switched on for your account." };
+    }
+    if (error.message.includes("Only an active loan")) {
+      return { error: "This loan is not active, so there is nothing to close." };
+    }
+    return { error: "We could not close that loan. Please try again." };
+  }
+
+  const result = Array.isArray(data) ? data[0] : data;
+
+  revalidatePath("/admin", "layout");
+
+  return {
+    completed: {
+      releasedMonthly: Number(result?.released_monthly ?? 0),
+      repaidTotal: Number(result?.repaid_total ?? 0),
+    },
+  };
+}
+
+/**
+ * Tidying reservations whose hold has lapsed (admin blueprint 6.1).
+ *
+ * Nothing about capacity changes here, and that is worth knowing before using it: a lapsed
+ * reservation stopped counting the moment it lapsed, because expiry is evaluated at read time
+ * (D024). What this fixes is the queue, which otherwise shows requests as waiting on a decision
+ * that can no longer be made.
+ */
+export async function expireLapsedReservationsAction(
+  cooperativeId: string,
+): Promise<{ error?: string; expired?: number }> {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data, error } = await supabase.rpc("expire_lapsed_reservations", {
+    target_cooperative_id: cooperativeId,
+  });
+
+  if (error) {
+    if (error.message.includes("permission")) {
+      return { error: "Acting on applications is not switched on for your account." };
+    }
+    return { error: "We could not tidy those applications. Please try again." };
+  }
+
+  revalidatePath("/admin", "layout");
+
+  return { expired: Number(data ?? 0) };
+}
