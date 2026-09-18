@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplicationQueue } from "@/components/admin/application-queue";
+import { LapsedNotice } from "@/components/admin/lapsed-notice";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { loadApplications } from "@/lib/supabase/admin-loans";
 import { preferredRole } from "@/lib/staff";
@@ -22,7 +23,7 @@ export default async function LoansPage() {
   // shell rather than refuse, and an empty shell reads as a bug rather than as a boundary.
   if (!role.permissions.can_view_members) redirect("/admin");
 
-  const { pending, decided } = await loadApplications(role.cooperativeId);
+  const { pending, decided, lapsed } = await loadApplications(role.cooperativeId);
 
   return (
     <div className="mx-auto w-full max-w-[900px] px-5 py-8 md:px-8 md:py-10">
@@ -40,6 +41,10 @@ export default async function LoansPage() {
           <ArrowRight className="size-4" aria-hidden strokeWidth={2} />
         </Button>
       </div>
+
+      {role.canApproveLoans ? (
+        <LapsedNotice cooperativeId={role.cooperativeId} count={lapsed.length} />
+      ) : null}
 
       <div className="mt-8">
         <ApplicationQueue pending={pending} decided={decided} />

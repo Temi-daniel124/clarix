@@ -104,6 +104,13 @@ function nameOf(memberships: Awaited<ReturnType<typeof loansForCooperative>>["me
 export async function loadApplications(cooperativeId: string): Promise<{
   pending: LoanApplication[];
   decided: LoanApplication[];
+  /**
+   * Reservations whose hold has run out but which nothing has ever moved on. They are excluded
+   * from `pending` because they cannot be decided any more, and they are not in `decided` because
+   * their stored status still says 'reserved', which left them visible on no screen at all until
+   * migration 029 gave them somewhere to go.
+   */
+  lapsed: LoanApplication[];
 }> {
   const supabase = await createClient();
   const { loans, memberships } = await loansForCooperative(cooperativeId);
@@ -115,6 +122,13 @@ export async function loadApplications(cooperativeId: string): Promise<{
       loan.status === "reserved" &&
       loan.reservation_expires_at !== null &&
       new Date(loan.reservation_expires_at).getTime() > now,
+  );
+
+  const lapsedRecords = loans.filter(
+    (loan) =>
+      loan.status === "reserved" &&
+      loan.reservation_expires_at !== null &&
+      new Date(loan.reservation_expires_at).getTime() <= now,
   );
 
   const decidedRecords = loans
@@ -175,15 +189,26 @@ export async function loadApplications(cooperativeId: string): Promise<{
   return {
     pending: pendingRecords.map((loan) => toApplication(loan, true)),
     decided: decidedRecords.map((loan) => toApplication(loan, false)),
+    lapsed: lapsedRecords.map((loan) => toApplication(loan, false)),
   };
 }
 
 /** One application, with everything blueprint 6.2 puts on screen. */
+export type RepaymentEntry = {
+  id: string;
+  amount: number;
+  recordedAt: string;
+  description: string | null;
+};
+
 export async function loadApplication(loanId: string): Promise<
   | (LoanApplication & {
       savingsBalance: number;
       product: { name: string; minSavingsRatio: number; maxTenureMonths: number } | null;
       salaryConfirmed: boolean;
+      /** Repayments recorded against this loan, for the progress meter blueprint 6.4 asks for. */
+      repaid: number;
+      repayments: RepaymentEntry[];
     })
   | null
 > {
@@ -219,6 +244,27 @@ export async function loadApplication(loanId: string): Promise<
           .maybeSingle()
       : Promise.resolve({ data: null }),
   ]);
+
+  // The repayment history behind this loan. Read separately rather than joined, because a loan
+  // still waiting on a decision has none and there is no reason to make the queue pay for it.
+  const { data: repaymentRows } =
+    loan.status === "active" || loan.status === "completed"
+      ? await supabase
+          .from("savings_transactions")
+          .select("id, amount, recorded_at, description")
+          .eq("loan_id", loanId)
+          .eq("type", "loan_repayment")
+          .order("recorded_at", { ascending: false })
+      : { data: null };
+
+  const repayments: RepaymentEntry[] = (repaymentRows ?? []).map((row) => ({
+    id: row.id,
+    amount: Number(row.amount),
+    recordedAt: row.recorded_at,
+    description: row.description,
+  }));
+
+  const repaid = repayments.reduce((total, row) => total + row.amount, 0);
 
   const capacityRow = Array.isArray(capacityRows) ? capacityRows[0] : capacityRows;
   const now = Date.now();
@@ -258,6 +304,8 @@ export async function loadApplication(loanId: string): Promise<
     overCap: availableBefore !== null && monthly > availableBefore,
     savingsBalance: Number(membership.savings_balance ?? 0),
     salaryConfirmed: Boolean(person?.salary_verified_at),
+    repaid,
+    repayments,
     product: product
       ? {
           name: product.name,
