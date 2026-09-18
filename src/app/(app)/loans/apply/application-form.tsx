@@ -75,13 +75,18 @@ export function ApplicationForm({
     [target.products],
   );
 
-  // The cooperative's own bound on the amount: how much this product's savings ratio allows
-  // somebody holding this balance to ask for.
-  const boundFor = (row: ApplyProduct | null) => {
-    const ratio = row?.minSavingsRatio ?? 0;
-    const bySavings = ratio > 0 ? Math.floor(target.savingsBalance / ratio) : 0;
-    return Math.max(50_000, Math.min(5_000_000, bySavings || 1_000_000));
-  };
+  // How far the amount slider runs: the most this member's remaining capacity could repay over
+  // the product's longest tenure.
+  //
+  // It deliberately is NOT the savings ratio, which is what bounded this slider before. Capping
+  // the amount at savings ÷ ratio meant the savings rule could never be broken, so the check
+  // below could never fail and the member was silently stopped from even asking. That is
+  // gatekeeping, and blueprint 5.5 asks for the opposite. Both checks are now reachable: the
+  // savings one by asking for more than the balance supports, the capacity one by shortening the
+  // tenure until the monthly repayment outruns what is left.
+  const available = Math.max(cap - committed, 0);
+  const boundFor = (row: ApplyProduct | null) =>
+    Math.max(50_000, Math.min(5_000_000, Math.floor(available * (row?.maxTenureMonths ?? 12))));
 
   const [productId, setProductId] = useState<string | null>(ordered[0]?.id ?? null);
   const product = ordered.find((row) => row.id === productId) ?? null;

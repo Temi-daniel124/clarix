@@ -1010,11 +1010,32 @@ product can be shown to somebody without the seams showing.
       stopped being true when it merged. The Help wording mattered most: it told a platform
       operator there was "no path at all from this account to a member's records", which is now
       the opposite of the truth outside a live grant.
-- [ ] **A loan application does not record which product it is for.** The apply screen (5.5) has no
-      product picker, so `loan_product_id` is null and the reviewer's savings-ratio panel says
-      there is no ratio to check against. The cooperative's own rule is therefore never applied to
-      an application, only the deduction cap is. Worth a decision before go-live: either the apply
-      screen picks a product, or the ratio panel stops implying one was expected.
+- [x] **A loan application records which product it is for, and the savings rule is checked**
+      (migration 028). The apply screen picks a product, skipping the choice when a cooperative
+      offers one and defaulting to the gentlest rule when it offers several; the amount and tenure
+      bounds follow the chosen product, and a panel shows what it requires saved against what the
+      member holds. The function validates that the product belongs to the cooperative applied to,
+      refuses a tenure past its maximum, and returns the requirement, the shortfall and whether it
+      is met.
+
+      Nothing blocks. Blueprint 5.5 is explicit that Clarix informs rather than gatekeeps, so a
+      shortfall flags the application and the cooperative decides, exactly as a capacity shortfall
+      already does. One consequence worth recording: the amount slider used to be bounded by
+      savings divided by the ratio, which meant the savings rule could never be broken and the
+      check could never fail. It is now bounded by what the remaining capacity could repay over
+      the product's longest tenure, so both checks are genuinely reachable.
+
+      Verified against the live demo data, both directions. Kolawole Ajayi, holding ₦36,000 at the
+      multipurpose society, asked for ₦295,000 under a rule requiring 30%: the apply screen showed
+      the capacity check passing and the savings check ₦52,500 short, the button read "Submit
+      anyway", and the confirmation said the shortfall was the cooperative's own rule to waive or
+      not. The reservation was still held. On the officer's review screen the same application now
+      reads "Rent Assistance Loan requires 30%, ₦88,500, ₦52,500 short of your own requirement"
+      where it used to say the application was tied to no product at all.
+
+      pgTAP 003 carries ten assertions for it, written to fail against the previous version: the
+      same member and amount under two different products must produce different requirements,
+      a shortfall must still reserve, and another cooperative's product must be refused.
 - [ ] **No demo member has a payslip on file**, because a file cannot be put into Storage by SQL.
       Salary figures are set and marked verified, so every screen that reads a salary works, but
       the payslip-review window D031 opens has nothing to show until somebody uploads one through
