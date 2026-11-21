@@ -9,8 +9,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { LandingHero } from "@/components/landing/landing-hero";
-import { LandingNav } from "@/components/landing/landing-nav";
+import { Hero } from "@/components/marketing/hero";
+import { SiteNav } from "@/components/marketing/site-nav";
 import { pageMetadata, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
 import { StructuredData } from "@/components/marketing/structured-data";
 
@@ -82,8 +82,8 @@ export default function LandingPage() {
   return (
     <main className="flex flex-1 flex-col">
       <StructuredData />
-      <LandingNav />
-      <LandingHero />
+      <SiteNav />
+      <Hero />
 
       {/* Three short sections: a heading and one sentence each (blueprint 1.1). */}
       <section

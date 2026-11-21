@@ -67,12 +67,9 @@ export function MeterBar({
 
   const transition = reduceMotion ? { duration: 0 } : springStandard;
 
-  const requestFill =
-    tone === "exceeded"
-      ? "var(--clarix-danger)"
-      : tone === "tight"
-        ? "var(--clarix-warning)"
-        : "var(--clarix-brand-accent)";
+  // Spec §2's meter meanings: committed indigo-600, this request ochre-500, still available
+  // emerald-500, over the limit red-600.
+  const requestFill = tone === "exceeded" ? "var(--color-red-600)" : "var(--color-ochre-500)";
 
   return (
     <div
@@ -83,9 +80,7 @@ export function MeterBar({
       )}
       style={{
         backgroundColor:
-          track === "capacity"
-            ? "color-mix(in srgb, var(--clarix-brand-accent) 14%, transparent)"
-            : "var(--clarix-border)",
+          track === "capacity" ? "var(--color-emerald-500)" : "var(--color-line)",
       }}
       role="meter"
       aria-valuemin={0}
@@ -94,10 +89,10 @@ export function MeterBar({
       aria-label={label ?? "Share of the deduction cap already committed"}
     >
       <div className="absolute inset-0 flex">
-        {/* Committed: the neutral segment. */}
+        {/* Committed. */}
         <motion.div
           className="h-full shrink-0"
-          style={{ backgroundColor: "var(--clarix-brand-primary)" }}
+          style={{ backgroundColor: "var(--color-indigo-600)" }}
           animate={{ width: `${committedWidth * 100}%` }}
           transition={transition}
         />
@@ -114,7 +109,7 @@ export function MeterBar({
         <motion.div
           className="h-full shrink-0"
           style={{
-            backgroundColor: "var(--clarix-danger)",
+            backgroundColor: "var(--color-red-600)",
             backgroundImage:
               "repeating-linear-gradient(115deg, rgba(255,255,255,0.28) 0 3px, transparent 3px 7px)",
           }}
@@ -128,7 +123,7 @@ export function MeterBar({
         <motion.div
           aria-hidden
           className="absolute inset-y-0 w-[2px] rounded-full"
-          style={{ backgroundColor: "var(--clarix-surface)" }}
+          style={{ backgroundColor: "var(--color-white)" }}
           animate={{ left: `calc(${capMarkerLeft * 100}% - 1px)` }}
           transition={transition}
         />
