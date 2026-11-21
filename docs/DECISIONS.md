@@ -149,9 +149,13 @@ Full detail and the workflow stub: `docs/DEVELOPMENT-WORKFLOW.md`.
 
 ### D016, Fixed commit identity, verified every session
 **Status:** Locked
-**Decision:** Every commit in this repository is authored as `Temiloluwa Adebayo` /
-`adrianwilliams128765@gmail.com`. This is verified (not assumed) before the first commit of every
+**Decision:** Every commit in this repository is authored as `Temi-daniel124` /
+`temmydaniel124@gmail.com`. This is verified (not assumed) before the first commit of every
 working session.
+**Amended 2026-11-21:** the repository moved to the `Temi-daniel124` GitHub account and the
+`temmydaniel124@gmail.com` Vercel account, so the required identity moved with it. The earlier
+identity (`Temiloluwa Adebayo` / `adrianwilliams128765@gmail.com`) must no longer be used: Vercel's
+Hobby plan blocks deployments whose commit author is not the account owner.
 **Rationale:** A prior mismatch between the committing identity and what Vercel/GitHub expected
 caused Vercel to block a production deployment. This is now a hard gate, not a convention. Full
 procedure: `docs/DEVELOPMENT-WORKFLOW.md`.

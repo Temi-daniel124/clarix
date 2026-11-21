@@ -19,12 +19,12 @@ git config user.name
 git config user.email
 ```
 
-These must read exactly `Temiloluwa Adebayo` and `adrianwilliams128765@gmail.com` **for this
+These must read exactly `Temi-daniel124` and `temmydaniel124@gmail.com` **for this
 repository**. If not, fix it immediately:
 
 ```bash
-git config user.name "Temiloluwa Adebayo"
-git config user.email "adrianwilliams128765@gmail.com"
+git config user.name "Temi-daniel124"
+git config user.email "temmydaniel124@gmail.com"
 ```
 
 Do not proceed to commit under any other identity, even temporarily. See

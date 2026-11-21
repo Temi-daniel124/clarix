@@ -38,8 +38,8 @@ this loop and these two hard gates.
 Every commit in this repository must be authored as:
 
 ```
-Name:  Temiloluwa Adebayo
-Email: adrianwilliams128765@gmail.com
+Name:  Temi-daniel124
+Email: temmydaniel124@gmail.com
 ```
 
 **Why this is a hard gate, not a convention:** a prior mismatch between the committing identity
@@ -58,12 +58,12 @@ not global: a global default set for other projects must not silently apply here
 repo's setting must not silently leak into other projects either):
 
 ```bash
-git config user.name "Temiloluwa Adebayo"
-git config user.email "adrianwilliams128765@gmail.com"
+git config user.name "Temi-daniel124"
+git config user.email "temmydaniel124@gmail.com"
 ```
 
 **Also confirm, once, on the GitHub side (not a per-session check, but check it now):**
-`adrianwilliams128765@gmail.com` must appear under the GitHub account's **verified** email
+`temmydaniel124@gmail.com` must appear under the GitHub account's **verified** email
 addresses (Settings → Emails), and "Keep my email address private" must not be substituting a
 `noreply` address for commits pushed from this machine. That private-email substitution is a
 common, easy-to-miss cause of exactly the author-mismatch problem that caused the earlier block.

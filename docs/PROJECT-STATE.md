@@ -93,7 +93,7 @@ marked P1 there.
   through `docs/TOOLING-POLICY.md`, plus `AGENT.md`, `CLAUDE.md`, `BUILD.md`, `SECURITY.md`,
   `DESIGN_SYSTEM.md`).
 - **GitHub repository:** `github.com/temiloluwa-adebayo/clarix` (private), default branch `main`.
-  Commit identity verified per-session as Temiloluwa Adebayo / adrianwilliams128765@gmail.com.
+  Commit identity verified per-session as Temi-daniel124 / temmydaniel124@gmail.com.
 - **Vercel:** the project actually building this repository is **`clarix_app`**, which serves
   `clarix-3w5i.vercel.app`. A second Vercel project named `clarix-3w5i` also exists in the same
   account with its own separate URL. Earlier revisions of this document named `clarix-3w5i` as

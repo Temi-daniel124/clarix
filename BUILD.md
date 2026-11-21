@@ -11,8 +11,8 @@ all light installs, none of them Docker.
 
 ```bash
 # from inside C:\Users\hp\Documents\CLARIX, once the repo exists there:
-git config user.name "Temiloluwa Adebayo"
-git config user.email "adrianwilliams128765@gmail.com"
+git config user.name "Temi-daniel124"
+git config user.email "temmydaniel124@gmail.com"
 ```
 
 This sets the identity **for this repository only** (no `--global` flag), see
