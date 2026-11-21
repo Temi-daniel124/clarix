@@ -252,6 +252,13 @@ the page source. Screens shown on devices in photos are our real UI, composited 
 
 Each screen lists its **one primary action**, then what it contains, in order of importance.
 
+**The four role blueprints in `docs/planning/` remain the source of truth for every screen,
+interaction and permission they describe.** This inventory restyles those screens and adds what
+the owner's 2026-11-21 decisions require; it does not silently drop anything. Every deliberate
+departure is listed in §11.9, and the blueprints are amended in the same change that builds it.
+Permission rule carried over unchanged: an officer never sees a control they have not been
+granted. It is hidden, not greyed out.
+
 ### 11.1 Marketing site (public)
 - **Home.** Primary: *Start 60-day free trial.*
   1. Nav pill.
@@ -272,11 +279,20 @@ Each screen lists its **one primary action**, then what it contains, in order of
 - **Help centre / FAQ, Privacy, Terms, Contact.**
 
 ### 11.2 Getting in
-- **Welcome (installed app first launch).** Three swipeable slides, each a real screen fragment,
-  not an illustration. Then *Create an account* (primary) or *Sign in*.
+- **Welcome tours, one per role, shown once** (blueprint lengths kept): member 3 slides, admin
+  3 slides, officer 2 slides (the first states exactly what *this* officer is permitted to do),
+  super admin 1 screen stating the financial-data boundary. Each slide shows a real fragment of the
+  screen it describes, never an illustration; "Skip" on every slide except the super admin's.
+- **Accept invite / set password** (admin, officer, platform admin invites): invited email shown
+  read-only, password and confirm, "Activate account". For an email that already has an account:
+  "Welcome back. This role has been added to your existing account", with no password step.
+  "This wasn't meant for me" link.
 - **Sign up.** Primary: *Continue.* The first question is the fork: **"I run or help run a
-  cooperative"** or **"I'm a member"**. Then name, email, phone, password. A progressive input
+  cooperative"** or **"I'm a member"**. Then name, email, phone, password (with a strength
+  indicator) and a plain-language consent line linking the privacy notice. A progressive input
   stack on mobile, one column on desktop.
+- **PWA install prompt:** blueprint behaviour unchanged (after real use, never on the landing page
+  or during onboarding, at most once a week).
 - **Verify email.** Primary: *Open email app* (mobile) or *Resend*.
 - **Sign in.** Primary: *Sign in.* Email or phone, password, "Forgot password".
   Desktop is a split screen: the form on the left, and a rotating photo from the shot list on
@@ -284,98 +300,185 @@ Each screen lists its **one primary action**, then what it contains, in order of
 - **Reset password.** Two short steps.
 
 ### 11.3 Cooperative onboarding (the person who runs it)
-Primary throughout: *Continue.* A progress pill at the top. Every step except the first can be
-skipped and finished later from a setup checklist on the home screen.
+Reached two ways: **self sign-up** ("I run or help run a cooperative", which starts the 60-day
+trial), or **a Super Admin invitation** (the blueprint path, kept for cooperatives Clarix signs
+directly). Primary throughout: *Continue.* A progress pill at the top. Every step except the first
+can be skipped and finished later from a setup checklist on the home screen.
+
+**Verification (self sign-up only):** a new cooperative starts *unverified*. It can do all of its
+own setup, import and invite its team straight away, and its members can join, but it does not take
+part in the cross-cooperative check (its loans are not counted for, and it cannot see, any other
+cooperative's figure) until a Super Admin verifies it is a real cooperative. Verification asks for
+a registration number or a letter from the cooperative's executive, uploaded in step 1. The home
+screen shows one calm line until then ("Verification in progress, usually within 2 working days").
 1. **Your cooperative:** name, type (staff / market / thrift / farmers / faith / estate / other),
-   state, rough member count.
+   state, rough member count, and the verification document (self sign-up only).
+   Then the **public profile** (blueprint 2.2, kept): description, requirements to join, benefits
+   and packages, each section saved on its own, with the live Discovery preview.
 2. **How members repay:** by salary deduction, by paying in, or both. If salary deduction: the
    employer's name and the deduction cap (default 33.3% of gross).
 3. **Your account details:** the bank account members pay into, shown to members with Reveal &
    Copy.
 4. **Loan products:** start from a template ("Emergency loan, 3 months", "Asset loan, 12 months")
-   or create one.
-5. **Bring your members:** import from Excel or CSV (run-action progress), invite by link or QR,
-   or start empty.
-6. **Invite your team:** officers by email (morphing button).
+   or create one. Blueprint 2.3 kept: minimum savings ratio, maximum tenure, public or not, an
+   Advanced section for interest and tiered rules, several products per cooperative, and the
+   non-blocking warning when a value sits far outside what other cooperatives use.
+5. **Bring your members:** import from Excel or CSV, or invite by link or QR, or start empty. The
+   import keeps blueprint 2.4 exactly: blank template download, run-action progress, the
+   column-mapping table with best guesses filled in, the Ready / Needs review / Invalid preview with
+   inline correction, duplicate rows and columns flagged, the running count, and one explicit
+   "Import 482 members" button. Nothing is committed automatically.
+6. **Invite your team:** officers by email (morphing button) with a starting permission preset;
+   titles and fine-grained toggles live in Team and permissions.
 7. **You're set:** the trial end date, stated once, calmly.
 
 ### 11.4 Member onboarding
 1. **Find your cooperative:** search, open an invitation link, or scan a QR.
 2. **Your details:** confirm the name and phone (pre-filled if the cooperative imported you).
+   Salaried members also give their **staff ID**, validated against their employer's ID format in
+   real time (blueprint 2.2, now optional and only for salaried members).
 3. **Your income** (needed for the limit):
    - Salaried: upload a payslip.
    - Not salaried: upload 3–6 months of bank statements.
    - A self-declared figure is allowed but marked "unverified" until a cooperative officer
      confirms it.
    - A clear sentence says who can see the document: only the officer reviewing a loan you apply for.
+   - Payslips and statements go through blueprint 2.3–2.4 unchanged in spirit: the honest
+     processing steps, then a **review screen** showing the figures read (gross, net, pay period,
+     or average monthly inflow) with "Extracted from your document" always visible, each row
+     editable in place, and a graceful manual-entry fallback when nothing could be read.
 4. **How you repay:** salary deduction or paying in (the cooperative's default is pre-selected).
 5. **Done:** "Your application is with Ikeja Traders Thrift". You can explore while you wait.
 
 ### 11.5 Member app
 - **Home.** Primary: *Record a repayment.*
   1. The figure card (what you can still take on, with the meter, and the source of your limit).
-  2. "Needs you" task cards (a repayment due in 3 days, a receipt sent back).
-  3. Your cooperatives carousel.
-  4. Recent activity with status chips.
+  2. **The blueprint's four figures, kept, as one grouped card** (not four tiles): total savings,
+     active loans, monthly repayments, available capacity, each tappable into its detail, with the
+     "Current as of …" freshness line.
+  3. "Needs you" task cards (a repayment due in 3 days, a receipt sent back).
+  4. Your cooperatives carousel, ending in "Discover more".
+  5. Insights strip (two or three short, swipeable, never autoplaying) and the quiet, dismissible
+     prompt to browse Discovery.
+  6. Recent activity with status chips.
 - **Cooperatives → one cooperative.** Primary: *Record a repayment* (to this one). Savings
   balance, loan left, next due date, the account to pay into (Reveal & Copy), transactions and
   statement download.
 - **Record a repayment (sheet).** Primary: *Send for confirmation.* Cooperative, which loan or
   savings, amount, date paid, receipt photo or PDF (camera or files), optional note. Afterwards
   it shows "Waiting for Ikeja Traders Thrift" with the expected time.
-- **Loans.** Primary: *Apply for a loan.* Active loans with progress, applications with status.
+- **Discovery** and **Cooperative discovery profile** (blueprint 4.3–4.4 kept): search (now also by
+  state and type), public information only, "Apply to join" at the top and the bottom, "Request
+  sent" state.
+- **Loans.** Primary: *Apply for a loan.* The same monthly repayments and capacity figures as Home
+  (deliberately repeated), active loans with progress, applications with status.
+- **Loan detail** (blueprint 5.3): remaining balance, original amount, repayment progress meter,
+  monthly repayment, next date, history. New: a "Record a repayment" action for this loan.
+- **Savings statement** (blueprint 5.2): date, description, amount, running balance, date filter,
+  now with Download.
 - **Apply for a loan.** Primary: *Submit application.*
   1. The product.
   2. The amount (slider), live against the limit meter.
   3. The length (stepper).
   4. The monthly repayment.
   5. The reasons it fits, or plainly why it doesn't, with the largest amount that would.
+  The button is always enabled (Clarix informs, it does not gatekeep). When the request exceeds
+  capacity its label becomes **"Submit anyway"** (blueprint 5.5).
 - **Statements.** Primary: *Download statement.* A date range, the cooperative, PDF or Excel,
   watermarked.
 - **Notifications, Profile** (income documents, repayment method, security), **Help.**
 
 ### 11.6 Cooperative officer (treasurer, secretary)
-- **Home ("Today").** Primary: *Confirm next receipt.*
-  1. The figure card: receipts and requests waiting, and the oldest one's age.
-  2. The receipt queue (task cards: receipt image, amount, member, matching bank-alert fields;
-     Confirm / Send back).
-  3. Loan requests assigned to them.
-  4. This month's collections against what is expected.
+- **Home ("Today").** Primary: *Confirm next receipt* (when this officer may confirm receipts).
+  1. **The member search, at the top and always visible** (blueprint 4.1): the officer's most
+     common action.
+  2. **Your pending tasks**, which adapt to permissions: the receipt queue (receipt image, amount,
+     member, the fields checked against the bank alert; Confirm / Send back) if they may confirm,
+     loan requests if they may decide, otherwise the applications they submitted with their status.
+  3. **A small "Today" strip:** receipts confirmed, contributions recorded and applications
+     submitted *by this officer* today.
+  **Never on an officer's screen:** cooperative-wide totals (members, savings held, loans out,
+  collections against target). Those are admin information (officer blueprint 4.1).
 - **Receipts.** Primary: *Confirm.* Queue view and history, plus bulk confirm from a bank
   statement export (run-action).
-- **Members.** Primary: *Add member* (split button). A searchable list showing status, repayment
-  method and balance. Opens the member record.
-- **Member record.** Primary depends on state (Approve membership / Record a payment). Profile,
-  income evidence status, savings, loans, all transactions, statement download, the
-  activity log.
-- **Contributions.** Primary: *Record contributions.* One-by-one or bulk from a file.
-- Notifications, Profile, Help.
+- **Members.** A searchable list showing status, repayment method and balance. *Add member* appears
+  only with the add/import permission.
+- **Member record** (blueprint 5.2): Overview / Savings / Loans / Deductions tabs, with the
+  cross-cooperative eligibility panel on Overview available at any time (aggregate only, never
+  which other cooperatives). Record contribution / Record repayment / Start loan application, each
+  only if permitted. New: income evidence status. No destructive actions for officers.
+- **Submit a loan application for a member** (officer 6.2): the same slider, stepper and live
+  panel as the member's own, "Submit anyway" when over capacity.
+- **Loan decision** for officers with approval permission is identical to the admin's (below);
+  without it, a read-only result: "Submitted, awaiting a decision from your cooperative's admin".
+- **Active loans and loan detail**, read-only unless the officer may record repayments.
+- **Contributions.** Primary: *Record contributions.* One-by-one or bulk from a file (permission).
+- **Import members** only when granted.
+- Notifications, **Profile with "Your role at Ikeja Traders Thrift"** (title and a plain list of
+  what they can do, nothing greyed out), Help.
 
 ### 11.7 Cooperative admin (chairman, president, exco)
 Everything an officer has, plus:
 - **Home.** Primary: *Review loan requests.*
   1. Figure card: money waiting for a decision.
-  2. Decisions queue.
-  3. A health strip: members active this month, savings held, loans out, repayments on time %.
-  4. The setup checklist (until complete).
-  5. Trial/billing line (only in the last 14 days of the trial).
-- **Loan decision.** Primary: *Approve*; secondary: *Ask a question*; destructive: *Decline*
-  (with reason).
+  2. **Attention required** (blueprint 4.1, all of it): loan requests with how long they've waited
+     and an amber marker when the reservation is close to expiring, members flagged during import,
+     officer invitations not accepted after several days. New: receipts waiting.
+  3. A health card holding the blueprint's KPIs: total members (with active this month), savings
+     held, active loans, pending applications, plus repayments on time.
+  4. "This month" insights and the "last confirmed" freshness line.
+  5. The setup checklist (until complete), the verification line (until verified), and the
+     trial/billing line (only in the last 14 days of the trial).
+- **Loan decision** (blueprint 6.2). **Approve** and **Reject** are both clearly separated, never
+  a stacked pair that can be mis-tapped; Approve is the primary pill, Reject the destructive style.
+  **Both use the 10-second timed undo** before the decision is final and notifications go out.
+  When the request exceeds capacity, Approve becomes **"Approve anyway"** and a short reason is
+  required for the audit log. "Ask a question" is a tertiary link.
   1. The member's full position across cooperatives (the meter).
-  2. This cooperative's history with them.
-  3. Income evidence (opens only during this review, D031).
-  4. The product rules check.
+  2. Savings at this cooperative against the product's minimum-savings rule, side by side.
+  3. This cooperative's history with them.
+  4. Income evidence (opens only during this review, D031).
+- **Loan applications queue** (oldest first, compact meter per card, amber expiry marker,
+  Pending / Recently decided tabs) and **Active loans** (blueprint 6.1, 6.3, 6.4).
 - **Manage:** Loan products (layered disclosure), Public profile, Team and permissions, Import,
   Reconciliation, **Reports and exports** (savings register, loan book, arrears, monthly
   collections, AGM pack; PDF or Excel, watermarked), **Billing** (plan, invoices, estimator), Audit log.
 
 ### 11.8 Super admin (Clarix operations)
-- **Home.** Primary: *Review access requests* (when any are waiting), otherwise none.
-  1. Figure card: trials ending this week.
-  2. Queue: access requests, cooperatives awaiting verification.
-  3. Platform health: active cooperatives, active members, paid vs trial vs read-only.
-- **Cooperatives** (directory with lifecycle state: trial / grace / read-only / paid), **Billing
-  overview**, **Policy** (platform limits), **Access requests**, **Platform admins**, **Audit log**.
+The financial-data boundary is unchanged: no standing access to any member's savings, loans or
+income; the only exception is the logged, time-boxed access grant (blueprint 7.2–7.3, kept exactly).
+- **Home.** Primary: *Verify next cooperative* (when any are waiting), otherwise none.
+  1. Figure card: cooperatives awaiting verification, and the oldest one's age.
+  2. Attention required: verifications, open access requests, unaccepted admin invites.
+  3. Platform health, counts only: cooperatives (paid / trial / grace / read-only), active
+     members, pending invites. Recent platform activity.
+- **Verify a cooperative** (new): the submitted document, the cooperative's details, Verify or
+  Ask for more (with a reason the cooperative sees).
+- **Cooperatives** (directory with lifecycle state, still shallow: no member or loan data),
+  **Create cooperative and send invite** (blueprint 5.3, kept), **Billing overview**,
+  **Policy**, **Access requests** and the **elevated access view**, **Platform admins**,
+  **Audit log**, Notifications, Profile, Help.
+- **Policy** now holds: the platform default cap for members who are not salaried, the
+  reservation-expiry default, and employer records (each with its deduction basis, cap and staff
+  ID format). Saving any of these keeps the blueprint's explicit confirmation step.
+
+### 11.9 What changes from the blueprints (deliberate, owner-approved)
+
+The blueprints are amended in the same pull request that builds each change.
+
+| Blueprint said | Now | Why |
+|---|---|---|
+| One organisation (FMC), IPPIS staff ID, payslip for everyone, one org-wide cap | Any cooperative; employers are records; income from payslip, bank statements or a self-declared figure; staff ID only for salaried members | Clarix serves every kind of cooperative (owner, 2026-11-21) |
+| Cooperative admins are invited by the Super Admin only | Self sign-up with a 60-day trial, **unverified** until a Super Admin verifies it; the invite path stays | Owner, 2026-11-21 |
+| Only staff record repayments; member loan views are read-only | Members record a repayment with a receipt; staff confirm or send it back | Owner, 2026-11-21 |
+| Coordination layer beside the cooperative's books | The cooperative's book of record: statements, reports and exports included | Owner, 2026-11-21 |
+| Reports are P1, export "a later addition" | Reports and watermarked exports are core | Owner, 2026-11-21 |
+| No pricing UI | Billing, trial, grace and read-only states | Owner, 2026-11-21 |
+| Super Admin home: four KPI tiles | Verification queue first, counts kept | New verification duty |
+| Four KPI tiles on member and admin homes | The same figures, grouped in one card, after the queue | Design system §12; no figure is dropped |
+| Dark navy authentication panel | Light split screen with photography | Light theme only (owner, 2026-11-21) |
+
+Everything not in this table is kept as the blueprints describe it.
 
 ## 12. Dashboards: the rules that fix "looks AI-generated"
 
@@ -412,6 +515,10 @@ never conveyed by colour alone, and full keyboard operation on desktop.
   viewing and export always work).
 - **D038:** Members' income evidence may be a payslip, bank statements, or a self-declared figure
   marked unverified until an officer confirms it.
+- **D039:** Cooperatives may sign themselves up and start a trial. A self-signed-up cooperative is
+  unverified until a Super Admin verifies it, and does not take part in the cross-cooperative check
+  until then. Super Admin invitations remain for cooperatives Clarix signs directly. Amends the
+  invite-only rule in the admin blueprint and the MVP spec.
 
 ## 15. Left to the builder
 
@@ -424,3 +531,5 @@ Analytics events.
 1. Light theme means no dark surfaces at all, the hero included: light, well-styled, with proper cards.
 2. Licensed stock photography following the shot list for now; a real shoot may replace it later.
 3. No testimonials section at all until real quotes exist.
+4. Cooperatives may sign themselves up, with Super Admin verification (D039).
+5. The role blueprints stay the source of truth; departures are listed in §11.9 only.
