@@ -35,9 +35,10 @@ Abeokuta's women dyers are known for. The logo's ring repeats like a dye stamp, 
 - Works for salaried and non-salaried members in the same cooperative.
 
 ### Non-goals
-- Dark mode. **Clarix is light-only** (owner's decision, 2026-11-21). Indigo appears as a brand
-  surface inside the light theme (hero bands, the member's limit card, the mobile tab bar,
-  statements); it is not a dark theme.
+- Dark mode, and dark surfaces of any kind. **Clarix is light-only** (owner's decision,
+  2026-11-21): the landing hero, bands, cards, tab bar and footer are all light. Indigo is an
+  accent (the logo, links, committed money, focus rings, the ring pattern at very low opacity),
+  never a background.
 - Moving money. Clarix records payments that happen at the bank; it never holds or sends funds.
 - Native iOS/Android apps. The PWA is the mobile strategy (D014 stands).
 
@@ -59,11 +60,11 @@ everywhere: committed money, money still available, something waiting, something
 
 | Token | Hex | Role |
 |---|---|---|
-| `indigo-night` | `#0B1033` | Brand surfaces: landing hero, the member's limit card, mobile tab bar, footer, statement header band |
-| `indigo-900` | `#121A4D` | Secondary brand band (pricing, CTA band) |
+| `indigo-night` | `#0B1033` | Strongest ink accent: big figures, the logo wordmark, statement headings. Never a background |
+| `indigo-50` | `#F3F4FD` | Tinted panel inside a white card (the figure card's meter well, selected states) |
 | `indigo-600` | `#2F3DA6` | Brand on light grounds; **committed** money in meters; links; focus rings |
 | `indigo-100` | `#EEF0FB` | Secondary-button fill, selected rows, soft chips |
-| `emerald-500` | `#2BD19A` | **Primary action fill**; **still available** in meters; success on dark grounds |
+| `emerald-500` | `#2BD19A` | **Primary action fill**; **still available** in meters; meter "available" segment |
 | `emerald-700` | `#0E7A56` | Success and "fits" text on light grounds (4.5:1 on white) |
 | `emerald-50` | `#DDF5EA` | Confirmed chips |
 | `ochre-500` | `#E3A23B` | **Reserved / this request** in meters |
@@ -132,7 +133,6 @@ never in the app.
 | Destructive | Red text on `red-50`; the action itself uses the timed-undo pattern (§8) | 48 / 44 | Remove member, reverse an entry |
 | Icon button | 44×44 circle, white with hairline | 44 | Notifications, overflow menus |
 
-On a dark indigo band the primary stays emerald and the secondary becomes a white hairline pill.
 On mobile, a screen's primary action sits in a **sticky bottom bar** above the tab bar when the
 screen scrolls, so it is always one thumb away.
 
@@ -140,7 +140,8 @@ screen scrolls, so it is always one thumb away.
 
 There are five kinds of surface, each with a job. A new screen may not invent a sixth.
 
-1. **Figure card** (indigo-night ground, ring pattern faded in one corner): exactly one per screen,
+1. **Figure card** (white, `raised`, the ring pattern in indigo at 6% opacity in one corner, figure
+   in `indigo-night`, meter in an `indigo-50` well): exactly one per screen,
    holding the single number that matters most there. Member: *what you can still take on*.
    Admin: *money waiting for your decision*. Super admin: *cooperatives on trial ending this
    week*. It always pairs the figure with the meter when the figure is measured against a limit
@@ -176,12 +177,13 @@ Motion explains what changed and where things went. It is never decoration for i
     position.
   - Section content rises 24px and fades in once, the first time it enters the viewport. It is
     never hidden in the initial frame.
-- **Hero background:**
+- **Hero imagery:** the hero is light: the headline sits on porcelain, and the photography lives in a
+  large rounded frame (radius 32) beside it, with real product cards floating over its edge.
   - A photo carousel of four art-directed images (§9). Each holds for 6s with a slow
-    1.00→1.06 zoom, then cross-fades over 1.2s.
-  - An indigo scrim keeps the headline readable. The first image is server-rendered and
-    preloaded; the rest load after first paint.
-  - A faint looping background video (muted, 8–12s, under 2 MB, AVIF poster) is allowed on
+    1.00→1.06 zoom, then cross-fades over 1.2s, with small dots under the frame to show progress.
+  - A soft bottom scrim inside the frame only where a caption sits. The first image is
+    server-rendered and preloaded; the rest load after first paint.
+  - A faint looping video inside the same frame (muted, 8–12s, under 2 MB, AVIF poster) is allowed on
     desktop only, when `prefers-reduced-data` is not set and the connection is not `2g`/`3g`.
     Phones always get the carousel. This keeps the landing page fast on Nigerian mobile data.
 - **Reduced motion:** every spring becomes a 120ms fade, the carousel stops on its first image,
@@ -209,13 +211,12 @@ added; the existing `RollingNumber` is the product's only animated number. New d
 | `show-qr` | Cooperative join QR and link ("Scan to join Ikeja Traders Thrift") | Lucide `QrCode`, `Link` |
 | `reveal-copy` | Member number, cooperative bank account details for repayments (shown masked, revealed and copied in one tap) | Replaces today's Reveal & Copy primitive |
 | `command-search` | Staff app global search: members, loans, receipts, pages (`/` or ⌘K on desktop, a search tab on mobile) | |
-| `continuous-tabs` | **Mobile bottom navigation** (floating indigo pill, active tab widens with its label) and segmented controls (e.g. Monthly / Yearly) | Indigo ground, emerald active pill |
+| `continuous-tabs` | **Mobile bottom navigation** (floating white pill with `raised` shadow, active tab widens with its label) and segmented controls (e.g. Monthly / Yearly) | Light ground, emerald active pill |
 | `layered-progressive-disclosure` | Loan product settings (basic → interest and fees → savings rules → advanced) | |
 | `slot-picker` | Deferred: meeting and contribution schedule (P2) | |
 | `hero-31` / `hero-32` | Landing hero structure and the staggered word-by-word entrance | Our carousel as the background (§7) |
 | `navigation-5` | Marketing navigation pill and mobile sheet | Mega-menu cut down to one "Product" panel |
 | `faq-2` | Landing and Help FAQ, by category (Members, Cooperatives, Money and security, Billing) | |
-| `testimonials-1` | **Not used until there are real quotes** from real cooperatives, with their permission | |
 
 ## 9. Imagery
 
@@ -237,7 +238,7 @@ the page source. Screens shown on devices in photos are our real UI, composited 
 
 ## 10. Behaving like an app (PWA)
 
-- `display: standalone`, theme colour `#0B1033`, an indigo splash with the ring drawing itself once.
+- `display: standalone`, theme colour `#F5F6FB`, a light splash with the indigo ring drawing itself once.
 - **Mobile:** a floating bottom tab bar (continuous-tabs), safe-area insets respected, sticky
   primary action, bottom sheets, pull to refresh on lists, swipe back.
 - **Desktop:** a persistent left sidebar (collapsible to icons), top bar with command search and
@@ -263,7 +264,8 @@ Each screen lists its **one primary action**, then what it contains, in order of
   7. Exports and statements (a watermarked statement preview).
   8. Pricing with a member-count estimator.
   9. FAQ.
-  10. Final CTA band, then the footer.
+  10. A final CTA card on porcelain (white card, primary button), then a light footer.
+  There is no testimonials section until real, permitted quotes exist.
 - **Pricing.** Primary: *Start free trial.* The estimator ("How many members save or repay each
   month?" → bill), what counts as active, the trial and grace period explained plainly, and FAQ.
 - **For members.** Primary: *Find your cooperative.* What a member sees, how to join, that it is free.
@@ -400,7 +402,7 @@ never conveyed by colour alone, and full keyboard operation on desktop.
 
 - **D032:** Clarix is a cooperative management platform for any cooperative, replacing D002
   (coordination layer only) and D019 (single organisation).
-- **D033:** Light theme only; dark-mode tokens are removed.
+- **D033:** Light theme only, with no dark surfaces anywhere (hero included); dark-mode tokens are removed.
 - **D034:** Type is Mona Sans Wide plus Figtree, replacing Inter.
 - **D035:** Buttons and chips are pills; the radius scale in §4 replaces the 14/16/20 rule.
 - **D036:** Watermelon components are adopted with lucide icons only; `qrcode.react` and
@@ -417,9 +419,8 @@ Exact copy for empty states and errors, written in the voice above. Illustration
 The exact carousel images within the shot list. The split between server and client components.
 Analytics events.
 
-## 16. Open questions for the owner
+## 16. Settled with the owner (2026-11-21)
 
-1. The marketing site's dark indigo hero stays in a light-only product as a brand surface. Confirm
-   that this matches what "light theme only" means to you.
-2. Stock photos first, then a real shoot with FMC and one market cooperative's members. Is a shoot
-   possible, and roughly when?
+1. Light theme means no dark surfaces at all, the hero included: light, well-styled, with proper cards.
+2. Licensed stock photography following the shot list for now; a real shoot may replace it later.
+3. No testimonials section at all until real quotes exist.
