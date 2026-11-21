@@ -3,45 +3,54 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * The base-ui button primitive, fully reskinned to DESIGN_SYSTEM.md.
- *
- * Nothing of the shadcn preset's default styling survives here: heights come from the 4/8/12/
- * 16/20/24/32/40/48/64 spacing scale, colours come from the five-token Clarix palette, and the
- * radius comes from the card radius variable. Per DESIGN_SYSTEM.md § Component sourcing
- * discipline, an adopted component is never left in its demo colours or radii.
+ * The base-ui button primitive in the Adire light hierarchy: primary (emerald, the only one with
+ * a shadow), secondary (indigo wash), tertiary (text only) and destructive (red wash). Every
+ * button is a pill and every size is at least a 44px target. The pre-redesign names (navy,
+ * outline, ghost, link, danger) stay as aliases so existing screens keep working.
  */
+const primary =
+  "bg-emerald-500 text-on-emerald shadow-primary-float hover:bg-emerald-500/90 active:bg-emerald-500/95 disabled:bg-line disabled:text-muted disabled:shadow-none";
+const secondary =
+  "bg-indigo-100 text-indigo-600 hover:bg-indigo-100/70 active:bg-indigo-100/50 disabled:bg-line disabled:text-muted";
+const tertiary =
+  "bg-transparent text-indigo-600 hover:bg-indigo-50 active:bg-indigo-100 disabled:text-muted disabled:hover:bg-transparent";
+const destructive =
+  "bg-red-50 text-red-600 hover:bg-red-50/70 active:bg-red-50/50 disabled:bg-line disabled:text-muted";
+
 const buttonVariants = cva(
   [
     "group/button inline-flex shrink-0 items-center justify-center gap-2",
-    "whitespace-nowrap font-medium select-none",
+    "whitespace-nowrap font-semibold select-none",
     "transition-[background-color,border-color,color,opacity] duration-150",
-    "outline-none focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-    // Disabled is a real state with its own tokens, not the brand colour at reduced opacity,
-    // a faded emerald reads as a broken button rather than an unavailable one, and its label
-    // stops being legible. Each filled variant swaps to the neutral border tone below.
+    "outline-none focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2",
     "disabled:pointer-events-none",
     "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   ].join(" "),
   {
     variants: {
       variant: {
-        /** The single primary call to action on a screen. Emerald, per the accent token. */
-        primary:
-          "bg-emerald text-white hover:bg-emerald/90 active:bg-emerald/95 disabled:bg-border disabled:text-text-muted",
-        /** Dark-surface actions: the landing page top bar, navy panels. */
-        navy: "bg-navy text-background hover:bg-navy/90 disabled:bg-border disabled:text-text-muted",
-        outline:
-          "border border-border bg-surface text-text hover:bg-background active:bg-background disabled:text-text-muted",
-        ghost: "text-text-secondary hover:bg-background hover:text-text disabled:text-text-muted",
-        link: "h-auto p-0 text-indigo underline-offset-4 hover:underline disabled:text-text-muted disabled:no-underline",
-        danger: "bg-danger text-white hover:bg-danger/90 disabled:bg-border disabled:text-text-muted",
+        primary,
+        secondary,
+        tertiary,
+        destructive,
+        /** A circular icon-only button; pair with size="icon". */
+        icon: tertiary,
+        // Legacy aliases.
+        navy: secondary,
+        outline: secondary,
+        ghost: tertiary,
+        link: tertiary,
+        danger: destructive,
       },
       size: {
-        /** 48px: the standard CTA height, comfortable as a touch target. */
-        default: "h-12 rounded-card px-6 type-body",
-        /** 40px, dense contexts such as a top bar. */
-        sm: "h-10 rounded-card px-4 text-[14px]",
-        icon: "size-10 rounded-card",
+        /** 52px, the mobile primary action. */
+        lg: "h-13 rounded-pill px-8 type-body",
+        /** 48px, the standard CTA height. */
+        default: "h-12 rounded-pill px-6 type-body",
+        /** 44px, the minimum touch target; dense contexts such as a top bar. */
+        sm: "h-11 rounded-pill px-5 text-[14px]",
+        /** A 44x44 circle. */
+        icon: "size-11 rounded-pill",
         inline: "h-auto rounded-none p-0",
       },
     },
