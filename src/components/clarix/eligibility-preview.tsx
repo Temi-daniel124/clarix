@@ -45,7 +45,7 @@ export function EligibilityPreview({
   pace = "hero",
   className,
 }: {
-  /** "hero" on the landing page; "calm" is the subtler, slower auth-panel variant. */
+  /** "hero" on the landing page; "calm" is the slower auth-panel variant. Both render as the same light card. */
   pace?: "hero" | "calm";
   className?: string;
 }) {
@@ -71,10 +71,6 @@ export function EligibilityPreview({
     <div
       className={cn(
         "w-full rounded-feature border border-border bg-surface p-6 md:p-8",
-        // The hero variant always sits on the fixed navy ground, so it holds the light palette
-        // in both themes, see the .theme-light note in globals.css.
-        pace === "hero" && "theme-light",
-        pace === "calm" && "border-white/10 bg-white/[0.04]",
         className,
       )}
       style={pace === "hero" ? { boxShadow: "var(--shadow-elevation)" } : undefined}
@@ -82,31 +78,22 @@ export function EligibilityPreview({
       <div className="flex items-center justify-between gap-4">
         <div>
           <p
-            className={cn(
-              "type-caption uppercase tracking-[0.08em]",
-              pace === "calm" ? "text-white/45" : "text-text-muted",
-            )}
+            className="type-caption uppercase tracking-[0.08em] text-text-muted"
           >
             Eligibility check
           </p>
           <p
-            className={cn(
-              "type-card-title mt-1",
-              pace === "calm" ? "text-white" : "text-text",
-            )}
+            className="type-card-title mt-1 text-text"
           >
             One salary, every cooperative
           </p>
         </div>
 
-        <CooperativeCount count={frame.committed > 0 ? 3 : 0} calm={pace === "calm"} />
+        <CooperativeCount count={frame.committed > 0 ? 3 : 0} />
       </div>
 
       <div
-        className={cn(
-          "mt-6 rounded-card border p-5",
-          pace === "calm" ? "border-white/10 bg-white/[0.03]" : "border-border bg-background",
-        )}
+        className="mt-6 rounded-card border border-border bg-background p-5"
       >
         <CapacityMeter
           cap={CAP}
@@ -131,7 +118,7 @@ export function EligibilityPreview({
           initial={reduceMotion ? false : { opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
           transition={reduceMotion ? { duration: 0 } : springStandard}
-          className={cn("type-caption", pace === "calm" ? "text-white/50" : "text-text-secondary")}
+          className="type-caption text-text-secondary"
         >
           {frame.note}
         </motion.p>
@@ -140,13 +127,10 @@ export function EligibilityPreview({
   );
 }
 
-function CooperativeCount({ count, calm }: { count: number; calm: boolean }) {
+function CooperativeCount({ count }: { count: number }) {
   return (
     <span
-      className={cn(
-        "inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border px-3 py-2 type-caption",
-        calm ? "border-white/12 text-white/70" : "border-border text-text-secondary",
-      )}
+      className="inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-border px-3 py-2 type-caption text-text-secondary"
     >
       <Building2 className="size-3.5" aria-hidden strokeWidth={2} />
       {count} cooperatives
