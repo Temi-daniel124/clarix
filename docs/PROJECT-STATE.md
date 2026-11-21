@@ -9,6 +9,32 @@ know exactly what already exists and what doesn't.
 **Last updated:** 2026-09-13 (the access-grant flow, 7.2 and 7.3, **every screen in every
 blueprint is now built**).
 
+## Redesign (started 2026-11-21)
+
+The owner approved a full redesign ("Adire", light theme only) on 2026-11-21. Decisions D032 to
+D039 in `DECISIONS.md` record it.
+
+- **Spec:** `docs/superpowers/specs/2026-11-21-clarix-adire-design-system-design.md`
+- **Plan 1 (current):** `docs/superpowers/plans/2026-11-21-adire-foundation-and-landing.md`
+- **Canvas:** https://claude.ai/artifact/EpN2uwZkXTKwzwLbZWBLe6
+- **Hosting:** the Vercel project is now `clarix` on the owner's account, at
+  https://clarix-orpin.vercel.app. The old `clarix-3w5i.vercel.app` belongs to the previous
+  account and is no longer the live site.
+- **GitHub:** the repository is now `Temi-daniel124/clarix`.
+
+The seven plans:
+
+1. Adire foundation and landing (public marketing site, tokens, logo set, SEO files).
+2. Getting in: auth, invites, onboarding, self sign-up and verification.
+3. Many organisations and income evidence (schema).
+4. The member app.
+5. The staff apps (officer, admin) and receipts.
+6. Super admin and billing.
+7. Statements, reports and exports.
+
+Plans 2 to 7 are written after the previous one is approved and merged. The sections below
+describe the app as it stood before the redesign.
+
 ## Phase
 
 **Everything described below is on `main`.** The access-grant flow merged as pull request #11,
@@ -92,7 +118,7 @@ marked P1 there.
 - Full planning corpus under `docs/planning/`, and the governance doc set (`docs/DECISIONS.md`
   through `docs/TOOLING-POLICY.md`, plus `AGENT.md`, `CLAUDE.md`, `BUILD.md`, `SECURITY.md`,
   `DESIGN_SYSTEM.md`).
-- **GitHub repository:** `github.com/temiloluwa-adebayo/clarix` (private), default branch `main`.
+- **GitHub repository:** `github.com/Temi-daniel124/clarix` (private), default branch `main`.
   Commit identity verified per-session as Temi-daniel124 / temmydaniel124@gmail.com.
 - **Vercel:** the project actually building this repository is **`clarix_app`**, which serves
   `clarix-3w5i.vercel.app`. A second Vercel project named `clarix-3w5i` also exists in the same
@@ -1336,7 +1362,7 @@ product can be shown to somebody without the seams showing.
 | Service                               | Status                                                    | Notes                                                                                                    |
 | ------------------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Supabase                              | **Live, schema applied** (ref `sxugaizwmqigtioqgefx`)     | Region `eu-west-1` (Ireland), Postgres 17.6. Fourteen tables, one private Storage bucket, one seeded organization. The unrelated project in the same org is untouched. |
-| GitHub                                | **Repo created:** `temiloluwa-adebayo/clarix` (private)   | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
+| GitHub                                | **Repo created:** `Temi-daniel124/clarix` (private)        | Commits correctly authored and verified by GitHub. PR #1 merged the employee blueprint to `main`; Actions runs the pgTAP suites on any PR touching `supabase/`. Branch protection is not on yet. |
 | Vercel                                | **Project building this repo: `clarix_app`**               | Serves `clarix-3w5i.vercel.app`, now from a **production** deployment off `main` rather than a Preview. A separate project also named `clarix-3w5i` exists, possibly redundant, still to be confirmed and removed. |
 | Resend                                | **Custom SMTP wired** to `smtp.resend.com:465`            | Sender is still `onboarding@resend.dev`, which Resend restricts to the account owner's own address, so signup mail reaches nobody else. A verified sending domain is needed before go-live. |
 | AI payslip OCR API (Claude or OpenAI) | Not yet decided/provisioned                               | P1 feature.                                                                                               |

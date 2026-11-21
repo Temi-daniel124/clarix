@@ -25,7 +25,8 @@ An organization-level role would imply Clarix serves the employer, which it expl
 **Full detail:** `docs/ROLES-AND-PERMISSIONS.md`.
 
 ### D002, Product is a coordination layer, not accounting software
-**Status:** Locked
+**Status:** Superseded
+**Superseded by:** D032 (2026-11-21). Clarix is now a cooperative management platform and the cooperative's book of record.
 **Decision:** Clarix's core value is cross-cooperative deduction coordination. It does not
 replace a cooperative's internal accounting, does not move money, and does not integrate with
 payroll/IPPIS directly.
@@ -161,7 +162,8 @@ caused Vercel to block a production deployment. This is now a hard gate, not a c
 procedure: `docs/DEVELOPMENT-WORKFLOW.md`.
 
 ### D017, Design must never read as AI-generated or generic
-**Status:** Locked
+**Status:** Locked (the dark-mode half is superseded by D033)
+**Superseded by:** D033 (2026-11-21), for dark mode only. The tokens, the signature motif and the anti-generic checklist still apply, in the light theme.
 **Decision:** Every screen is built against the signature visual motif (rolling-number figures +
 used-vs-available meter), the fixed token set, and the anti-generic-design checklist in
 `DESIGN_SYSTEM.md`. Every UI-producing task is treated as pixel-level work, not "good enough."
@@ -176,7 +178,8 @@ human-reviewed payslip field extraction (see D006, and the fallback pipeline in
 `docs/ARCHITECTURE.md`).
 
 ### D019, Single-organization data model for v1
-**Status:** Locked
+**Status:** Superseded
+**Superseded by:** D032 (2026-11-21). Clarix now serves any cooperative; employers are records, not a single hard-wired organisation.
 **Decision:** The schema is scoped by `organization_id`/`cooperative_id` throughout, but v1 only
 ever populates one `organizations` row (Federal Medical Centre, Abeokuta). Nothing in P0/P1 scope
 depends on, or should be built toward, a second organization.
@@ -611,3 +614,75 @@ moment it's actually decided.
   vision-LLM fallback live from day one (both are in scope per `MVP-SCOPE.md`; sequencing is open).
 - Paid recurring-plan pricing packages, explicitly deferred to after the free hook month; do not
   design or build toward specific numbers yet.
+
+---
+
+### D032: Clarix is a cooperative management platform for any cooperative
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Supersedes:** D002 (coordination layer only) and D019 (single organisation).
+**Decision:** Clarix is a cooperative management platform for any cooperative, replacing D002
+(coordination layer only) and D019 (single organisation).
+**Rationale:** Clarix serves every kind of cooperative, not only staff cooperatives at one
+hospital. Employers become records, income comes from a payslip, bank statements or a
+self-declared figure, and the product is the cooperative's book of record: statements, reports
+and exports included. Spec section 11.9 lists each blueprint departure this causes.
+
+### D033: Light theme only, with no dark surfaces anywhere
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Supersedes:** the dark-mode half of D017.
+**Decision:** Light theme only, with no dark surfaces anywhere (hero included); dark-mode tokens
+are removed.
+**Rationale:** The owner wants Clarix light and well styled, with proper cards, rather than a
+light and dark pair. The theme toggle goes with the tokens, and the dark navy authentication
+panel becomes a light split screen with photography.
+
+### D034: Type is Mona Sans Wide plus Figtree
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Decision:** Type is Mona Sans Wide plus Figtree, replacing Inter.
+**Rationale:** Part of the Adire visual identity approved in the design spec; Inter read as
+generic, which D017 forbids.
+
+### D035: Buttons and chips are pills; a new radius scale
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Decision:** Buttons and chips are pills; the radius scale in section 4 of the design spec
+replaces the 14/16/20 rule.
+**Rationale:** Part of the Adire visual identity approved in the design spec.
+
+### D036: Watermelon components, lucide icons only
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Decision:** Watermelon components are adopted with lucide icons only; `qrcode.react` and
+`react-use-measure` are allowed dependencies.
+**Rationale:** Keeps the one-icon-package rule from CLAUDE.md while allowing the two small
+dependencies the new components need.
+
+### D037: Pricing is per active member, with a trial and a grace period
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Decision:** Pricing is ₦150 per active member per month, ₦5,000 minimum, yearly billing with
+two months free, a 60-day trial, a 14-day grace period, then read-only (never a full lockout;
+viewing and export always work).
+**Rationale:** Replaces "no pricing UI" in the blueprints; the product now has billing, trial,
+grace and read-only states. A cooperative can always see and export its own records.
+
+### D038: Income evidence may be a payslip, bank statements, or a self-declared figure
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Decision:** Members' income evidence may be a payslip, bank statements, or a self-declared
+figure marked unverified until an officer confirms it.
+**Rationale:** Not every cooperative member is salaried (D032), so a payslip cannot be required
+of everyone. The unverified marker keeps the figure honest, in the spirit of D031.
+
+### D039: Cooperatives may sign themselves up and start a trial
+**Status:** Locked
+**Decided:** 2026-11-21, by the owner.
+**Decision:** Cooperatives may sign themselves up and start a trial. A self-signed-up cooperative
+is unverified until a Super Admin verifies it, and does not take part in the cross-cooperative
+check until then. Super Admin invitations remain for cooperatives Clarix signs directly. Amends
+the invite-only rule in the admin blueprint and the MVP spec.
+**Rationale:** Growth should not wait on a Super Admin, but an unverified cooperative must not
+see or add to the cross-cooperative picture (D003) until someone at Clarix has checked it is real.
