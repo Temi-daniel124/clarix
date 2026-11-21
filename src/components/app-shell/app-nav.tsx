@@ -7,7 +7,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis, PanelLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SIDEBAR_STORAGE_KEY } from "@/components/theme/theme-script";
 import { springStandard } from "@/lib/motion";
 import {
@@ -103,16 +102,6 @@ export function AppSidebar() {
           ))}
         </ul>
       </nav>
-
-      <div
-        className={cn(
-          "border-t border-white/8 px-4 py-4",
-          collapsed ? "flex justify-center" : "flex items-center justify-between gap-3",
-        )}
-      >
-        {collapsed ? null : <span className="type-caption text-white/40">Appearance</span>}
-        <ThemeToggle tone="onDark" />
-      </div>
     </aside>
   );
 }
@@ -276,7 +265,6 @@ export function AppTopBar() {
       <Link href="/dashboard" aria-label="Clarix home">
         <Wordmark />
       </Link>
-      <ThemeToggle />
     </header>
   );
 }

@@ -1,45 +1,26 @@
 /**
- * Applies the viewer's saved colour-scheme choice before the browser paints.
+ * Restores the sidebar's collapsed/expanded state before the browser paints.
  *
- * This has to be a blocking inline script in the document, not an effect: if the class were
- * applied after hydration, someone who has chosen light would get a flash of the dark palette
- * (or the reverse) on every page load. It reads one key and sets at most one class, so it stays
- * small enough to be worth blocking on.
+ * This has to be a blocking inline script in the document, not an effect: the rail's width is
+ * driven by a class on the root element, so restoring it here makes it correct on the first paint
+ * rather than snapping from one width to the other after hydration. Note that `next dev` resets
+ * the root element's className during hydration, so while developing the preference can look as
+ * though it did not persist; in a production build it does.
  *
- * It also restores the sidebar's collapsed/expanded state, for the same reason: the rail's width
- * is driven by a class on the root element, so it is correct on the first paint rather than
- * snapping from one width to the other after hydration.
- *
- * A class rather than a `data-` attribute, so the rail uses exactly the same mechanism as the
- * colour scheme above and there is only one thing to reason about. Note that `next dev` resets
- * the root element's className during hydration, so while developing both preferences can look
- * as though they did not persist; in a production build they do.
- *
- * The three colour-scheme states match what the stylesheet already understands:
- *   "light"  -> the `light` class, which opts the document out of the prefers-color-scheme
- *               dark override in globals.css
- *   "dark"   -> the `dark` class, which forces the dark palette
- *   "system" -> no class at all, leaving prefers-color-scheme in charge
+ * Clarix is light only (D033). The script never adds a colour-scheme class, and it clears the
+ * theme choice an earlier version saved, so nothing stale lingers in a returning viewer's storage.
  */
 
-export const THEME_STORAGE_KEY = "clarix.theme";
 export const SIDEBAR_STORAGE_KEY = "clarix.sidebar";
 
-const SCRIPT = `(function(){
+export const THEME_SCRIPT_SOURCE = `(function(){
   var root = document.documentElement;
   try {
-    var choice = localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});
-    root.classList.remove('light', 'dark');
-    if (choice === 'light' || choice === 'dark') root.classList.add(choice);
-  } catch (e) {
-    // Storage blocked (private window, blocked site data). The system preference still
-    // applies through CSS, so there is nothing to recover from.
-  }
-  try {
+    localStorage.removeItem('clarix.theme');
     var rail = localStorage.getItem(${JSON.stringify(SIDEBAR_STORAGE_KEY)});
     root.classList.toggle('rail-collapsed', rail === 'collapsed');
   } catch (e) {
-    // Storage blocked; the rail simply starts expanded.
+    // Storage blocked (private window, blocked site data); the rail simply starts expanded.
   }
 })();`;
 
@@ -49,7 +30,7 @@ const SCRIPT = `(function(){
  * `next/script` with `beforeInteractive` was tried here and reverted. Next injects that form
  * through its own runtime rather than leaving it in the head to be parsed, so it runs at
  * `document.readyState === "interactive"`, after the body exists: measured, not assumed. Anyone
- * who has chosen a theme would get a flash of the other one on every page load, which is the
+ * who collapsed the sidebar would see it snap width on every page load, which is the
  * exact problem this file exists to prevent.
  *
  * The cost of keeping it bare is a React warning, "Encountered a script tag while rendering React
@@ -60,5 +41,5 @@ const SCRIPT = `(function(){
  * worth trading for a console line no member sees.
  */
 export function ThemeScript() {
-  return <script dangerouslySetInnerHTML={{ __html: SCRIPT }} />;
+  return <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT_SOURCE }} />;
 }

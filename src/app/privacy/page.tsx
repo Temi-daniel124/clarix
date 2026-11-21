@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
@@ -35,7 +34,6 @@ export default function PrivacyPage() {
         <Link href="/" aria-label="Clarix home">
           <Wordmark />
         </Link>
-        <ThemeToggle />
       </header>
 
       <main className="mx-auto w-full max-w-[760px] flex-1 px-5 pb-24 md:px-8">

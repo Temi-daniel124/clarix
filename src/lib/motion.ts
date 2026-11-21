@@ -10,7 +10,7 @@ import type { Transition } from "motion/react";
 export const springStandard: Transition = {
   type: "spring",
   stiffness: 260,
-  damping: 22,
+  damping: 24,
   mass: 0.9,
 };
 
@@ -25,11 +25,14 @@ export const springRollingDigit: Transition = {
   mass: 1.4,
 };
 
-/** Page transitions: 180–240ms fade plus a small horizontal shift. No spring. */
+/** Page transitions: a 240ms fade plus a small horizontal shift, like a native app. No spring. */
 export const pageTransition: Transition = {
-  duration: 0.22,
+  duration: 0.24,
   ease: [0.22, 0.61, 0.36, 1],
 };
 
-/** The instant fallback substituted for any spring when prefers-reduced-motion is set. */
-export const reducedMotionTransition: Transition = { duration: 0 };
+/** The horizontal shift, in pixels, that accompanies a page transition's fade. */
+export const PAGE_SHIFT_PX = 24;
+
+/** Substituted for any spring when prefers-reduced-motion is set: a short fade, not a cut. */
+export const reducedMotionTransition: Transition = { duration: 0.12 };

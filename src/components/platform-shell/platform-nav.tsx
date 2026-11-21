@@ -6,7 +6,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { springStandard } from "@/lib/motion";
 import {
   PLATFORM_ACCOUNT,
@@ -74,11 +73,6 @@ export function PlatformSidebar() {
           ))}
         </ul>
       </nav>
-
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/8 px-4 py-4">
-        <span className="type-caption text-white/40">Appearance</span>
-        <ThemeToggle tone="onDark" />
-      </div>
     </aside>
   );
 }
@@ -215,7 +209,6 @@ export function PlatformTopBar() {
         <span className="block type-caption text-text-muted">Clarix</span>
         <span className="block truncate type-card-title text-text">Platform administration</span>
       </Link>
-      <ThemeToggle />
     </header>
   );
 }

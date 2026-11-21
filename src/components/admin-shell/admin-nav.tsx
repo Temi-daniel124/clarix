@@ -7,7 +7,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis, PanelLeft, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { SIDEBAR_STORAGE_KEY } from "@/components/theme/theme-script";
 import { springStandard } from "@/lib/motion";
 import { isAdminActive, isMoreActive, staffNav, type AdminDestination } from "./destinations";
@@ -149,16 +148,6 @@ export function AdminSidebar({
           ))}
         </ul>
       </nav>
-
-      <div
-        className={cn(
-          "mt-4 border-t border-white/8 px-4 py-4",
-          collapsed ? "flex justify-center" : "flex items-center justify-between gap-3",
-        )}
-      >
-        {collapsed ? null : <span className="type-caption text-white/40">Appearance</span>}
-        <ThemeToggle tone="onDark" />
-      </div>
     </aside>
   );
 }
@@ -329,7 +318,6 @@ export function AdminTopBar({
         >
           <Settings2 aria-hidden strokeWidth={1.75} className="size-[18px]" />
         </Link>
-        <ThemeToggle />
       </div>
     </header>
   );

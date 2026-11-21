@@ -6,7 +6,6 @@ import { Dialog } from "@base-ui/react/dialog";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 /**
  * Landing page navigation (employee blueprint 1.1), built on the Watermelon navigation-5
@@ -64,8 +63,6 @@ export function LandingNav() {
         </div>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle tone="onDark" className="hidden sm:inline-flex" />
-
           <Button
             size="sm"
             variant="outline"
@@ -111,11 +108,6 @@ export function LandingNav() {
                     </li>
                   ))}
                 </ul>
-
-                <div className="mt-6 flex items-center justify-between gap-4">
-                  <span className="type-caption text-white/45">Appearance</span>
-                  <ThemeToggle tone="onDark" />
-                </div>
 
                 <Button className="mt-6 w-full" render={<Link href="/signup" />}>
                   Get started
