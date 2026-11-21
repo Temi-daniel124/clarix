@@ -17,18 +17,30 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const { chromium } = require("playwright");
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+const root = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "..",
+  "..",
+);
 
 const jobs = [
   { src: "public/icons/icon.svg", out: "public/icons/icon-192.png", size: 192 },
   { src: "public/icons/icon.svg", out: "public/icons/icon-512.png", size: 512 },
-  { src: "public/icons/icon-maskable.svg", out: "public/icons/icon-maskable-512.png", size: 512 },
+  {
+    src: "public/icons/icon-maskable.svg",
+    out: "public/icons/icon-maskable-512.png",
+    size: 512,
+  },
   { src: "src/app/apple-icon.svg", out: "src/app/apple-icon.png", size: 180 },
 ];
 
 // The favicon sizes, rendered from the same icon.svg. The SVG's own media query swaps in the
 // 16px drawing (no track, thicker arc) when it is measured at that size.
-const FAVICON = { src: "src/app/icon.svg", out: "src/app/favicon.ico", sizes: [16, 32] };
+const FAVICON = {
+  src: "src/app/icon.svg",
+  out: "src/app/favicon.ico",
+  sizes: [16, 32],
+};
 
 /** Packs PNG buffers into an ICO file. Since Vista, ICO entries may hold PNG data directly. */
 function packIco(entries) {

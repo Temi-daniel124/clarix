@@ -6,7 +6,11 @@ import { ThemeScript } from "@/components/theme/theme-script";
 import { siteUrl } from "@/lib/site";
 
 /** Figtree for everything, Mona Sans with its width axis for display (D034). */
-const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"], display: "swap" });
+const figtree = Figtree({
+  variable: "--font-figtree",
+  subsets: ["latin"],
+  display: "swap",
+});
 const monaSans = Mona_Sans({
   variable: "--font-mona",
   subsets: ["latin"],
@@ -18,7 +22,8 @@ const DESCRIPTION =
   "Savings, loans, repayments and member statements for every kind of cooperative in Nigeria. " +
   "Before a loan is approved, Clarix checks what the member already owes in every cooperative " +
   "they belong to.";
-const TITLE = "Clarix · Cooperative management with a cross-cooperative limit check";
+const TITLE =
+  "Clarix · Cooperative management with a cross-cooperative limit check";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
@@ -34,7 +39,11 @@ export const metadata: Metadata = {
     description: DESCRIPTION,
     url: "/",
   },
-  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
   // Public by default; every authenticated area's layout overrides this with noindex.
   robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",
@@ -72,7 +81,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <ThemeScript />
       </head>
-      <body className={`${figtree.variable} ${monaSans.variable} flex min-h-full flex-col`}>
+      <body
+        className={`${figtree.variable} ${monaSans.variable} flex min-h-full flex-col`}
+      >
         {/*
           Chrome fires `beforeinstallprompt` during page load, typically BEFORE React has
           hydrated, so a listener registered inside a component effect misses it altogether and
