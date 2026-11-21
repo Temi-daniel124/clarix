@@ -4,36 +4,34 @@ import type { MetadataRoute } from "next";
  * PWA manifest, docs/ARCHITECTURE.md § PWA behavior and DECISIONS.md D014 (a well-built PWA
  * is the entire mobile strategy; there is no native app).
  *
- * Theme and background colours are the DESIGN_SYSTEM.md tokens, so the splash screen and the
- * installed app's chrome are the same surface the app itself paints.
+ * Light only (D033): the splash and the installed app's chrome are porcelain, the page ground.
+ * No `orientation`, so the installed desktop app can be any shape. The PNG icons are rendered
+ * from the SVGs in public/icons by scripts/brand/render-icons.mjs.
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Clarix, cross-cooperative deduction coordination",
+    id: "/",
+    name: "Clarix",
     short_name: "Clarix",
     description:
-      "See every cooperative you belong to in one place, and know before you borrow whether a " +
-      "new loan still fits inside your agreed salary-deduction limit.",
+      "Savings, loans, repayments and member statements for every kind of cooperative, with a " +
+      "limit check across every cooperative a member belongs to.",
     start_url: "/",
     scope: "/",
     display: "standalone",
-    orientation: "portrait",
-    background_color: "#F6F8FB",
-    theme_color: "#0B1220",
-    categories: ["finance", "productivity"],
+    background_color: "#F5F6FB",
+    theme_color: "#F5F6FB",
+    categories: ["finance", "business", "productivity"],
     icons: [
+      { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
       {
-        src: "/icons/icon.svg",
-        sizes: "any",
-        type: "image/svg+xml",
-        purpose: "any",
-      },
-      {
-        src: "/icons/icon-maskable.svg",
-        sizes: "any",
-        type: "image/svg+xml",
+        src: "/icons/icon-maskable-512.png",
+        sizes: "512x512",
+        type: "image/png",
         purpose: "maskable",
       },
+      { src: "/icons/icon.svg", sizes: "any", type: "image/svg+xml", purpose: "any" },
     ],
   };
 }

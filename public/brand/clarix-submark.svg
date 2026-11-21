@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 148 148" width="148" height="148" role="img" aria-label="Clarix">
+  <title>Clarix</title>
+  <rect x="4" y="4" width="140" height="140" rx="34" fill="#2F3DA6"/>
+  <g fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="2">
+    <circle cx="30" cy="30" r="9"/><circle cx="118" cy="30" r="9"/><circle cx="30" cy="118" r="9"/><circle cx="118" cy="118" r="9"/>
+    <circle cx="74" cy="74" r="50"/>
+  </g>
+  <circle cx="74" cy="74" r="28" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="10"/>
+  <circle cx="74" cy="74" r="28" fill="none" stroke="#2BD19A" stroke-width="10" stroke-linecap="round" stroke-dasharray="117.29 175.93" transform="rotate(-90 74 74)"/>
+</svg>
