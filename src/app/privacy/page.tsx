@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/site";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Wordmark } from "@/components/clarix/wordmark";
@@ -8,6 +9,7 @@ export const metadata: Metadata = {
   title: "Privacy notice",
   description:
     "How Clarix collects, uses and protects salary information, staff ID numbers and payslip documents under the Nigeria Data Protection Act 2023.",
+  ...pageMetadata("/privacy", { title: "Privacy notice", description: "How Clarix collects, uses and protects salary information, staff ID numbers and payslip documents under the Nigeria Data Protection Act 2023." }),
 };
 
 /**

@@ -3,7 +3,7 @@ import { Figtree, Mona_Sans } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
 import { ThemeScript } from "@/components/theme/theme-script";
-import { siteUrl } from "@/lib/site";
+import { SITE_DESCRIPTION, SITE_TITLE, siteUrl } from "@/lib/site";
 
 /** Figtree for everything, Mona Sans with its width axis for display (D034). */
 const figtree = Figtree({
@@ -18,31 +18,22 @@ const monaSans = Mona_Sans({
   display: "swap",
 });
 
-const DESCRIPTION =
-  "Savings, loans, repayments and member statements for every kind of cooperative in Nigeria. " +
-  "Before a loan is approved, Clarix checks what the member already owes in every cooperative " +
-  "they belong to.";
-const TITLE =
-  "Clarix · Cooperative management with a cross-cooperative limit check";
-
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl()),
-  title: { default: TITLE, template: "%s · Clarix" },
-  description: DESCRIPTION,
+  title: { default: SITE_TITLE, template: "%s · Clarix" },
+  description: SITE_DESCRIPTION,
   applicationName: "Clarix",
-  alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     locale: "en_NG",
     siteName: "Clarix",
-    title: TITLE,
-    description: DESCRIPTION,
-    url: "/",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
   },
   twitter: {
     card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
   },
   // Public by default; every authenticated area's layout overrides this with noindex.
   robots: { index: true, follow: true },

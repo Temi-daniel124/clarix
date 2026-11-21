@@ -3,6 +3,12 @@
  * the sitemap, the Open Graph image and the root metadata can never disagree.
  */
 
+export const SITE_TITLE = "Clarix · Cooperative management with a cross-cooperative limit check";
+export const SITE_DESCRIPTION =
+  "Savings, loans, repayments and member statements for every kind of cooperative in Nigeria. " +
+  "Before a loan is approved, Clarix checks what the member already owes in every cooperative " +
+  "they belong to.";
+
 /**
  * The site's absolute origin, without a trailing slash: the configured public URL, else the
  * production domain Vercel provides, else the local dev server.
@@ -52,3 +58,35 @@ export const PRIVATE_PREFIXES: readonly string[] = [
   "/offline",
   "/api",
 ];
+
+/**
+ * Per-page canonical URL and Open Graph block. Next replaces a parent's `openGraph` object
+ * wholesale when a page sets its own, so the shared fields are repeated here; spread the result
+ * into the page's metadata: `{ title, description, ...pageMetadata("/privacy", { title, description }) }`.
+ * The root layout deliberately sets neither, or every route would claim to be the home page.
+ */
+export function pageMetadata(
+  path: string,
+  { title, description }: { title?: string; description?: string } = {},
+) {
+  return {
+    alternates: { canonical: path },
+    openGraph: {
+      type: "website" as const,
+      locale: "en_NG",
+      siteName: "Clarix",
+      url: path,
+      // A page-level openGraph replaces the segment's file-convention image too, so name it.
+      images: [
+        {
+          url: "/opengraph-image",
+          width: 1200,
+          height: 630,
+          alt: "Clarix. Run your cooperative with every number in view.",
+        },
+      ],
+      ...(title ? { title } : {}),
+      ...(description ? { description } : {}),
+    },
+  };
+}

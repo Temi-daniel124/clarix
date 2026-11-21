@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, Building2, Landmark, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,6 +11,7 @@ import {
 import { Wordmark } from "@/components/clarix/wordmark";
 import { LandingHero } from "@/components/landing/landing-hero";
 import { LandingNav } from "@/components/landing/landing-nav";
+import { pageMetadata, SITE_DESCRIPTION, SITE_TITLE } from "@/lib/site";
 import { StructuredData } from "@/components/marketing/structured-data";
 
 /**
@@ -69,6 +71,12 @@ const FAQ = [
       "Cooperatives do not sign up themselves. A cooperative is set up during its own onboarding, and its head is invited by email to complete the setup, profile, loan products and an import of the existing member roster from a spreadsheet.",
   },
 ];
+
+// Title and description come from the root layout; the canonical and og block are the home's own.
+export const metadata: Metadata = pageMetadata("/", {
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
+});
 
 export default function LandingPage() {
   return (
