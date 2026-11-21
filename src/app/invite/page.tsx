@@ -9,7 +9,10 @@ import { pendingInvites, preferredRole } from "@/lib/staff";
 import { AcceptInvite } from "./accept-invite";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Accept your invitation" };
+export const metadata: Metadata = {
+  title: "Accept your invitation",
+  robots: { index: false, follow: false },
+};
 
 /**
  * Accept Invite, cooperative admin blueprint 1.1.
@@ -59,11 +62,13 @@ export default async function InvitePage({
           <MailQuestion className="size-5" strokeWidth={1.75} />
         </span>
 
-        <h1 className="type-page-title mt-6 text-text">This invitation needs its own link</h1>
+        <h1 className="type-page-title mt-6 text-text">
+          This invitation needs its own link
+        </h1>
         <p className="type-body mt-3 text-text-secondary">
-          Open the link from the email the cooperative sent you, on this device. If you already
-          have a Clarix account, signing in is enough: the invitation is attached to your email
-          address and will be waiting.
+          Open the link from the email the cooperative sent you, on this device.
+          If you already have a Clarix account, signing in is enough: the
+          invitation is attached to your email address and will be waiting.
         </p>
 
         <Button className="mt-8" render={<Link href="/login" />}>
@@ -99,7 +104,10 @@ export default async function InvitePage({
       <span
         aria-hidden
         className="flex size-12 items-center justify-center rounded-card text-emerald"
-        style={{ backgroundColor: "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)" }}
+        style={{
+          backgroundColor:
+            "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)",
+        }}
       >
         <Building2 className="size-6" strokeWidth={1.75} />
       </span>

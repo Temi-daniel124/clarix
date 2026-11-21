@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -6,6 +7,8 @@ import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { pendingInvites, preferredRole } from "@/lib/staff";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 /**
  * Shell for the admin setup sequence (admin blueprint 2.1 to 2.5).

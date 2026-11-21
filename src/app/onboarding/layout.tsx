@@ -1,5 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Wordmark } from "@/components/clarix/wordmark";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 /**
  * Shell for the onboarding sequence (blueprint 2.1–2.5).

@@ -10,6 +10,7 @@ import {
 import { Wordmark } from "@/components/clarix/wordmark";
 import { LandingHero } from "@/components/landing/landing-hero";
 import { LandingNav } from "@/components/landing/landing-nav";
+import { StructuredData } from "@/components/marketing/structured-data";
 
 /**
  * Landing Page (employee blueprint 1.1).
@@ -72,6 +73,7 @@ const FAQ = [
 export default function LandingPage() {
   return (
     <main className="flex flex-1 flex-col">
+      <StructuredData />
       <LandingNav />
       <LandingHero />
 

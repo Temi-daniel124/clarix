@@ -8,7 +8,7 @@ import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { landingPathFor } from "@/lib/staff";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Welcome to Clarix platform administration" };
+export const metadata: Metadata = { title: "Welcome to Clarix platform administration", robots: { index: false, follow: false } };
 
 /**
  * Welcome to Clarix Platform Administration (super-admin blueprint 2.1).

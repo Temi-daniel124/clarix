@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import { AdminBottomTabs, AdminSidebar, AdminTopBar } from "@/components/admin-shell/admin-nav";
@@ -5,6 +6,8 @@ import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { pendingInvites, preferredRole } from "@/lib/staff";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 /**
  * The cooperative staff shell, admin blueprint Part 3, officer blueprint Part 3.

@@ -6,7 +6,7 @@ import { RESET_TICKET_COOKIE, RESET_TICKET_MAX_AGE } from "../ticket";
 import { ChoosePasswordForm } from "./choose-password-form";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = { title: "Set a new password" };
+export const metadata: Metadata = { title: "Set a new password", robots: { index: false, follow: false } };
 
 /**
  * Forgot password, second half, where the emailed link lands.

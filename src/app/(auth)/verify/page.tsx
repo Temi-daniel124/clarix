@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 export const metadata: Metadata = {
   title: "Confirm your email",
   description: "Confirm your email address to finish creating your Clarix account.",
+  robots: { index: false, follow: false },
 };
 
 /**

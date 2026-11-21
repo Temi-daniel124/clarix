@@ -3,6 +3,7 @@ import { Figtree, Mona_Sans } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
 import { ThemeScript } from "@/components/theme/theme-script";
+import { siteUrl } from "@/lib/site";
 
 /** Figtree for everything, Mona Sans with its width axis for display (D034). */
 const figtree = Figtree({ variable: "--font-figtree", subsets: ["latin"], display: "swap" });
@@ -13,20 +14,35 @@ const monaSans = Mona_Sans({
   display: "swap",
 });
 
+const DESCRIPTION =
+  "Savings, loans, repayments and member statements for every kind of cooperative in Nigeria. " +
+  "Before a loan is approved, Clarix checks what the member already owes in every cooperative " +
+  "they belong to.";
+const TITLE = "Clarix · Cooperative management with a cross-cooperative limit check";
+
 export const metadata: Metadata = {
-  title: {
-    default: "Clarix, cooperative management",
-    template: "%s · Clarix",
-  },
-  description:
-    "Clarix runs a cooperative's members, loans and repayments, and checks that a member's " +
-    "combined deductions across every cooperative still fit their salary before a loan is approved.",
+  metadataBase: new URL(siteUrl()),
+  title: { default: TITLE, template: "%s · Clarix" },
+  description: DESCRIPTION,
   applicationName: "Clarix",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_NG",
+    siteName: "Clarix",
+    title: TITLE,
+    description: DESCRIPTION,
+    url: "/",
+  },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
+  // Public by default; every authenticated area's layout overrides this with noindex.
+  robots: { index: true, follow: true },
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     title: "Clarix",
-    statusBarStyle: "black-translucent",
+    // Light-only (D033): the status bar stays the page's own colour.
+    statusBarStyle: "default",
   },
   formatDetection: { telephone: false },
 };

@@ -5,6 +5,7 @@ import { Wordmark } from "@/components/clarix/wordmark";
 export const metadata: Metadata = {
   title: "No connection",
   description: "Clarix needs a connection to show you current figures.",
+  robots: { index: false, follow: false },
 };
 
 /**

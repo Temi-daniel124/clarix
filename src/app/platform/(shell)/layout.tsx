@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
 import {
@@ -9,6 +10,8 @@ import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { landingPathFor } from "@/lib/staff";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 /**
  * The Super Admin shell, super-admin blueprint Part 3.

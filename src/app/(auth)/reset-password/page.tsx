@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ResetRequestForm } from "./reset-request-form";
 
-export const metadata: Metadata = { title: "Forgot your password" };
+export const metadata: Metadata = { title: "Forgot your password", robots: { index: false, follow: false } };
 
 /**
  * Forgot password, first half. Shares the two-panel auth shell with sign-in and sign-up, because
