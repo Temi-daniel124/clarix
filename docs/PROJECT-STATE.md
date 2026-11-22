@@ -34,7 +34,7 @@ R1 build log, 1,375 lines, last updated 13 September 2026).
 | Service | State | Notes |
 |---|---|---|
 | GitHub | `Temi-daniel124/clarix`, default branch `main` | Only `main` plus planning branches. Branch protection not yet on |
-| Vercel | Owner's account (Hobby). The owner deleted a Vercel `clarix` project on 22 Nov; `clarix-3w5i.vercel.app` was still serving R1 the same day | Confirm which project serves production, and that it builds from `Temi-daniel124/clarix` with a Preview per branch |
+| Vercel | Two projects build this repo (seen on PR #23): **`clarix`** in the owner's current account (Preview ready) and the older **`clarix_app`** in the previous account, which still serves `clarix-3w5i.vercel.app` | Decide which project is Production; then disconnect the other from the repo so each push builds once |
 | Supabase production | Project `Clarix`, ref `sxugaizwmqigtioqgefx`, eu-west-1, free | Still under the owner's previous Supabase account. Holds the FMC demo data |
 | Supabase staging | Does not exist | D043 (Provisional) |
 | Resend | Sender `onboarding@resend.dev` | Reaches only the account owner until a domain is verified. Key in the shared zip must be rotated |
@@ -55,10 +55,12 @@ These block or shape specific steps. An agent does the work around them, never p
 5. **Rotate the Resend API key** that was in the shared zip, and delete the zip's `.vercel/` folder.
 6. **Move the `Clarix` Supabase project** to the new Supabase account (Supabase dashboard → Project
    settings → Transfer), or confirm it stays where it is.
-7. **Turn on branch protection** for `main` (require a PR and the DB-tests check).
-8. **Choose hero photos or a video** for the landing page (5.2), from the shortlist that PR will carry.
-9. **Buy a domain** when ready; it unlocks email, canonical URLs and cooperative self-signup.
-10. Revoke the Supabase access token shared with planning sessions once R2 work no longer needs it.
+7. **Pick one Vercel project** (`clarix` in the new account is recommended) and disconnect `clarix_app`
+   in the old account from the repo, after moving the production domain/alias if needed.
+8. **Turn on branch protection** for `main` (require a PR and the DB-tests check).
+9. **Choose hero photos or a video** for the landing page (5.2), from the shortlist that PR will carry.
+10. **Buy a domain** when ready; it unlocks email, canonical URLs and cooperative self-signup.
+11. Revoke the Supabase access token shared with planning sessions once R2 work no longer needs it.
 
 ## Decision and scope drift check
 
