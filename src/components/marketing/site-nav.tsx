@@ -41,7 +41,7 @@ export function SiteNav() {
 
   return (
     <div className="sticky top-0 z-50 px-4 pt-4 md:px-6 md:pt-5">
-      <header className="mx-auto flex w-full max-w-[1240px] items-center justify-between gap-4 rounded-pill bg-white py-2.5 pr-2.5 pl-5 shadow-[0_0_0_1px_var(--color-line),0_1px_2px_rgba(14,18,48,0.06),0_12px_32px_-16px_rgba(14,18,48,0.22)] md:pl-6">
+      <header className="mx-auto flex w-full max-w-[1240px] items-center justify-between gap-4 rounded-pill bg-white py-2.5 pr-2.5 pl-5 shadow-raised ring-1 ring-line md:pl-6">
         <Link
           href="/"
           aria-label="Clarix home"

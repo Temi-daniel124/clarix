@@ -25,8 +25,7 @@ export function SetupStepIndicator({ current }: { current: AdminSetupSlug }) {
         className="mt-2"
         size="compact"
         track="neutral"
-        usedRatio={0}
-        proposedRatio={(index + 1) / total}
+        usedRatio={(index + 1) / total}
         label={`Setup progress: step ${index + 1} of ${total}`}
       />
     </div>

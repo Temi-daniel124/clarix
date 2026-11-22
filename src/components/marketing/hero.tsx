@@ -3,6 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
+import { formatNaira } from "@/lib/format";
 import { SUPPORT_EMAIL } from "@/lib/support";
 import { cn } from "@/lib/utils";
 import { HeroCarousel } from "./hero-carousel";
@@ -145,7 +146,7 @@ function LimitCard() {
         />
         <div className="tabular mt-[7px] flex justify-between text-[12px] text-ink-2">
           <span>Across 3 cooperatives</span>
-          <span>Limit ₦{LIMIT.toLocaleString("en-NG")}</span>
+          <span>Limit {formatNaira(LIMIT)}</span>
         </div>
       </div>
     </div>

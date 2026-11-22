@@ -34,8 +34,7 @@ export function StepIndicator({ current }: { current: OnboardingStepSlug }) {
         className="mt-2"
         size="compact"
         track="neutral"
-        usedRatio={0}
-        proposedRatio={completed / total}
+        usedRatio={completed / total}
         label={`Onboarding progress: step ${currentIndex} of ${total}`}
       />
 

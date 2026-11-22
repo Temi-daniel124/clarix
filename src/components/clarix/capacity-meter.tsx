@@ -90,14 +90,20 @@ export function CapacityMeter({
       />
 
       <dl className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1">
-        <Legend swatch="var(--clarix-brand-primary)" term="Committed" value={committed} />
+        <Legend swatch="var(--color-indigo-600)" term="Committed" value={committed} />
         {proposed > 0 ? (
           <Legend
-            swatch={eligible ? "var(--clarix-brand-accent)" : "var(--clarix-danger)"}
+            swatch={eligible ? "var(--color-ochre-500)" : "var(--color-red-600)"}
             term="This request"
             value={proposed}
           />
         ) : null}
+        <Legend
+          swatch="var(--color-emerald-500)"
+          // With a request in view, the headline is the room before it; this is the room after.
+          term={proposed > 0 ? "Left after this request" : "Still available"}
+          value={Math.max(0, cap - committed - proposed)}
+        />
         <Legend swatch="transparent" term="Monthly cap" value={cap} />
       </dl>
 

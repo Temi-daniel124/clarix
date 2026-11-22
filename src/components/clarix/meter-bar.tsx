@@ -39,11 +39,11 @@ export function MeterBar({
   /**
    * What the unfilled remainder MEANS, which decides its colour.
    *
-   * "capacity" tints the track emerald, because on a deduction meter the empty part is real
-   * available headroom, something good that is genuinely there. "neutral" is for meters where
-   * the remainder is merely unachieved rather than available (password strength): an
-   * emerald-tinted empty track there reads as a full, healthy bar before anything is typed,
-   * which is the opposite of the truth.
+   * "capacity" fills the track with solid emerald-500, because on a deduction meter the empty
+   * part is real available headroom, something good that is genuinely there. "neutral" draws
+   * the track in the `line` hairline colour, for meters where the remainder is merely unachieved
+   * rather than available (password strength, progress): an emerald track there would read as a
+   * full, healthy bar before anything is typed, which is the opposite of the truth.
    */
   track?: "capacity" | "neutral";
   className?: string;
@@ -67,9 +67,16 @@ export function MeterBar({
 
   const transition = reduceMotion ? { duration: 0 } : springStandard;
 
-  // Spec §2's meter meanings: committed indigo-600, this request ochre-500, still available
-  // emerald-500, over the limit red-600.
-  const requestFill = tone === "exceeded" ? "var(--color-red-600)" : "var(--color-ochre-500)";
+  // Spec §2's meter meanings on a capacity meter: committed indigo-600, this request ochre-500,
+  // still available emerald-500, over the limit red-600. A neutral-track meter is a score
+  // (password strength), so its fill reads as a verdict instead: healthy emerald-500, tight
+  // ochre-500, exceeded red-600.
+  const requestFill =
+    tone === "exceeded"
+      ? "var(--color-red-600)"
+      : track === "neutral" && tone === "healthy"
+        ? "var(--color-emerald-500)"
+        : "var(--color-ochre-500)";
 
   return (
     <div

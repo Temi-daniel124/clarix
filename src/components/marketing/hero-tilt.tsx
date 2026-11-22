@@ -3,13 +3,13 @@
 import type { ReactNode } from "react";
 import {
   motion,
-  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
   type SpringOptions,
 } from "motion/react";
 import { springStandard } from "@/lib/motion";
+import { usePrefersReducedMotion } from "./use-hydrated-preferences";
 
 /** The one standard spring, as the options useSpring takes, so the plane settles like the rest. */
 const settle = springStandard as SpringOptions;
@@ -32,7 +32,7 @@ const settle = springStandard as SpringOptions;
 export const TILT_RANGE_PX = 400;
 
 export function HeroTilt({ children }: { children: ReactNode }) {
-  const reducedMotion = useReducedMotion();
+  const reducedMotion = usePrefersReducedMotion();
   const { scrollY } = useScroll();
   const rotateX = useSpring(
     useTransform(scrollY, [0, TILT_RANGE_PX], [14, 0]),
@@ -47,12 +47,10 @@ export function HeroTilt({ children }: { children: ReactNode }) {
   return (
     <div className="relative [perspective:1400px]">
       <motion.div
-        style={
-          reducedMotion
-            ? undefined
-            : { rotateX, scale, transformOrigin: "50% 100%" }
-        }
-        className="motion-reduce:transform-none!"
+        style={reducedMotion ? undefined : { rotateX, scale }}
+        // Pivot on the top edge on a phone, so the photo's top stays where the layout put it
+        // and shows above the fold; on desktop, the bottom edge, so the top leans back.
+        className="origin-top motion-reduce:transform-none! lg:origin-bottom"
       >
         {children}
       </motion.div>

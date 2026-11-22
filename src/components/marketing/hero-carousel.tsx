@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import Image from "next/image";
-import { useReducedMotion } from "motion/react";
 import {
   carouselShouldRun,
   HERO_SLIDES,
@@ -10,6 +9,10 @@ import {
   SLIDE_INTERVAL_MS,
 } from "@/lib/carousel";
 import { cn } from "@/lib/utils";
+import {
+  useHydrated,
+  usePrefersReducedMotion,
+} from "./use-hydrated-preferences";
 
 /**
  * The hero's photo carousel (spec §7): four photographs in the radius-32 frame, each holding for
@@ -23,12 +26,14 @@ import { cn } from "@/lib/utils";
  * carries `data-active-slide` so a visual check can tell which photo is showing.
  */
 export function HeroCarousel({ children }: { children?: ReactNode }) {
-  const reducedMotion = Boolean(useReducedMotion());
+  const reducedMotion = usePrefersReducedMotion();
+  const hydrated = useHydrated();
   const [active, setActive] = useState(0);
   const [documentHidden, setDocumentHidden] = useState(false);
 
   useEffect(() => {
     const sync = () => setDocumentHidden(document.visibilityState === "hidden");
+    sync();
     document.addEventListener("visibilitychange", sync);
     return () => document.removeEventListener("visibilitychange", sync);
   }, []);
@@ -72,10 +77,15 @@ export function HeroCarousel({ children }: { children?: ReactNode }) {
                 aria-label={`${index + 1} of ${HERO_SLIDES.length}`}
                 aria-hidden={!isActive}
                 className={cn(
-                  "absolute inset-0 transition-[opacity,transform] ease-out motion-reduce:transition-none",
-                  "[transition-duration:1200ms,6500ms]",
+                  // Tailwind's scale-* sets the CSS `scale` property, so that is what transitions:
+                  // the fade over 1.2s, the zoom over 6.5s.
+                  "absolute inset-0 transition-[opacity,scale] ease-out [transition-duration:1200ms,6500ms] motion-reduce:transition-none",
                   isActive ? "opacity-100" : "opacity-0",
-                  isActive && !reducedMotion ? "scale-[1.06]" : "scale-100",
+                  // The server renders every slide at 1. The active one zooms only once hydrated,
+                  // so the first photo zooms from 1 too instead of arriving at 1.06.
+                  isActive && hydrated && !reducedMotion
+                    ? "scale-[1.06]"
+                    : "scale-100",
                 )}
               >
                 <Image
@@ -124,7 +134,7 @@ export function HeroCarousel({ children }: { children?: ReactNode }) {
                   "block h-2 rounded-pill transition-all duration-[400ms] motion-reduce:transition-none",
                   isActive
                     ? "w-7 bg-indigo-600"
-                    : "w-2 bg-[#D5D9EE] group-hover/dot:bg-muted/50",
+                    : "w-2 bg-muted/45 group-hover/dot:bg-muted/70",
                 )}
               />
             </button>
