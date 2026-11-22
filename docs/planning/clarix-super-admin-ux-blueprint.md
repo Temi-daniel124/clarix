@@ -1,5 +1,34 @@
 # Clarix, Super Admin Role: Screen-by-Screen Wireframe & User Flow
 
+> ## R2 header (22 November 2026): read this before any section below
+>
+> The R1 text below stays as the record of what was built; where this header and the body disagree,
+> **this header wins** over the body. The 14 governing
+> documents listed in `AGENT.md` rank above this blueprint, with `docs/DECISIONS.md` highest; build
+> every screen here with `DESIGN_SYSTEM.md`'s exact tokens. Light theme only,
+> Figtree, pills, no eyebrows. The platform console reads like calm infrastructure: no chatty titles
+> ("Here's how Clarix looks today" goes), no marketing tone.
+>
+> | Section | Status in R2 | Replacement |
+> |---|---|---|
+> | 4.1 Platform Dashboard | **Superseded** | "Platform home (R2)" below |
+> | 5.1 Directory | Adds columns Plan (Trial day N / Paid / Grace / Read-only) and Active members; filters by those | BUILD-PLAN 6.9 |
+> | 5.2 Detail | Adds Billing tab (trial, invoices, record payment, extend trial with a reason) | `clarix-billing-blueprint.md` §4 |
+> | 5.3 Create Cooperative | Institution is **optional**; adds short name, Member ID label/pattern/required; starts the 60-day trial on activation (D034, D041) | BUILD-PLAN 3.1, 9.2 |
+> | 6.1 Deduction Policy | **Changed:** becomes institution default repayment policies; cooperatives set their own within them (D035) | BUILD-PLAN 3.1 |
+> | New: Document verification | Look up a statement's verification code | documents blueprint §4.4 |
+> | Copy | Remove "Everyone across FMC Abeokuta", FMC placeholders, "employees" → "members" | BUILD-PLAN 3.2 |
+>
+> ### Platform home (R2), replaces 4.1
+>
+> - **Header:** "Platform" title, bell.
+> - **Hero:** "Active cooperatives", rolling figure, with a one-line split "3 on trial · 2 paid · 0
+>   read-only".
+> - **Stat row:** Members (active this month, the billing unit), Invites pending, Access requests open.
+> - **Needs you (max 3):** a trial ending within 14 days, an unpaid invoice past due, an access request to
+>   activate, an admin invitation not taken up for 7+ days.
+> - Recent activity moves entirely to Audit log.
+
 *Textual UX blueprint for the Super Admin role only. Companion to `clarix-design-system.md`, `clarix-mvp-spec.md`, and the Employee, Cooperative Admin, and Cooperative Officer blueprints. No diagrams, every layout is described in words, in the order the platform operator encounters it.*
 
 ---

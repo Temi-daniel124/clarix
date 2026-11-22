@@ -1,6 +1,6 @@
 # ARCHITECTURE.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` and `DATA-MODEL.md`. This describes the system
+**Authority level: 4 of 14.** Defers to `DECISIONS.md` and `DATA-MODEL.md`. This describes the system
 shape and deployment topology, for the database schema and reservation algorithm, see
 `DATA-MODEL.md`; for local setup commands, see `BUILD.md`; for CI, see `DEVELOPMENT-WORKFLOW.md`.
 
@@ -60,7 +60,7 @@ Claude/OpenAI API  ── payslip OCR fallback only (never the eligibility decis
 - Same responsive layout serves mobile and desktop, bottom tab bar vs. persistent sidebar is a
   CSS/layout-density difference, never a separately built experience (see `DESIGN_SYSTEM.md` §5).
 
-## Payslip pipeline (background-job discipline)
+## Payslip and statement pipeline (background-job discipline; R2 extends it to bank statements, D035)
 
 1. Try direct PDF text extraction first (a library, not the AI API), IPPIS payslips are
    Oracle E-Business Suite-generated, real-text PDFs, so this succeeds for free on a digital
@@ -74,12 +74,40 @@ Claude/OpenAI API  ── payslip OCR fallback only (never the eligibility decis
    or an equivalent), never synchronously inside the request that's waiting on the upload: a slow
    API call must not consume the request's timeout budget.
 
-## Environments
+## Environments (R2, D032, D043)
 
-v1 ships with a single production environment (Vercel's Preview deployments on pull requests are
-fine to use for review, but there is no separate staging Supabase project for now. One Supabase
-project, `Clarix`, serves both). If a staging split becomes necessary later, that's a new
-`DECISIONS.md` entry, not a silent addition.
+| Environment | Vercel | Supabase | Who changes it |
+|---|---|---|---|
+| Production | the Production deployment of `main` (`clarix-3w5i.vercel.app` until a domain exists) | `Clarix` (ref `sxugaizwmqigtioqgefx`, eu-west-1). It sits under the owner's previous Supabase account and stays there for now | Only the owner, or an agent the owner has told to, for that specific PR |
+| Preview | one per branch / PR (built by both the new `clarix` and the old `clarix_app` Vercel projects until the owner retires the old one) | **The same `Clarix` project** (D043, owner's decision for the demonstration stage) | Agents, on branches, within D043's migration rule |
+| Local | `npm run dev` | whichever project `.env.local` points at; never production for schema work | The person at the keyboard |
+
+Because Preview deployments read and write the live database (D043): only **additive** migrations
+are applied from a branch; nothing deletes or resets the demo data; destructive actions are tested on
+a throwaway cooperative; and every non-production deployment shows a "Preview · uses the live demo
+data" strip. Free Supabase projects pause after 7 idle days; the demo's own use keeps it awake, and
+production moves to Pro at first revenue (D049).
+
+## SEO and public files (D047)
+
+Generated from code under `src/app/` (`sitemap.ts`, `robots.ts`, `manifest.ts`,
+`opengraph-image.tsx`, `icon.png`, `apple-icon.png`, `favicon.ico`). `NEXT_PUBLIC_SITE_URL` gives the
+absolute base. When `VERCEL_ENV !== "production"`, robots returns `Disallow: /` and the root layout
+sets `robots: { index: false }`. Signed-in route groups are always `noindex`.
+
+## Documents and exports (D036, D044)
+
+Generated server-side in a Route Handler with the approved PDF library (`TOOLING-POLICY.md`), so the
+member's data never leaves Clarix. Vercel Hobby functions have a 10-second limit: one statement per
+request; bulk generation for a month runs as a client-driven queue (the browser requests statements
+one at a time and zips them) rather than one long function. Each document gets a row in
+`generated_documents` with its verification code before the file is returned.
+
+## Billing (D041, D042)
+
+The trial clock and read-only state are computed when read (like reservation expiry), not by a cron
+job: `cooperative_access_state(coop_id)` returns `trial`, `active`, `grace`, or `read_only`, and every
+write RPC checks it. A daily Vercel Cron (free) only sends reminders.
 
 ## Environment variables (names only, actual values live in Vercel's project settings and the
 
@@ -90,13 +118,20 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 SUPABASE_SERVICE_ROLE_KEY        # server-only, never exposed to the client bundle
 RESEND_API_KEY
-AI_PAYSLIP_API_KEY               # Claude or OpenAI, whichever is chosen, server-only
+AI_PAYSLIP_API_KEY               # P1 only (vision fallback); not set until that decision exists
+NEXT_PUBLIC_SITE_URL             # R2, D047: absolute base for sitemap, canonical, OG
+NEXT_PUBLIC_DEMO_MODE            # R2, D048: "true" only on an owner-named demo deployment
+DEMO_ACCOUNT_PASSWORDS           # R2, D048: server-only, only where DEMO_MODE is on; never in git
 ```
+
+`SUPABASE_SERVICE_ROLE_KEY` remains unused by the app (privileged steps are SECURITY DEFINER
+functions, `SECURITY.md`). Do not start using it without a decision entry.
 
 ## Deployment flow
 
-`git push` to the GitHub repo's default branch → Vercel's GitHub integration auto-deploys to
-production; pull requests get their own Preview deployment automatically. See
+Agents push **branches only**; every branch gets a Preview deployment automatically. A merge to
+`main` deploys to production, and only the owner merges, or tells an agent to merge a specific PR
+(D032). See
 `DEVELOPMENT-WORKFLOW.md` for the commit-identity gate that must pass before this flow is allowed
 to run, and for why database migrations are applied via `supabase db push` as a distinct step,
 not something Vercel's build itself does.

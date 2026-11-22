@@ -1,5 +1,56 @@
 # Clarix, Employee/User Role: Screen-by-Screen Wireframe & User Flow
 
+> ## R2 header (22 November 2026): read this before any section below
+>
+> This blueprint is now the **Member** blueprint. The R1 text below stays as the record of what was
+> built; where this header and the body disagree, **this header wins** over the body. The 14 governing
+> documents listed in `AGENT.md` rank above this blueprint, with `docs/DECISIONS.md` highest; build
+> every screen here with `DESIGN_SYSTEM.md`'s exact tokens.
+>
+> **Global changes to every section:** "employee" reads "member"; "salary" reads "income"; "payslip"
+> reads "proof of income (payslip or bank statement)"; "employee ID / IPPIS number" reads "Member ID"
+> with the label each cooperative sets; every FMC, hospital and IPPIS mention is removed from copy
+> (D034). Light theme only, Figtree, pill buttons (D037, D038, D045). No uppercase eyebrows anywhere.
+>
+> | Section | Status in R2 | Replacement |
+> |---|---|---|
+> | 1.1 Landing | **Superseded** | `clarix-public-site-blueprint.md` §2 |
+> | 1.3 Sign Up, 1.4 Log In | **Superseded (layout and copy)**; flows unchanged | `clarix-public-site-blueprint.md` §4 |
+> | 2.1 Welcome Tour | Kept, max 3 slides, skippable, no FMC copy | public-site blueprint §5 |
+> | 2.2 Employee ID Entry | **Changed:** optional unless the cooperative requires it; asked *after* choosing a cooperative, with that cooperative's label and pattern | public-site blueprint §5, D034 |
+> | 2.3 Payslip Upload, 2.4 Review | **Changed:** one optional "Proof of income" step offering payslip, bank statement (3–6 months) or "I'll add it later"; skipping never blocks home | `clarix-documents-blueprint.md` §5, D035 |
+> | 2.5 Join a Cooperative | Moved earlier: second step of onboarding | public-site blueprint §5 |
+> | 3 Navigation | **Changed:** floating pill tab bar, four destinations (Home, Cooperatives, Loans, More); desktop light sidebar | `DESIGN_SYSTEM.md` §5.5 |
+> | 4.1 Dashboard / Home | **Superseded** | "Member home (R2)" below |
+> | 4.2 My Cooperatives | Kept; now also holds the insights and the "join another cooperative" prompt removed from home; each row opens a cooperative sheet | BUILD-PLAN 6.1 |
+> | 5.2 Savings Statement | Kept on screen; adds "Download PDF" (watermarked) and a combined statement | documents blueprint §4 |
+> | 5.3 Loan Detail | **Changed:** opens as a sheet with the state timeline Applied → Capacity held (or "Sent for review") → Approved → Repaying → Closed | BUILD-PLAN 6.2 |
+> | 5.5 Loan Application | **Changed:** over-limit "Submit anyway" stores the application as `pending_review` and the confirmation says nothing is held (D040). Amount by range slider + rolling number; tenure stepper; one pinned primary | BUILD-PLAN 0.1, 6.2 |
+> | 6.2 Profile / Settings | Grouped list; adds "Proof of income" (evidence list, age, add new) and "Other monthly repayments" (EDGE-CASES E16); theme setting removed | BUILD-PLAN 6.3, 7.x |
+>
+> ### Member home (R2), replaces 4.1
+>
+> - **Header (56px):** initials avatar, "Hi, Adebayo" (`heading`), bell with unread dot. No organisation
+>   line, no member ID under the name.
+> - **Hero card:** label "Available to borrow"; the figure as a rolling `hero-figure`; the meter
+>   (committed vs available) under it; one line "of ₦161,838 monthly repayment limit" (or "Using the
+>   lowest limit of your cooperatives", D035.4; or a `Declared` chip). One primary button "Apply for a
+>   loan". If not assessed: the figure reads "Not assessed yet", the meter is an empty track, the
+>   button becomes "Add proof of income" and a tertiary "Apply anyway" link remains (D040).
+> - **Stat row (one group, three stats, hairline separated):** Savings (total across cooperatives),
+>   Loans (count and outstanding), This month (repayments due). Each opens a sheet with the
+>   per-cooperative breakdown and one action.
+> - **Needs you (max 3):** e.g. "Ikeja Traders decided your application", "March statement is ready",
+>   "Your proof of income is 13 months old". "See all" goes to Notifications. Hidden when empty (no
+>   empty-state card on home).
+> - **Highlights (optional, D046):** up to three swipeable cards from the member's cooperatives
+>   (announcement, new loan product, statement ready). Only when real.
+> - Nothing else. "Current as of" becomes a `small` line under the hero only when data is older than
+>   24 hours ("Updated 3 days ago").
+>
+> **Acceptance:** fits a 360×800 phone without scrolling except Highlights; tab bar never covers it;
+> every figure matches the Cooperatives and Loans screens.
+
 *Textual UX blueprint for the Employee/User role only. Companion to `clarix-design-system.md` (tokens, components, motion) and `clarix-mvp-spec.md` (data model, permissions). No diagrams, every layout is described in words, in the order a real employee encounters it.*
 
 ---

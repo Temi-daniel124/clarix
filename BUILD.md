@@ -1,5 +1,7 @@
 # BUILD.md, Clarix
 
+**Authority level: 12 of 14.** The full order is in `AGENT.md` → "The governing documents".
+
 Practical setup and day-to-day commands. For *why* things are set up this way, see
 `docs/ARCHITECTURE.md`, `docs/DEVELOPMENT-WORKFLOW.md`, and `docs/TOOLING-POLICY.md`.
 
@@ -10,21 +12,15 @@ Prerequisites: Node.js (LTS), the GitHub CLI (`gh`) or Git for Windows, the Supa
 all light installs, none of them Docker.
 
 ```bash
-# from inside C:\Users\hp\Documents\CLARIX, once the repo exists there:
-git config user.name "Temiloluwa Adebayo"
-git config user.email "adrianwilliams128765@gmail.com"
+git clone https://github.com/Temi-daniel124/clarix.git
+cd clarix
+git config user.name "Temi-daniel124"
+git config user.email "temmydaniel124@gmail.com"   # D033
+npm ci
 ```
 
 This sets the identity **for this repository only** (no `--global` flag), see
 `docs/DEVELOPMENT-WORKFLOW.md` §1 for why this must never drift.
-
-## First-time project scaffold (once the repo exists and this doc set is in it)
-
-```bash
-npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
-# then wire up shadcn/ui, Motion, lucide-react, the Supabase JS client, Resend's SDK,
-# see docs/TOOLING-POLICY.md for the exact approved package list.
-```
 
 ## Linking to Supabase (no local Docker, see docs/DEVELOPMENT-WORKFLOW.md §2)
 
@@ -34,6 +30,11 @@ supabase link --project-ref <Clarix project ref>  # from docs/ARCHITECTURE.md, o
 ```
 
 ## Ongoing schema changes
+
+**R2 rule (D032, D043):** there is one Supabase project for Preview and Production. Write the
+migration file first and let CI test it. An **additive** migration may be applied from a branch (an
+agent uses the Management API per D023; a human uses `db push`); anything that changes or removes
+what `main` relies on is applied only when the owner says "merge" for that PR.
 
 ```bash
 # edit schema locally (e.g. in supabase/migrations or via the CLI's schema-diff workflow),
@@ -68,14 +69,15 @@ see `docs/DEVELOPMENT-WORKFLOW.md` §3 for why, and don't try to run them locall
 ## Deploying
 
 ```bash
+git switch -c r2/<phase>-<step>-<name>
 git add <files>
 git commit -m "…"     # only after the git-identity check in docs/DEVELOPMENT-WORKFLOW.md §1
-git push
+git push -u origin r2/<phase>-<step>-<name>
 ```
 
-Vercel's GitHub integration builds and deploys automatically: a pull request gets a Preview
-deployment, a merge to the default branch deploys to production. Nothing further to run manually
-beyond the `supabase db push` step for any schema change that needs to land alongside the code.
+Push **a branch**, never `main` (D032). Vercel builds a Preview for every branch. Open a PR with the
+Preview link. Only the owner merges; a merge to `main` deploys to Production. A PR with a migration
+says "Migration: additive, applied" or "Migration: applies at merge" in its title (D043).
 
 ## Environment variables checklist
 
@@ -85,9 +87,12 @@ Set these in Vercel (Project Settings → Environment Variables) **and** in a lo
 ```
 NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
-SUPABASE_SERVICE_ROLE_KEY
 RESEND_API_KEY
-AI_PAYSLIP_API_KEY
+NEXT_PUBLIC_SITE_URL          # R2 (D047)
+NEXT_PUBLIC_DEMO_MODE         # R2 (D048): demo deployments only
 ```
+
+`SUPABASE_SERVICE_ROLE_KEY` and `AI_PAYSLIP_API_KEY` are not used by the app; leave them unset.
+Preview and Production use the same Supabase values (D043).
 
 See `docs/ARCHITECTURE.md` for what each one is for, and `SECURITY.md` for handling rules.

@@ -1,8 +1,13 @@
 # DATA-MODEL.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md`. This is the canonical schema, if code and this
+**Authority level: 3 of 14.** Defers to `DECISIONS.md`. This is the canonical schema, if code and this
 document disagree, this document is right and the code has drifted; fix the code (and, if the
 fix reveals the model itself needs to change, add a new `DECISIONS.md` entry first).
+
+**R2 note (22 November 2026):** the schema below is what is live (R1). The changes Release 2 makes
+are specified in "R2 planned schema" at the end of this file; build them in the BUILD-PLAN step named
+beside each. Until a step ships, the R1 description stays true. The note in Step 3 below ("no row
+inserted") is the defect D040 fixes.
 
 Written for Postgres/Supabase. Types below are illustrative, not exhaustive DDL, treat this as
 the contract for what each table means and how it's scoped, and write the actual migration SQL to
@@ -243,3 +248,130 @@ obligation, no change to the capacity math). Rejects → `status='rejected'`, ex
   and `BUILD.md` for the exact commands and the no-local-Docker constraint.
 - Every table with a `cooperative_id` or `organization_id` column ships its RLS policy in the same
   migration that creates the table, never as a follow-up "add security later" step.
+
+
+---
+
+## R2 planned schema (D034 to D044)
+
+Contract, not DDL. Each change ships with its RLS policies and pgTAP tests in the same migration
+(rule above). Names may be adjusted in implementation; if one is, update this section in the same PR.
+
+### Over-limit applications (BUILD-PLAN 0.1, D040)
+
+```
+loans.status                 += 'pending_review'    -- stored, holds no capacity, staff decide
+loans.over_capacity          boolean not null default false
+loans.shortfall_at_submission numeric(14,2)          -- requested monthly minus available, at submit
+```
+
+Step 3 becomes: inside the lock, if `requested <= available` insert `reserved` as today; **else insert
+`pending_review` with `over_capacity = true`, `reservation_expires_at = null`**, and return
+`NOT_ELIGIBLE_STORED`. `committed` (Step 1) counts only `reserved` (unexpired) and `active`. Approving
+a `pending_review` loan requires `approval_reason` and sets `active`.
+
+### Existing loans (BUILD-PLAN 0.3 and 8.2, D036)
+
+```
+loans.origin                       'clarix' | 'pre_existing'   default 'clarix'
+loans.outstanding_balance_at_entry numeric(14,2)   -- pre_existing only
+loans.expected_end_date            date            -- pre_existing required; clarix derived from tenure
+loans.entered_by                   fk -> users     -- staff who keyed or imported it
+```
+
+A `pre_existing` loan is inserted as `active` through `record_existing_loan(...)` (SECURITY DEFINER,
+checks the caller's record permission at that cooperative), never through reservation. It counts in
+`committed` immediately.
+
+### Institutions and member IDs (BUILD-PLAN 3.1, D034)
+
+```
+organizations  -> concept renamed "institution" (table rename optional; record the choice)
+  is now OPTIONAL for a cooperative: cooperatives.organization_id becomes nullable
+  employee_id_format / pattern move to cooperatives (below)
+
+cooperatives
+  member_id_label        text default 'Member ID'      -- e.g. 'IPPIS number', 'Staff number'
+  member_id_pattern      text null                     -- regex, null = any text
+  member_id_required     boolean default false
+  short_name             text                          -- for chips and the switcher ("FMC Multipurpose")
+
+cooperative_memberships
+  member_number          text null                     -- the cooperative's ID for this person, stored as text
+  unique (cooperative_id, member_number) where member_number is not null
+
+users
+  employee_id            -> deprecated; copied into member_number for each FMC membership, then dropped
+  organization_id        -> dropped (institution comes through the cooperative)
+```
+
+`handle_new_auth_user()` stops attaching new users to any organisation.
+
+### Repayment policy per cooperative (BUILD-PLAN 3.1, D035)
+
+```
+repayment_policies
+  id, scope ('institution' | 'cooperative'), institution_id null, cooperative_id null
+  income_basis           'gross' | 'net' | 'average_inflow'
+  max_percentage         numeric(5,2)   -- 1..100; a cooperative row may not exceed its institution row
+  allow_declared_income  boolean default false
+  evidence_max_age_months int default 12
+  sanity_band_max        numeric(14,2) null
+```
+
+Limit for a member = **min** over their active memberships of (their income on that policy's basis ×
+that policy's percentage). FMC's five cooperatives are seeded with gross / 33.3%, matching today.
+
+### Income evidence (BUILD-PLAN 7.1, D035)
+
+```
+income_evidence
+  id, user_id, source ('payslip' | 'bank_statement' | 'declared')
+  period_start, period_end
+  monthly_gross, monthly_net        -- payslip
+  monthly_average_inflow            -- bank statement (after exclusions)
+  monthly_declared                  -- declared
+  status ('unverified' | 'verified' | 'superseded')
+  verified_by fk -> users null, verified_at
+  document_ids uuid[]               -- documents rows; private bucket, same access rule as D031
+  created_at
+
+declared_obligations                 -- EDGE-CASES E16
+  id, user_id, description, monthly_amount, declared_by, created_at, ends_on null
+```
+
+`users.salary_gross / salary_net` become a view over the latest payslip evidence for compatibility,
+then are dropped once nothing reads them.
+
+### Documents and exports (BUILD-PLAN 8.1–8.4, D044)
+
+```
+generated_documents
+  id, cooperative_id, kind ('member_statement' | 'loan_statement' | 'report' | 'invoice')
+  subject_user_id null, period_start, period_end
+  verification_code text unique      -- 10 chars, Crockford base32, shown in the PDF footer
+  generated_by, generated_at, sha256 of the file bytes
+```
+
+RLS: readable by the cooperative's staff with the export permission and by the subject member; the
+`/verify/[code]` lookup returns only kind, cooperative, period and generated_at.
+
+### Billing (BUILD-PLAN 9.1–9.4, D041, D042)
+
+```
+subscriptions
+  cooperative_id (pk), trial_started_at, trial_ends_at (trial_started_at + 60 days)
+  plan ('monthly' | 'yearly'), founding_price_lock numeric null, status computed by
+  cooperative_access_state(): 'trial' | 'active' | 'grace' | 'read_only'
+
+invoices
+  id, cooperative_id, period_start, period_end, active_members, unit_price, minimum_applied boolean,
+  amount, status ('open' | 'paid' | 'void'), due_at, generated_document_id
+
+payments
+  id, invoice_id, amount, method ('transfer' | 'paystack'), reference, recorded_by, paid_at
+```
+
+**Active member** (the billing unit, D041.1): a membership with at least one saving, repayment, loan
+or eligibility check recorded in that calendar month. Roster rows not yet on Clarix are never billed. Defined once in
+`active_members_for(coop, period)` and unit-tested.

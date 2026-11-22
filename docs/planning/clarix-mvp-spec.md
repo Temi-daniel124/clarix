@@ -1,5 +1,10 @@
 # Clarix MVP Spec, FMC Abeokuta Pilot
 
+> **Historical (R1).** The original MVP specification. Superseded where it conflicts by
+> `docs/DECISIONS.md` D032–D049, `docs/MVP-SCOPE.md`, `docs/DATA-MODEL.md` (R2 planned schema) and
+> `docs/BUILD-PLAN.md`. In particular: Clarix is no longer FMC-only, pricing exists (D041), and
+> income is not payslip-only (D035).
+
 *Feature list, role permissions, data model, and the eligibility/reservation logic. Companion to `clarix-strategic-analysis.md`.*
 
 ---

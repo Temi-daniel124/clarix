@@ -1,8 +1,14 @@
 # ROLES-AND-PERMISSIONS.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` (see D001, D003, D010). For the screen-by-screen
-experience of each role, see the four role blueprints under `docs/planning/` (Employee,
-Cooperative Admin, Cooperative Officer, Super Admin).
+**Authority level: 5 of 14.** Defers to `DECISIONS.md` (see D001, D003, D010). For the screen-by-screen
+experience of each role, see the four role blueprints under `docs/planning/` (Member, formerly
+Employee; Cooperative Admin; Cooperative Officer; Super Admin).
+
+**R2 changes (D034 to D042), in short:** the Employee role is called **Member** everywhere (the
+database enum may keep `employee` until a migration renames it; the UI never shows it). Members are
+no longer tied to one employer. Staff gain new actions: add existing loans, bulk monthly entry,
+apply on a member's behalf, verify income evidence, export records, issue statements. The Super Admin
+gains billing actions. The matrix below includes them.
 
 ## The four roles
 
@@ -11,24 +17,31 @@ Cooperative Admin, Cooperative Officer, Super Admin).
 | **Super Admin** | Operates the Clarix platform itself. Not a member of any cooperative's financial data by default, see the Access Grant exception below. |
 | **Cooperative Admin** | Head/owner of one cooperative. Full control of that cooperative. Invited by Super Admin, never self-registered. |
 | **Cooperative Officer** | Day-to-day staff of one cooperative. Permissions are a subset of Admin's, configured per-officer by that cooperative's own Admin. Invited by their Admin, never by Super Admin. |
-| **User/Employee** | One Clarix account, with zero or more cooperative memberships. Open self-service signup. |
+| **Member** (was User/Employee) | One Clarix account, with zero or more cooperative memberships, at cooperatives with or without an institution behind them. Open self-service signup. |
 
 ## Permission matrix
 
-| Screen / Action | Super Admin | Cooperative Admin | Cooperative Officer | Employee |
+| Screen / Action | Super Admin | Cooperative Admin | Cooperative Officer | Member |
 |---|---|---|---|---|
 | Create/activate cooperative account | ✅ | ❌ | ❌ | ❌ |
-| Set org-wide deduction policy default | ✅ | view only | ❌ | ❌ |
+| Set an institution's default repayment policy | ✅ | view only | ❌ | ❌ |
+| Set own cooperative's repayment policy (may only lower an institution cap, D035) | ✅ | ✅ | ❌ | ❌ |
 | View own cooperative's member list | ❌* | ✅ | ✅ | ❌ |
 | Add/import members | ❌ | ✅ | Configurable | ❌ |
 | View a member's full record (own coop) | ❌* | ✅ | ✅ | own record only |
 | Run cross-cooperative eligibility check | ❌* | ✅ | ✅ | preview on own new loan only |
-| Submit loan application (creates reservation) | ❌ | ✅ | Configurable | requests only, doesn't submit |
+| Submit loan application (creates reservation, or `pending_review` if above the limit, D040) | ❌ | ✅ on a member's behalf | Configurable | ✅ own, at one cooperative at a time |
 | Approve/reject loan | ❌ | ✅ | Configurable | ❌ |
 | Configure cooperative's own loan products/savings ratio | ❌ | ✅ | ❌ | ❌ |
 | Add/remove officers, set officer permissions | ❌ | ✅ | ❌ | ❌ |
 | Edit cooperative public profile (discovery) | ❌ | ✅ | ❌ | ❌ |
-| View employee dashboard (own data, all own cooperatives) | ❌ | ❌ | ❌ | ✅ |
+| Add an existing loan / bulk monthly entries (D036) | ❌ | ✅ | Configurable (record permission) | ❌ |
+| Verify a member's income evidence (D035) | ❌ | ✅ | Configurable (approve permission) | add own evidence |
+| Export records (CSV, XLSX, PDF) and issue statements (D036, D044) | ❌ | ✅ | Configurable (new `export` permission) | download own statements |
+| Look up a document verification code (D044) | ✅ | ✅ (own cooperative's documents) | ✅ | ❌ |
+| View subscription, invoices; start yearly plan (D041) | ✅ all | ✅ own | ❌ | ❌ |
+| Record a manual payment, extend a trial (D042) | ✅ | ❌ | ❌ | ❌ |
+| View member home (own data, all own cooperatives) | ❌ | ❌ | ❌ | ✅ |
 | Browse cooperative discovery (public info only) | ✅ | ✅ | ✅ | ✅ |
 | View audit log | platform-level events only | own cooperative's log | ❌ | ❌ |
 
@@ -47,12 +60,14 @@ never changes the underlying permission set.
 
 ## Onboarding differs by role. This is intentional, not an oversight
 
-- **Employee, open self-service signup.** Email/phone → verify contact → employee ID →
-  payslip upload → review extracted salary → browse/apply to cooperatives. No invitation needed.
+- **Member, open self-service signup.** Email → verify → name and phone → join or find a
+  cooperative → member ID if that cooperative requires one → optional proof of income (payslip,
+  bank statement or declared). Nothing after "join" blocks the home screen (D035). No invitation
+  needed. (Until a Resend domain is verified, verification email reaches only the owner, D049.)
 - **Cooperative Admin, invited by Super Admin, never self-registered.** Super Admin creates the
   `cooperatives` row (part of that cooperative's paid onboarding) and sends a one-time email
   invite via Resend. Accepting it drops the Admin into an Admin-specific setup flow (cooperative
-  profile, loan products, spreadsheet import), never the Employee payslip/join flow, since being
+  profile, loan products, repayment policy, spreadsheet import of members and existing loans), never the member join flow, since being
   an Admin doesn't by itself make someone a beneficiary member anywhere.
 - **Cooperative Officer, invited by their own Admin, not by Super Admin.** Same invite-link
   mechanic, triggered from the Admin's "manage officers" screen, landing the Officer in a much

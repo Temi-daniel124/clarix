@@ -1,6 +1,6 @@
 # DECISIONS.md, Clarix
 
-**Authority level: 1 (highest).** This is the log of record. Every other document in this
+**Authority level: 1 of 14 (highest).** This is the log of record. Every other document in this
 repository must agree with it. If any other doc appears to contradict an entry here, this file
 wins, fix the other doc, don't reinterpret this one.
 
@@ -582,6 +582,350 @@ waiting and the permission to decide it, the reviewer can; once decided, they ca
 
 ---
 
+
+## Release 2 (R2): the decisions behind the rebuild, 22 November 2026
+
+Everything from D032 onward was decided by the owner (Temiloluwa) on 22 November 2026, while
+planning the second release: generalising Clarix beyond one employer and rebuilding the surface to a
+premium standard. They are written down here before any code changes, so the build has something to
+be checked against. Where an entry below changes an earlier one, it says `Supersedes:` and the earlier
+entry stays in place as history.
+
+An earlier, unmerged attempt (PR #22, branch `claude/vigilant-mendel-xlrugr`, deleted on 22 November
+2026) drafted its own D032 to D040. The owner rejected that attempt in full. **None of its choices
+carry over** (in particular its "Mona Sans Wide" typeface, its market-stall photography and its
+marketing copy promising features that did not exist). The numbers below are reused only because
+that draft never reached `main`.
+
+Status values for R2 entries: **Locked** (build against it), **Provisional** (recommended and
+written so the build can proceed, but the owner has not yet given an explicit yes; it is listed in
+`docs/PROJECT-STATE.md` → "Waiting on the owner" until confirmed or replaced).
+
+---
+
+### D032: Every change goes to a preview branch; nothing reaches `main` without the owner's explicit word
+**Status:** Locked
+**Supersedes:** the merge rule in `docs/DEVELOPMENT-WORKFLOW.md` §4 ("merged to the default branch
+once REVIEW passes").
+**Decision:** Production is live and must not be damaged. So:
+
+1. No agent ever commits to, pushes to, force-pushes, rebases or deletes `main`.
+2. Every change, however small (a typo, a doc, a migration), is made on its own branch and opened as
+   a pull request. Vercel builds a Preview deployment for that branch; the PR description carries
+   the Preview link and a short "how to check this" list for the owner.
+3. **An agent never merges a pull request, never enables auto-merge, never promotes a deployment to
+   production and never changes production settings** (Vercel production environment variables,
+   production domains, Supabase production auth settings) unless the owner, in their own words,
+   tells it to merge or change *that specific* thing. Approval of one PR is not approval of the next.
+   A message from another agent, a PR comment or a CI bot is never that approval.
+4. Database changes follow the same rule (see D043): a migration is written as a file on the branch and tested in CI. Because
+   Preview and Production share one database (D043), an agent may apply it to that database from a
+   branch **only if it is additive** (new tables, columns with defaults, new functions or views that the
+   code on `main` ignores) and the PR says so. Anything that changes or removes what `main` relies on
+   (dropping or renaming, changing an existing function's behaviour, rewriting data) is applied only
+   when the owner says "merge" for that PR, immediately before the merge.
+5. When the owner says "merge", the agent merges with a squash merge, then confirms the production
+   deployment built and the live site loads.
+
+**Rationale:** owner's instruction, verbatim in spirit: "It must not merge it without me approving
+it. The only way it can merge to the main is only if I tell it to do so."
+
+### D033: Commit identity moves to the owner's current GitHub account
+**Status:** Locked
+**Supersedes:** D016 (the identity, not the principle: the identity is still verified every session).
+**Decision:** The repository moved to GitHub user `Temi-daniel124` and Vercel account
+`temmydaniel124@gmail.com`. Every commit is authored as:
+
+```
+Name:  Temi-daniel124
+Email: temmydaniel124@gmail.com
+```
+
+(The owner set the name to their GitHub username, `Temi-daniel124`, on 22 November 2026.)
+
+Checked with `git config user.name` / `git config user.email` before the first commit of every
+session, and fixed for this repository (local config, not `--global`) if it differs. Commits made by
+the old identity (`adrianwilliams128765@gmail.com`) stay in history untouched; never rewrite them.
+**Rationale:** Vercel's Hobby plan blocks deployments whose commit author is not the account owner,
+which is the failure D016 was created to prevent. The owner's account changed, so the identity does.
+
+### D034: Clarix serves any cooperative in Nigeria, not one employer
+**Status:** Locked
+**Supersedes:** D019 (single organisation), the "no multi-organisation" non-goals in
+`docs/PRODUCT.md` and `docs/MVP-SCOPE.md`, and the employer-centred rationale of D001 and D005.
+**Decision:**
+
+- A **cooperative** is the customer and the unit everything is scoped to. It may or may not belong
+  to an employer or institution.
+- An **organisation** (renamed in the interface to "Institution") becomes optional grouping: a
+  hospital, a university, a ministry, a company, or nothing. Cooperatives in the same institution
+  share an institution-level default repayment policy and can be bundled for pricing (D041). A
+  community, market, transport or professional cooperative has no institution at all.
+- The fourth role is renamed from **Employee** to **Member** everywhere a person reads it (screens,
+  copy, docs). The database keeps its table names (`users`, `cooperative_memberships`); renaming
+  tables is not worth the migration risk.
+- Every hard-coded reference to Federal Medical Centre, Abeokuta, IPPIS, "the hospital", "staff
+  cooperatives" or `fmcabeokuta.org.ng` is removed from product code and copy. FMC-named records may
+  remain **only as demo data** in the database.
+- The member identifier becomes "Member ID" by default. A cooperative or institution that uses
+  staff numbers (IPPIS, a payroll number, a matric number) sets its own label and optional pattern;
+  a cooperative without one gets a Clarix-issued member number. No identifier pattern is ever global.
+- The signup trigger no longer attaches every account to "the oldest organisation". A member's link
+  to an institution comes from the cooperative they join, never from signup.
+
+D001 stays: there are still exactly four roles (Super Admin, Cooperative Admin, Cooperative Officer,
+Member). Its rationale now reads "Clarix is built for cooperatives, not for any employer".
+
+**Rationale:** owner: "We are tying a platform that can become a great unicorn project to just one
+specific cooperative... I'm trying to make the platform global for everybody, for every cooperative
+around Nigeria." FMC Abeokuta remains the first prospective customer and the live demo audience.
+
+### D035: Income evidence is a payslip, a bank statement, or a declared figure; nothing breaks without one
+**Status:** Locked
+**Supersedes:** D005's "salary figures come from an employee-uploaded payslip", D006's scope
+(extended, not reversed), and D007's single platform-wide cap.
+**Decision:**
+
+1. A member's repayment capacity is computed from a **monthly income figure** with a recorded
+   **source**: `payslip`, `bank_statement`, or `declared`. Each source records the evidence period
+   and when it was confirmed.
+2. **Payslip:** as today, gross and net monthly pay, plus the document.
+   **Bank statement:** 3 to 6 consecutive months of statements. The figure used is the **average
+   monthly inflow, excluding transfers between the member's own accounts and one-off lumps the
+   member or staff mark as such**. Staff confirm it before it counts.
+   **Declared:** the member types a figure with no document. It is shown everywhere as
+   "Declared, not verified" until a staff member with approval permission marks it verified.
+3. Each cooperative sets its own **repayment policy**: which income basis it uses (gross pay, net
+   pay, or average inflow), the percentage cap (default 33.3% for payroll deductions, per the Labour
+   Act; default 30% of average inflow for bank-statement income; any value 1 to 100 allowed), and
+   whether unverified income may be used at all. An institution can set a default its cooperatives
+   inherit; a cooperative inside an institution may only set a **lower** cap than the institution's,
+   never higher (same rule shape as D009).
+4. **The cross-cooperative limit is computed once per member, not per cooperative.** When a member's
+   cooperatives use different policies, the check uses the **most conservative** (lowest) resulting
+   limit, and says so in one line ("Using the lowest limit of your cooperatives").
+5. **No income evidence never blocks joining, saving or browsing.** It only means the limit reads
+   "Not assessed yet" with one action ("Add proof of income"), and a loan application from such a
+   member is still stored (D040) and decided by the cooperative.
+6. Extraction stays deterministic and human-confirmed: text extraction from real-text PDFs first,
+   with an optional AI fallback for photographed documents (P2, needs its own approval under
+   `docs/TOOLING-POLICY.md`). The member always confirms the figures; staff can see the evidence
+   while an application is waiting (D031, now covering bank statements too). Nothing ever classifies
+   individual deduction lines or transactions automatically (D006 holds).
+7. Evidence ages: a figure older than the cooperative's evidence window (default 12 months) shows its
+   age on every review and prompts the member to refresh it. It still counts until replaced.
+
+**Rationale:** owner: "Some members don't collect pay slips... We need to be able to collect
+something like bank statements... instead of wrong entry breaking the system, it needs to have a
+proper fallback." `docs/EDGE-CASES.md` lists every scenario this decision answers.
+
+### D036: Clarix keeps the books a cooperative needs to run day to day, around the cross-cooperative check
+**Status:** Locked
+**Supersedes:** D002 in part. Clarix is no longer "coordination only".
+**Decision:** The cross-cooperative eligibility check stays the core and the reason Clarix exists.
+Around it, Clarix becomes the cooperative's working record for members, savings and loans:
+
+- import of members **with their existing loans** (balance, monthly repayment, start and end date),
+  and a staff screen to add an existing loan by hand, so committed totals are right on day one;
+- bulk monthly entries (one month's contributions and repayments for many members at once, from a
+  sheet or a grid);
+- **report export** as CSV, Excel (XLSX) and PDF;
+- **member statements** as PDF: per cooperative and per period, watermarked (D044);
+- reconciliation (already built).
+
+Still out: holding or moving money (D004 is unchanged), payroll integration, full double-entry
+accounting, general ledger and the cooperative's statutory books. Clarix records what happened; it
+never executes it.
+**Rationale:** owner asked how import, export and member statements work, and found that two of the
+three did not exist. A cooperative will not pay for a tool it must still keep a second spreadsheet
+beside. The pricing research also shows competitors that sell bookkeeping charge more.
+
+### D037: Light theme only
+**Status:** Locked
+**Supersedes:** the light/dark token pairs in `DESIGN_SYSTEM.md`, the theme toggle, and the "both
+themes" acceptance check in `docs/DEVELOPMENT-WORKFLOW.md`.
+**Decision:** Clarix ships one light theme. The theme toggle, `ThemeScript`, the dark token values and
+every `dark:` variant are removed. Navy remains a brand surface inside the light theme (auth side
+panel, the landing hero band, the PDF header), so the product keeps its depth without a dark mode.
+**Rationale:** owner: "we would be doing light theme only, but it needs to be very neat, clean, and
+well thought through." One theme done perfectly beats two done adequately, and halves the visual QA.
+
+### D038: Figtree is the typeface
+**Status:** Locked
+**Supersedes:** the Inter typography rule in `DESIGN_SYSTEM.md`.
+**Decision:** Figtree (Google Fonts, Open Font License), loaded through `next/font/google` with weights
+400, 500, 600 and 700, is the only typeface in the interface, the landing site and generated PDFs.
+Money uses tabular figures (`font-variant-numeric: tabular-nums`). **First task of the foundation
+PR:** confirm Figtree's tabular figures actually render as equal-width digits in Chrome, Safari and
+Android Chrome (rolling numbers must not jitter). If they do not, money figures alone fall back to
+**Inter** (already proven in this codebase) at the same sizes, and that is the only second face
+ever allowed. No display faces, no serif, no wide faces.
+**Rationale:** owner: "Fonts like Fig Tree, fonts like the current font... we don't need to use all
+these over luxurious fonts."
+
+### D039: Home screens summarise; detail opens in a bottom sheet
+**Status:** Locked
+**Supersedes:** the home-screen layouts in all four role blueprints (each blueprint's R2 header says
+exactly which sections).
+**Decision:** Every role's home follows one shape: a compact header (first name only, never the full
+cooperative name in a sentence), **one hero figure**, **up to three stats**, **up to three "Needs
+you" items**, and nothing else above the fold. Tapping any stat, item or row opens a **bottom sheet**
+on phones (half and full height, drag to dismiss, back button closes it) and a **right-hand panel**
+on desktop, so the person never loses their place. Long explanatory paragraphs, uppercase eyebrow
+labels and "This month" essay cards are removed from home screens.
+**Rationale:** owner: "The dashboard is meant to pass across a summary of what's happening... you can
+use some of all those bottom pop-ups, like how iPhone normally do it... Instead of overcomplicating
+the home page, just make it simple."
+
+### D040: An over-limit application is always stored, never silently dropped
+**Status:** Locked
+**Supersedes:** nothing; it fixes a defect against `docs/PRODUCT.md` principle 3 ("Informs, never
+gatekeeps").
+**Decision:** Today `submit_loan_application` returns without inserting anything when the monthly
+repayment exceeds available capacity, while the screen tells the member "the cooperative has your
+application". From R2:
+
+- An application above capacity (or from a member whose limit is "Not assessed yet") is **stored**
+  with status `pending_review` and an `over_capacity` flag plus the shortfall at submission time.
+- A `pending_review` loan **holds no capacity** and is never counted in anyone's committed total.
+- Staff see it in the same queue, marked "Above limit by ₦X". Approving it still requires a written
+  reason (the existing over-capacity approval rule) and, on approval, it becomes `active` and counts.
+- The member's confirmation screen says exactly what happened: "Sent to [cooperative]. It is above
+  your limit, so nothing is held for you. The cooperative will decide."
+**This is Phase 0 of `docs/BUILD-PLAN.md`** because it affects the live product and the FMC demo.
+
+### D041: Pricing: the cooperative pays per active member; members never pay
+**Status:** Locked (the institution bundle in point 6 was confirmed by the owner on 22 November 2026).
+**Supersedes:** the "Open, not yet decided" pricing item, and `docs/PRODUCT.md`'s instruction not to
+build pricing.
+**Decision:**
+
+1. **₦150 per active member per month**, billed to the cooperative, **₦5,000 monthly minimum**.
+   "Active" means the member had at least one saving, repayment, loan or eligibility check recorded
+   in that calendar month.
+2. **Members never pay.** They bring the cross-cooperative data that makes the product work.
+3. **Yearly billing** at 10 months' price for 12. Quarterly is not offered at launch.
+4. **60-day free trial** from the day the Super Admin activates the cooperative, all features, no
+   card. Reminders on day 46 and day 57. Then a **14-day grace period** with a banner and a pay
+   action. Then **read-only** until paid (D042).
+5. **Founding price lock:** cooperatives that join before the first anniversary of R2's launch keep
+   ₦150 for 12 months.
+6. **Institution bundle (confirmed 22 Nov 2026):** when 3 or more cooperatives in the same institution are
+   paying, each gets 10% off.
+7. FMC Abeokuta's agreed MVP price and its promised free month are honoured as agreed; the 60-day
+   trial applies to cooperatives that join afterwards.
+
+The competitor prices and break-even maths are summarised in `docs/PRODUCT.md` (the owner holds the
+full pricing report). **Collecting money is built last** (D042 and `docs/BUILD-PLAN.md` Phase 9).
+
+### D042: A cooperative that stops paying goes read-only; its records keep protecting everyone else
+**Status:** Locked
+**Decision:** After trial plus grace (D041), an unpaid cooperative is **read-only**: staff can view
+and export everything, members can view their own records and statements, and nothing new can be
+recorded or applied for there. Paying restores everything instantly, with nothing lost. Records are
+never deleted or hidden for non-payment.
+**The network rule:** a read-only cooperative's existing active loans **keep counting** in every
+other cooperative's eligibility checks. If they dropped out, a member could borrow twice against the
+same room, which is the exact failure Clarix exists to prevent.
+**Collection:** at launch, a Super Admin records a payment by hand (bank transfer against an emailed
+invoice) on the cooperative's billing screen. Card and transfer collection through Paystack comes
+later. **Paystack was confirmed by the owner on 22 November 2026** as the provider; it gets its `docs/TOOLING-POLICY.md` entry, because
+it is the first payment SDK. It does not contradict D004: D004 forbids moving *members'* money; a
+cooperative paying for its software subscription is ordinary SaaS billing.
+
+### D043: One shared Supabase project for Preview and Production until go-live
+**Status:** Locked (the owner decided on 22 November 2026; an earlier draft of this entry proposed a
+separate staging project, and the owner declined it)
+**Decision:** Clarix stays on the single `Clarix` Supabase project (`sxugaizwmqigtioqgefx`) for both
+Preview and Production while it is a demonstration product. No staging project is created. Because a
+Preview build therefore reads and writes the same database as the live site:
+
+1. Migrations follow D032 point 4: additive changes may be applied from a branch and named in the
+   PR; anything that changes or removes what `main` relies on is applied only when the owner says
+   "merge" for that PR.
+2. Nobody deletes, resets or bulk-rewrites the demo data (the five FMC cooperatives and the four demo
+   accounts) without the owner's word. Tests of destructive actions (decline, delete entry, bulk
+   import, billing states) use a throwaway cooperative created for the test and removed afterwards.
+3. Every non-production deployment shows a thin `amber-50` strip at the top: "Preview · uses the live
+   demo data" (BUILD-PLAN 0.4), so nobody mistakes a Preview for a sandbox.
+
+**Revisit:** at go-live, when real cooperatives' data arrives, a separate project for previews becomes
+a new decision.
+**Rationale:** owner: "leave the database the way it is; there is no need for a staging database...
+They are all still for demonstration; nothing official has been done."
+
+### D044: Generated documents carry the brand and a diagonal watermark
+**Status:** Locked
+**Decision:** Every generated PDF (member statement, loan statement, report export) has: the Clarix
+primary logo and the cooperative's name in the header; a document title, period and generation time
+(Africa/Lagos); a **diagonal watermark** of the Clarix submark plus the cooperative's name at about
+6% opacity, rotated 30 degrees, repeated down the page; a footer with page numbers and a short
+**verification code** that a Super Admin or the cooperative can look up to confirm the document is
+genuine. CSV and XLSX exports carry the cooperative name, period and generation time in their first
+rows instead. Exports are logged in the cooperative's audit log (who, what, when).
+**Rationale:** owner: "Those documents need to be properly watermarked, maybe like a faded-out logo
+and name that lies diagonally and on the header of the document."
+
+### D045: Buttons are pills; one primary per screen
+**Status:** Locked
+**Decision:** Every button is fully rounded (`border-radius: 9999px`, which reads as the 45px-radius
+look the owner asked for at every height). Four levels, never confused: **primary** (filled
+emerald, one per screen or sheet), **secondary** (quiet filled neutral), **tertiary** (text only),
+**destructive** (red, always behind Timed Undo or a sheet confirmation). Cards and sheets use the
+nested radius scale in `DESIGN_SYSTEM.md`, not pills.
+**Rationale:** owner: "I love it when a CTA or button has a proper border radius like 45px."
+
+### D046: Imagery is real and relevant, public site only; motion is purposeful and 60fps
+**Status:** Locked (rules). Which photos is decided per PR by the owner.
+**Decision:**
+
+- **Public site only:** a hero with a slow, cross-fading background photo carousel (or a faint,
+  muted, looping background video) of Nigerian cooperative life: people saving and meeting, nurses,
+  teachers, traders, artisans, a cooperative meeting, a member checking a phone. Every image must
+  match the words beside it; a market photo beside banking copy is a defect. Licensed sources only
+  (Unsplash licence or commissioned); credit recorded in `public/images/CREDITS.md`.
+- **Inside the app:** no stock photos. Cooperative logos where uploaded, initials otherwise. One
+  exception: the member home may show a swipeable **Highlights** strip (at most 3 cards: a
+  cooperative announcement, a new loan product, a statement ready) using the cooperative's own
+  uploaded image or a brand pattern, and it only appears when there is something real to show.
+- **Motion:** transform and opacity only, so it holds 60fps on a cheap Android phone. Tasteful
+  depth is allowed on the public site (a phone mockup that tilts slightly in perspective as you
+  scroll, parallax on the hero background, cards rising in on scroll). No floating blobs, no
+  glass orbs, no confetti. Everything respects `prefers-reduced-motion`.
+**Rationale:** owner asked for a hero carousel or background video, 3D scrolling, and images that
+"reflect what you're trying to pass across".
+
+### D047: SEO and app files are generated from code
+**Status:** Locked
+**Decision:** `app/sitemap.ts`, `app/robots.ts`, `app/manifest.ts` (exists), favicon and PNG app
+icons, `app/opengraph-image.tsx`, per-page metadata and JSON-LD on the landing page. The site URL
+comes from `NEXT_PUBLIC_SITE_URL`, so the day a domain is bought nothing else changes. `robots.txt`
+allows only public pages, blocks every signed-in area, and returns `Disallow: /` on Preview
+deployments so review links are never indexed. All signed-in pages are `noindex`.
+
+### D048: A demo sign-in shortcut exists only where the owner switches it on
+**Status:** Locked (confirmed by the owner on 22 November 2026)
+**Decision:** For the FMC live demonstration, the sign-in screen may show "Sign in as" chips for the
+four demo roles, so the presenter switches roles in one tap. It renders only when
+`NEXT_PUBLIC_DEMO_MODE=true`, which is set **only on a demo or preview deployment the owner names**,
+never in Production. The chips submit the normal sign-in form; demo passwords live in that
+deployment's environment variables, never in the repository.
+**Rationale:** the domain is not bought, Resend cannot send to anyone yet, so demo accounts are how
+Clarix is shown until FMC pays.
+
+### D049: Clarix runs on free tiers until the first cooperative pays
+**Status:** Locked
+**Decision:** Vercel Hobby, Supabase Free, Resend Free, no custom domain, until revenue arrives. The
+day the first cooperative pays: Supabase Pro (daily backups, no pausing), Vercel Pro (Hobby's terms
+restrict commercial use; confirm on vercel.com/legal before the first invoice), a domain, and a
+verified Resend sending domain. No feature may assume a paid tier before then. Every new dependency
+must work on the free tier (`docs/TOOLING-POLICY.md`).
+**Consequence until then:** self-service signup, invitation emails and statement emails cannot reach
+anyone but the account owner. Every screen that depends on email must say so plainly and offer the
+working path (a copyable link, a download) rather than pretend a message was sent.
+
+---
+
 ## Standing operational constraints
 
 Not decisions, facts about the environment that keep being rediscovered and re-proposed as work.
@@ -594,16 +938,32 @@ They live here because this file is read in full at the start of every session, 
   There is nothing to switch on. Do not re-raise it as a task; if the project moves to Pro for
   some other reason, enabling it is a one-click setting and can be picked up then.
 
+- **Keys and tokens are not rotated until go-live** (owner, 22 November 2026). The Supabase keys,
+  the Resend API key and any access tokens the owner has shared keep being used as they are while
+  Clarix is a demonstration product; all of them are rotated when the platform is about to go live
+  officially. Do not raise rotation as a task before then. They are still never committed, printed in
+  logs, PRs or messages, or pasted into any file outside `.env.local` (`SECURITY.md`).
+- **The old Vercel project `clarix_app` stays connected** until the owner has accepted the new
+  `clarix` project's designs and improvements; the owner will delete it then. Two Preview builds per
+  push are expected until that day. Do not disconnect or change it.
+- **Branch protection on `main` is deferred** by the owner; it blocks nothing. D032 is the rule
+  meanwhile.
+
 ---
 
 ## Open, not yet decided
 
 Tracked here so they don't get silently assumed. Move an item to a numbered entry above the
-moment it's actually decided.
+moment it's actually decided. Owner tasks (as opposed to open questions) live in
+`docs/PROJECT-STATE.md` → "Waiting on the owner".
 
-- Final repository name and GitHub visibility (private, presumably, confirm).
-- Production domain (using Vercel's default `*.vercel.app` subdomain, or a custom domain).
-- Whether Employee-role payslip OCR launches with pure PDF-text-extraction only, or with the
-  vision-LLM fallback live from day one (both are in scope per `MVP-SCOPE.md`; sequencing is open).
-- Paid recurring-plan pricing packages, explicitly deferred to after the free hook month; do not
-  design or build toward specific numbers yet.
+- Production domain. Several R2 items wait on it: a verified Resend sending domain, real invitation
+  and statement emails, `NEXT_PUBLIC_SITE_URL` in sitemap and canonical URLs (D047), and
+  cooperative self-signup.
+- Whether a cooperative can sign itself up from the public site, or stays onboarded by the Super
+  Admin as today (D010). Not before the domain exists, because self-signup needs email.
+- Payslip and statement reading (Phase 7 of `docs/BUILD-PLAN.md`): text-layer PDF parsing only, or
+  with an OCR or vision fallback for scanned images. A vision fallback sends a member's document to a
+  third party and needs its own entry and a `SECURITY.md` update before it is built.
+- Quarterly billing as a third option beside monthly and yearly (D041).
+- Final repository visibility (private, presumably; confirm).
