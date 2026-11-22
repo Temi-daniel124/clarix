@@ -5,13 +5,21 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { cn } from "@/lib/utils";
-import { FAQ_HEADING, FAQ_ITEMS } from "./copy";
+import { FAQ_HEADING, FAQ_ITEMS, type FaqItem } from "./copy";
 
 /**
  * The FAQ (spec §8 faq-2, §11.1 item 9; round-2 board): five questions as separate white
  * cards, the first open, one open at a time. The board's answers, word for word.
+ *
+ * /pricing passes its billing subset and heading; the landing page takes the defaults.
  */
-export function Faq() {
+export function Faq({
+  items = FAQ_ITEMS,
+  heading = FAQ_HEADING,
+}: {
+  items?: readonly FaqItem[];
+  heading?: string;
+} = {}) {
   return (
     <section
       id="faq"
@@ -22,11 +30,11 @@ export function Faq() {
         id="faq-heading"
         className="type-section-title text-center text-balance text-indigo-night"
       >
-        {FAQ_HEADING}
+        {heading}
       </h2>
 
-      <Accordion defaultValue={[FAQ_ITEMS[0].question]} className="gap-2.5">
-        {FAQ_ITEMS.map((item) => (
+      <Accordion defaultValue={[items[0].question]} className="gap-2.5">
+        {items.map((item) => (
           <AccordionItem
             key={item.question}
             value={item.question}

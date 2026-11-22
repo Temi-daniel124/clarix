@@ -207,6 +207,164 @@ export const FAQ_ITEMS: readonly FaqItem[] = [
   },
 ];
 
+/**
+ * The billing questions for /pricing (spec §11.1 Pricing). The trial answer is the landing FAQ's,
+ * word for word, so the two pages can never describe the end of the trial differently (D037).
+ */
+export const BILLING_FAQ_ITEMS: readonly FaqItem[] = [
+  {
+    question: "What counts as an active member?",
+    answer:
+      "A member who saved, borrowed or repaid during the month. Anyone who did none of those that month is not counted, however long they have been on your roster.",
+  },
+  FAQ_ITEMS[3],
+  {
+    question: "Can we pay yearly?",
+    answer:
+      "Yes. A yearly bill is twelve months for the price of ten, worked out from the members active in a typical month.",
+  },
+  {
+    question: "Do members pay anything?",
+    answer:
+      "No. Clarix is free for members, always. Only the cooperative is billed, and only for the members who were active that month.",
+  },
+  {
+    question: "Do we need a card to start the trial?",
+    answer:
+      "No. The 60-day trial starts without a card, and nothing is charged until you choose to subscribe.",
+  },
+];
+
+export const BILLING_FAQ_HEADING = "Billing questions";
+
+/** /pricing (spec §11.1 Pricing; D037). Its one primary is the final card's. */
+export const PRICING_PAGE = {
+  metaTitle: "Pricing",
+  metaDescription:
+    "₦150 for each member who saved, borrowed or repaid that month, with a ₦5,000 monthly minimum. Free for 60 days, members never pay, and your records stay yours to view and export.",
+  eyebrow: "Pricing",
+  heading: "One price, only for members who use it",
+  body: "₦150 a month for each member who saved, borrowed or repaid. The smallest bill is ₦5,000 a month, there are no tiers to choose between, and members never pay.",
+  ticks: ["Free for 60 days", "No card needed", "Members always free"],
+  termsHeading: "How billing works, from the first day.",
+  termsBody:
+    "No surprises at the end of the trial, and no point at which your records are held back from you.",
+  terms: [
+    {
+      term: "What counts as active",
+      when: "Each month",
+      detail:
+        "A member who saved, borrowed or repaid that month. Names that sit quietly on your roster cost nothing.",
+    },
+    {
+      term: "The free trial",
+      when: "60 days",
+      detail:
+        "Every feature, for your whole cooperative, from the day you sign up. We remind you 14 days before it ends.",
+    },
+    {
+      term: "The grace period",
+      when: "14 days",
+      detail:
+        "If the trial ends before you subscribe, everything keeps working for 14 more days while you decide.",
+    },
+    {
+      term: "After that, read-only",
+      when: "Until you subscribe",
+      detail:
+        "Nothing is deleted; you and your members can still view and export every record. Recording new entries waits until you subscribe.",
+    },
+  ],
+} as const;
+
+export type JoinStep = { title: string; body: string };
+
+/** /for-members (spec §11.1 For members, §11.4; D038). Its one primary is "Find your cooperative". */
+export const FOR_MEMBERS_PAGE = {
+  metaTitle: "For members",
+  metaDescription:
+    "See your savings, loans and what you can still borrow in every cooperative you belong to. Join with a payslip or bank statements. Free, always.",
+  eyebrow: "For members",
+  heading: "Every cooperative you belong to, in one place",
+  body: "Your savings, your loans and what you can still borrow, across every cooperative you belong to. Salaried or not, joining takes a few minutes.",
+  cta: "Find your cooperative",
+  ctaHref: "/signup?as=member",
+  signIn: "I already have an account",
+  ticks: ["Free, always", "Salaried or not", "Your documents stay private"],
+  preview: {
+    label:
+      "A member's home screen: ₦100,863 she can still take on each month, ₦60,975 already committed against a ₦161,838 limit, and her savings in three cooperatives",
+    figureLabel: "You can still take on each month",
+    committed: "Committed",
+    limit: "Limit",
+    source: "From 6 months of bank statements · confirmed 2 Nov",
+    cooperativesTitle: "Your cooperatives",
+    savings: "Savings",
+    loan: "Loan",
+    cooperatives: [
+      { initials: "IT", name: "Ikeja Traders Thrift", savings: 212_000, loan: true },
+      { initials: "UM", name: "Unity Market Women", savings: 148_500, loan: true },
+      { initials: "OF", name: "Ogun Farmers Credit", savings: 64_000, loan: false },
+    ],
+  },
+  stepsHeading: "How to join",
+  stepsBody:
+    "Your cooperative approves you, as it always has. Clarix just means doing it once, from your phone.",
+  stepPrefix: "Step {n}: ",
+  steps: [
+    {
+      title: "Find your cooperative",
+      body: "Search by name, open the invitation link your cooperative sent, or scan its QR code.",
+    },
+    {
+      title: "Add your income evidence",
+      body: "A payslip if you earn a salary, or 3 to 6 months of bank statements if you don't. You can also give a figure your cooperative confirms.",
+    },
+    {
+      title: "Get approved by your cooperative",
+      body: "An officer checks your details and approves you. You can look around while you wait.",
+    },
+  ] satisfies JoinStep[],
+  stepSamples: {
+    search: "Ikeja Traders",
+    searchLabel: "Search cooperatives",
+    result: "Ikeja Traders Thrift",
+    resultMeta: "Thrift & credit · Lagos",
+    file: "statement-jun-nov.pdf",
+    fileMeta: "6 months found",
+    privacy: "Only the officer reviewing a loan you apply for can open it.",
+    application: "Your application is with Ikeja Traders Thrift",
+    waiting: "Awaiting approval",
+  },
+  seeHeading: "What you see once you're in",
+  seeBody: "The same figures your cooperative sees about you, and nothing about anyone else.",
+  see: [
+    {
+      title: "Every balance, every cooperative",
+      body: "Savings and loans in each cooperative you belong to, side by side, current as of today.",
+    },
+    {
+      title: "What you can still borrow",
+      body: "One limit across all your cooperatives, and where it comes from: your payslip, your bank statements or a figure your cooperative confirmed.",
+    },
+    {
+      title: "Repayments with a receipt",
+      body: "Pay your cooperative's own account as you always have, then attach the receipt. Clarix never holds or moves your money.",
+    },
+    {
+      title: "A statement whenever you want one",
+      body: "Download a statement for any cooperative, watermarked and ready to show anyone who asks.",
+    },
+  ],
+  privacyHeading: "Who can see your documents",
+  privacyBody:
+    "Only the officer reviewing a loan you apply for can open your payslip or bank statements, and only while they decide. Other cooperatives never see your records, only one combined figure for what you already repay each month.",
+  privacyLink: "Read the privacy notice",
+  freeHeading: "Free, always.",
+  freeBody:
+    "Members never pay for Clarix: no subscription, no card, nothing at all. Your cooperative looks after the platform.",
+} as const;
+
 export const FINAL_CTA = {
   heading: "Set up your cooperative this afternoon.",
   body: "Import your member list from Excel, add your loan products, and invite your treasurer. Free for 60 days.",

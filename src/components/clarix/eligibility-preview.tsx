@@ -35,7 +35,7 @@ type Frame = {
 };
 
 const FRAMES: Frame[] = [
-  { committed: 0, proposed: 0, note: "Reading salary basis from the confirmed payslip" },
+  { committed: 0, proposed: 0, note: "Reading the income figure from confirmed evidence" },
   { committed: 54_000, proposed: 0, note: "Adding obligations from every cooperative" },
   { committed: 54_000, proposed: 18_000, note: "Checking a request of ₦18,000 a month" },
   { committed: 54_000, proposed: 34_000, note: "Checking a request of ₦34,000 a month" },
@@ -85,7 +85,7 @@ export function EligibilityPreview({
           <p
             className="type-card-title mt-1 text-text"
           >
-            One salary, every cooperative
+            One limit, every cooperative
           </p>
         </div>
 

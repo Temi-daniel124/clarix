@@ -22,8 +22,8 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
         <div className="max-w-[420px]">
           <EligibilityPreview pace="calm" />
           <p className="type-body mt-8 text-white/60">
-            Built for Federal Medical Centre, Abeokuta&rsquo;s staff cooperatives, so a loan is
-            approved against what is actually left, not what one cooperative can see.
+            Approve loans against what a member actually owes everywhere, not what one
+            cooperative can see.
           </p>
         </div>
 
