@@ -65,7 +65,7 @@ export function HeroCarousel({ children }: { children?: ReactNode }) {
       data-active-slide={shown}
       className="relative pb-0 lg:pb-9 lg:pl-9"
     >
-      <div className="relative h-[420px] overflow-hidden rounded-[32px] bg-indigo-100 shadow-[0_30px_70px_-40px_rgba(14,18,48,0.55)] lg:h-[600px]">
+      <div className="relative h-[420px] overflow-hidden rounded-frame bg-indigo-100 shadow-frame lg:h-[600px]">
         <div aria-live="off" className="absolute inset-0">
           {HERO_SLIDES.map((slide, index) => {
             const isActive = index === shown;

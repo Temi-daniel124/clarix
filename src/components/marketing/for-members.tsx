@@ -89,7 +89,7 @@ export function MembersIntro() {
       </div>
 
       <div className="relative min-w-0 lg:col-span-6 lg:pb-9 lg:pl-9">
-        <div className="relative h-[380px] overflow-hidden rounded-[32px] bg-indigo-100 shadow-[0_30px_70px_-40px_rgba(14,18,48,0.55)] lg:h-[560px]">
+        <div className="relative h-[380px] overflow-hidden rounded-frame bg-indigo-100 shadow-frame lg:h-[560px]">
           <Image
             src="/images/landing/market.jpg"
             alt={PAGE.photoAlt}
@@ -194,7 +194,7 @@ const S = PAGE.stepSamples;
 function SearchPiece() {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex h-11 items-center gap-2.5 rounded-input bg-white px-3.5 text-[15px] text-ink shadow-[inset_0_0_0_2px_var(--color-indigo-600)]">
+      <div className="flex h-11 items-center gap-2.5 rounded-input bg-white px-3.5 text-[15px] text-ink shadow-field-focus">
         <Search className="size-[18px] text-muted" strokeWidth={2} />
         {S.search}
       </div>
@@ -350,7 +350,7 @@ export function FreeAlways() {
       aria-labelledby="free-heading"
       className="reveal mx-auto w-full max-w-[1240px] px-5 pb-14 md:px-6 lg:pb-[72px]"
     >
-      <div className="ring-pattern flex flex-wrap items-center justify-between gap-8 rounded-[32px] bg-white p-6 shadow-flat sm:p-10 lg:flex-nowrap lg:p-14">
+      <div className="ring-pattern flex flex-wrap items-center justify-between gap-8 rounded-frame bg-white p-6 shadow-flat sm:p-10 lg:flex-nowrap lg:p-14">
         <div className="min-w-0 max-w-[620px]">
           <h2 id="free-heading" className="type-cta-title mb-2.5 text-balance text-indigo-night">
             {PAGE.freeHeading}

@@ -176,7 +176,7 @@ export default async function CooperativeDetailPage({
                   className={
                     entry.type === "loan_repayment"
                       ? "type-card-title tabular shrink-0 text-text-secondary"
-                      : "type-card-title tabular shrink-0 text-emerald"
+                      : "type-card-title tabular shrink-0 text-emerald-700"
                   }
                 >
                   {entry.type === "loan_repayment" ? "" : "+"}

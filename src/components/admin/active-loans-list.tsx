@@ -91,7 +91,7 @@ export function ActiveLoansList({ loans }: { loans: LoanSummaryRow[] }) {
                 <td className="py-3 pr-4">
                   <Link
                     href={`/admin/loans/${loan.id}`}
-                    className="type-body font-medium text-text underline-offset-4 transition-colors duration-150 hover:text-emerald hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+                    className="type-body font-medium text-text underline-offset-4 transition-colors duration-150 hover:text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
                   >
                     {loan.memberName ?? "Member"}
                   </Link>

@@ -223,7 +223,7 @@ function MemberName({ member }: { member: MemberRow }) {
   return (
     <Link
       href={`/admin/members/${member.membershipId}`}
-      className="type-body font-medium text-text underline-offset-4 transition-colors duration-150 hover:text-emerald hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+      className="type-body font-medium text-text underline-offset-4 transition-colors duration-150 hover:text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
     >
       {member.name ?? member.employeeId ?? "Member"}
       {member.status === "pending" ? (

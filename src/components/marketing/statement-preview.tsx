@@ -59,12 +59,12 @@ function StatementSheet() {
       {/* The sheet underneath, turned a little, so the statement reads as paper. */}
       <div
         aria-hidden
-        className="absolute top-[30px] left-0 h-[calc(100%-40px)] w-[calc(100%-40px)] -rotate-4 rounded-[10px] bg-white shadow-flat lg:h-[360px] lg:w-[400px]"
+        className="absolute top-[30px] left-0 h-[calc(100%-40px)] w-[calc(100%-40px)] -rotate-4 rounded-paper bg-white shadow-flat lg:h-[360px] lg:w-[400px]"
       />
 
       <div
         aria-hidden
-        className="relative overflow-hidden rounded-[10px] bg-white p-5 text-[12px] leading-[1.45] text-ink shadow-[0_1px_2px_rgba(14,18,48,0.06),0_30px_60px_-30px_rgba(14,18,48,0.45)] sm:p-6 lg:absolute lg:top-2.5 lg:left-10 lg:h-[390px] lg:w-[420px]"
+        className="relative overflow-hidden rounded-paper bg-white p-5 text-[12px] leading-[1.45] text-ink shadow-sheet sm:p-6 lg:absolute lg:top-2.5 lg:left-10 lg:h-[390px] lg:w-[420px]"
       >
         <Watermark />
 

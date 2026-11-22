@@ -224,7 +224,7 @@ function Row({ row, period }: { row: ReconciliationRow; period: string }) {
         {difference === null ? (
           <span className="type-secondary text-text-muted">Not entered</span>
         ) : difference === 0 ? (
-          <span className="type-secondary text-emerald">Exact</span>
+          <span className="type-secondary text-emerald-700">Exact</span>
         ) : (
           <span
             className={cn(

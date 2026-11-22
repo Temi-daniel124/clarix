@@ -340,7 +340,7 @@ export function ApplicationForm({
               />
             </div>
 
-            <p className={cn("mt-3 type-secondary", meetsSavings ? "text-emerald" : "text-warning")}>
+            <p className={cn("mt-3 type-secondary", meetsSavings ? "text-emerald-700" : "text-warning")}>
               {meetsSavings
                 ? "You meet their savings requirement for this loan."
                 : `${formatNaira(savingsShortfall)} short of what they ask you to have saved.`}
@@ -402,7 +402,7 @@ function SubmittedPanel({
         aria-hidden
         className={cn(
           "flex size-12 items-center justify-center rounded-card",
-          clean ? "text-emerald" : "text-warning",
+          clean ? "text-emerald-700" : "text-warning",
         )}
         style={{
           backgroundColor: clean

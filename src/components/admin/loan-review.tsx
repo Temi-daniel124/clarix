@@ -187,7 +187,7 @@ export function LoanReview({
             <p
               className={cn(
                 "mt-3 type-secondary",
-                savingsShortfall && savingsShortfall > 0 ? "text-warning" : "text-emerald",
+                savingsShortfall && savingsShortfall > 0 ? "text-warning" : "text-emerald-700",
               )}
             >
               {savingsShortfall && savingsShortfall > 0

@@ -107,7 +107,7 @@ export function CooperativeBrowser({ cooperatives }: { cooperatives: BrowsableCo
                       className={cn(
                         "flex size-10 shrink-0 items-center justify-center rounded-card border",
                         cooperative.applied
-                          ? "border-emerald/30 text-emerald"
+                          ? "border-emerald/30 text-emerald-700"
                           : "border-border text-text-secondary",
                       )}
                     >

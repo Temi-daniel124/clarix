@@ -28,7 +28,7 @@ const LEGEND = [
 export function CrossCheck() {
   return (
     <section aria-labelledby="cross-check-heading" className={cn(SECTION, "reveal")}>
-      <div className="ring-pattern grid grid-cols-1 items-center gap-8 rounded-[32px] bg-white p-5 shadow-flat sm:p-8 lg:grid-cols-12 lg:gap-10 lg:p-12">
+      <div className="ring-pattern grid grid-cols-1 items-center gap-8 rounded-frame bg-white p-5 shadow-flat sm:p-8 lg:grid-cols-12 lg:gap-10 lg:p-12">
         <div className="flex flex-col gap-4 lg:col-span-5">
           <p className={EYEBROW}>{CROSS_CHECK.eyebrow}</p>
           <h2

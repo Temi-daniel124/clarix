@@ -73,7 +73,11 @@ export function SiteNav() {
           </Link>
           <Link
             href="/signup"
-            className={buttonVariants({ variant: "secondary", size: "sm" })}
+            // Below 360 the logo, this and the menu button do not fit; the menu carries it there.
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "sm" }),
+              "max-[359px]:hidden",
+            )}
           >
             Start free trial
           </Link>

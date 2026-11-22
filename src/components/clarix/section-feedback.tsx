@@ -28,7 +28,7 @@ export function SectionFeedback({ saved, error }: { saved?: string; error?: stri
             exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -4 }}
             transition={reduceMotion ? { duration: 0 } : springStandard}
             className={`flex items-center gap-2 type-caption ${
-              error ? "text-danger" : "text-emerald"
+              error ? "text-danger" : "text-emerald-700"
             }`}
           >
             {error ? (

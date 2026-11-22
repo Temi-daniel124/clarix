@@ -141,7 +141,7 @@ function Verdict({ eligible, reduceMotion }: { eligible: boolean; reduceMotion: 
       className={cn(
         "inline-flex items-center gap-2 rounded-full border px-3 py-1 type-caption",
         eligible
-          ? "border-emerald/30 text-emerald"
+          ? "border-emerald/30 text-emerald-700"
           : "border-danger/30 text-danger",
       )}
       style={{

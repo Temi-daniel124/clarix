@@ -26,7 +26,9 @@ import { usePrefersReducedMotion } from "./use-hydrated-preferences";
  * plus a member count, never invented tiers. The arithmetic is `estimateBill` (D037), so the
  * figure here is the one billing will charge.
  *
- * Its call to action is secondary: the hero's and the final card's are the page's primaries.
+ * On the home page its call to action is secondary (the hero's and the final card's are that
+ * page's primaries). /pricing passes `showCta={false}`: its intro column carries the page's
+ * primary beside the estimator, and a second button to the same place would only repeat it.
  */
 const STEP = 10;
 const MAX_MEMBERS = 100_000;
@@ -63,7 +65,7 @@ export function PricingSection() {
   );
 }
 
-export function PricingEstimator() {
+export function PricingEstimator({ showCta = true }: { showCta?: boolean } = {}) {
   const reducedMotion = usePrefersReducedMotion();
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
   const [draft, setDraft] = useState(String(DEFAULT_MEMBERS));
@@ -107,7 +109,7 @@ export function PricingEstimator() {
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-[32px] bg-white p-5 shadow-raised sm:p-6">
+    <div className="flex flex-col gap-4 rounded-frame bg-white p-5 shadow-raised sm:p-6">
       <div
         role="radiogroup"
         aria-label={PRICING.cycleGroup}
@@ -138,7 +140,7 @@ export function PricingEstimator() {
                   layoutId={pillId}
                   aria-hidden
                   transition={reducedMotion ? reducedMotionTransition : springStandard}
-                  className="absolute inset-0 rounded-pill bg-white shadow-[0_1px_2px_rgba(14,18,48,0.08),0_4px_12px_-6px_rgba(14,18,48,0.25)]"
+                  className="absolute inset-0 rounded-pill bg-white shadow-segment"
                 />
               ) : null}
               <span className="relative">{option.label}</span>
@@ -151,7 +153,7 @@ export function PricingEstimator() {
         <label htmlFor={inputId} className="mb-2.5 block text-[14px] text-ink-2">
           {PRICING.membersLabel}
         </label>
-        <div className="flex items-center justify-between gap-2 rounded-pill p-[5px] shadow-[inset_0_0_0_2px_var(--color-line)] focus-within:shadow-[inset_0_0_0_2px_var(--color-indigo-600)]">
+        <div className="flex items-center justify-between gap-2 rounded-pill p-[5px] shadow-field focus-within:shadow-field-focus">
           <button
             type="button"
             aria-label={fill(PRICING.fewer, { step: STEP })}
@@ -215,9 +217,11 @@ export function PricingEstimator() {
         {note}
       </p>
 
-      <Link href="/signup" className={cn(buttonVariants({ variant: "secondary" }), "w-full")}>
-        {PRICING.cta}
-      </Link>
+      {showCta ? (
+        <Link href="/signup" className={cn(buttonVariants({ variant: "secondary" }), "w-full")}>
+          {PRICING.cta}
+        </Link>
+      ) : null}
     </div>
   );
 }

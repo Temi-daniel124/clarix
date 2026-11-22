@@ -120,7 +120,7 @@ function Section({
             <Icon className="size-[18px]" strokeWidth={1.75} />
           </span>
           <span className="min-w-0">
-            <span className="block truncate type-card-title text-text transition-colors duration-150 group-hover/accordion-trigger:text-emerald">
+            <span className="block truncate type-card-title text-text transition-colors duration-150 group-hover/accordion-trigger:text-emerald-700">
               {title}
             </span>
             <span className="mt-1 block type-caption font-normal text-text-muted">

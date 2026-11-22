@@ -106,7 +106,7 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
                     className={cn(
                       "flex size-10 shrink-0 items-center justify-center rounded-card border",
                       card.joined
-                        ? "border-emerald/30 text-emerald"
+                        ? "border-emerald/30 text-emerald-700"
                         : "border-border text-text-secondary",
                     )}
                   >
@@ -144,7 +144,7 @@ export function DiscoveryGrid({ cards }: { cards: DiscoveryCard[] }) {
 function StatusLabel({ card }: { card: DiscoveryCard }) {
   if (card.membershipStatus === "active") {
     return (
-      <span className="flex shrink-0 items-center gap-2 type-caption text-emerald">
+      <span className="flex shrink-0 items-center gap-2 type-caption text-emerald-700">
         <Check className="size-3.5" strokeWidth={3} aria-hidden />
         Joined
       </span>

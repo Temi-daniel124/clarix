@@ -130,7 +130,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
                     <td className="py-4 pr-4">
                       <Link
                         href={`/platform/cooperatives/${entry.id}`}
-                        className="type-body text-text underline-offset-4 transition-colors duration-150 hover:text-emerald hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+                        className="type-body text-text underline-offset-4 transition-colors duration-150 hover:text-emerald-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
                       >
                         {entry.name}
                       </Link>
@@ -187,7 +187,7 @@ export function StatusBadge({ entry }: { entry: DirectoryEntry }) {
         pending
           ? "border-warning/40 text-warning"
           : entry.status === "active"
-            ? "border-emerald/40 text-emerald"
+            ? "border-emerald/40 text-emerald-700"
             : "border-border text-text-muted",
       )}
       style={

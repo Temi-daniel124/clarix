@@ -41,7 +41,7 @@ export function Hero() {
   return (
     <section className="mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-10 px-5 pt-10 pb-10 md:px-6 md:pt-14 lg:grid-cols-12">
       <div className="flex min-w-0 flex-col gap-6 lg:col-span-6">
-        <span className="inline-flex items-center gap-2 self-start rounded-pill bg-indigo-100 py-[7px] pr-3.5 pl-3.5 text-[14px] sm:pl-2 font-semibold text-indigo-600">
+        <span className="inline-flex items-center gap-2 self-start rounded-pill bg-indigo-100 py-[7px] pr-3.5 pl-3.5 text-[14px] font-semibold text-indigo-600 max-[379px]:px-3 max-[379px]:text-[12.5px] sm:pl-2">
           <span className="rounded-pill bg-indigo-600 px-[9px] max-sm:hidden py-0.5 text-[12px] font-bold text-white">
             New
           </span>

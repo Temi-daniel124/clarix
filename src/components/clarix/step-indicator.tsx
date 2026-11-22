@@ -53,7 +53,7 @@ export function StepIndicator({ current }: { current: OnboardingStepSlug }) {
                 className={cn(
                   "flex size-5 shrink-0 items-center justify-center rounded-full border type-caption",
                   done && "border-emerald bg-emerald text-on-emerald",
-                  active && "border-emerald text-emerald",
+                  active && "border-emerald text-emerald-700",
                   !done && !active && "border-border text-text-muted",
                 )}
               >

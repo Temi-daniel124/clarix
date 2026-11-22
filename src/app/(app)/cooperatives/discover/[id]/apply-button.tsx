@@ -38,7 +38,7 @@ export function ApplyButton({
 
   if (status === "active") {
     return (
-      <p className="flex items-center gap-2 type-body text-emerald">
+      <p className="flex items-center gap-2 type-body text-emerald-700">
         <Check className="size-4 shrink-0" strokeWidth={3} aria-hidden />
         You are a member of {cooperativeName}.
       </p>

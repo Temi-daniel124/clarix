@@ -245,6 +245,7 @@ export const PRICING_PAGE = {
   eyebrow: "Pricing",
   heading: "One price, only for members who use it",
   body: "₦150 a month for each member who saved, borrowed or repaid. The smallest bill is ₦5,000 a month, there are no tiers to choose between, and members never pay.",
+  cta: "Start your 60-day free trial",
   ticks: ["Free for 60 days", "No card needed", "Members always free"],
   termsHeading: "How billing works, from the first day.",
   termsBody:
@@ -359,7 +360,7 @@ export const FOR_MEMBERS_PAGE = {
   ],
   privacyHeading: "Who can see your documents",
   privacyBody:
-    "Only the people deciding a loan you apply for, its cooperative's administrators and the officers allowed to approve loans, can open your payslip or bank statements, and only while it waits for a decision. Other cooperatives never see your records, only one combined figure for what you already repay each month.",
+    "Only the people deciding a loan you apply for can open your payslip (or bank statements, once your cooperative accepts them): that cooperative's administrators and its loan officers, and only while the application waits for a decision. Other cooperatives never see your records, only one combined figure for what you already repay each month.",
   privacyLink: "Read the privacy notice",
   freeHeading: "Free, always.",
   freeBody:

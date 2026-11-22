@@ -1,4 +1,6 @@
-import { Check } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Check } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { PRICING_PAGE } from "./copy";
 import { PricingEstimator } from "./pricing-estimator";
@@ -9,7 +11,9 @@ import { EYEBROW, LEAD, SECTION } from "./section";
  * composed from the landing's parts: the hero's two-column opening with its ticks, the working
  * estimator, and a list group (spec §6, kind 3) for the billing terms.
  *
- * The estimator's call to action stays secondary; the page's one primary is the final card's.
+ * The intro column carries the page's opening primary (spec §11.1, Pricing: Start free trial), so
+ * it is in the first screenful at every width; the estimator beside it drops its own button. The
+ * final card's primary is far enough down that no screenful holds both.
  */
 export function PricingIntro() {
   return (
@@ -26,6 +30,12 @@ export function PricingIntro() {
           {PRICING_PAGE.heading}
         </h1>
         <p className={cn(LEAD, "max-w-[540px]")}>{PRICING_PAGE.body}</p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/signup" className={cn(buttonVariants({ size: "lg" }), "max-sm:w-full")}>
+            {PRICING_PAGE.cta}
+            <ArrowRight className="size-[18px]" strokeWidth={2} aria-hidden />
+          </Link>
+        </div>
         <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-ink-2">
           {PRICING_PAGE.ticks.map((tick) => (
             <li key={tick} className="flex items-center gap-2">
@@ -36,7 +46,7 @@ export function PricingIntro() {
         </ul>
       </div>
       <div className="min-w-0 lg:col-span-5 lg:col-start-8">
-        <PricingEstimator />
+        <PricingEstimator showCta={false} />
       </div>
     </section>
   );

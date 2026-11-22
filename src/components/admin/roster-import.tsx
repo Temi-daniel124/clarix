@@ -436,7 +436,7 @@ function RowReview({
       </div>
 
       <p className="type-body mt-3 tabular text-text">
-        <span className="font-semibold text-emerald">{counts.ready} ready</span>
+        <span className="font-semibold text-emerald-700">{counts.ready} ready</span>
         {", "}
         <span className="font-semibold text-warning">{counts.needs_review} need review</span>
         {", "}

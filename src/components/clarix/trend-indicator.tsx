@@ -44,7 +44,7 @@ export function TrendIndicator({
 
   const Arrow = direction === "up" ? ArrowUpRight : direction === "down" ? ArrowDownRight : Minus;
   const tone =
-    direction === "up" ? "text-emerald" : direction === "down" ? "text-danger" : "text-text-muted";
+    direction === "up" ? "text-emerald-700" : direction === "down" ? "text-danger" : "text-text-muted";
 
   return (
     // Wraps rather than overflowing: in the two-column mobile grid a six-figure delta ran out of

@@ -107,7 +107,7 @@ export default async function AdminHomePage() {
                       className={cn(
                         "flex size-7 shrink-0 items-center justify-center rounded-full border",
                         done[step.slug]
-                          ? "border-emerald/40 text-emerald"
+                          ? "border-emerald/40 text-emerald-700"
                           : "border-border text-text-muted",
                       )}
                       style={

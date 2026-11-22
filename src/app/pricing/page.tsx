@@ -9,8 +9,8 @@ import { pageMetadata } from "@/lib/site";
 
 /**
  * Pricing (spec §11.1; D037): the estimator, the billing terms, the billing questions and the
- * final card. The final card holds the page's one primary; the nav's and the estimator's calls
- * to action are secondary.
+ * final card. The intro's call to action is the primary in the first viewport and the final
+ * card's is the one at the end; the nav's stays secondary.
  */
 const title = PRICING_PAGE.metaTitle;
 const description = PRICING_PAGE.metaDescription;

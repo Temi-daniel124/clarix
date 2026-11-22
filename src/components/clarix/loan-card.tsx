@@ -75,7 +75,7 @@ export function LoanCard({ loan, showCooperative = true }: { loan: LoanSummary; 
 export function StatusPill({ status }: { status: string }) {
   const tone =
     status === "active"
-      ? "border-emerald/30 text-emerald"
+      ? "border-emerald/30 text-emerald-700"
       : status === "reserved"
         ? "border-warning/30 text-warning"
         : status === "rejected" || status === "expired"

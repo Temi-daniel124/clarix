@@ -19,7 +19,7 @@ export function FinalCta() {
       aria-labelledby="final-cta-heading"
       className="reveal mx-auto w-full max-w-[1240px] px-5 pb-14 md:px-6 lg:pb-[72px]"
     >
-      <div className="ring-pattern flex flex-wrap items-center justify-between gap-8 rounded-[32px] lg:flex-nowrap bg-white p-6 shadow-flat sm:p-10 lg:p-14">
+      <div className="ring-pattern flex flex-wrap items-center justify-between gap-8 rounded-frame lg:flex-nowrap bg-white p-6 shadow-flat sm:p-10 lg:p-14">
         <div className="min-w-0 max-w-[620px]">
           <h2
             id="final-cta-heading"

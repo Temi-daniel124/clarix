@@ -170,7 +170,7 @@ function ApplicationCard({
           <p
             className={cn(
               "mt-2 type-caption",
-              application.overCap ? "text-danger" : "text-emerald",
+              application.overCap ? "text-danger" : "text-emerald-700",
             )}
           >
             {application.overCap

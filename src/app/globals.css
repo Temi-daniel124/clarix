@@ -72,11 +72,23 @@
   --radius-input: 14px;
   --radius-tag: 10px;
   --radius: 20px;
+  /* Board-fidelity additions (DECISIONS.md D040): the marketing feature frames and CTA cards
+     are 32 on the boards, and the statement preview's paper sheets are 10. */
+  --radius-frame: 32px;
+  --radius-paper: 10px;
 
   /* Elevation, spec §4: three levels only. */
   --shadow-flat: 0 0 0 1px var(--color-line);
   --shadow-raised: 0 1px 2px rgba(14, 18, 48, 0.06), 0 12px 32px -16px rgba(14, 18, 48, 0.22);
   --shadow-primary-float: 0 10px 24px -10px rgba(43, 209, 154, 0.55);
+  /* Board-fidelity additions (D040), named rather than written inline: the photo frames' long
+     soft drop, the statement sheet's paper shadow, the segmented control's white pill, and the
+     2px inset rings the marketing fields use at rest and in focus. */
+  --shadow-frame: 0 30px 70px -40px rgba(14, 18, 48, 0.55);
+  --shadow-sheet: 0 1px 2px rgba(14, 18, 48, 0.06), 0 30px 60px -30px rgba(14, 18, 48, 0.45);
+  --shadow-segment: 0 1px 2px rgba(14, 18, 48, 0.08), 0 4px 12px -6px rgba(14, 18, 48, 0.25);
+  --shadow-field: inset 0 0 0 2px var(--color-line);
+  --shadow-field-focus: inset 0 0 0 2px var(--color-indigo-600);
   /* Older name for the floating level, kept until its last user is restyled. */
   --shadow-elevation: var(--shadow-raised);
 
