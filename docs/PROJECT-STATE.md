@@ -21,7 +21,7 @@ code exists yet.
   **0.2 (`npm ci`) is built and in review**, stacked on 0.1: lockfile regenerated on Node 26 (the
   version Vercel uses, now pinned in `.nvmrc` and `engines`), `typecheck` script, and a CI workflow
   that runs `npm ci`, lint, typecheck, tests and build on every PR. No migration.
-  **Open chain, merge in order:** #24 (0.1) → 0.2. **Next step: BUILD-PLAN 0.3** (existing loans).
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2). **Next step: BUILD-PLAN 0.3** (existing loans).
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
 ## Known defects in the live product (fixed in Phase 0)
