@@ -232,7 +232,7 @@ reachable.
   environment variable on that one deployment. Before a real cooperative's members join production,
   the demo accounts are either moved to staging or their passwords are rotated.
 - **Billing data (D041, D042).** Invoices and payments are cooperative-level records readable by that
-  cooperative's admins and the Super Admin only. If Paystack is confirmed, its secret key is
+  cooperative's admins and the Super Admin only. Paystack (confirmed 22 Nov 2026): its secret key is
   server-only, webhooks are verified by signature, and no card data ever touches Clarix.
 
 ## PII and sensitive data handling

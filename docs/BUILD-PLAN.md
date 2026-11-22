@@ -234,7 +234,7 @@ Read: `docs/planning/clarix-public-site-blueprint.md` (every step here is specif
   phone mockup tilt
 - ☐ 5.3 Pricing section and `/pricing` page (D041), only after 9.1's price function exists so figures
   come from one source
-- ☐ 5.4 Sign in and sign up (split layout on desktop, demo chips behind D048 if confirmed)
+- ☐ 5.4 Sign in and sign up (split layout on desktop, demo chips behind D048)
 - ☐ 5.5 Onboarding screens restyled (one question per screen, thin progress line)
 - ☐ 5.6 Privacy, terms and help as reading pages
 
@@ -310,7 +310,7 @@ Read: `docs/planning/clarix-billing-blueprint.md`.
 - ☐ 9.3 Read-only mode after grace: every write path refuses with a clear banner; loans still count in
   other cooperatives' checks; nothing is deleted
 - ☐ 9.4 Super Admin records a manual payment (bank transfer), invoice PDF with the document template
-- ☐ 9.5 Paystack (only after the owner confirms the provider; D042 point 4)
+- ☐ 9.5 Paystack checkout for the cooperative's subscription (D042, confirmed 22 Nov 2026)
 
 ---
 

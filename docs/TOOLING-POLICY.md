@@ -30,7 +30,7 @@ the bar, don't add it without raising it first.
 | PDF generation (statements, reports, invoices) | `@react-pdf/renderer` first choice; `pdf-lib` if only stamping is needed | BUILD-PLAN 8.1. Must render a 2-page statement in under 3s on a Vercel Hobby function (10s limit); embeds Figtree TTF; record the choice as a new decision when added |
 | XLSX writing for exports | `exceljs` or `write-excel-file` | BUILD-PLAN 8.4. Reading stays on the existing in-house reader unless 8.2 tests show it cannot handle real files; then raise it |
 | PDF text extraction (payslips, statements) | `unpdf` or `pdfjs-dist` | BUILD-PLAN 7.3. Runs server-side; the file never leaves Clarix |
-| Payments | Paystack (REST, no SDK needed) | **Provisional, D042.** Not before the owner confirms. Bills the cooperative's subscription only; it never touches members' money |
+| Payments | Paystack (REST, no SDK needed) | **Confirmed 22 Nov 2026 (D042).** Built in BUILD-PLAN 9.5, after manual payments. Bills the cooperative's subscription only; it never touches members' money |
 | E2E and screenshots | Playwright (already in the cloud environment) | For PR screenshots and smoke tests on the Preview; visual regression stays P1 |
 
 ## The bar for adding anything new

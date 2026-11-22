@@ -87,7 +87,7 @@ NEXT_PUBLIC_SUPABASE_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY
 RESEND_API_KEY
 NEXT_PUBLIC_SITE_URL          # R2 (D047)
-NEXT_PUBLIC_DEMO_MODE         # R2 (D048, Provisional): demo deployments only
+NEXT_PUBLIC_DEMO_MODE         # R2 (D048): demo deployments only
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` and `AI_PAYSLIP_API_KEY` are not used by the app; leave them unset.

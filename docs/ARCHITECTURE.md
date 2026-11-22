@@ -119,7 +119,7 @@ SUPABASE_SERVICE_ROLE_KEY        # server-only, never exposed to the client bund
 RESEND_API_KEY
 AI_PAYSLIP_API_KEY               # P1 only (vision fallback); not set until that decision exists
 NEXT_PUBLIC_SITE_URL             # R2, D047: absolute base for sitemap, canonical, OG
-NEXT_PUBLIC_DEMO_MODE            # R2, D048 (Provisional): "true" only on an owner-named demo deployment
+NEXT_PUBLIC_DEMO_MODE            # R2, D048: "true" only on an owner-named demo deployment
 DEMO_ACCOUNT_PASSWORDS           # R2, D048: server-only, only where DEMO_MODE is on; never in git
 ```
 

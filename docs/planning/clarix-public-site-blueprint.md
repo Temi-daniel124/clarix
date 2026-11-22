@@ -142,7 +142,7 @@ then read-only if unpaid. We never delete your records." FAQ on billing. All num
 - **Sign in:** "Welcome back" (`title`); Email; Password with show/hide (`Eye`/`EyeOff`); "Forgot
   password?" tertiary; primary "Sign in"; `small` "New to Clarix? Create an account". Errors inline,
   one line. Keep the existing `#identifier` and `#password` ids (tests use them).
-- **Demo chips (D048, Provisional):** only when `NEXT_PUBLIC_DEMO_MODE=true`: a row "Sign in as" with
+- **Demo chips (D048):** only when `NEXT_PUBLIC_DEMO_MODE=true`: a row "Sign in as" with
   four secondary chips (Member, Cooperative admin, Officer, Platform) that fill and submit the form
   using server-side credentials. Never rendered in Production.
 - **Sign up:** "Create your account"; Email; Password with a 4-segment strength meter (not a second

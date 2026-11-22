@@ -46,7 +46,7 @@ counts and stale timestamps on home screens.
 
 ## R2 Nice-to-Have (P1)
 
-- Paystack checkout (9.5, after the owner confirms the provider).
+- Paystack checkout (9.5, provider confirmed 22 Nov 2026; built after manual payments).
 - Email for invites, statements and reminders (needs the domain and a verified Resend sender).
 - Cooperative self-signup from the public site (needs email).
 - OCR or vision fallback for photographed payslips and statements (needs its own decision and a

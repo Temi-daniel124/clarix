@@ -790,7 +790,7 @@ application". From R2:
 **This is Phase 0 of `docs/BUILD-PLAN.md`** because it affects the live product and the FMC demo.
 
 ### D041: Pricing: the cooperative pays per active member; members never pay
-**Status:** Locked (the price and model). The institution bundle in point 6 is **Provisional**.
+**Status:** Locked (the institution bundle in point 6 was confirmed by the owner on 22 November 2026).
 **Supersedes:** the "Open, not yet decided" pricing item, and `docs/PRODUCT.md`'s instruction not to
 build pricing.
 **Decision:**
@@ -805,7 +805,7 @@ build pricing.
    action. Then **read-only** until paid (D042).
 5. **Founding price lock:** cooperatives that join before the first anniversary of R2's launch keep
    ₦150 for 12 months.
-6. **Institution bundle (Provisional):** when 3 or more cooperatives in the same institution are
+6. **Institution bundle (confirmed 22 Nov 2026):** when 3 or more cooperatives in the same institution are
    paying, each gets 10% off.
 7. FMC Abeokuta's agreed MVP price and its promised free month are honoured as agreed; the 60-day
    trial applies to cooperatives that join afterwards.
@@ -824,7 +824,7 @@ other cooperative's eligibility checks. If they dropped out, a member could borr
 same room, which is the exact failure Clarix exists to prevent.
 **Collection:** at launch, a Super Admin records a payment by hand (bank transfer against an emailed
 invoice) on the cooperative's billing screen. Card and transfer collection through Paystack comes
-later and is **Provisional**: it needs the owner's yes and a `docs/TOOLING-POLICY.md` entry, because
+later. **Paystack was confirmed by the owner on 22 November 2026** as the provider; it gets its `docs/TOOLING-POLICY.md` entry, because
 it is the first payment SDK. It does not contradict D004: D004 forbids moving *members'* money; a
 cooperative paying for its software subscription is ordinary SaaS billing.
 
@@ -891,7 +891,7 @@ allows only public pages, blocks every signed-in area, and returns `Disallow: /`
 deployments so review links are never indexed. All signed-in pages are `noindex`.
 
 ### D048: A demo sign-in shortcut exists only where the owner switches it on
-**Status:** Provisional
+**Status:** Locked (confirmed by the owner on 22 November 2026)
 **Decision:** For the FMC live demonstration, the sign-in screen may show "Sign in as" chips for the
 four demo roles, so the presenter switches roles in one tap. It renders only when
 `NEXT_PUBLIC_DEMO_MODE=true`, which is set **only on a demo or preview deployment the owner names**,
@@ -930,14 +930,9 @@ They live here because this file is read in full at the start of every session, 
 ## Open, not yet decided
 
 Tracked here so they don't get silently assumed. Move an item to a numbered entry above the
-moment it's actually decided. The items marked **owner** are also listed in
+moment it's actually decided. Owner tasks (as opposed to open questions) live in
 `docs/PROJECT-STATE.md` → "Waiting on the owner".
 
-- **owner:** Confirm D048 (demo sign-in chips on owner-named, non-production deployments only).
-- **owner:** Confirm the institution bundle in D041 point 6 (10% off each when 3 or more cooperatives
-  in one institution are paying).
-- **owner:** Confirm Paystack as the payment provider (D042 point 4). Until then billing is recorded
-  manually by the Super Admin.
 - Production domain. Several R2 items wait on it: a verified Resend sending domain, real invitation
   and statement emails, `NEXT_PUBLIC_SITE_URL` in sitemap and canonical URLs (D047), and
   cooperative self-signup.

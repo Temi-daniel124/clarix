@@ -19,7 +19,7 @@ yearly }` and is the only place prices are computed: pricing page, billing scree
 - Yearly = 10 × the monthly total at the time of purchase, for 12 months.
 - Founding price lock: cooperatives activated within 12 months of R2 launch keep ₦150 for their first
   12 paid months (`subscriptions.founding_price_lock`).
-- Institution bundle (Provisional): 10% off each cooperative when 3+ in one institution are paying.
+- Institution bundle (D041.6): 10% off each cooperative when 3+ in one institution are paying.
 - Active member (D041.1): at least one saving, repayment, loan or eligibility check recorded in the
   calendar month. Invoice on the 1st for the previous month (E32).
 - Unit tests: 0 members → ₦5,000; 33 → ₦5,000 (minimum, ₦4,950 rounded up to minimum); 34 → ₦5,100;

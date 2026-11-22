@@ -45,22 +45,22 @@ demo seed; **their passwords are never written in this repository** (`SECURITY.m
 
 ## Waiting on the owner
 
+Confirmed by the owner on 22 November 2026: D043 (staging database), D048 (demo sign-in chips),
+the D041 institution bundle and Paystack (D042). No R2 decision is Provisional any more.
+
 These block or shape specific steps. An agent does the work around them, never past them.
 
 1. **Create the `clarix-staging` Supabase project** (D043, confirmed 22 Nov): a free project in the
    new account, eu-west-1. Steps in `BUILD.md`. Until it exists, no branch applies a migration.
-2. **Confirm D048** (demo sign-in chips on a named demo deployment). Affects 5.4.
-3. **Confirm the D041 institution bundle** (10% off each when 3+ cooperatives in one institution pay).
-4. **Confirm Paystack** as the payment provider (D042). Blocks 9.5 only.
-5. **Rotate the Resend API key** that was in the shared zip, and delete the zip's `.vercel/` folder.
-6. **Move the `Clarix` Supabase project** to the new Supabase account (Supabase dashboard → Project
+2. **Rotate the Resend API key** that was in the shared zip, and delete the zip's `.vercel/` folder.
+3. **Move the `Clarix` Supabase project** to the new Supabase account (Supabase dashboard → Project
    settings → Transfer), or confirm it stays where it is.
-7. **Pick one Vercel project** (`clarix` in the new account is recommended) and disconnect `clarix_app`
+4. **Pick one Vercel project** (`clarix` in the new account is recommended) and disconnect `clarix_app`
    in the old account from the repo, after moving the production domain/alias if needed.
-8. **Turn on branch protection** for `main` (require a PR and the DB-tests check).
-9. **Choose hero photos or a video** for the landing page (5.2), from the shortlist that PR will carry.
-10. **Buy a domain** when ready; it unlocks email, canonical URLs and cooperative self-signup.
-11. Revoke the Supabase access token shared with planning sessions once R2 work no longer needs it.
+5. **Turn on branch protection** for `main` (require a PR and the DB-tests check).
+6. **Choose hero photos or a video** for the landing page (5.2), from the shortlist that PR will carry.
+7. **Buy a domain** when ready; it unlocks email, canonical URLs and cooperative self-signup.
+8. Revoke the Supabase access token shared with planning sessions once R2 work no longer needs it.
 
 ## Decision and scope drift check
 
