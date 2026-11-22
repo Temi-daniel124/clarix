@@ -58,7 +58,7 @@ Read: D040, `docs/DATA-MODEL.md` → Eligibility, `docs/EDGE-CASES.md` E05, E06.
   to staff, and can be approved with a reason; the member sees the right confirmation; the old
   "returns without inserting" path no longer exists.
 
-### ☐ 0.2 Make `npm ci` pass
+### ☑ 0.2 Make `npm ci` pass
 - Regenerate `package-lock.json` with the pinned Node version (`.nvmrc` or `engines`), no dependency
   changes. Add `npm ci` as the first CI step, and a `typecheck` script (`tsc --noEmit`) run in CI.
 - **Accept when:** a fresh clone runs `npm ci && npm run build` with no errors in CI.
@@ -93,6 +93,19 @@ Observed in the live walkthrough (`docs/REFERENCE-STUDY.md` §1):
 - Admin loans "3 requests have been waiting past their hold" while the list says "Nothing is waiting":
   show the lapsed group as its own segment with a count, never contradict it in the same view.
 - **Accept when:** a unit test per rule, and the three screens agree on the demo data.
+
+### ☐ 0.6 Every loan status change goes through `decide_loan_application`
+Found while building 0.1 (logged in `docs/PROJECT-STATE.md` → Known defects).
+- Migration: drop the `loans_update_staff` policy (migration `20260912054608`), which lets any
+  active staff member `update` a loan row directly through the API, skipping the written reason,
+  the audit entry and the member's notification. Every change of status then goes through a
+  SECURITY DEFINER function: `decide_loan_application`, `complete_loan`,
+  `expire_lapsed_reservations` (and `record_existing_loan` from 0.3).
+- Before writing it, list every app code path that updates `loans` directly and move each onto an
+  RPC in the same PR. This removes something `main` uses, so it applies only at merge (D043).
+- **Accept when:** pgTAP proves an admin and an officer with `can_approve_loans` cannot `update` a
+  loan row directly (status, monthly repayment or expiry), while the four functions still work; no
+  `.from("loans").update(` remains in `src`.
 
 ---
 

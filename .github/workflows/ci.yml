@@ -1,0 +1,49 @@
+# .github/workflows/ci.yml — Clarix
+#
+# The app checks every pull request must pass (BUILD-PLAN 0.2): a clean install from the lockfile,
+# then lint, typecheck, unit tests and a production build. Database tests (pgTAP) are separate, in
+# db-tests.yml, because they need Docker and run only when migrations or DB tests change.
+#
+# Node comes from .nvmrc, which matches package.json "engines" and the Vercel project's Node
+# version, so CI, Vercel and a laptop resolve the same lockfile the same way.
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  app:
+    name: Install, lint, typecheck, test, build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node from .nvmrc
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      # First, and on its own: a lockfile out of step with package.json fails here, loudly,
+      # instead of being papered over by `npm install` (the defect 0.2 fixes).
+      - name: Clean install from the lockfile
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      # No Supabase keys here: the app builds without them (src/lib/supabase/env.ts), and CI
+      # never holds a key to the shared project (SECURITY.md).
+      - name: Production build
+        run: npm run build
