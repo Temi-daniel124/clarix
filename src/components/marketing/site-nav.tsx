@@ -3,10 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
+import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { buttonVariants } from "@/components/ui/button";
+import { reducedMotionTransition, springStandard } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "./use-hydrated-preferences";
 
 /**
  * The marketing navigation (spec §8, Watermelon navigation-5), as drawn on the round-2 landing
@@ -17,7 +20,9 @@ import { cn } from "@/lib/utils";
  *
  * On mobile the links move into a base-ui Dialog sheet. base-ui gives it the modal behaviour an
  * overlay needs: focus is trapped inside while it is open, Escape closes it, and focus returns
- * to the menu button.
+ * to the menu button. The sheet rises from the bottom on the standard spring (spec §7); under
+ * reduced motion it only fades. Motion drives it, so, as base-ui's animation handbook asks, the
+ * dialog is controlled, the portal stays mounted and AnimatePresence decides when it leaves.
  */
 
 const LINKS = [
@@ -31,13 +36,35 @@ const focusRing =
   "outline-none focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2";
 
 const navLink = cn(
-  "inline-flex h-11 items-center rounded-pill px-3.5 text-[15px] font-medium text-ink-2",
+  "inline-flex h-11 items-center rounded-pill px-3.5 type-body font-medium text-ink-2",
   "transition-colors duration-150 hover:bg-porcelain hover:text-indigo-night",
   focusRing,
 );
 
 export function SiteNav() {
   const [open, setOpen] = useState(false);
+  const reduceMotion = usePrefersReducedMotion();
+  // Opacity is always part of the animation (0.9999 when only rising): base-ui waits on
+  // element.getAnimations(), which reports opacity, before it lets the sheet go.
+  const sheetMotion = reduceMotion
+    ? {
+        initial: { opacity: 0 },
+        animate: { opacity: 1 },
+        exit: { opacity: 0 },
+        transition: reducedMotionTransition,
+      }
+    : {
+        initial: { y: "calc(100% + 12px)", opacity: 0.9999 },
+        animate: { y: 0, opacity: 1 },
+        exit: { y: "calc(100% + 12px)", opacity: 0.9999 },
+        transition: springStandard,
+      };
+  const scrimMotion = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
+    transition: reduceMotion ? reducedMotionTransition : springStandard,
+  };
 
   return (
     <div className="sticky top-0 z-50 px-4 pt-4 md:px-6 md:pt-5">
@@ -93,69 +120,79 @@ export function SiteNav() {
               <Menu className="size-5" strokeWidth={2} aria-hidden />
             </Dialog.Trigger>
 
-            <Dialog.Portal>
-              <Dialog.Backdrop className="fixed inset-0 z-50 bg-indigo-night/30 transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0" />
+            <AnimatePresence>
+              {open && (
+                <Dialog.Portal keepMounted>
+                  <Dialog.Backdrop
+                    render={<motion.div {...scrimMotion} />}
+                    className="fixed inset-0 z-50 bg-indigo-night/30"
+                  />
 
-              <Dialog.Popup className="fixed inset-x-3 top-3 z-50 origin-top rounded-sheet bg-white p-5 shadow-raised transition-[opacity,translate] duration-200 data-ending-style:-translate-y-2 data-ending-style:opacity-0 data-starting-style:-translate-y-2 data-starting-style:opacity-0 motion-reduce:transition-opacity">
-                <Dialog.Title className="sr-only">Menu</Dialog.Title>
-
-                <div className="flex items-center justify-between">
-                  <Logo variant="horizontal" size={24} />
-                  <Dialog.Close
-                    aria-label="Close menu"
-                    className={cn(
-                      buttonVariants({ variant: "icon", size: "icon" }),
-                      "text-indigo-night",
-                    )}
+                  <Dialog.Popup
+                    render={<motion.div {...sheetMotion} />}
+                    className="fixed inset-x-3 bottom-3 z-50 rounded-sheet bg-white p-5 pb-[max(--spacing(5),env(safe-area-inset-bottom))] shadow-raised"
                   >
-                    <X className="size-5" strokeWidth={2} aria-hidden />
-                  </Dialog.Close>
-                </div>
+                    <Dialog.Title className="sr-only">Menu</Dialog.Title>
 
-                <ul className="mt-4 flex flex-col">
-                  {LINKS.map((link) => (
-                    <li
-                      key={link.href}
-                      className="border-b border-line last:border-b-0"
-                    >
-                      <Link
-                        href={link.href}
-                        onClick={() => setOpen(false)}
+                    <div className="flex items-center justify-between">
+                      <Logo variant="horizontal" size={24} />
+                      <Dialog.Close
+                        aria-label="Close menu"
                         className={cn(
-                          "flex h-13 items-center rounded-group px-2 text-[17px] font-semibold text-indigo-night",
-                          focusRing,
+                          buttonVariants({ variant: "icon", size: "icon" }),
+                          "text-indigo-night",
                         )}
                       >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                        <X className="size-5" strokeWidth={2} aria-hidden />
+                      </Dialog.Close>
+                    </div>
 
-                <div className="mt-5 flex flex-col gap-2">
-                  <Link
-                    href="/signup"
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      buttonVariants({ variant: "secondary" }),
-                      "w-full",
-                    )}
-                  >
-                    Start free trial
-                  </Link>
-                  <Link
-                    href="/login"
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      buttonVariants({ variant: "tertiary" }),
-                      "w-full",
-                    )}
-                  >
-                    Sign in
-                  </Link>
-                </div>
-              </Dialog.Popup>
-            </Dialog.Portal>
+                    <ul className="mt-4 flex flex-col">
+                      {LINKS.map((link) => (
+                        <li
+                          key={link.href}
+                          className="border-b border-line last:border-b-0"
+                        >
+                          <Link
+                            href={link.href}
+                            onClick={() => setOpen(false)}
+                            className={cn(
+                              "flex h-13 items-center rounded-group px-2 type-body-m font-semibold text-indigo-night",
+                              focusRing,
+                            )}
+                          >
+                            {link.label}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <div className="mt-5 flex flex-col gap-2">
+                      <Link
+                        href="/signup"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          buttonVariants({ variant: "secondary" }),
+                          "w-full",
+                        )}
+                      >
+                        Start free trial
+                      </Link>
+                      <Link
+                        href="/login"
+                        onClick={() => setOpen(false)}
+                        className={cn(
+                          buttonVariants({ variant: "tertiary" }),
+                          "w-full",
+                        )}
+                      >
+                        Sign in
+                      </Link>
+                    </div>
+                  </Dialog.Popup>
+                </Dialog.Portal>
+              )}
+            </AnimatePresence>
           </Dialog.Root>
         </div>
       </header>
