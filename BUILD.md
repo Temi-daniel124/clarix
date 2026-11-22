@@ -91,11 +91,11 @@ NEXT_PUBLIC_DEMO_MODE         # R2 (D048, Provisional): demo deployments only
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` and `AI_PAYSLIP_API_KEY` are not used by the app; leave them unset.
-Scope Preview variables to the staging project once D043 is confirmed.
+Scope Preview variables to the staging project once it exists (D043).
 
 See `docs/ARCHITECTURE.md` for what each one is for, and `SECURITY.md` for handling rules.
 
-## Setting up the staging database (only after the owner confirms D043)
+## Setting up the staging database (D043, confirmed 22 November 2026)
 
 1. Owner: create a free Supabase project `clarix-staging` (same region, eu-west-1) in the new account.
 2. Agent: apply every file in `supabase/migrations/` to it in order (Management API or `db push`

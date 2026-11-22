@@ -79,10 +79,10 @@ Claude/OpenAI API  ── payslip OCR fallback only (never the eligibility decis
 | Environment | Vercel | Supabase | Who changes it |
 |---|---|---|---|
 | Production | the Production deployment of `main` (`clarix-3w5i.vercel.app` until a domain exists) | `Clarix` (ref `sxugaizwmqigtioqgefx`, eu-west-1). **Note:** it was created under the owner's old Supabase account; moving it to the new account is an owner task in `PROJECT-STATE.md` | Only the owner, or an agent the owner has told to, for that specific PR |
-| Preview | one per branch / PR | **Today: the same production project** (a known risk). **After D043 is confirmed:** `clarix-staging`, a second free project with synthetic demo data only | Agents, freely, on branches |
+| Preview | one per branch / PR | **Today: the same production project** (a known risk). **Once created (D043, confirmed 22 Nov 2026):** `clarix-staging`, a second free project with synthetic demo data only | Agents, freely, on branches |
 | Local | `npm run dev` | whichever project `.env.local` points at; never production for schema work | The person at the keyboard |
 
-Interim rule until D043 is confirmed: Preview deployments read and write the production database,
+Interim rule until `clarix-staging` exists: Preview deployments read and write the production database,
 so **no branch may apply a migration, and nobody tests destructive actions (delete, bulk import,
 billing state changes) on a Preview** against the demo cooperatives. Free Supabase projects pause
 after 7 idle days; a weekly GitHub Actions ping keeps staging awake.

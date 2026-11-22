@@ -75,10 +75,10 @@ Read: D036, `docs/planning/clarix-documents-blueprint.md` §3, `docs/EDGE-CASES.
   cooperative; pgTAP covers RLS (an officer at another cooperative cannot create one) and the
   committed sum; the bulk version waits for 8.2.
 
-### ☐ 0.4 Separate preview data from production (D043, Provisional)
-- **Do not start until the owner confirms D043.** Until then, the interim rule stands: no migration is
+### ☐ 0.4 Separate preview data from production (D043, confirmed)
+- Starts once the owner has created the project. Until then, the interim rule stands: no migration is
   applied from a branch.
-- Once confirmed: create the `clarix-staging` project (owner does the click, agent writes the steps in
+- create the `clarix-staging` project (owner does the click, agent writes the steps in
   `BUILD.md`), set Preview-scoped env vars in Vercel, seed it with the synthetic demo data script
   (`supabase/seed/demo.sql`, no real names or payslips), document in `docs/ARCHITECTURE.md`.
 - **Accept when:** a Preview deployment signs in against staging and cannot read production rows.

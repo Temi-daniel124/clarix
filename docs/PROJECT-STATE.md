@@ -23,7 +23,7 @@ R1 build log, 1,375 lines, last updated 13 September 2026).
 | "Submit anyway" applications are never stored; the member is told they were sent | `submit_loan_application`, migration `20260917213110_loan_product_on_application.sql` | 0.1 |
 | `npm ci` fails: lockfile out of sync | `package-lock.json` | 0.2 |
 | Existing loans cannot be entered, so committed starts at ₦0 for every member | no screen or RPC | 0.3 |
-| Preview deployments read and write the production database | Vercel env vars | 0.4 (needs D043) |
+| Preview deployments read and write the production database | Vercel env vars | 0.4 (D043 confirmed; staging project to create) |
 | Admin home "Members 8" vs list "15 members" vs platform "7"; member home "Current as of 15 March" in November; admin loans says 3 lapsed and "Nothing is waiting" at once | home queries | 0.5 |
 | Floating tab bar covers the last content on member home and staff member list (phone) | app shells | 1.4 |
 | Payslips are not read; members type the figures | onboarding | 7.3 |
@@ -36,7 +36,7 @@ R1 build log, 1,375 lines, last updated 13 September 2026).
 | GitHub | `Temi-daniel124/clarix`, default branch `main` | Only `main` plus planning branches. Branch protection not yet on |
 | Vercel | Two projects build this repo (seen on PR #23): **`clarix`** in the owner's current account (Preview ready) and the older **`clarix_app`** in the previous account, which still serves `clarix-3w5i.vercel.app` | Decide which project is Production; then disconnect the other from the repo so each push builds once |
 | Supabase production | Project `Clarix`, ref `sxugaizwmqigtioqgefx`, eu-west-1, free | Still under the owner's previous Supabase account. Holds the FMC demo data |
-| Supabase staging | Does not exist | D043 (Provisional) |
+| Supabase staging | Not created yet | D043 confirmed 22 Nov; owner creates it (BUILD.md) |
 | Resend | Sender `onboarding@resend.dev` | Reaches only the account owner until a domain is verified. Key in the shared zip must be rotated |
 | Domain | None | Blocks real email, canonical URLs, self-signup |
 
@@ -47,8 +47,8 @@ demo seed; **their passwords are never written in this repository** (`SECURITY.m
 
 These block or shape specific steps. An agent does the work around them, never past them.
 
-1. **Confirm D043** (separate staging Supabase project for previews). Blocks 0.4; until then no branch
-   applies a migration and nobody tests destructive actions on a Preview.
+1. **Create the `clarix-staging` Supabase project** (D043, confirmed 22 Nov): a free project in the
+   new account, eu-west-1. Steps in `BUILD.md`. Until it exists, no branch applies a migration.
 2. **Confirm D048** (demo sign-in chips on a named demo deployment). Affects 5.4.
 3. **Confirm the D041 institution bundle** (10% off each when 3+ cooperatives in one institution pay).
 4. **Confirm Paystack** as the payment provider (D042). Blocks 9.5 only.

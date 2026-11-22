@@ -829,13 +829,13 @@ it is the first payment SDK. It does not contradict D004: D004 forbids moving *m
 cooperative paying for its software subscription is ordinary SaaS billing.
 
 ### D043: Preview deployments use a separate staging database
-**Status:** Provisional (recommended; the owner has been asked and has not yet answered)
+**Status:** Locked (confirmed by the owner on 22 November 2026)
 **Supersedes:** `docs/ARCHITECTURE.md` → Environments ("one Supabase project serves both").
 **Decision:** A second free Supabase project, `clarix-staging`, holds a copy of the schema and only
 demo data. Vercel's **Preview** environment variables point at staging; **Production** variables
 point at the live `Clarix` project (`sxugaizwmqigtioqgefx`). Every migration on a branch is applied to
 staging first; production receives it only when the owner says "merge" for that PR (D032).
-**Until the owner confirms**, an agent must treat the live database as production and **must not
+**Until the staging project exists**, an agent must treat the live database as production and **must not
 apply any migration from a branch at all**. Schema work can be written and reviewed as SQL in the PR,
 but stays unapplied until either staging exists or the owner says merge.
 **Rationale:** today a Preview build writes to the live database, so a preview that changes the
@@ -933,8 +933,6 @@ Tracked here so they don't get silently assumed. Move an item to a numbered entr
 moment it's actually decided. The items marked **owner** are also listed in
 `docs/PROJECT-STATE.md` → "Waiting on the owner".
 
-- **owner:** Confirm D043 (a separate `clarix-staging` Supabase project for previews). Until it is
-  confirmed, no migration is applied from a branch at all (D043's interim rule).
 - **owner:** Confirm D048 (demo sign-in chips on owner-named, non-production deployments only).
 - **owner:** Confirm the institution bundle in D041 point 6 (10% off each when 3 or more cooperatives
   in one institution are paying).
