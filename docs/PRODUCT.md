@@ -1,6 +1,6 @@
 # PRODUCT.md, Clarix
 
-**Authority level: 2.** Defers to `DECISIONS.md` on anything that conflicts. This is the "why" and
+**Authority level: 2 of 14.** Defers to `DECISIONS.md` on anything that conflicts. This is the "why" and
 "for whom". For "what to build" see `MVP-SCOPE.md` and `BUILD-PLAN.md`; for "who can do what" see
 `ROLES-AND-PERMISSIONS.md`. Rewritten for Release 2 (22 November 2026, D034 to D042).
 

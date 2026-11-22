@@ -1,6 +1,6 @@
 # DATA-MODEL.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md`. This is the canonical schema, if code and this
+**Authority level: 3 of 14.** Defers to `DECISIONS.md`. This is the canonical schema, if code and this
 document disagree, this document is right and the code has drifted; fix the code (and, if the
 fix reveals the model itself needs to change, add a new `DECISIONS.md` entry first).
 

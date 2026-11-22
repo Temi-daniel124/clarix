@@ -6,9 +6,11 @@ staff console and platform console alike. Every UI task is pixel-level work: exa
 spacing, exact motion, one icon set. "Functionally correct but visually approximate" is an
 unfinished task.
 
-Authority: `docs/DECISIONS.md` D013, D017, D037 to D039 and D044 to D046 are the decisions behind
-this file. Where this file and an older doc disagree (including `docs/planning/clarix-design-system.md`,
-which is now historical), **this file wins**, and `DECISIONS.md` wins over this file.
+**Authority level: 14 of 14** (order in `AGENT.md`). `docs/DECISIONS.md` D013, D017, D037 to D039 and
+D044 to D046 are the decisions behind this file. The 13 documents above it win on what they govern
+(scope, data, roles, security); on how anything looks, moves or reads on screen, this file is the
+exact rule, and it wins over every blueprint, `docs/BRAND.md`, `docs/REFERENCE-STUDY.md` and the
+historical `docs/planning/clarix-design-system.md`.
 
 Read with it, every time you touch UI:
 
@@ -25,6 +27,40 @@ Read with it, every time you touch UI:
 | A component from Watermelon or a reference site | `docs/REFERENCE-STUDY.md` |
 
 ---
+
+## 0. Pixel-perfect, and simple (the owner's two standing instructions)
+
+**Pixel-perfect.** Every pixel, dot and state is specified work, not finish. Concretely:
+
+- **Exact values only.** Every colour, size, radius, shadow, gap and duration comes from §4. No
+  "close enough", no `mt-[13px]`, no colour picked by eye. If a value you need is missing, add it to
+  §4 in the same PR and say why; never invent it inline.
+- **The 4px grid.** Every margin, padding and gap is a multiple of 4 (2px only for hairline offsets
+  and the 2px focus ring gap). Text sits on its line height; icons sit on the text's optical centre.
+- **Alignment is checked, not assumed.** Left edges of a column line up to the pixel; numbers in a
+  column use tabular figures and align right; an icon beside a label is vertically centred to the
+  label, not the box.
+- **Every state is designed.** Default, hover (desktop), pressed, focus-visible, disabled, loading,
+  empty, error and success, for every interactive element. A state that was never looked at is a bug.
+- **The small things count.** Truncation with an ellipsis instead of wrapping where a line must stay
+  one line; no orphaned single word on a heading; no double spaces; ₦ always with thousands
+  separators; consistent sentence case; no stray 1px borders from a library default; no layout shift
+  when data arrives (skeletons reserve the final size).
+- **Proved with screenshots.** At 360, 390, 1280 and 1440px, with reduced motion on, compared side by
+  side with the blueprint before ACCEPT (§11, §12).
+
+**Simple, like Apple's own components.** Take the restraint of Apple's Human Interface Guidelines as
+the model, not their look: few elements, standard controls, generous space, one obvious action.
+
+- Prefer the plain, familiar control: a grouped list row with a chevron, a sheet that rises from the
+  bottom, a segmented control, a switch, a single text field per line. No custom widget where a
+  standard one does the job.
+- One idea per screen, one primary action per screen or sheet. If a screen needs explaining, it is
+  too complicated; remove something before adding help text.
+- Hierarchy comes from size, weight and space, not from boxes, colours or icons. Most text is
+  `ink-900` or `ink-500`; colour is reserved for meaning (emerald good, amber attention, red stop).
+- Motion explains where something came from or went. It never decorates. Nothing bounces for fun.
+- When two designs both work, ship the one with fewer parts.
 
 ## 1. Emotional target and the one filter
 
@@ -338,6 +374,9 @@ has pause/play and is not announced every slide. Forms announce errors with `ari
   lists 15; the member home says "Current as of 15 March" in November). Every figure has one source.
 - A placeholder or demo string, a typo, or FMC/IPPIS/hospital wording in product copy (demo data is fine).
 - Unstyled shadcn or Watermelon defaults.
+- A value not on the 4px grid or not from §4; a misaligned edge; a state (hover, focus, disabled,
+  loading, empty, error) that was never designed; layout shift as data loads.
+- A custom control where a standard one (list row, sheet, switch, segmented control) would do.
 
 **Pass requires:** the matching blueprint section built completely; tokens exact; checked at 360, 390,
 1280 and 1440px; reduced-motion checked; keyboard path checked on desktop; the Preview deployment link

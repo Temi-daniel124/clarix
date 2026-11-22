@@ -1,6 +1,6 @@
 # TOOLING-POLICY.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` (D012, D013, D015, and for R2 D038, D042, D044). Lists what's already
+**Authority level: 9 of 14.** Defers to `DECISIONS.md` (D012, D013, D015, and for R2 D038, D042, D044). Lists what's already
 approved and the bar for adding anything else. If it's not on the approved list and doesn't clear
 the bar, don't add it without raising it first.
 

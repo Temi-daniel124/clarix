@@ -15,8 +15,8 @@ conflict with a decision, the decision wins and you raise it.
   Preview URL, phone (390px) and desktop (1440px) screenshots of every changed screen, and a
   "How to check it" list the owner can follow with the demo accounts.
 - **Migrations:** written as files under `supabase/migrations/`, tested by pgTAP in GitHub Actions.
-  Never applied to production by an agent (D032, D043). The PR says "Needs migration applied" in its
-  title when it has one.
+  Applied per D043: additive migrations may be applied from the branch; anything that changes what
+  `main` relies on is applied only when the owner says "merge". The PR title says which.
 - **Tests:** unit tests for every pure function (eligibility, parsers, import mapping, price
   calculation); pgTAP for every RLS policy and database function you add or change.
 - **Done means:** acceptance criteria below all pass, `npm run lint`, `npm run typecheck`, `npm test`
@@ -75,13 +75,13 @@ Read: D036, `docs/planning/clarix-documents-blueprint.md` §3, `docs/EDGE-CASES.
   cooperative; pgTAP covers RLS (an officer at another cooperative cannot create one) and the
   committed sum; the bulk version waits for 8.2.
 
-### ☐ 0.4 Separate preview data from production (D043, confirmed)
-- Starts once the owner has created the project. Until then, the interim rule stands: no migration is
-  applied from a branch.
-- create the `clarix-staging` project (owner does the click, agent writes the steps in
-  `BUILD.md`), set Preview-scoped env vars in Vercel, seed it with the synthetic demo data script
-  (`supabase/seed/demo.sql`, no real names or payslips), document in `docs/ARCHITECTURE.md`.
-- **Accept when:** a Preview deployment signs in against staging and cannot read production rows.
+### ☐ 0.4 Mark every Preview as using the live demo data (D043)
+- Preview and Production share one database by the owner's decision. Add a 32px `amber-50` strip
+  with `amber-700` `small` text "Preview · uses the live demo data" at the top of every page when
+  `VERCEL_ENV !== "production"`. It does not scroll away on phones and is not dismissible.
+- Add a `supabase/seed/README.md` stating that the demo data is never reset or deleted without the
+  owner (D043.2), and how to create and remove a throwaway test cooperative.
+- **Accept when:** the strip shows on the Preview and not on Production.
 
 ### ☐ 0.5 Fix the stale and contradictory figures on the live homes
 Observed in the live walkthrough (`docs/REFERENCE-STUDY.md` §1):

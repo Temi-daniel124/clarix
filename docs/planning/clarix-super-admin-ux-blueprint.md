@@ -3,7 +3,9 @@
 > ## R2 header (22 November 2026): read this before any section below
 >
 > The R1 text below stays as the record of what was built; where this header and the body disagree,
-> **this header wins** (then `DESIGN_SYSTEM.md`, then `docs/DECISIONS.md` over both). Light theme only,
+> **this header wins** over the body. The 14 governing
+> documents listed in `AGENT.md` rank above this blueprint, with `docs/DECISIONS.md` highest; build
+> every screen here with `DESIGN_SYSTEM.md`'s exact tokens. Light theme only,
 > Figtree, pills, no eyebrows. The platform console reads like calm infrastructure: no chatty titles
 > ("Here's how Clarix looks today" goes), no marketing tone.
 >

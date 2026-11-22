@@ -1,6 +1,6 @@
 # MVP-SCOPE.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md`. Release 1 (R1, the FMC MVP) is built and live.
+**Authority level: 6 of 14.** Defers to `DECISIONS.md`. Release 1 (R1, the FMC MVP) is built and live.
 This file now lists what Release 2 (R2) adds and what stays out. The order of work is
 `docs/BUILD-PLAN.md`. If a task seems to need something not listed here, stop and raise it.
 
@@ -14,7 +14,7 @@ permission toggles; audit logs; payslip upload with typed figures; reconciliatio
 reports; Super Admin time-boxed access grants; PWA install and offline page.
 
 Known R1 defects fixed in R2 Phase 0: over-limit applications not stored (D040); `npm ci` failing;
-no way to enter existing loans; previews sharing the production database (D043); contradictory
+no way to enter existing loans; no marker on Previews that share the live database (D043); contradictory
 counts and stale timestamps on home screens.
 
 ## R2 goals

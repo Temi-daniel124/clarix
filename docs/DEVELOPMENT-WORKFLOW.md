@@ -1,6 +1,6 @@
 # DEVELOPMENT-WORKFLOW.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` D015, D016 (identity now D033) and D032, which this document implements
+**Authority level: 8 of 14.** Defers to `DECISIONS.md` D015, D016 (identity now D033) and D032, which this document implements
 operationally. Every agent (Claude Code included) and every human working on this repo follows
 this loop and these two hard gates.
 
@@ -40,7 +40,7 @@ this loop and these two hard gates.
 Every commit in this repository must be authored as:
 
 ```
-Name:  Temiloluwa Adebayo
+Name:  Temi-daniel124
 Email: temmydaniel124@gmail.com
 ```
 
@@ -63,7 +63,7 @@ not global: a global default set for other projects must not silently apply here
 repo's setting must not silently leak into other projects either):
 
 ```bash
-git config user.name "Temiloluwa Adebayo"
+git config user.name "Temi-daniel124"
 git config user.email "temmydaniel124@gmail.com"
 ```
 
@@ -80,7 +80,9 @@ match, fixing the config first, never committing under the wrong identity "just 
 ## 2. Hard requirement: no local Docker
 
 **Never run** `supabase start`, `docker compose up`, or any other command that starts a local
-Supabase/Postgres stack via Docker on the development machine. This was previously done and
+Supabase/Postgres stack via Docker on the development machine. "The development machine" means
+every place an agent or person works on Clarix: the owner's laptop **and** every Claude Code cloud
+session. The only place a Supabase stack is ever started is the GitHub Actions runner below. This was previously done and
 consumed roughly 2.3 GB RAM / 6.4 GB disk before Postgres even started, not affordable on this
 machine, and not necessary.
 
@@ -96,8 +98,17 @@ supabase db push                          # apply pending migrations to the link
 ```
 
 This means the remote `Clarix` Supabase project *is* the development database. There is no
-separate local Postgres. Be deliberate with destructive migrations for exactly that reason (no
-"just reset my local db" escape hatch exists here).
+separate local Postgres and no staging database: **Preview and Production share this one project
+(D043)**, and it holds the live demo data. So:
+
+- From a branch, an agent may apply only an **additive** migration (new table, new column with a
+  default, new function, new policy). The PR title says "Migration: additive, applied".
+- A migration that changes or removes anything `main` relies on is applied only when the owner says
+  "merge" for that PR, immediately before the merge. The PR title says "Migration: applies at merge".
+- Never delete, reset or bulk-rewrite the demo data (five FMC cooperatives, four demo accounts).
+  Destructive tests use a throwaway cooperative created for the test and removed after it.
+- `supabase db diff` is safe at any time (it only reads). `supabase db reset` is **never** run
+  against the linked project.
 
 **Who applies a migration, and how, see `DECISIONS.md` D023.** There are two sanctioned paths,
 and which one applies depends on who is at the keyboard:
@@ -125,23 +136,67 @@ option is recorded and deliberately not adopted, see D023 for the reasoning.
 
 **Docker-dependent testing (pgTAP, full RLS integration tests) never runs locally either.** It
 runs inside GitHub Actions, on GitHub's hosted Ubuntu runner, which provides its own Docker,
-the cost lands on GitHub's infrastructure, never on this laptop. Supabase officially documents
-`supabase db start` and pgTAP running this way in CI.
+the cost lands on GitHub's infrastructure, never on a laptop or a cloud session. Supabase officially
+documents running `supabase start` and pgTAP this way in CI.
 
 ### GitHub Actions workflow stub
 
-A ready-to-use stub is committed at `.github/workflows/db-tests.yml` (see that file). It:
+This is committed at `.github/workflows/db-tests.yml`. It is the only place `supabase start` and
+`supabase db reset` are allowed to run: on GitHub's throwaway Ubuntu runner, against an empty
+database that exists only for the length of the job, never against the real project.
 
-- Triggers on pull requests that touch `supabase/migrations/**` or `supabase/tests/**`.
-- Runs on `ubuntu-latest` (Docker available natively on the runner. Nothing to install).
-- Installs the Supabase CLI, runs `supabase db start` (this is the *only* place `db start` is
-  allowed to run, inside CI, never on the laptop), applies migrations, and runs the pgTAP suite
-  under `supabase/tests/`.
-- Fails the check (blocking merge, once branch protection is turned on) if any test fails.
+```yaml
+name: Database tests
 
-Update this stub's test path and add real pgTAP files under `supabase/tests/` as the schema in
-`DATA-MODEL.md` gets built out: the stub is intentionally minimal until there's something real
-for it to run.
+on:
+  pull_request:
+    paths:
+      - "supabase/migrations/**"
+      - "supabase/tests/**"
+      - ".github/workflows/db-tests.yml"
+
+jobs:
+  pgtap:
+    name: pgTAP / RLS tests (hosted runner — Docker lives here, not on any laptop)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Start local Supabase stack (runner-only — never run this command on a laptop)
+        run: supabase start
+
+      - name: Apply migrations to the ephemeral runner database
+        run: supabase db reset
+
+      - name: Run pgTAP suite
+        run: |
+          if [ -d "supabase/tests" ] && [ -n "$(find supabase/tests -name '*.sql' -print -quit)" ]; then
+            supabase test db
+          else
+            echo "No pgTAP tests found yet under supabase/tests/."
+          fi
+
+      - name: Stop Supabase stack
+        if: always()
+        run: supabase stop --no-backup
+```
+
+What it does: on any PR that touches migrations, tests or the workflow itself, it starts a fresh
+stack on the runner, applies every migration from zero (which also proves the migrations replay
+cleanly), runs every `supabase/tests/*.sql` pgTAP file, and fails the check if any test fails.
+Branch protection is deferred by the owner, so today a red check does not block the merge button;
+it still blocks the owner's acceptance, and no agent asks for a merge on a red check.
+
+Every migration that creates a table scoped by `cooperative_id` or `institution_id` adds a pgTAP
+file under `supabase/tests/` in the same PR proving another cooperative's user cannot read or write
+its rows.
 
 ## 3. What actually gets tested where
 
@@ -166,8 +221,7 @@ for it to run.
   history once a PR is open.
 - Keep branches short-lived: one BUILD-PLAN step each. If review asks for more, it goes on the same
   branch; if it is a new step, it is a new branch.
-- Turn on branch protection for `main` (require a PR and passing checks): owner task, listed in
-  `PROJECT-STATE.md`.
+- Branch protection on `main` is deferred by the owner; D032 is the rule until it is on.
 
 ## 5. Visual QA (R2, light theme only, D037)
 

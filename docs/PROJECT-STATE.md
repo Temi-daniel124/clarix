@@ -1,11 +1,13 @@
 # PROJECT-STATE.md, Clarix
 
-**Authority level: 3.** A living document: what exists now, what is broken, what is next, and what is
+**Authority level: 7 of 14.** A living document: what exists now, what is broken, what is next, and what is
 waiting on the owner. Keep it short. Update it at the end of every session that finishes a
 `BUILD-PLAN.md` step. History lives in git and in `docs/archive/PROJECT-STATE-2026-09.md` (the full
 R1 build log, 1,375 lines, last updated 13 September 2026).
 
-**Last updated:** 22 November 2026, R2 planning docs written (this PR). No R2 code exists yet.
+**Last updated:** 22 November 2026. The R2 governing docs (the 14 ranked in `AGENT.md`), the build
+plan and every role and screen blueprint are merged to `main` (PR #23, approved by the owner). No R2
+code exists yet.
 
 ## Where things stand
 
@@ -23,7 +25,7 @@ R1 build log, 1,375 lines, last updated 13 September 2026).
 | "Submit anyway" applications are never stored; the member is told they were sent | `submit_loan_application`, migration `20260917213110_loan_product_on_application.sql` | 0.1 |
 | `npm ci` fails: lockfile out of sync | `package-lock.json` | 0.2 |
 | Existing loans cannot be entered, so committed starts at ₦0 for every member | no screen or RPC | 0.3 |
-| Preview deployments read and write the production database | Vercel env vars | 0.4 (D043 confirmed; staging project to create) |
+| Preview deployments share the live database (kept by the owner's choice, D043); nothing marks a Preview as such | layout | 0.4 |
 | Admin home "Members 8" vs list "15 members" vs platform "7"; member home "Current as of 15 March" in November; admin loans says 3 lapsed and "Nothing is waiting" at once | home queries | 0.5 |
 | Floating tab bar covers the last content on member home and staff member list (phone) | app shells | 1.4 |
 | Payslips are not read; members type the figures | onboarding | 7.3 |
@@ -33,11 +35,10 @@ R1 build log, 1,375 lines, last updated 13 September 2026).
 
 | Service | State | Notes |
 |---|---|---|
-| GitHub | `Temi-daniel124/clarix`, default branch `main` | Only `main` plus planning branches. Branch protection not yet on |
-| Vercel | Two projects build this repo (seen on PR #23): **`clarix`** in the owner's current account (Preview ready) and the older **`clarix_app`** in the previous account, which still serves `clarix-3w5i.vercel.app` | Decide which project is Production; then disconnect the other from the repo so each push builds once |
+| GitHub | `Temi-daniel124/clarix`, default branch `main` | Branch protection deferred by the owner |
+| Vercel | Two projects build this repo: **`clarix`** in the owner's current account and the older **`clarix_app`** in the previous account (which serves `clarix-3w5i.vercel.app`) | Both stay until the owner has accepted the new project's designs; then the owner deletes `clarix_app` |
 | Supabase production | Project `Clarix`, ref `sxugaizwmqigtioqgefx`, eu-west-1, free | Still under the owner's previous Supabase account. Holds the FMC demo data |
-| Supabase staging | Not created yet | D043 confirmed 22 Nov; owner creates it (BUILD.md) |
-| Resend | Sender `onboarding@resend.dev` | Reaches only the account owner until a domain is verified. Key in the shared zip must be rotated |
+| Resend | Sender `onboarding@resend.dev` | Reaches only the account owner until a domain is verified. Keys are rotated only at go-live (owner's choice) |
 | Domain | None | Blocks real email, canonical URLs, self-signup |
 
 Demo accounts (one per role) exist in production for the FMC demonstration. Their emails are in the
@@ -45,22 +46,18 @@ demo seed; **their passwords are never written in this repository** (`SECURITY.m
 
 ## Waiting on the owner
 
-Confirmed by the owner on 22 November 2026: D043 (staging database), D048 (demo sign-in chips),
-the D041 institution bundle and Paystack (D042). No R2 decision is Provisional any more.
+Nothing blocks the build. Every R2 decision is Locked (the owner confirmed D048, the D041 institution
+bundle and Paystack, and chose to keep one shared database, D043, on 22 November 2026).
 
-These block or shape specific steps. An agent does the work around them, never past them.
+Deliberately deferred by the owner, so do not raise them as tasks:
+- Rotating keys and tokens (all rotated at go-live).
+- Deleting the old `clarix_app` Vercel project (after the new one's designs are accepted).
+- Branch protection on `main`.
+- Moving the `Clarix` Supabase project to the new Supabase account.
 
-1. **Create the `clarix-staging` Supabase project** (D043, confirmed 22 Nov): a free project in the
-   new account, eu-west-1. Steps in `BUILD.md`. Until it exists, no branch applies a migration.
-2. **Rotate the Resend API key** that was in the shared zip, and delete the zip's `.vercel/` folder.
-3. **Move the `Clarix` Supabase project** to the new Supabase account (Supabase dashboard → Project
-   settings → Transfer), or confirm it stays where it is.
-4. **Pick one Vercel project** (`clarix` in the new account is recommended) and disconnect `clarix_app`
-   in the old account from the repo, after moving the production domain/alias if needed.
-5. **Turn on branch protection** for `main` (require a PR and the DB-tests check).
-6. **Choose hero photos or a video** for the landing page (5.2), from the shortlist that PR will carry.
-7. **Buy a domain** when ready; it unlocks email, canonical URLs and cooperative self-signup.
-8. Revoke the Supabase access token shared with planning sessions once R2 work no longer needs it.
+Needed later, at the step named:
+1. **Hero photos or a video** for the landing page: the owner picks from the shortlist PR 5.2 carries.
+2. **A domain**, when the owner is ready: unlocks email, canonical URLs and cooperative self-signup.
 
 ## Decision and scope drift check
 

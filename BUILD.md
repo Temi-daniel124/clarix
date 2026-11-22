@@ -1,5 +1,7 @@
 # BUILD.md, Clarix
 
+**Authority level: 12 of 14.** The full order is in `AGENT.md` → "The governing documents".
+
 Practical setup and day-to-day commands. For *why* things are set up this way, see
 `docs/ARCHITECTURE.md`, `docs/DEVELOPMENT-WORKFLOW.md`, and `docs/TOOLING-POLICY.md`.
 
@@ -12,7 +14,7 @@ all light installs, none of them Docker.
 ```bash
 git clone https://github.com/Temi-daniel124/clarix.git
 cd clarix
-git config user.name "Temiloluwa Adebayo"
+git config user.name "Temi-daniel124"
 git config user.email "temmydaniel124@gmail.com"   # D033
 npm ci
 ```
@@ -29,9 +31,10 @@ supabase link --project-ref <Clarix project ref>  # from docs/ARCHITECTURE.md, o
 
 ## Ongoing schema changes
 
-**R2 rule (D032, D043):** an agent writes the migration file and lets CI test it; it never runs
-`db push` against production. Only the owner applies a migration to production, after merging the
-PR. Once staging exists, agents apply to staging only. The commands below are the owner's path.
+**R2 rule (D032, D043):** there is one Supabase project for Preview and Production. Write the
+migration file first and let CI test it. An **additive** migration may be applied from a branch (an
+agent uses the Management API per D023; a human uses `db push`); anything that changes or removes
+what `main` relies on is applied only when the owner says "merge" for that PR.
 
 ```bash
 # edit schema locally (e.g. in supabase/migrations or via the CLI's schema-diff workflow),
@@ -74,8 +77,7 @@ git push -u origin r2/<phase>-<step>-<name>
 
 Push **a branch**, never `main` (D032). Vercel builds a Preview for every branch. Open a PR with the
 Preview link. Only the owner merges; a merge to `main` deploys to Production. A PR with a migration
-says "Needs migration applied" in its title, and the owner (not an agent) applies it to production
-after merging (D043's interim rule).
+says "Migration: additive, applied" or "Migration: applies at merge" in its title (D043).
 
 ## Environment variables checklist
 
@@ -91,15 +93,6 @@ NEXT_PUBLIC_DEMO_MODE         # R2 (D048): demo deployments only
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY` and `AI_PAYSLIP_API_KEY` are not used by the app; leave them unset.
-Scope Preview variables to the staging project once it exists (D043).
+Preview and Production use the same Supabase values (D043).
 
 See `docs/ARCHITECTURE.md` for what each one is for, and `SECURITY.md` for handling rules.
-
-## Setting up the staging database (D043, confirmed 22 November 2026)
-
-1. Owner: create a free Supabase project `clarix-staging` (same region, eu-west-1) in the new account.
-2. Agent: apply every file in `supabase/migrations/` to it in order (Management API or `db push`
-   against staging only), then `supabase/seed/demo.sql` (synthetic data, no real people).
-3. Owner: in Vercel → Settings → Environment Variables, set `NEXT_PUBLIC_SUPABASE_URL` and
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY` for **Preview** to the staging values; Production keeps its own.
-4. Add the weekly keep-awake workflow (`.github/workflows/staging-ping.yml`).

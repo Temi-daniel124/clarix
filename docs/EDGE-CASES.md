@@ -58,7 +58,7 @@ Every feature PR names the case numbers it covers and adds a test for each.
 | E30 | Trial ends during a weekend with no admin around | — | 14-day grace, reminders on days 46 and 57, read-only only after grace | D041, D042 |
 | E31 | Payment made by transfer with the wrong reference | — | Super Admin records it manually against the right cooperative; the invoice shows "Paid by transfer" | 9.4 |
 | E32 | A member count changes mid-month | — | Billed on members active during the calendar month (D041.1), counted when the invoice is generated on the 1st | D041, 9.1 |
-| E33 | Free Supabase project paused after 7 idle days | Possible | A weekly GitHub Actions ping on staging; production moves to Pro on first revenue | D049 |
+| E33 | Free Supabase project paused after 7 idle days | Possible | Demo use keeps it awake; if it pauses, the owner restores it from the dashboard; production moves to Pro on first revenue | D049 |
 | E34 | Someone opens a Preview link from a search engine | Indexable | `robots` disallows all and every page is `noindex` on Preview | D047 |
 | E35 | Real payslips used as demo data | The uploaded sample holds real names, bank numbers and pension PINs | Never commit or seed real documents; demo seed is synthetic only | SECURITY.md |
 | E36 | Offline on a phone | Offline page | Keep; any write attempted offline says "You're offline. Nothing was saved." | — |

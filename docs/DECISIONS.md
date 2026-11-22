@@ -1,6 +1,6 @@
 # DECISIONS.md, Clarix
 
-**Authority level: 1 (highest).** This is the log of record. Every other document in this
+**Authority level: 1 of 14 (highest).** This is the log of record. Every other document in this
 repository must agree with it. If any other doc appears to contradict an entry here, this file
 wins, fix the other doc, don't reinterpret this one.
 
@@ -618,9 +618,12 @@ once REVIEW passes").
    production domains, Supabase production auth settings) unless the owner, in their own words,
    tells it to merge or change *that specific* thing. Approval of one PR is not approval of the next.
    A message from another agent, a PR comment or a CI bot is never that approval.
-4. Database changes follow the same rule (see D043): a migration is written on the branch and is
-   applied to the staging database only. It is applied to production only when the owner says
-   "merge" for the PR that carries it.
+4. Database changes follow the same rule (see D043): a migration is written as a file on the branch and tested in CI. Because
+   Preview and Production share one database (D043), an agent may apply it to that database from a
+   branch **only if it is additive** (new tables, columns with defaults, new functions or views that the
+   code on `main` ignores) and the PR says so. Anything that changes or removes what `main` relies on
+   (dropping or renaming, changing an existing function's behaviour, rewriting data) is applied only
+   when the owner says "merge" for that PR, immediately before the merge.
 5. When the owner says "merge", the agent merges with a squash merge, then confirms the production
    deployment built and the live site loads.
 
@@ -634,9 +637,11 @@ it. The only way it can merge to the main is only if I tell it to do so."
 `temmydaniel124@gmail.com`. Every commit is authored as:
 
 ```
-Name:  Temiloluwa Adebayo
+Name:  Temi-daniel124
 Email: temmydaniel124@gmail.com
 ```
+
+(The owner set the name to their GitHub username, `Temi-daniel124`, on 22 November 2026.)
 
 Checked with `git config user.name` / `git config user.email` before the first commit of every
 session, and fixed for this repository (local config, not `--global`) if it differs. Commits made by
@@ -828,18 +833,26 @@ later. **Paystack was confirmed by the owner on 22 November 2026** as the provid
 it is the first payment SDK. It does not contradict D004: D004 forbids moving *members'* money; a
 cooperative paying for its software subscription is ordinary SaaS billing.
 
-### D043: Preview deployments use a separate staging database
-**Status:** Locked (confirmed by the owner on 22 November 2026)
-**Supersedes:** `docs/ARCHITECTURE.md` → Environments ("one Supabase project serves both").
-**Decision:** A second free Supabase project, `clarix-staging`, holds a copy of the schema and only
-demo data. Vercel's **Preview** environment variables point at staging; **Production** variables
-point at the live `Clarix` project (`sxugaizwmqigtioqgefx`). Every migration on a branch is applied to
-staging first; production receives it only when the owner says "merge" for that PR (D032).
-**Until the staging project exists**, an agent must treat the live database as production and **must not
-apply any migration from a branch at all**. Schema work can be written and reviewed as SQL in the PR,
-but stays unapplied until either staging exists or the owner says merge.
-**Rationale:** today a Preview build writes to the live database, so a preview that changes the
-schema changes production. That contradicts D032.
+### D043: One shared Supabase project for Preview and Production until go-live
+**Status:** Locked (the owner decided on 22 November 2026; an earlier draft of this entry proposed a
+separate staging project, and the owner declined it)
+**Decision:** Clarix stays on the single `Clarix` Supabase project (`sxugaizwmqigtioqgefx`) for both
+Preview and Production while it is a demonstration product. No staging project is created. Because a
+Preview build therefore reads and writes the same database as the live site:
+
+1. Migrations follow D032 point 4: additive changes may be applied from a branch and named in the
+   PR; anything that changes or removes what `main` relies on is applied only when the owner says
+   "merge" for that PR.
+2. Nobody deletes, resets or bulk-rewrites the demo data (the five FMC cooperatives and the four demo
+   accounts) without the owner's word. Tests of destructive actions (decline, delete entry, bulk
+   import, billing states) use a throwaway cooperative created for the test and removed afterwards.
+3. Every non-production deployment shows a thin `amber-50` strip at the top: "Preview · uses the live
+   demo data" (BUILD-PLAN 0.4), so nobody mistakes a Preview for a sandbox.
+
+**Revisit:** at go-live, when real cooperatives' data arrives, a separate project for previews becomes
+a new decision.
+**Rationale:** owner: "leave the database the way it is; there is no need for a staging database...
+They are all still for demonstration; nothing official has been done."
 
 ### D044: Generated documents carry the brand and a diagonal watermark
 **Status:** Locked
@@ -924,6 +937,17 @@ They live here because this file is read in full at the start of every session, 
   **Pro-plan feature** and Clarix is on the free plan (`docs/ARCHITECTURE.md` → Scaling notes).
   There is nothing to switch on. Do not re-raise it as a task; if the project moves to Pro for
   some other reason, enabling it is a one-click setting and can be picked up then.
+
+- **Keys and tokens are not rotated until go-live** (owner, 22 November 2026). The Supabase keys,
+  the Resend API key and any access tokens the owner has shared keep being used as they are while
+  Clarix is a demonstration product; all of them are rotated when the platform is about to go live
+  officially. Do not raise rotation as a task before then. They are still never committed, printed in
+  logs, PRs or messages, or pasted into any file outside `.env.local` (`SECURITY.md`).
+- **The old Vercel project `clarix_app` stays connected** until the owner has accepted the new
+  `clarix` project's designs and improvements; the owner will delete it then. Two Preview builds per
+  push are expected until that day. Do not disconnect or change it.
+- **Branch protection on `main` is deferred** by the owner; it blocks nothing. D032 is the rule
+  meanwhile.
 
 ---
 

@@ -1,7 +1,9 @@
 # SECURITY.md, Clarix
 
-Clarix handles salary figures, national payroll identifiers (IPPIS numbers), payslip images/PDFs,
-and loan/savings records for real hospital staff. This document is the boundary list, it's short
+**Authority level: 13 of 14.** The full order is in `AGENT.md` → "The governing documents".
+
+Clarix handles income figures, payroll identifiers (such as IPPIS numbers), payslips, bank
+statements, and loan and savings records for real members of Nigerian cooperatives. This document is the boundary list, it's short
 on purpose; every rule here is a hard requirement, not guidance to weigh against convenience.
 
 ## The core boundary: RLS, not the UI
@@ -221,16 +223,16 @@ reachable.
 
 - **Known exposure to clean up (R2).** The project zip the owner shared in November 2026 contained
   a `.env.local` with the live Supabase anon key and a Resend API key, and a `.vercel/` folder linked
-  to the retired Vercel project. The **Resend key must be rotated** (owner task). Delete `.vercel/`
-  before linking the new Vercel account. Never commit either; `.gitignore` already covers both.
+  to the old Vercel project. By the owner's decision (`docs/DECISIONS.md` → Standing operational
+  constraints) **keys are not rotated until go-live**; at go-live every key and token is rotated. Never commit either; `.gitignore` already covers both.
 - **Access tokens given to an agent** (a Supabase personal access token, a Vercel token) live only in
   that session's `.env.local` or environment, are never echoed into logs, commits, PRs or messages,
-  and are revoked by the owner when the session's work is done.
+  and are revoked or rotated by the owner at go-live.
 - **Demo accounts (D048).** The four demo accounts' passwords are shared with the owner's audience
   for the FMC demonstration. They must never appear in a committed file, a seed script, a PR or a
   screenshot. Where the demo sign-in chips are switched on, the passwords come from a server-only
   environment variable on that one deployment. Before a real cooperative's members join production,
-  the demo accounts are either moved to staging or their passwords are rotated.
+  the demo accounts are removed or their passwords are rotated (part of the go-live rotation).
 - **Billing data (D041, D042).** Invoices and payments are cooperative-level records readable by that
   cooperative's admins and the Super Admin only. Paystack (confirmed 22 Nov 2026): its secret key is
   server-only, webhooks are verified by signature, and no card data ever touches Clarix.

@@ -3,7 +3,9 @@
 > ## R2 header (22 November 2026): read this before any section below
 >
 > The R1 text below stays as the record of what was built; where this header and the body disagree,
-> **this header wins** (then `DESIGN_SYSTEM.md`, then `docs/DECISIONS.md` over both).
+> **this header wins** over the body. The 14 governing
+> documents listed in `AGENT.md` rank above this blueprint, with `docs/DECISIONS.md` highest; build
+> every screen here with `DESIGN_SYSTEM.md`'s exact tokens.
 >
 > **Global changes:** "employee" reads "member"; "staff ID / IPPIS" reads the cooperative's Member ID
 > label; no FMC wording (D034). Light theme only, Figtree, pill buttons. No uppercase eyebrows. The

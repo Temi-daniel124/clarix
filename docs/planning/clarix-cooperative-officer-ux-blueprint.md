@@ -3,7 +3,9 @@
 > ## R2 header (22 November 2026): read this before any section below
 >
 > The R1 text below stays as the record of what was built; where this header and the body disagree,
-> **this header wins** (then `DESIGN_SYSTEM.md`, then `docs/DECISIONS.md` over both). The same global
+> **this header wins** over the body. The 14 governing
+> documents listed in `AGENT.md` rank above this blueprint, with `docs/DECISIONS.md` highest; build
+> every screen here with `DESIGN_SYSTEM.md`'s exact tokens. The same global
 > changes as the admin blueprint's R2 header apply (Member wording, no FMC, light only, Figtree,
 > pills, no eyebrows, no cooperative name in the title).
 >

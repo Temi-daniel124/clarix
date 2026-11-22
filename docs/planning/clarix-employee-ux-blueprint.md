@@ -3,8 +3,9 @@
 > ## R2 header (22 November 2026): read this before any section below
 >
 > This blueprint is now the **Member** blueprint. The R1 text below stays as the record of what was
-> built; where this header and the body disagree, **this header wins** (then `DESIGN_SYSTEM.md`, then
-> `docs/DECISIONS.md` over both).
+> built; where this header and the body disagree, **this header wins** over the body. The 14 governing
+> documents listed in `AGENT.md` rank above this blueprint, with `docs/DECISIONS.md` highest; build
+> every screen here with `DESIGN_SYSTEM.md`'s exact tokens.
 >
 > **Global changes to every section:** "employee" reads "member"; "salary" reads "income"; "payslip"
 > reads "proof of income (payslip or bank statement)"; "employee ID / IPPIS number" reads "Member ID"

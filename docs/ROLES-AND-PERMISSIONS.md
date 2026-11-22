@@ -1,6 +1,6 @@
 # ROLES-AND-PERMISSIONS.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` (see D001, D003, D010). For the screen-by-screen
+**Authority level: 5 of 14.** Defers to `DECISIONS.md` (see D001, D003, D010). For the screen-by-screen
 experience of each role, see the four role blueprints under `docs/planning/` (Member, formerly
 Employee; Cooperative Admin; Cooperative Officer; Super Admin).
 

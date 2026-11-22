@@ -1,6 +1,6 @@
 # ARCHITECTURE.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` and `DATA-MODEL.md`. This describes the system
+**Authority level: 4 of 14.** Defers to `DECISIONS.md` and `DATA-MODEL.md`. This describes the system
 shape and deployment topology, for the database schema and reservation algorithm, see
 `DATA-MODEL.md`; for local setup commands, see `BUILD.md`; for CI, see `DEVELOPMENT-WORKFLOW.md`.
 
@@ -78,14 +78,15 @@ Claude/OpenAI API  ── payslip OCR fallback only (never the eligibility decis
 
 | Environment | Vercel | Supabase | Who changes it |
 |---|---|---|---|
-| Production | the Production deployment of `main` (`clarix-3w5i.vercel.app` until a domain exists) | `Clarix` (ref `sxugaizwmqigtioqgefx`, eu-west-1). **Note:** it was created under the owner's old Supabase account; moving it to the new account is an owner task in `PROJECT-STATE.md` | Only the owner, or an agent the owner has told to, for that specific PR |
-| Preview | one per branch / PR | **Today: the same production project** (a known risk). **Once created (D043, confirmed 22 Nov 2026):** `clarix-staging`, a second free project with synthetic demo data only | Agents, freely, on branches |
+| Production | the Production deployment of `main` (`clarix-3w5i.vercel.app` until a domain exists) | `Clarix` (ref `sxugaizwmqigtioqgefx`, eu-west-1). It sits under the owner's previous Supabase account and stays there for now | Only the owner, or an agent the owner has told to, for that specific PR |
+| Preview | one per branch / PR (built by both the new `clarix` and the old `clarix_app` Vercel projects until the owner retires the old one) | **The same `Clarix` project** (D043, owner's decision for the demonstration stage) | Agents, on branches, within D043's migration rule |
 | Local | `npm run dev` | whichever project `.env.local` points at; never production for schema work | The person at the keyboard |
 
-Interim rule until `clarix-staging` exists: Preview deployments read and write the production database,
-so **no branch may apply a migration, and nobody tests destructive actions (delete, bulk import,
-billing state changes) on a Preview** against the demo cooperatives. Free Supabase projects pause
-after 7 idle days; a weekly GitHub Actions ping keeps staging awake.
+Because Preview deployments read and write the live database (D043): only **additive** migrations
+are applied from a branch; nothing deletes or resets the demo data; destructive actions are tested on
+a throwaway cooperative; and every non-production deployment shows a "Preview · uses the live demo
+data" strip. Free Supabase projects pause after 7 idle days; the demo's own use keeps it awake, and
+production moves to Pro at first revenue (D049).
 
 ## SEO and public files (D047)
 
