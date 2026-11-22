@@ -428,10 +428,10 @@ function SubmittedPanel({
             {target.cooperativeName} reviews this.
           </>
         ) : (
+          // D040's exact words.
           <>
-            {target.cooperativeName} has your application. Because it is{" "}
-            {formatNaira(result.shortfall)} a month beyond what is left of your limit, nothing has
-            been held against your capacity, and they will see that when they review it.
+            Sent to {target.cooperativeName}. It is above your limit, so nothing is held for you.
+            The cooperative will decide.
           </>
         )}
       </p>
@@ -453,7 +453,7 @@ function SubmittedPanel({
       ) : null}
 
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button render={<Link href="/loans" />}>View my loans</Button>
+        <Button render={<Link href={`/loans/${result.loanId}`} />}>View this application</Button>
         <Button variant="outline" render={<Link href={`/cooperatives/${target.cooperativeId}`} />}>
           Back to {target.cooperativeName}
         </Button>

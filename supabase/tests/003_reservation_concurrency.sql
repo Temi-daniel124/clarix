@@ -181,10 +181,13 @@ select is(
   'and reports the shortfall against the reduced capacity'
 );
 
+-- Since migration 031 (D040) an over-limit submission is stored for the cooperative to decide,
+-- as pending_review, holding nothing. The two calls above each stored one. What must not change is
+-- that neither of them reserved anything.
 select is(
-  (select count(*)::int from public.loans),
+  (select count(*)::int from public.loans where status = 'reserved'),
   1,
-  'the second submission reserved nothing, still exactly one loan row'
+  'the second submission reserved nothing, still exactly one reservation'
 );
 
 -- ---------------------------------------------------------------------------

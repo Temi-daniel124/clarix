@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
+import { isAwaitingDecision } from "@/lib/loan-status";
 
 /**
  * Reads behind the cooperative dashboard (admin blueprint 4.1) and member management (Part 5).
@@ -298,11 +299,12 @@ export async function loadCooperativeSummary(
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
   const active = (loans ?? []).filter((loan) => loan.status === "active");
-  const pending = (loans ?? []).filter(
-    (loan) =>
-      loan.status === "reserved" &&
-      loan.reservation_expires_at !== null &&
-      new Date(loan.reservation_expires_at) > now,
+  // A live reservation, or an above-limit application stored for review (D040).
+  const pending = (loans ?? []).filter((loan) =>
+    isAwaitingDecision(
+      { status: loan.status, reservationExpiresAt: loan.reservation_expires_at },
+      now.getTime(),
+    ),
   );
 
   const attention: AttentionItem[] = [];
@@ -320,7 +322,9 @@ export async function loadCooperativeSummary(
       detail:
         expiresIn !== null && expiresIn <= 2
           ? `The hold on their capacity lapses in ${expiresIn === 0 ? "under a day" : `${expiresIn} ${expiresIn === 1 ? "day" : "days"}`}.`
-          : `Applied for ${formatNaira(Number(loan.requested_amount))}.`,
+          : loan.status === "pending_review"
+            ? `Applied for ${formatNaira(Number(loan.requested_amount))}, above their limit.`
+            : `Applied for ${formatNaira(Number(loan.requested_amount))}.`,
       // Straight into Loan Application Review (6.2), not the general queue: the blueprint is
       // explicit that an admin who clicked a specific item should not lose the context of why.
       href: `/admin/loans/${loan.id}`,

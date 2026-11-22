@@ -8,6 +8,7 @@ import { createClient } from "@/lib/supabase/server";
 export type SubmitState = {
   error?: string;
   submitted?: {
+    loanId: string;
     eligible: boolean;
     monthlyRepayment: number;
     available: number;
@@ -36,8 +37,8 @@ const schema = z.object({
  * followed by an insert would reopen exactly the race the product exists to close.
  *
  * A request that exceeds capacity is NOT rejected here. Clarix informs, it does not gatekeep
- * (PRODUCT.md principle 3): the function simply reserves nothing and reports the shortfall, and
- * the cooperative decides what to do about it. The same is true of the product's savings ratio,
+ * (PRODUCT.md principle 3): the function stores it as pending_review, holding nothing, and reports
+ * the shortfall, and the cooperative decides (DECISIONS.md D040). The same is true of the product's savings ratio,
  * which the function now reports alongside the cap: a member short of it still reaches the
  * cooperative, carrying that fact with them.
  */
@@ -74,7 +75,13 @@ export async function submitLoanApplicationAction(
   }
 
   const row = Array.isArray(data) ? data[0] : null;
-  if (!row) return { error: "We could not send your application. Please try again." };
+
+  // Every outcome is now stored, within the limit or not (D040). A row with no loan id means the
+  // database did not keep the application, and the member must never be told it was sent: that
+  // was exactly the "Submit anyway" defect.
+  if (!row || !row.loan_id) {
+    return { error: "We could not send your application. Please try again." };
+  }
 
   revalidatePath("/loans");
   revalidatePath("/dashboard");
@@ -82,6 +89,7 @@ export async function submitLoanApplicationAction(
 
   return {
     submitted: {
+      loanId: row.loan_id,
       eligible: row.eligible,
       monthlyRepayment: Number(row.monthly_repayment),
       available: Number(row.available),

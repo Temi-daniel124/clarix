@@ -27,14 +27,16 @@ const UNDO_SECONDS = 8;
  *
  * Over-cap approvals require a reason. The field is not decoration: the database refuses the
  * approval without it, and what gets typed here lands in `audit_log.note` where a reviewer can
- * find it later.
+ * find it later. An application stored above the limit (pending_review, D040) always needs one,
+ * even if room has opened up since it was sent.
  */
 export function LoanDecision({
   loanId,
   memberName,
   monthlyRepayment,
   availableBefore,
-  overCap,
+  overCap: overCapNow,
+  sentAboveLimit = false,
   canDecide,
 }: {
   loanId: string;
@@ -42,8 +44,11 @@ export function LoanDecision({
   monthlyRepayment: number;
   availableBefore: number | null;
   overCap: boolean;
+  /** Stored as pending_review: above the member's limit when they sent it. */
+  sentAboveLimit?: boolean;
   canDecide: boolean;
 }) {
+  const overCap = overCapNow || sentAboveLimit;
   const router = useRouter();
   const reduceMotion = useReducedMotion();
   const [, startTransition] = useTransition();
@@ -155,7 +160,9 @@ export function LoanDecision({
       {overCap ? (
         <div className="mt-5">
           <label htmlFor="decision-note" className="type-secondary font-medium text-text">
-            Why are you approving beyond what is left of their limit?
+            {overCapNow
+              ? "Why are you approving beyond what is left of their limit?"
+              : "This was above their limit when they sent it. Why are you approving it?"}
           </label>
           <Textarea
             id="decision-note"

@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
+import { isAwaitingDecision } from "@/lib/loan-status";
 
 /**
  * The read behind Officer Home (officer blueprint 4.1).
@@ -75,23 +76,34 @@ export async function loadOfficerHome(
   const tasks: OfficerTask[] = [];
 
   for (const loan of loans ?? []) {
-    if (loan.status !== "reserved") continue;
-    if (!loan.reservation_expires_at || new Date(loan.reservation_expires_at) <= now) continue;
+    // A live reservation, or an above-limit application stored for review (D040).
+    if (
+      !isAwaitingDecision(
+        { status: loan.status, reservationExpiresAt: loan.reservation_expires_at },
+        now.getTime(),
+      )
+    ) {
+      continue;
+    }
 
-    const expiresIn = daysBetween(now, new Date(loan.reservation_expires_at));
+    const expiresIn = loan.reservation_expires_at
+      ? daysBetween(now, new Date(loan.reservation_expires_at))
+      : null;
 
     tasks.push({
       id: loan.id,
       title: `${nameByMembership.get(loan.membership_id) ?? "A member"} is waiting on a decision`,
       detail:
-        expiresIn <= 2
+        expiresIn !== null && expiresIn <= 2
           ? `The hold on their capacity lapses in ${expiresIn === 0 ? "under a day" : `${expiresIn} ${expiresIn === 1 ? "day" : "days"}`}.`
-          : `Applied for ${formatNaira(Number(loan.requested_amount))}.`,
+          : loan.status === "pending_review"
+            ? `Applied for ${formatNaira(Number(loan.requested_amount))}, above their limit.`
+            : `Applied for ${formatNaira(Number(loan.requested_amount))}.`,
       // Straight into the review screen rather than the queue: the blueprint's "don't lose the
       // context of why they clicked" rule, the same one the admin dashboard follows.
       href: `/admin/loans/${loan.id}`,
       waitingDays: daysBetween(new Date(loan.created_at), now),
-      urgent: expiresIn <= 2,
+      urgent: expiresIn !== null && expiresIn <= 2,
     });
   }
 

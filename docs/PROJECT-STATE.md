@@ -14,15 +14,19 @@ code exists yet.
 - **Release 1 is live** at `clarix-3w5i.vercel.app`, from `main` at `d1c3a0a` (PR #21). Every screen
   in the four role blueprints is built except officer 6.2 (apply on a member's behalf). 29 migrations,
   16 tables, all with RLS; 46 unit tests; 13 pgTAP suites in GitHub Actions; `next build` passes.
-- **Release 2 is planned, not started.** Decisions D032 to D049 are in `docs/DECISIONS.md`; the
-  ordered work is `docs/BUILD-PLAN.md`. **Next step: BUILD-PLAN 0.1** (store over-limit applications).
+- **Release 2 has started.** Decisions D032 to D049 are in `docs/DECISIONS.md`; the ordered work is
+  `docs/BUILD-PLAN.md`. **0.1 (store over-limit applications) is built and in review**, not merged:
+  migrations 030 and 031 are written and tested in CI but **not applied** to the shared database;
+  they apply when the owner says "merge" (031 changes `submit_loan_application`, which `main` uses).
+  **Next step: BUILD-PLAN 0.2** (`npm ci`).
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
 ## Known defects in the live product (fixed in Phase 0)
 
 | Defect | Where | Step |
 |---|---|---|
-| "Submit anyway" applications are never stored; the member is told they were sent | `submit_loan_application`, migration `20260917213110_loan_product_on_application.sql` | 0.1 |
+| "Submit anyway" applications are never stored; the member is told they were sent (fixed in the 0.1 PR, live once merged and migrations 030–031 applied) | `submit_loan_application`, migration `20260917213110_loan_product_on_application.sql` | 0.1 |
+| Staff can `update` a loan row directly (policy `loans_update_staff`), bypassing `decide_loan_application`'s reason rule and audit entry | migration `20260912054608` | not yet assigned |
 | `npm ci` fails: lockfile out of sync | `package-lock.json` | 0.2 |
 | Existing loans cannot be entered, so committed starts at ₦0 for every member | no screen or RPC | 0.3 |
 | Preview deployments share the live database (kept by the owner's choice, D043); nothing marks a Preview as such | layout | 0.4 |

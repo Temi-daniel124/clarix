@@ -4,6 +4,7 @@ import type { Capacity } from "@/lib/eligibility";
 export type LoanStatus =
   | "draft"
   | "reserved"
+  | "pending_review"
   | "active"
   | "rejected"
   | "completed"

@@ -8,6 +8,7 @@ import type { LoanSummary } from "@/lib/supabase/loans-data";
 const STATUS_LABEL: Record<string, string> = {
   draft: "Draft",
   reserved: "Awaiting a decision",
+  pending_review: "Awaiting a decision",
   active: "Active",
   rejected: "Not approved",
   completed: "Repaid in full",
@@ -36,7 +37,9 @@ export function LoanCard({ loan, showCooperative = true }: { loan: LoanSummary; 
         <p className="type-secondary mt-1 tabular text-text-secondary">
           {settled
             ? `${formatNaira(loan.requestedAmount)} repaid in full`
-            : `${formatNaira(loan.remaining)} left of ${formatNaira(loan.requestedAmount)}`}
+            : loan.status === "reserved" || loan.status === "pending_review"
+              ? `${formatNaira(loan.requestedAmount)} requested · ${formatNaira(loan.monthlyRepayment)} a month`
+              : `${formatNaira(loan.remaining)} left of ${formatNaira(loan.requestedAmount)}`}
         </p>
 
         {loan.status === "active" ? (
@@ -59,6 +62,12 @@ export function LoanCard({ loan, showCooperative = true }: { loan: LoanSummary; 
           </>
         ) : null}
 
+        {loan.status === "pending_review" ? (
+          <p className="type-caption mt-2 text-text-muted">
+            Above your limit, so nothing is held for you
+          </p>
+        ) : null}
+
         {loan.status === "reserved" && loan.reservationExpiresAt ? (
           <p className="type-caption mt-2 flex items-center gap-2 text-warning">
             <Clock aria-hidden strokeWidth={2} className="size-3.5" />
@@ -76,7 +85,7 @@ export function StatusPill({ status }: { status: string }) {
   const tone =
     status === "active"
       ? "border-emerald/30 text-emerald"
-      : status === "reserved"
+      : status === "reserved" || status === "pending_review"
         ? "border-warning/30 text-warning"
         : status === "rejected" || status === "expired"
           ? "border-danger/30 text-danger"

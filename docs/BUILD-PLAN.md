@@ -44,7 +44,7 @@ phase, steps are in dependency order.
 
 ## Phase 0: fix what is broken in the live product
 
-### ☐ 0.1 Store over-limit applications (D040)
+### ☑ 0.1 Store over-limit applications (D040)
 Read: D040, `docs/DATA-MODEL.md` → Eligibility, `docs/EDGE-CASES.md` E05, E06.
 - Migration: add `pending_review` to the loan status enum, `over_capacity boolean not null default false`
   and `shortfall_at_submission numeric(14,2)` to `loans`. Change `submit_loan_application` so that

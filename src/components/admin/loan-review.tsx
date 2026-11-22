@@ -7,7 +7,9 @@ import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
+import { isAwaitingDecision } from "@/lib/loan-status";
 import { clampRatio, formatFullDate, formatNaira } from "@/lib/format";
+import { AboveLimitChip } from "./application-queue";
 import { LoanDecision } from "./loan-decision";
 import { LoanClose } from "./loan-close";
 import { PayslipEvidence } from "./payslip-evidence";
@@ -54,7 +56,9 @@ export function LoanReview({
   salaryNet: number | null;
   salaryConfirmedAt: string | null;
 }) {
-  const pending = application.status === "reserved";
+  // A live reservation or an above-limit application (D040). The page only reaches here with a
+  // lapsed reservation from the Lapsed list, and that one is not decidable.
+  const pending = isAwaitingDecision(application);
   const requiredSavings = application.product
     ? application.requestedAmount * application.product.minSavingsRatio
     : null;
@@ -79,6 +83,13 @@ export function LoanReview({
           {formatNaira(application.requestedAmount)} over {application.tenureMonths} months ·{" "}
           {formatNaira(application.monthlyRepayment)} a month
         </p>
+
+        {pending && application.overCapacity ? (
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <AboveLimitChip application={application} />
+            <span className="type-caption text-text-muted">Nothing is held for them.</span>
+          </div>
+        ) : null}
 
         {pending && application.expiresInDays !== null ? (
           <p
@@ -223,6 +234,7 @@ export function LoanReview({
             monthlyRepayment={application.monthlyRepayment}
             availableBefore={application.availableBefore}
             overCap={application.overCap}
+            sentAboveLimit={application.overCapacity}
             canDecide={canDecide}
           />
         ) : (

@@ -365,6 +365,7 @@ function describeStatus(status: string, expiresAt: string | null): string {
       ? `Waiting on your decision, held until ${formatDate(expiresAt)}`
       : "Waiting on your decision";
   }
+  if (status === "pending_review") return "Waiting on your decision, above their limit";
   if (status === "completed") return "Fully repaid";
   if (status === "rejected") return "Turned down";
   if (status === "expired") return "The hold lapsed before a decision";
