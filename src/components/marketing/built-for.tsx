@@ -1,5 +1,5 @@
 import { Chip } from "@/components/ui/chip";
-import { BUILT_FOR } from "./copy";
+import { BUILT_FOR, BUILT_FOR_LABEL, BUILT_FOR_REGION } from "./copy";
 import { cn } from "@/lib/utils";
 
 /**
@@ -9,12 +9,12 @@ import { cn } from "@/lib/utils";
 export function BuiltFor() {
   return (
     <section
-      aria-label="Made for every kind of cooperative"
+      aria-label={BUILT_FOR_REGION}
       className="reveal mx-auto w-full max-w-[1240px] px-5 pt-2 pb-[72px] md:px-6 lg:pb-24"
     >
       <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5">
         <p className="mr-0.5 text-[14px] font-semibold text-muted max-sm:w-full max-sm:text-center">
-          Made for
+          {BUILT_FOR_LABEL}
         </p>
         <ul role="list" className="contents">
           {BUILT_FOR.map((kind) => (

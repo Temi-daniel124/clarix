@@ -2,7 +2,7 @@ import { Chip } from "@/components/ui/chip";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { formatNaira } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { REPAYMENT_INTRO, REPAYMENT_STEPS } from "./copy";
+import { fill, REPAYMENT_INTRO, REPAYMENT_SAMPLES, REPAYMENT_STEPS } from "./copy";
 import { LEAD, SECTION } from "./section";
 
 /**
@@ -39,7 +39,9 @@ export function RepaymentSteps() {
               {index + 1}
             </span>
             <h3 className="font-display text-[23px] leading-[1.1] font-[750] tracking-[-0.03em] text-indigo-night">
-              <span className="sr-only">Step {index + 1}: </span>
+              <span className="sr-only">
+                {fill(REPAYMENT_SAMPLES.stepPrefix, { n: index + 1 })}
+              </span>
               {step.title}
             </h3>
             <p className="text-[16px] leading-[1.55] text-ink-2">{step.body}</p>
@@ -67,13 +69,13 @@ function ReceiptPiece() {
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-[14.5px] leading-snug font-semibold text-ink">
-          receipt-nov.jpg
+          {REPAYMENT_SAMPLES.receiptFile}
         </p>
         <p className="tabular text-[12.5px] leading-snug text-muted">
-          {formatNaira(25_000)} · paid 18 Nov
+          {fill(REPAYMENT_SAMPLES.receiptMeta, { amount: formatNaira(25_000) })}
         </p>
       </div>
-      <Chip tone="waiting">Waiting</Chip>
+      <Chip tone="waiting">{REPAYMENT_SAMPLES.waiting}</Chip>
     </div>
   );
 }
@@ -88,8 +90,8 @@ function DecisionPiece() {
     "flex h-11 flex-1 items-center justify-center rounded-pill text-[15px] font-semibold";
   return (
     <div className="flex gap-2">
-      <span className={cn(pill, "bg-emerald-500 text-on-emerald")}>Confirm</span>
-      <span className={cn(pill, "bg-indigo-100 text-indigo-night")}>Send back</span>
+      <span className={cn(pill, "bg-emerald-500 text-on-emerald")}>{REPAYMENT_SAMPLES.confirm}</span>
+      <span className={cn(pill, "bg-indigo-100 text-indigo-night")}>{REPAYMENT_SAMPLES.sendBack}</span>
     </div>
   );
 }
@@ -98,7 +100,7 @@ function DecisionPiece() {
 function BalancePiece() {
   return (
     <div className="tabular flex items-baseline justify-between gap-3 rounded-group bg-porcelain px-4 py-3.5">
-      <span className="text-[14px] text-ink-2">Loan left</span>
+      <span className="text-[14px] text-ink-2">{REPAYMENT_SAMPLES.loanLeft}</span>
       <span className="flex items-baseline gap-2">
         <span className="text-[14px] text-muted line-through">{formatNaira(205_000)}</span>
         <RollingNumber

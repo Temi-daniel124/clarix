@@ -2,7 +2,8 @@ import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { Chip } from "@/components/ui/chip";
 import { cn } from "@/lib/utils";
-import { CROSS_CHECK } from "./copy";
+import { CROSS_CHECK, fill } from "./copy";
+import { formatNaira } from "@/lib/format";
 import { LEAD, SECTION, EYEBROW } from "./section";
 
 /**
@@ -32,7 +33,7 @@ export function CrossCheck() {
           <p className={EYEBROW}>{CROSS_CHECK.eyebrow}</p>
           <h2
             id="cross-check-heading"
-            className="type-page-title text-balance text-indigo-night lg:text-[44px] lg:leading-[1.02] lg:tracking-[-0.045em]"
+            className="type-section-title text-balance text-indigo-night"
           >
             {CROSS_CHECK.heading}
           </h2>
@@ -61,7 +62,7 @@ export function CrossCheck() {
               usedRatio={COMMITTED / LIMIT}
               proposedRatio={REQUEST / LIMIT}
               className="h-3.5"
-              label={`Amaka's limit of ₦${LIMIT.toLocaleString("en-NG")}: committed across her cooperatives, this request, and what is still free`}
+              label={fill(CROSS_CHECK.meterLabel, { limit: formatNaira(LIMIT) })}
             />
             <dl className="tabular mt-3.5 grid grid-cols-1 gap-2 text-[13.5px] sm:grid-cols-3 sm:gap-3">
               {LEGEND.map((entry) => (

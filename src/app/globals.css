@@ -164,6 +164,37 @@
   }
 }
 
+/* A landing section title in a narrower block (round-2 board: cross-check, statements, FAQ):
+   one step under type-page-title at every width. */
+@utility type-section-title {
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-size: 30px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  @media (width >= 48rem) {
+    font-size: 44px;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+}
+
+/* The final call-to-action card's title (round-2 board), one step under type-section-title. */
+@utility type-cta-title {
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-size: 28px;
+  line-height: 1.05;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  @media (width >= 48rem) {
+    font-size: 40px;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+  }
+}
+
 @utility type-section {
   font-family: var(--font-display);
   font-stretch: 118%;

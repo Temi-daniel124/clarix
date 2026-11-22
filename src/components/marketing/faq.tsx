@@ -20,7 +20,7 @@ export function Faq() {
     >
       <h2
         id="faq-heading"
-        className="type-page-title text-center text-balance text-indigo-night lg:text-[44px] lg:leading-[1.02] lg:tracking-[-0.045em]"
+        className="type-section-title text-center text-balance text-indigo-night"
       >
         {FAQ_HEADING}
       </h2>

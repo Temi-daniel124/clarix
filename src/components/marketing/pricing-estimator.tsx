@@ -10,12 +10,13 @@ import { reducedMotionTransition, springStandard } from "@/lib/motion";
 import {
   estimateBill,
   formatNaira,
+  MINIMUM_MONTHLY_BILL_NGN,
   normaliseMemberCount,
   PRICE_PER_ACTIVE_MEMBER_NGN,
   type BillingCycle,
 } from "@/lib/pricing";
 import { cn } from "@/lib/utils";
-import { PRICING } from "./copy";
+import { fill, PRICING } from "./copy";
 import { EYEBROW, LEAD, SECTION } from "./section";
 import { usePrefersReducedMotion } from "./use-hydrated-preferences";
 
@@ -75,13 +76,24 @@ export function PricingEstimator() {
 
   const billLabel = cycle === "yearly" ? PRICING.billYearly : PRICING.billMonthly;
   const note = minimumApplied
-    ? `The smallest bill is ${formatNaira(5000)} a month.`
+    ? fill(PRICING.noteMinimum, { minimum: formatNaira(MINIMUM_MONTHLY_BILL_NGN) })
     : cycle === "monthly"
-      ? `${members.toLocaleString("en-NG")} members × ${formatNaira(PRICE_PER_ACTIVE_MEMBER_NGN)}`
-      : `${formatNaira(monthly)} a month, with two months free`;
+      ? fill(PRICING.noteMonthly, {
+          members: members.toLocaleString("en-NG"),
+          price: formatNaira(PRICE_PER_ACTIVE_MEMBER_NGN),
+        })
+      : fill(PRICING.noteYearly, { monthly: formatNaira(monthly) });
 
+  const atMin = members <= 0;
+  const atMax = members >= MAX_MEMBERS;
   const step = (delta: number) =>
     setDraft(String(Math.min(MAX_MEMBERS, Math.max(0, members + delta))));
+
+  // Digits only, and never past the cap, so the field always shows the count the bill is for.
+  const onType = (raw: string) => {
+    const digits = raw.replace(/[^\d]/g, "");
+    setDraft(digits === "" ? "" : String(Math.min(MAX_MEMBERS, Number(digits))));
+  };
 
   // Arrow keys move the choice and the focus together, as a radio group does (WAI-ARIA APG).
   const onRadioKey = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -98,7 +110,7 @@ export function PricingEstimator() {
     <div className="flex flex-col gap-4 rounded-[32px] bg-white p-5 shadow-raised sm:p-6">
       <div
         role="radiogroup"
-        aria-label="Billing cycle"
+        aria-label={PRICING.cycleGroup}
         className="flex rounded-pill bg-porcelain p-[5px]"
       >
         {CYCLES.map((option, index) => {
@@ -142,12 +154,16 @@ export function PricingEstimator() {
         <div className="flex items-center justify-between gap-2 rounded-pill p-[5px] shadow-[inset_0_0_0_2px_var(--color-line)] focus-within:shadow-[inset_0_0_0_2px_var(--color-indigo-600)]">
           <button
             type="button"
-            aria-label={`${STEP} fewer members`}
+            aria-label={fill(PRICING.fewer, { step: STEP })}
             aria-controls={inputId}
-            disabled={members <= 0}
-            onClick={() => step(-STEP)}
+            // aria-disabled rather than disabled: a focused button that becomes disabled would
+            // drop keyboard focus to the page. It stays a focusable 44px target that does nothing.
+            aria-disabled={atMin}
+            onClick={() => {
+              if (!atMin) step(-STEP);
+            }}
             className={cn(
-              "grid size-11 shrink-0 place-items-center rounded-pill bg-indigo-100 text-indigo-night transition-colors duration-150 hover:bg-indigo-100/70 disabled:text-muted disabled:opacity-60",
+              "grid size-11 shrink-0 place-items-center rounded-pill bg-indigo-100 text-indigo-night transition-colors duration-150 hover:bg-indigo-100/70 aria-disabled:cursor-default aria-disabled:text-muted aria-disabled:opacity-60 aria-disabled:hover:bg-indigo-100",
               focusRing,
             )}
           >
@@ -160,18 +176,20 @@ export function PricingEstimator() {
             autoComplete="off"
             enterKeyHint="done"
             value={draft}
-            onChange={(event) => setDraft(event.target.value.replace(/[^\d]/g, ""))}
+            onChange={(event) => onType(event.target.value)}
             onBlur={() => setDraft(String(members))}
             className="tabular h-11 min-w-0 flex-1 bg-transparent text-center font-display text-[28px] leading-none font-extrabold tracking-[-0.04em] text-indigo-night outline-none"
           />
           <button
             type="button"
-            aria-label={`${STEP} more members`}
+            aria-label={fill(PRICING.more, { step: STEP })}
             aria-controls={inputId}
-            disabled={members >= MAX_MEMBERS}
-            onClick={() => step(STEP)}
+            aria-disabled={atMax}
+            onClick={() => {
+              if (!atMax) step(STEP);
+            }}
             className={cn(
-              "grid size-11 shrink-0 place-items-center rounded-pill bg-indigo-100 text-indigo-night transition-colors duration-150 hover:bg-indigo-100/70 disabled:text-muted disabled:opacity-60",
+              "grid size-11 shrink-0 place-items-center rounded-pill bg-indigo-100 text-indigo-night transition-colors duration-150 hover:bg-indigo-100/70 aria-disabled:cursor-default aria-disabled:text-muted aria-disabled:opacity-60 aria-disabled:hover:bg-indigo-100",
               focusRing,
             )}
           >

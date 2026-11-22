@@ -3,7 +3,7 @@ import { Logo } from "@/components/brand/logo";
 import { BRAND_COLORS, ringArc } from "@/lib/brand";
 import { formatNaira } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { STATEMENTS } from "./copy";
+import { STATEMENT_SAMPLE, STATEMENTS } from "./copy";
 import { EYEBROW, SECTION } from "./section";
 
 /**
@@ -12,13 +12,7 @@ import { EYEBROW, SECTION } from "./section";
  * cooperative can produce. The statement is a preview with a sample member, not real data, so it
  * is one labelled picture to assistive technology rather than a table to read through.
  */
-const ROWS = [
-  { entry: "2 Sep · Saved ₦10,000", savings: 182_000, loan: 250_000 },
-  { entry: "30 Sep · Repaid ₦35,000", savings: 182_000, loan: 215_000 },
-  { entry: "3 Oct · Saved ₦10,000", savings: 192_000, loan: 215_000 },
-  { entry: "31 Oct · Repaid ₦35,000", savings: 192_000, loan: 180_000 },
-  { entry: "4 Nov · Saved ₦20,000", savings: 212_000, loan: 180_000 },
-];
+const ROWS = STATEMENT_SAMPLE.rows;
 
 export function StatementPreview() {
   return (
@@ -34,7 +28,7 @@ export function StatementPreview() {
         <p className={EYEBROW}>{STATEMENTS.eyebrow}</p>
         <h2
           id="statements-heading"
-          className="type-page-title text-balance text-indigo-night lg:text-[44px] lg:leading-[1.02] lg:tracking-[-0.045em]"
+          className="type-section-title text-balance text-indigo-night"
         >
           {STATEMENTS.heading}
         </h2>
@@ -59,7 +53,7 @@ function StatementSheet() {
   return (
     <div
       role="img"
-      aria-label="A sample member statement for Amaka Obi at Ikeja Traders Thrift, 1 June to 30 November 2026, watermarked with the Clarix stamp and a verification code"
+      aria-label={STATEMENT_SAMPLE.label}
       className="relative w-full max-w-[460px] pt-2.5 pb-5 pl-4 sm:pl-10 lg:ml-[30px] lg:h-[420px] lg:max-w-none lg:p-0"
     >
       {/* The sheet underneath, turned a little, so the statement reads as paper. */}
@@ -77,27 +71,28 @@ function StatementSheet() {
         <div className="relative flex justify-between gap-4 border-b-2 border-indigo-night pb-2.5">
           <Logo variant="horizontal" size={18} tone="color" />
           <div className="text-right">
-            <p className="text-[13px] font-bold">Member statement</p>
-            <p className="text-muted">1 Jun to 30 Nov 2026</p>
+            <p className="text-[13px] font-bold">{STATEMENT_SAMPLE.title}</p>
+            <p className="text-muted">{STATEMENT_SAMPLE.period}</p>
           </div>
         </div>
 
         <p className="relative py-2.5 text-ink-2">
-          <b className="font-bold text-ink">Amaka Obi</b> · Ikeja Traders Thrift · No. ITT-0142
+          <b className="font-bold text-ink">{STATEMENT_SAMPLE.member}</b>
+          {STATEMENT_SAMPLE.memberLine}
         </p>
 
         <div className="tabular relative grid grid-cols-[1fr_auto_auto] gap-x-3 sm:gap-x-4 gap-y-[7px]">
-          <b className="font-bold">Date</b>
-          <b className="text-right font-bold">Savings</b>
-          <b className="text-right font-bold">Loan left</b>
+          <b className="font-bold">{STATEMENT_SAMPLE.columns.date}</b>
+          <b className="text-right font-bold">{STATEMENT_SAMPLE.columns.savings}</b>
+          <b className="text-right font-bold">{STATEMENT_SAMPLE.columns.loan}</b>
           {ROWS.map((row) => (
             <Row key={row.entry} {...row} />
           ))}
         </div>
 
         <div className="relative mt-6 flex justify-between border-t border-indigo-100 pt-2 text-muted lg:absolute lg:inset-x-6 lg:bottom-4 lg:mt-0">
-          <span>Verification code 8KQ2-71XD</span>
-          <span>Page 1 of 1</span>
+          <span>{STATEMENT_SAMPLE.verification}</span>
+          <span>{STATEMENT_SAMPLE.page}</span>
         </div>
       </div>
     </div>

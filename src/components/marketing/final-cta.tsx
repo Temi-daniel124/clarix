@@ -23,7 +23,7 @@ export function FinalCta() {
         <div className="min-w-0 max-w-[620px]">
           <h2
             id="final-cta-heading"
-            className="type-page-title mb-2.5 text-balance text-indigo-night lg:text-[40px] lg:leading-[1.02] lg:tracking-[-0.045em]"
+            className="type-cta-title mb-2.5 text-balance text-indigo-night"
           >
             {FINAL_CTA.heading}
           </h2>

@@ -6,6 +6,19 @@
  * proof (spec §1 anti-goals). The FAQ answers are the board's, word for word.
  */
 
+/**
+ * Fills `{name}` placeholders. Templates stay plain strings, so `copy.test.ts`, which reads this
+ * module as JSON, still checks their wording.
+ */
+export function fill(template: string, values: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (match, key: string) =>
+    key in values ? String(values[key]) : match,
+  );
+}
+
+export const BUILT_FOR_LABEL = "Made for";
+export const BUILT_FOR_REGION = "Made for every kind of cooperative";
+
 export const BUILT_FOR = [
   "Staff cooperatives",
   "Market & trader associations",
@@ -36,6 +49,17 @@ export const REPAYMENT_STEPS: readonly RepaymentStep[] = [
     body: "Her loan, her limit, the cooperative's books and her next statement.",
   },
 ];
+
+/** The small product pictures at the foot of each step card. */
+export const REPAYMENT_SAMPLES = {
+  stepPrefix: "Step {n}: ",
+  receiptFile: "receipt-nov.jpg",
+  receiptMeta: "{amount} · paid 18 Nov",
+  waiting: "Waiting",
+  confirm: "Confirm",
+  sendBack: "Send back",
+  loanLeft: "Loan left",
+} as const;
 
 export const ROLES_HEADING = "One record that everyone in the cooperative trusts.";
 
@@ -97,6 +121,8 @@ export const CROSS_CHECK = {
     request: "This request",
     available: "Still free",
   },
+  meterLabel:
+    "Amaka's limit of {limit}: committed across her cooperatives, this request, and what is still free",
   footnote:
     "Her limit comes from six months of bank statements. For salaried members it comes from a payslip and the 33.3% legal cap.",
 } as const;
@@ -111,6 +137,26 @@ export const STATEMENTS = {
   ],
 } as const;
 
+/** The sample statement in the statements preview. A picture of a statement, not real data. */
+export const STATEMENT_SAMPLE = {
+  label:
+    "A sample member statement for Amaka Obi at Ikeja Traders Thrift, 1 June to 30 November 2026, watermarked with the Clarix stamp and a verification code",
+  title: "Member statement",
+  period: "1 Jun to 30 Nov 2026",
+  member: "Amaka Obi",
+  memberLine: " · Ikeja Traders Thrift · No. ITT-0142",
+  columns: { date: "Date", savings: "Savings", loan: "Loan left" },
+  rows: [
+    { entry: "2 Sep · Saved ₦10,000", savings: 182_000, loan: 250_000 },
+    { entry: "30 Sep · Repaid ₦35,000", savings: 182_000, loan: 215_000 },
+    { entry: "3 Oct · Saved ₦10,000", savings: 192_000, loan: 215_000 },
+    { entry: "31 Oct · Repaid ₦35,000", savings: 192_000, loan: 180_000 },
+    { entry: "4 Nov · Saved ₦20,000", savings: 212_000, loan: 180_000 },
+  ],
+  verification: "Verification code 8KQ2-71XD",
+  page: "Page 1 of 1",
+} as const;
+
 export const PRICING = {
   eyebrow: "Pricing",
   heading: "Free for 60 days. Then pay only for members who use it.",
@@ -121,6 +167,12 @@ export const PRICING = {
   billMonthly: "Your bill each month",
   billYearly: "Your bill each year",
   cta: "Start your 60-day free trial",
+  cycleGroup: "Billing cycle",
+  fewer: "{step} fewer members",
+  more: "{step} more members",
+  noteMinimum: "The smallest bill is {minimum} a month.",
+  noteMonthly: "{members} members × {price}",
+  noteYearly: "{monthly} a month, with two months free",
 } as const;
 
 export type FaqItem = { question: string; answer: string };
@@ -160,6 +212,16 @@ export const FINAL_CTA = {
   body: "Import your member list from Excel, add your loan products, and invite your treasurer. Free for 60 days.",
   primary: "Start your free trial",
   secondary: "Book a walkthrough",
+} as const;
+
+export const FOOTER = {
+  home: "Clarix home",
+  nav: "Footer",
+  privacy: "Privacy",
+  help: "Help",
+  contact: "Contact",
+  copyright: "© 2026 Clarix",
+  photos: "Photos:",
 } as const;
 
 export type PhotoCredit = { name: string; label: string; href: string };
