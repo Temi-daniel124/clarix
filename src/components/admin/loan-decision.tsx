@@ -111,7 +111,7 @@ export function LoanDecision({
           aria-hidden
           className={cn(
             "flex size-11 items-center justify-center rounded-card",
-            approved ? "text-emerald" : "text-text-secondary",
+            approved ? "text-emerald-700" : "text-text-secondary",
           )}
           style={{
             backgroundColor: approved

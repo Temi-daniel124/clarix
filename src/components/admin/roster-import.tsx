@@ -174,7 +174,7 @@ export function RosterImport({
                   aria-hidden
                   className={cn(
                     "flex size-6 shrink-0 items-center justify-center",
-                    stage.done ? "text-emerald" : "text-text-muted",
+                    stage.done ? "text-emerald-700" : "text-text-muted",
                   )}
                 >
                   {stage.done ? (
@@ -197,7 +197,7 @@ export function RosterImport({
             <div className="mt-6 flex items-center gap-4 rounded-card border border-border bg-surface p-4">
               <span
                 aria-hidden
-                className="flex size-11 shrink-0 items-center justify-center rounded-card text-emerald"
+                className="flex size-11 shrink-0 items-center justify-center rounded-card text-emerald-700"
                 style={{
                   backgroundColor:
                     "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)",
@@ -558,7 +558,7 @@ function ImportSummary({
     <div className="rounded-feature border border-border bg-surface p-6 md:p-8">
       <span
         aria-hidden
-        className="flex size-12 items-center justify-center rounded-card text-emerald"
+        className="flex size-12 items-center justify-center rounded-card text-emerald-700"
         style={{ backgroundColor: "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)" }}
       >
         <Check className="size-6" strokeWidth={2.5} />

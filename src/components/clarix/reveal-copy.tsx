@@ -111,7 +111,7 @@ export function RevealCopy({
           className="flex size-9 items-center justify-center rounded-card text-text-muted transition-colors duration-150 hover:bg-background hover:text-text-secondary focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
         >
           {copied ? (
-            <Check className="size-4 text-emerald" aria-hidden strokeWidth={2.5} />
+            <Check className="size-4 text-emerald-700" aria-hidden strokeWidth={2.5} />
           ) : (
             <Copy className="size-4" aria-hidden strokeWidth={2} />
           )}

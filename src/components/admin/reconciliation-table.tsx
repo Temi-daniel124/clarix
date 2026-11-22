@@ -210,7 +210,7 @@ function Row({ row, period }: { row: ReconciliationRow; period: string }) {
           {pending ? (
             <span className="type-caption text-text-muted">Saving…</span>
           ) : saved && parsed !== null ? (
-            <Check aria-label="Saved" className="size-4 text-emerald" strokeWidth={2.5} />
+            <Check aria-label="Saved" className="size-4 text-emerald-700" strokeWidth={2.5} />
           ) : null}
         </div>
         {error ? (

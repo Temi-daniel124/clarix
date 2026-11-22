@@ -30,7 +30,7 @@ export function InsightsStrip({ insights }: { insights: Insight[] }) {
               <Sparkles
                 aria-hidden
                 strokeWidth={1.75}
-                className="size-4 shrink-0 text-emerald"
+                className="size-4 shrink-0 text-emerald-700"
               />
               <span className="type-secondary text-text-secondary">{insight.text}</span>
             </>

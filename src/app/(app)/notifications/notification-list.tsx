@@ -90,7 +90,7 @@ function Row({ item, timestamp }: { item: NotificationItem; timestamp: string })
         aria-hidden
         className={cn(
           "flex size-10 shrink-0 items-center justify-center rounded-card border",
-          unread ? "border-emerald/30 text-emerald" : "border-border text-text-muted",
+          unread ? "border-emerald/30 text-emerald-700" : "border-border text-text-muted",
         )}
         style={
           unread

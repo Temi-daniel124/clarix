@@ -103,7 +103,7 @@ export default async function InvitePage({
     <div className="mx-auto w-full max-w-[520px] px-5 py-16 md:px-8">
       <span
         aria-hidden
-        className="flex size-12 items-center justify-center rounded-card text-emerald"
+        className="flex size-12 items-center justify-center rounded-card text-emerald-700"
         style={{
           backgroundColor:
             "color-mix(in srgb, var(--clarix-brand-accent) 12%, transparent)",

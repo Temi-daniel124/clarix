@@ -165,7 +165,7 @@ export function SignUpForm() {
                 type="checkbox"
                 checked={accepted}
                 onChange={(event) => setAccepted(event.target.checked)}
-                className="peer size-5 cursor-pointer appearance-none rounded-[6px] border-2 border-text-muted bg-surface transition-colors duration-150 hover:border-text-secondary checked:border-emerald checked:bg-emerald focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+                className="peer size-5 cursor-pointer appearance-none rounded-[6px] border-2 border-text-muted bg-surface transition-colors duration-150 hover:border-text-secondary checked:border-emerald-700 checked:bg-emerald-700 focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
               />
               <Check
                 aria-hidden

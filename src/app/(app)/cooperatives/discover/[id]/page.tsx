@@ -85,7 +85,7 @@ export default async function DiscoveryProfilePage({
       {/* Benefits and packages */}
       <section className="mt-12" aria-labelledby="benefits-heading">
         <h2 id="benefits-heading" className="type-section flex items-center gap-2 text-text">
-          <PiggyBank aria-hidden strokeWidth={1.75} className="size-5 text-emerald" />
+          <PiggyBank aria-hidden strokeWidth={1.75} className="size-5 text-emerald-700" />
           Benefits and packages
         </h2>
 

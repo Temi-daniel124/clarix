@@ -51,7 +51,7 @@ export function OfficerRolePanel({
             <li key={permission.key} className="flex items-start gap-3">
               <span
                 aria-hidden
-                className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-emerald"
+                className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full text-emerald-700"
                 style={{
                   backgroundColor:
                     "color-mix(in srgb, var(--clarix-brand-accent) 14%, transparent)",

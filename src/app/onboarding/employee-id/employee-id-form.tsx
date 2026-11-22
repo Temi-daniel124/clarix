@@ -84,7 +84,7 @@ export function EmployeeIdForm({
               initial={reduceMotion ? false : { opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={reduceMotion ? { duration: 0 } : springStandard}
-              className="absolute inset-y-0 right-4 flex items-center text-emerald"
+              className="absolute inset-y-0 right-4 flex items-center text-emerald-700"
               aria-hidden
             >
               <Check className="size-5" strokeWidth={3} />

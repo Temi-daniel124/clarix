@@ -160,7 +160,7 @@ export function PayslipUpload({
                   aria-hidden
                   className={cn(
                     "flex size-6 shrink-0 items-center justify-center rounded-full",
-                    stage.done ? "text-emerald" : "text-text-muted",
+                    stage.done ? "text-emerald-700" : "text-text-muted",
                   )}
                 >
                   {stage.done ? (
