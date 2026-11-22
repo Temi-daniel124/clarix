@@ -130,7 +130,7 @@ export function PricingEstimator({ showCta = true }: { showCta?: boolean } = {})
               onClick={() => setCycle(option.value)}
               onKeyDown={(event) => onRadioKey(event, index)}
               className={cn(
-                "relative h-11 flex-1 rounded-pill px-3 text-[14px] font-semibold whitespace-nowrap transition-colors duration-150",
+                "relative h-11 flex-1 rounded-pill px-3 type-body-s font-semibold whitespace-nowrap transition-colors duration-150",
                 checked ? "text-indigo-night" : "text-ink-2 hover:text-indigo-night",
                 focusRing,
               )}
@@ -150,7 +150,7 @@ export function PricingEstimator({ showCta = true }: { showCta?: boolean } = {})
       </div>
 
       <div>
-        <label htmlFor={inputId} className="mb-2.5 block text-[14px] text-ink-2">
+        <label htmlFor={inputId} className="mb-2.5 block type-body-s text-ink-2">
           {PRICING.membersLabel}
         </label>
         <div className="flex items-center justify-between gap-2 rounded-pill p-[5px] shadow-field focus-within:shadow-field-focus">
@@ -180,7 +180,7 @@ export function PricingEstimator({ showCta = true }: { showCta?: boolean } = {})
             value={draft}
             onChange={(event) => onType(event.target.value)}
             onBlur={() => setDraft(String(members))}
-            className="tabular h-11 min-w-0 flex-1 bg-transparent text-center font-display text-[28px] leading-none font-extrabold tracking-[-0.04em] text-indigo-night outline-none"
+            className="tabular h-11 min-w-0 flex-1 bg-transparent text-center font-display type-figure-m leading-none font-extrabold tracking-[-0.04em] text-indigo-night outline-none"
           />
           <button
             type="button"
@@ -204,13 +204,13 @@ export function PricingEstimator({ showCta = true }: { showCta?: boolean } = {})
         <span className="font-semibold text-ink">{billLabel}</span>
         <RollingNumber
           value={total}
-          className="font-display text-[34px] leading-none font-extrabold tracking-[-0.045em] text-indigo-night"
+          className="font-display type-figure-l leading-none font-extrabold tracking-[-0.045em] text-indigo-night"
         />
       </div>
 
       {/* The one place the result is announced: once per change, as a sentence, rather than the
           rolling digits each reading out. */}
-      <p aria-live="polite" className="tabular -mt-1.5 text-[13px] text-muted">
+      <p aria-live="polite" className="tabular -mt-1.5 type-label font-normal leading-normal text-muted">
         <span className="sr-only">
           {billLabel}: {formatNaira(total)}.{" "}
         </span>

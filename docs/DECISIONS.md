@@ -690,7 +690,7 @@ see or add to the cross-cooperative picture (D003) until someone at Clarix has c
 ### D040: Where the Adire boards and the spec text disagree, the board wins (plan 1)
 **Status:** Locked
 **Decided:** 2026-11-22, during plan 1 (the Adire foundation and marketing site).
-**Decision:** Four calls made while building the marketing site, where the canvas boards and
+**Decision:** Calls made while building the marketing site, where the canvas boards and
 the spec's text differed:
 1. The segmented control's active pill is white on the indigo wash (board), not emerald (spec
    text).
@@ -701,6 +701,17 @@ the spec's text differed:
 3. The H1 is 72px on desktop.
 4. The nav's call to action is secondary on every page, so each page's one primary is its own.
    On /pricing that is a primary in the intro column, beside the estimator.
+5. *(Added 2026-11-22, final plan-1 review.)* The round-2 boards use a few type sizes between the
+   spec §3 rows. Each is a named step in `globals.css`, and no marketing screen writes a literal
+   size or weight (`text-[…]`, `font-[…]`): `type-feature-title` (Mona Sans Wide 750,
+   22 / 1.1 / −0.03em, the one style for every landing feature card's title: roles, repayment
+   steps, member steps), and the size steps `type-caption-s` (12, the floor), `type-body-s` (14),
+   `type-body-m` (16), `type-figure-s` (24), `type-figure-m` (28), `type-figure-l` (32) and
+   `type-figure-xl-s` (40, Figure-XL at its smallest spec size, inside a phone preview). A size
+   step sets the size only; the element keeps its own leading and weight. The board's in-between
+   sizes were folded onto these within a pixel (13.5 and 14.5 onto 14, 15.5 onto 15, 17 onto 16,
+   23 onto 22, 34 onto 32, and the 9px file glyph up to the 12px floor), and the H1's 72px
+   (item 3) now lives inside `type-display`. The "Made for" pills are the Chip's `lg` size.
 **Rationale:** The boards are the owner's approved picture of the product, and the spec text was
-written before they were final. Naming the extra radius and shadows keeps the "no invented
-values" rule of DESIGN_SYSTEM.md true.
+written before they were final. Naming the extra radius, shadows and type steps keeps the "no
+invented values" rule of DESIGN_SYSTEM.md true.

@@ -92,7 +92,11 @@
   /* Older name for the floating level, kept until its last user is restyled. */
   --shadow-elevation: var(--shadow-raised);
 
-  /* Type families, spec §3. Figtree for everything; Mona Sans (wide cut) for display. */
+  /* Type families, spec §3. Figtree for everything; Mona Sans (wide cut) for display.
+     These are inline theme values, so no --font-sans / --font-display variable exists at run
+     time (and none could at :root: next/font sets --font-figtree and --font-mona on <body>).
+     CSS here therefore reads them with --theme(), which inlines the value; a var() would
+     resolve to nothing and fall back to the system font. */
   --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-mona), var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
 
@@ -143,7 +147,7 @@
 
 /* `font-display` carries the wide cut with the family, so the face never renders narrow. */
 @utility font-display {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
 }
 
@@ -153,7 +157,7 @@
 --------------------------------------------------------------------------- */
 
 @utility type-display {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 44px;
   line-height: 0.96;
@@ -162,10 +166,15 @@
   @media (width >= 48rem) {
     font-size: 84px;
   }
+  /* The landing H1 settles at 72px on desktop (D040 item 3). */
+  @media (width >= 64rem) {
+    font-size: 72px;
+    line-height: 0.98;
+  }
 }
 
 @utility type-page-title {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 34px;
   line-height: 1;
@@ -179,7 +188,7 @@
 /* A landing section title in a narrower block (round-2 board: cross-check, statements, FAQ):
    one step under type-page-title at every width. */
 @utility type-section-title {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 30px;
   line-height: 1.05;
@@ -194,7 +203,7 @@
 
 /* The final call-to-action card's title (round-2 board), one step under type-section-title. */
 @utility type-cta-title {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 28px;
   line-height: 1.05;
@@ -208,7 +217,7 @@
 }
 
 @utility type-section {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 26px;
   line-height: 1.1;
@@ -220,7 +229,7 @@
 }
 
 @utility type-figure-xl {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 42px;
   line-height: 1;
@@ -233,7 +242,7 @@
 }
 
 @utility type-card-title {
-  font-family: var(--font-sans);
+  font-family: --theme(--font-sans);
   font-size: 18px;
   line-height: 1.25;
   font-weight: 600;
@@ -243,7 +252,7 @@
 }
 
 @utility type-body-lg {
-  font-family: var(--font-sans);
+  font-family: --theme(--font-sans);
   font-size: 17px;
   line-height: 1.55;
   font-weight: 400;
@@ -253,37 +262,89 @@
 }
 
 @utility type-body {
-  font-family: var(--font-sans);
+  font-family: --theme(--font-sans);
   font-size: 15px;
   line-height: 1.5;
   font-weight: 400;
 }
 
 @utility type-label {
-  font-family: var(--font-sans);
+  font-family: --theme(--font-sans);
   font-size: 13px;
   line-height: 1.3;
   font-weight: 600;
 }
 
 @utility type-caption {
-  font-family: var(--font-sans);
+  font-family: --theme(--font-sans);
   font-size: 12.5px;
   line-height: 1.4;
   font-weight: 400;
 }
 
+/* ---------------------------------------------------------------------------
+   Marketing steps (D040 item 5). The round-2 boards use a few sizes between the spec rows.
+   Each is named here once, so no screen writes a literal size.
+
+   type-feature-title is a complete style. The others are size steps: they set the size
+   only, and the element keeps its own leading and weight classes (font-size sorts before
+   line-height and font-weight, so those classes always win).
+--------------------------------------------------------------------------- */
+
+/* A feature card's title on the landing pages: roles, repayment steps, member steps. */
+@utility type-feature-title {
+  font-family: --theme(--font-display);
+  font-stretch: 118%;
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+/* Meter scales, small badges, the printed statement sheet. The 12px floor. */
+@utility type-caption-s {
+  font-size: 12px;
+}
+
+/* Eyebrows, list ticks, meta lines, footer text. */
+@utility type-body-s {
+  font-size: 14px;
+}
+
+/* Card bodies, FAQ, notice prose and small titles on the landing pages. */
+@utility type-body-m {
+  font-size: 16px;
+}
+
+/* Display figures inside cards and previews (Mona Sans, with leading-none on the element). */
+@utility type-figure-s {
+  font-size: 24px;
+}
+
+@utility type-figure-m {
+  font-size: 28px;
+}
+
+@utility type-figure-l {
+  font-size: 32px;
+}
+
+/* Figure-XL at the spec's smallest size, for a headline figure inside a phone preview. */
+@utility type-figure-xl-s {
+  font-size: 40px;
+}
+
 /* Aliases so screens not yet restyled still compile. type-secondary reads as body text;
    type-kpi and type-kpi-fit read as a section-sized display figure. */
 @utility type-secondary {
-  font-family: var(--font-sans);
+  font-family: --theme(--font-sans);
   font-size: 15px;
   line-height: 1.5;
   font-weight: 400;
 }
 
 @utility type-kpi {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: 26px;
   line-height: 1.1;
@@ -308,7 +369,7 @@
  * pixel.
  */
 @utility type-kpi-fit {
-  font-family: var(--font-display);
+  font-family: --theme(--font-display);
   font-stretch: 118%;
   font-size: min(26px, calc(100cqi / (var(--kpi-chars, 8) * 0.82)));
   line-height: 1.1;
@@ -528,7 +589,7 @@
   body {
     background-color: var(--clarix-background);
     color: var(--clarix-text-primary);
-    font-family: var(--font-sans);
+    font-family: --theme(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 

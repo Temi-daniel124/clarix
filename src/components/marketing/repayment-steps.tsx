@@ -30,7 +30,7 @@ export function RepaymentSteps() {
             <span
               aria-hidden
               className={cn(
-                "grid size-10 place-items-center rounded-pill font-display text-[15px] font-extrabold",
+                "grid size-10 place-items-center rounded-pill font-display type-body font-extrabold",
                 index === 2
                   ? "bg-emerald-50 text-emerald-700"
                   : "bg-indigo-100 text-indigo-600",
@@ -38,13 +38,13 @@ export function RepaymentSteps() {
             >
               {index + 1}
             </span>
-            <h3 className="font-display text-[23px] leading-[1.1] font-[750] tracking-[-0.03em] text-indigo-night">
+            <h3 className="type-feature-title text-indigo-night">
               <span className="sr-only">
                 {fill(REPAYMENT_SAMPLES.stepPrefix, { n: index + 1 })}
               </span>
               {step.title}
             </h3>
-            <p className="text-[16px] leading-[1.55] text-ink-2">{step.body}</p>
+            <p className="type-body-m leading-[1.55] text-ink-2">{step.body}</p>
             <div aria-hidden className="mt-auto pt-1">
               {index === 0 ? <ReceiptPiece /> : null}
               {index === 1 ? <DecisionPiece /> : null}
@@ -68,10 +68,10 @@ function ReceiptPiece() {
         ))}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="truncate text-[14.5px] leading-snug font-semibold text-ink">
+        <p className="truncate type-body-s leading-snug font-semibold text-ink">
           {REPAYMENT_SAMPLES.receiptFile}
         </p>
-        <p className="tabular text-[12.5px] leading-snug text-muted">
+        <p className="tabular type-caption leading-snug text-muted">
           {fill(REPAYMENT_SAMPLES.receiptMeta, { amount: formatNaira(25_000) })}
         </p>
       </div>
@@ -87,7 +87,7 @@ function ReceiptPiece() {
  */
 function DecisionPiece() {
   const pill =
-    "flex h-11 flex-1 items-center justify-center rounded-pill text-[15px] font-semibold";
+    "flex h-11 flex-1 items-center justify-center rounded-pill type-body font-semibold";
   return (
     <div className="flex gap-2">
       <span className={cn(pill, "bg-emerald-500 text-on-emerald")}>{REPAYMENT_SAMPLES.confirm}</span>
@@ -100,12 +100,12 @@ function DecisionPiece() {
 function BalancePiece() {
   return (
     <div className="tabular flex items-baseline justify-between gap-3 rounded-group bg-porcelain px-4 py-3.5">
-      <span className="text-[14px] text-ink-2">{REPAYMENT_SAMPLES.loanLeft}</span>
+      <span className="type-body-s text-ink-2">{REPAYMENT_SAMPLES.loanLeft}</span>
       <span className="flex items-baseline gap-2">
-        <span className="text-[14px] text-muted line-through">{formatNaira(205_000)}</span>
+        <span className="type-body-s text-muted line-through">{formatNaira(205_000)}</span>
         <RollingNumber
           value={180_000}
-          className="font-display text-[24px] leading-none font-extrabold tracking-[-0.04em] text-indigo-night"
+          className="font-display type-figure-s leading-none font-extrabold tracking-[-0.04em] text-indigo-night"
         />
       </span>
     </div>

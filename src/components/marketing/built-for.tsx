@@ -1,10 +1,11 @@
 import { Chip } from "@/components/ui/chip";
 import { BUILT_FOR, BUILT_FOR_LABEL, BUILT_FOR_REGION } from "./copy";
-import { cn } from "@/lib/utils";
 
 /**
  * "Made for" band (spec §11.1, item 3): the six kinds of cooperative Clarix serves, as neutral
  * pills under the hero. It names who the product is for rather than claiming who uses it.
+ * From 1280 up the label sits above and the pills step down to body-s, so all six hold one row
+ * inside the 1240 column. Below that the row wraps, as it always has on phones.
  */
 export function BuiltFor() {
   return (
@@ -12,8 +13,8 @@ export function BuiltFor() {
       aria-label={BUILT_FOR_REGION}
       className="reveal mx-auto w-full max-w-[1240px] px-5 pt-2 pb-[72px] md:px-6 lg:pb-24"
     >
-      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5">
-        <p className="mr-0.5 text-[14px] font-semibold text-muted max-sm:w-full max-sm:text-center">
+      <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 xl:gap-2">
+        <p className="mr-0.5 type-body-s font-semibold text-muted max-sm:w-full max-sm:text-center xl:mr-0 xl:w-full xl:text-center">
           {BUILT_FOR_LABEL}
         </p>
         <ul role="list" className="contents">
@@ -21,9 +22,8 @@ export function BuiltFor() {
             <li key={kind}>
               <Chip
                 tone="neutral"
-                className={cn(
-                  "px-[18px] py-[11px] text-[15px] leading-5 font-semibold max-sm:px-3 max-sm:py-2 max-sm:text-[13px]",
-                )}
+                size="lg"
+                className="max-sm:px-3 max-sm:py-2 max-sm:type-label max-sm:leading-5 xl:px-3.5 xl:type-body-s"
               >
                 {kind}
               </Chip>

@@ -78,7 +78,7 @@ export function MembersIntro() {
           <FindCooperativeButton />
           <SignInLink />
         </div>
-        <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-ink-2">
+        <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 type-body-s text-ink-2">
           {PAGE.ticks.map((tick) => (
             <li key={tick} className="flex items-center gap-2">
               <Check className="size-[18px] text-emerald-700" strokeWidth={2} aria-hidden />
@@ -120,14 +120,14 @@ function MemberFigureCard() {
       aria-label={PAGE.preview.label}
       className="ring-pattern flex flex-col gap-3 rounded-feature bg-white p-5 shadow-raised"
     >
-      <p className="text-[13.5px] font-semibold text-ink-2">{PAGE.preview.figureLabel}</p>
+      <p className="type-body-s font-semibold text-ink-2">{PAGE.preview.figureLabel}</p>
       <RollingNumber
         value={STILL_FREE}
-        className="font-display text-[40px] leading-none font-extrabold tracking-[-0.05em] text-indigo-night"
+        className="font-display type-figure-xl-s leading-none font-extrabold tracking-[-0.05em] text-indigo-night"
       />
       <div className="rounded-group bg-indigo-50 p-3">
         <MeterBar usedRatio={COMMITTED / LIMIT} className="h-2.5" />
-        <div className="tabular mt-2 flex justify-between gap-3 text-[12.5px] text-ink-2">
+        <div className="tabular mt-2 flex justify-between gap-3 type-caption leading-normal text-ink-2">
           <span>
             {PAGE.preview.committed} {formatNaira(COMMITTED)}
           </span>
@@ -136,7 +136,7 @@ function MemberFigureCard() {
           </span>
         </div>
       </div>
-      <p className="text-[12.5px] leading-[1.4] text-muted">{PAGE.preview.source}</p>
+      <p className="type-caption leading-[1.4] text-muted">{PAGE.preview.source}</p>
     </div>
   );
 }
@@ -165,17 +165,17 @@ export function JoinSteps() {
             <span
               aria-hidden
               className={cn(
-                "grid size-10 place-items-center rounded-pill font-display text-[15px] font-extrabold",
+                "grid size-10 place-items-center rounded-pill font-display type-body font-extrabold",
                 index === 2 ? "bg-emerald-50 text-emerald-700" : "bg-indigo-100 text-indigo-600",
               )}
             >
               {index + 1}
             </span>
-            <h3 className="font-display text-[23px] leading-[1.1] font-[750] tracking-[-0.03em] text-indigo-night">
+            <h3 className="type-feature-title text-indigo-night">
               <span className="sr-only">{fill(PAGE.stepPrefix, { n: index + 1 })}</span>
               {step.title}
             </h3>
-            <p className="text-[16px] leading-[1.55] text-ink-2">{step.body}</p>
+            <p className="type-body-m leading-[1.55] text-ink-2">{step.body}</p>
             <div aria-hidden className="mt-auto pt-1">
               {index === 0 ? <SearchPiece /> : null}
               {index === 1 ? <EvidencePiece /> : null}
@@ -194,17 +194,17 @@ const S = PAGE.stepSamples;
 function SearchPiece() {
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex h-11 items-center gap-2.5 rounded-input bg-white px-3.5 text-[15px] text-ink shadow-field-focus">
+      <div className="flex h-11 items-center gap-2.5 rounded-input bg-white px-3.5 type-body text-ink shadow-field-focus">
         <Search className="size-[18px] text-muted" strokeWidth={2} />
         {S.search}
       </div>
       <div className="flex items-center gap-3 rounded-group bg-porcelain p-3">
-        <span className="grid size-9 shrink-0 place-items-center rounded-pill bg-indigo-100 text-[12.5px] font-bold text-indigo-600">
+        <span className="grid size-9 shrink-0 place-items-center rounded-pill bg-indigo-100 type-caption leading-normal font-bold text-indigo-600">
           {PAGE.preview.cooperatives[0].initials}
         </span>
         <div className="min-w-0">
-          <p className="truncate text-[14.5px] leading-snug font-semibold text-ink">{S.result}</p>
-          <p className="truncate text-[12.5px] leading-snug text-muted">{S.resultMeta}</p>
+          <p className="truncate type-body-s leading-snug font-semibold text-ink">{S.result}</p>
+          <p className="truncate type-caption leading-snug text-muted">{S.resultMeta}</p>
         </div>
       </div>
     </div>
@@ -217,16 +217,16 @@ function EvidencePiece() {
     <div className="flex flex-col gap-2">
       <div className="rounded-group bg-porcelain p-3">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[6px] bg-white text-[9px] font-extrabold text-red-600 shadow-flat">
+          <span className="flex h-11 w-9 shrink-0 items-center justify-center rounded-[6px] bg-white type-caption-s font-extrabold text-red-600 shadow-flat">
             PDF
           </span>
           <div className="min-w-0">
-            <p className="truncate text-[14px] leading-snug font-semibold text-ink">{S.file}</p>
-            <p className="text-[12.5px] leading-snug font-semibold text-emerald-700">{S.fileMeta}</p>
+            <p className="truncate type-body-s leading-snug font-semibold text-ink">{S.file}</p>
+            <p className="type-caption leading-snug font-semibold text-emerald-700">{S.fileMeta}</p>
           </div>
         </div>
       </div>
-      <p className="flex items-start gap-2 px-1 text-[12.5px] leading-[1.4] text-ink-2">
+      <p className="flex items-start gap-2 px-1 type-caption leading-[1.4] text-ink-2">
         <Lock className="mt-px size-[15px] shrink-0 text-indigo-600" strokeWidth={2} />
         {S.privacy}
       </p>
@@ -239,7 +239,7 @@ function ApprovalPiece() {
   return (
     <div className="flex flex-col items-start gap-2.5 rounded-group bg-porcelain p-3.5">
       <Chip tone="waiting">{S.waiting}</Chip>
-      <p className="text-[14.5px] leading-snug font-semibold text-ink">{S.application}</p>
+      <p className="type-body-s leading-snug font-semibold text-ink">{S.application}</p>
     </div>
   );
 }
@@ -271,10 +271,10 @@ export function MemberView() {
             return (
               <li key={point.title} className="flex flex-col gap-1.5">
                 <Icon aria-hidden className="mb-1 size-[22px] text-indigo-600" strokeWidth={2} />
-                <h3 className="text-[17px] leading-[1.3] font-semibold text-indigo-night">
+                <h3 className="type-body-m leading-[1.3] font-semibold text-indigo-night">
                   {point.title}
                 </h3>
-                <p className="text-[15.5px] leading-[1.55] text-ink-2">{point.body}</p>
+                <p className="type-body leading-[1.55] text-ink-2">{point.body}</p>
               </li>
             );
           })}
@@ -286,14 +286,14 @@ export function MemberView() {
         <div className="flex gap-3 rounded-card bg-white p-5 shadow-flat">
           <Lock aria-hidden className="mt-0.5 size-5 shrink-0 text-indigo-600" strokeWidth={2} />
           <div className="flex flex-col gap-1.5">
-            <h3 className="text-[16px] leading-[1.35] font-semibold text-indigo-night">
+            <h3 className="type-body-m leading-[1.35] font-semibold text-indigo-night">
               {PAGE.privacyHeading}
             </h3>
-            <p className="text-[15px] leading-[1.55] text-ink-2">{PAGE.privacyBody}</p>
+            <p className="type-body leading-[1.55] text-ink-2">{PAGE.privacyBody}</p>
             <Link
               href="/privacy"
               className={cn(
-                "-ml-1 inline-flex min-h-11 items-center self-start rounded-tag px-1 text-[15px] font-semibold text-indigo-600 underline-offset-4 hover:underline",
+                "-ml-1 inline-flex min-h-11 items-center self-start rounded-tag px-1 type-body font-semibold text-indigo-600 underline-offset-4 hover:underline",
                 focusRing,
               )}
             >
@@ -316,18 +316,18 @@ function CooperativesList() {
         .join("; ")}`}
       className="overflow-hidden rounded-card bg-white shadow-flat"
     >
-      <p className="px-5 pt-4 pb-2 text-[13px] font-semibold text-ink-2">
+      <p className="px-5 pt-4 pb-2 type-label leading-normal font-semibold text-ink-2">
         {PAGE.preview.cooperativesTitle}
       </p>
       <ul className="divide-y divide-line">
         {PAGE.preview.cooperatives.map((coop) => (
           <li key={coop.name} className="flex items-center gap-3 px-5 py-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-pill bg-indigo-100 text-[13px] font-bold text-indigo-600">
+            <span className="grid size-10 shrink-0 place-items-center rounded-pill bg-indigo-100 type-label leading-normal font-bold text-indigo-600">
               {coop.initials}
             </span>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[15px] leading-snug font-semibold text-ink">{coop.name}</p>
-              <p className="tabular text-[13px] leading-snug text-muted">
+              <p className="truncate type-body leading-snug font-semibold text-ink">{coop.name}</p>
+              <p className="tabular type-label font-normal leading-snug text-muted">
                 {PAGE.preview.savings} {formatNaira(coop.savings)}
               </p>
             </div>

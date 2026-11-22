@@ -6,7 +6,7 @@
 export const SECTION = "mx-auto w-full max-w-[1240px] px-5 pb-[72px] md:px-6 lg:pb-24";
 
 /** The small indigo line above a section heading. */
-export const EYEBROW = "text-[14px] leading-[1.4] font-bold text-indigo-600";
+export const EYEBROW = "type-body-s leading-[1.4] font-bold text-indigo-600";
 
 /** Landing paragraph beside or under a section heading (Body-L, spec §3). */
 export const LEAD = "type-body-lg text-ink-2";

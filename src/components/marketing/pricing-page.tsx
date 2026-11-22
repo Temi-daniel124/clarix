@@ -36,7 +36,7 @@ export function PricingIntro() {
             <ArrowRight className="size-[18px]" strokeWidth={2} aria-hidden />
           </Link>
         </div>
-        <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-ink-2">
+        <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 type-body-s text-ink-2">
           {PRICING_PAGE.ticks.map((tick) => (
             <li key={tick} className="flex items-center gap-2">
               <Check className="size-[18px] text-emerald-700" strokeWidth={2} aria-hidden />
@@ -80,14 +80,14 @@ export function BillingTerms() {
             className="grid grid-cols-1 gap-2 px-5 py-5 sm:grid-cols-[200px_minmax(0,1fr)] sm:gap-6 sm:px-6"
           >
             <dt className="flex flex-col items-start gap-2">
-              <span className="text-[16px] leading-[1.35] font-semibold text-indigo-night">
+              <span className="type-body-m leading-[1.35] font-semibold text-indigo-night">
                 {entry.term}
               </span>
-              <span className="tabular rounded-tag bg-indigo-50 px-2.5 py-1 text-[12.5px] leading-4 font-semibold text-indigo-600">
+              <span className="tabular rounded-tag bg-indigo-50 px-2.5 py-1 type-caption leading-4 font-semibold text-indigo-600">
                 {entry.when}
               </span>
             </dt>
-            <dd className="text-[16px] leading-[1.55] text-ink-2">{entry.detail}</dd>
+            <dd className="type-body-m leading-[1.55] text-ink-2">{entry.detail}</dd>
           </div>
         ))}
       </dl>

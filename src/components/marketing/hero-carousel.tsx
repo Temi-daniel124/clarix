@@ -108,7 +108,7 @@ export function HeroCarousel({ children }: { children?: ReactNode }) {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-[220px] bg-linear-to-t from-indigo-night/55 to-transparent lg:h-[280px]"
         />
-        <p className="absolute inset-x-5 bottom-[92px] text-[17px] leading-[1.35] font-semibold text-balance text-white lg:inset-x-6 lg:bottom-[140px]">
+        <p className="absolute inset-x-5 bottom-[92px] type-body-m leading-[1.35] font-semibold text-balance text-white lg:inset-x-6 lg:bottom-[140px]">
           {HERO_SLIDES[shown].caption}
         </p>
       </div>

@@ -57,7 +57,9 @@ that is in neither place. In short:
   sidebars still waiting on plans 2 to 6.
 - **Type (spec §3, D034).** Mona Sans wide cut (`font-display`) for display, section titles and
   big figures; Figtree for everything else; `tabular-nums` on every amount. Use the `type-*`
-  utilities in `globals.css`. The landing H1 is 72px on desktop (D040). Never below 12px.
+  utilities in `globals.css`, never a literal `text-[…]` or `font-[…]`; the marketing boards'
+  in-between sizes are named steps there too (D040 item 5). The landing H1 is 72px on desktop
+  (D040). Never below 12px.
 - **Shape and elevation (spec §4, D035, D040).** Buttons and chips are pills. Radii: pill, sheet
   28, feature 24, card 20, group 16, input 14, tag 10, plus the board's frame 32 and paper 10.
   Elevation is `flat`, `raised` and `primary-float` (primary button only), plus the named board

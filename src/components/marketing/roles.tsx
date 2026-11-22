@@ -36,11 +36,11 @@ export function Roles() {
               />
             </div>
             <div className="flex flex-col gap-2 p-6">
-              <p className="text-[14px] leading-[1.4] font-bold text-indigo-600">{role.label}</p>
-              <h3 className="font-display text-[22px] leading-[1.15] font-[750] tracking-[-0.03em] text-indigo-night">
+              <p className="type-body-s leading-[1.4] font-bold text-indigo-600">{role.label}</p>
+              <h3 className="type-feature-title text-indigo-night">
                 {role.title}
               </h3>
-              <p className="text-[16px] leading-[1.55] text-ink-2">{role.body}</p>
+              <p className="type-body-m leading-[1.55] text-ink-2">{role.body}</p>
             </div>
           </li>
         ))}

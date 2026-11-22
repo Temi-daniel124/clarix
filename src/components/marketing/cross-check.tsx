@@ -43,8 +43,8 @@ export function CrossCheck() {
         {/* The figure card (spec §6, kind 1). */}
         <div className="flex min-w-0 flex-col gap-4 rounded-feature bg-white p-5 shadow-raised sm:p-7 lg:col-span-6 lg:col-start-7">
           <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-            <p className="tabular text-[16px] font-semibold text-ink">{CROSS_CHECK.request}</p>
-            <Chip tone="confirmed" className="text-[13px]">
+            <p className="tabular type-body-m font-semibold text-ink">{CROSS_CHECK.request}</p>
+            <Chip tone="confirmed">
               {CROSS_CHECK.verdict}
             </Chip>
           </div>
@@ -54,7 +54,7 @@ export function CrossCheck() {
               value={STILL_FREE}
               className="type-figure-xl tracking-[-0.05em]"
             />
-            <span className="text-[17px] font-medium text-muted">{CROSS_CHECK.figureSuffix}</span>
+            <span className="type-body-m font-medium text-muted">{CROSS_CHECK.figureSuffix}</span>
           </p>
 
           <div className="rounded-group bg-indigo-50 p-4">
@@ -64,7 +64,7 @@ export function CrossCheck() {
               className="h-3.5"
               label={fill(CROSS_CHECK.meterLabel, { limit: formatNaira(LIMIT) })}
             />
-            <dl className="tabular mt-3.5 grid grid-cols-1 gap-2 text-[13.5px] sm:grid-cols-3 sm:gap-3">
+            <dl className="tabular mt-3.5 grid grid-cols-1 gap-2 type-body-s sm:grid-cols-3 sm:gap-3">
               {LEGEND.map((entry) => (
                 <div key={entry.key} className="min-w-0 max-sm:flex max-sm:items-baseline max-sm:justify-between max-sm:gap-3">
                   <dt className="flex items-center gap-[7px] leading-snug text-ink-2">
@@ -74,7 +74,7 @@ export function CrossCheck() {
                   <dd className="sm:mt-0.5">
                     <RollingNumber
                       value={entry.value}
-                      className="text-[16px] font-bold text-ink sm:text-[18px]"
+                      className="type-body-m font-bold text-ink sm:type-body-lg sm:leading-normal sm:font-bold"
                     />
                   </dd>
                 </div>
@@ -82,7 +82,7 @@ export function CrossCheck() {
             </dl>
           </div>
 
-          <p className="text-[13.5px] leading-[1.5] text-muted">{CROSS_CHECK.footnote}</p>
+          <p className="type-body-s leading-[1.5] text-muted">{CROSS_CHECK.footnote}</p>
         </div>
       </div>
     </section>

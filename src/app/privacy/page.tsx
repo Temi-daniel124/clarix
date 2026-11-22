@@ -86,7 +86,7 @@ export default function PrivacyPage() {
         <header className="flex max-w-[760px] flex-col gap-4">
           <p className={EYEBROW}>NDPA 2023</p>
           <h1 className="type-page-title text-balance text-indigo-night">Privacy notice</h1>
-          <p className="text-[14px] text-muted">Last updated {UPDATED}</p>
+          <p className="type-body-s text-muted">Last updated {UPDATED}</p>
           <p className={cn(LEAD, "max-w-[640px]")}>
             This notice explains what Clarix collects about you, why, who can see it, and what you
             can ask us to do about it. It is written for the Nigeria Data Protection Act 2023
@@ -98,14 +98,14 @@ export default function PrivacyPage() {
         <div className="mt-10 grid grid-cols-1 gap-10 lg:mt-14 lg:grid-cols-12">
           <nav aria-label="On this page" className="hidden lg:col-span-3 lg:block">
             <div className="sticky top-32">
-              <p className="mb-2 text-[13px] font-semibold text-ink-2">On this page</p>
+              <p className="mb-2 type-label leading-normal font-semibold text-ink-2">On this page</p>
               <ol className="flex flex-col">
                 {SECTIONS.map((section) => (
                   <li key={section.id}>
                     <a
                       href={`#${section.id}`}
                       className={cn(
-                        "flex min-h-11 items-center rounded-tag py-1 text-[14.5px] leading-[1.35] text-ink-2 transition-colors duration-150 hover:text-indigo-night",
+                        "flex min-h-11 items-center rounded-tag py-1 type-body-s leading-[1.35] text-ink-2 transition-colors duration-150 hover:text-indigo-night",
                         focusRing,
                       )}
                     >
@@ -360,7 +360,7 @@ export default function PrivacyPage() {
           <Link
             href="/signup"
             className={cn(
-              "-ml-1 inline-flex min-h-11 items-center gap-2 rounded-tag px-1 text-[15px] font-semibold text-indigo-600 underline-offset-4 transition-colors duration-150 hover:underline",
+              "-ml-1 inline-flex min-h-11 items-center gap-2 rounded-tag px-1 type-body font-semibold text-indigo-600 underline-offset-4 transition-colors duration-150 hover:underline",
               focusRing,
             )}
           >
@@ -388,7 +388,7 @@ function Section({ id, children }: { id: SectionId; children: React.ReactNode })
       >
         {heading}
       </h2>
-      <div className="mt-4 flex max-w-[680px] flex-col gap-3 text-[16px] leading-[1.6] text-ink-2">
+      <div className="mt-4 flex max-w-[680px] flex-col gap-3 type-body-m leading-[1.6] text-ink-2">
         {children}
       </div>
     </section>

@@ -11,22 +11,31 @@ const tones: Record<ChipTone, string> = {
   neutral: "bg-white text-ink shadow-flat",
 };
 
-const base =
-  "inline-flex items-center gap-1.5 rounded-pill px-3 py-1 text-[12.5px] leading-4 font-bold whitespace-nowrap";
+export type ChipSize = "sm" | "lg";
 
-export function chipClasses(tone: ChipTone): string {
-  return cn(base, tones[tone]);
+const base = "inline-flex items-center gap-1.5 rounded-pill whitespace-nowrap";
+
+/* sm is the status pill. lg is the larger marketing chip ("Made for"), one body step up. */
+const sizes: Record<ChipSize, string> = {
+  sm: "px-3 py-1 text-[12.5px] leading-4 font-bold",
+  lg: "px-[18px] py-[11px] type-body leading-5 font-semibold",
+};
+
+export function chipClasses(tone: ChipTone, size: ChipSize = "sm"): string {
+  return cn(base, sizes[size], tones[tone]);
 }
 
 /** A status pill. The label is required: status is never conveyed by colour alone. */
 export function Chip({
   tone,
+  size = "sm",
   children,
   className,
 }: {
   tone: ChipTone;
+  size?: ChipSize;
   children: ReactNode;
   className?: string;
 }) {
-  return <span className={cn(chipClasses(tone), className)}>{children}</span>;
+  return <span className={cn(chipClasses(tone, size), className)}>{children}</span>;
 }

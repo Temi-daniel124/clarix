@@ -41,14 +41,14 @@ export function Hero() {
   return (
     <section className="mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-10 px-5 pt-10 pb-10 md:px-6 md:pt-14 lg:grid-cols-12">
       <div className="flex min-w-0 flex-col gap-6 lg:col-span-6">
-        <span className="inline-flex items-center gap-2 self-start rounded-pill bg-indigo-100 py-[7px] pr-3.5 pl-3.5 text-[14px] font-semibold text-indigo-600 max-[379px]:px-3 max-[379px]:text-[12.5px] sm:pl-2">
-          <span className="rounded-pill bg-indigo-600 px-[9px] max-sm:hidden py-0.5 text-[12px] font-bold text-white">
+        <span className="inline-flex items-center gap-2 self-start rounded-pill bg-indigo-100 py-[7px] pr-3.5 pl-3.5 type-body-s font-semibold text-indigo-600 max-[379px]:px-3 max-[379px]:type-caption max-[379px]:leading-normal max-[379px]:font-semibold sm:pl-2">
+          <span className="rounded-pill bg-indigo-600 px-[9px] max-sm:hidden py-0.5 type-caption-s font-bold text-white">
             New
           </span>
           For every kind of cooperative, salaried or not
         </span>
 
-        <h1 className="type-display text-balance text-indigo-night lg:text-[72px] lg:leading-[0.98]">
+        <h1 className="type-display text-balance text-indigo-night">
           Run your cooperative with every number in view.
         </h1>
 
@@ -77,7 +77,7 @@ export function Hero() {
           </a>
         </div>
 
-        <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 text-[14.5px] text-ink-2">
+        <ul className="mt-1 flex flex-wrap gap-x-5 gap-y-2 type-body-s text-ink-2">
           {TICKS.map((tick) => (
             <li key={tick} className="flex items-center gap-2">
               <Check
@@ -112,10 +112,10 @@ function ConfirmedCard() {
         <Check className="size-[18px]" strokeWidth={2} aria-hidden />
       </span>
       <div className="min-w-0">
-        <p className="text-[14.5px] leading-snug font-bold text-ink">
+        <p className="type-body-s leading-snug font-bold text-ink">
           Repayment confirmed
         </p>
-        <p className="tabular text-[13px] leading-snug text-muted">
+        <p className="tabular type-label font-normal leading-snug text-muted">
           ₦25,000 · Ikeja Traders Thrift
         </p>
       </div>
@@ -126,16 +126,16 @@ function ConfirmedCard() {
 function LimitCard() {
   return (
     <div className="flex flex-col gap-2.5 rounded-card bg-white p-[18px] shadow-raised lg:absolute lg:bottom-0 lg:left-0 lg:w-[330px]">
-      <div className="flex justify-between text-[13px] text-muted">
+      <div className="flex justify-between type-label font-normal leading-normal text-muted">
         <span>Amaka can still take on</span>
         <span className="font-bold text-emerald-700">Fits</span>
       </div>
       <p className="flex items-baseline gap-1 text-indigo-night">
         <RollingNumber
           value={STILL_AVAILABLE}
-          className="font-display text-[32px] leading-none font-extrabold tracking-[-0.045em]"
+          className="font-display type-figure-l leading-none font-extrabold tracking-[-0.045em]"
         />
-        <span className="text-[14px] font-medium text-muted">a month</span>
+        <span className="type-body-s font-medium text-muted">a month</span>
       </p>
       <div className="rounded-[12px] bg-indigo-50 p-2.5">
         <MeterBar
@@ -144,7 +144,7 @@ function LimitCard() {
           className="h-2.5"
           label="Amaka's limit: committed across her cooperatives, this request, and what is left"
         />
-        <div className="tabular mt-[7px] flex justify-between text-[12px] text-ink-2">
+        <div className="tabular mt-[7px] flex justify-between type-caption-s text-ink-2">
           <span>Across 3 cooperatives</span>
           <span>Limit {formatNaira(LIMIT)}</span>
         </div>

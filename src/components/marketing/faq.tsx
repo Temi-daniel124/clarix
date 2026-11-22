@@ -43,13 +43,13 @@ export function Faq({
             <AccordionTrigger
               indicator="plus"
               className={cn(
-                "px-[22px] py-[18px] text-[16px] leading-[1.4] font-semibold text-indigo-night",
+                "px-[22px] py-[18px] type-body-m leading-[1.4] font-semibold text-indigo-night",
                 "hover:text-indigo-600 focus-visible:-outline-offset-2",
               )}
             >
               {item.question}
             </AccordionTrigger>
-            <AccordionContent className="px-[22px] pb-5 text-[16px] leading-[1.55] text-ink-2">
+            <AccordionContent className="px-[22px] pb-5 type-body-m leading-[1.55] text-ink-2">
               {item.answer}
             </AccordionContent>
           </AccordionItem>

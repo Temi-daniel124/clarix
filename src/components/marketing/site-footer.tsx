@@ -18,7 +18,7 @@ const link = cn(
 export function SiteFooter({ credits = PHOTO_CREDITS }: { credits?: readonly PhotoCredit[] } = {}) {
   return (
     <footer className="border-t border-line bg-white">
-      <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-5 px-5 pt-7 pb-9 text-[14px] text-muted md:px-6">
+      <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-5 px-5 pt-7 pb-9 type-body-s text-muted md:px-6">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3">
           <Link
             href="/"
@@ -53,7 +53,7 @@ export function SiteFooter({ credits = PHOTO_CREDITS }: { credits?: readonly Pho
         </div>
 
         {credits.length > 0 ? (
-          <p className="text-[12.5px] leading-[1.6]">
+          <p className="type-caption leading-[1.6]">
             {FOOTER.photos}{" "}
             {credits.map((credit, index) => (
               <span key={credit.href}>

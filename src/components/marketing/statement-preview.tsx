@@ -32,7 +32,7 @@ export function StatementPreview() {
         >
           {STATEMENTS.heading}
         </h2>
-        <ul className="flex flex-col gap-3 text-[16px] leading-[1.55] text-ink-2">
+        <ul className="flex flex-col gap-3 type-body-m leading-[1.55] text-ink-2">
           {STATEMENTS.points.map((point) => (
             <li key={point} className="flex gap-2.5">
               <Check
@@ -64,14 +64,14 @@ function StatementSheet() {
 
       <div
         aria-hidden
-        className="relative overflow-hidden rounded-paper bg-white p-5 text-[12px] leading-[1.45] text-ink shadow-sheet sm:p-6 lg:absolute lg:top-2.5 lg:left-10 lg:h-[390px] lg:w-[420px]"
+        className="relative overflow-hidden rounded-paper bg-white p-5 type-caption-s leading-[1.45] text-ink shadow-sheet sm:p-6 lg:absolute lg:top-2.5 lg:left-10 lg:h-[390px] lg:w-[420px]"
       >
         <Watermark />
 
         <div className="relative flex justify-between gap-4 border-b-2 border-indigo-night pb-2.5">
           <Logo variant="horizontal" size={18} tone="color" />
           <div className="text-right">
-            <p className="text-[13px] font-bold">{STATEMENT_SAMPLE.title}</p>
+            <p className="type-label leading-normal font-bold">{STATEMENT_SAMPLE.title}</p>
             <p className="text-muted">{STATEMENT_SAMPLE.period}</p>
           </div>
         </div>
