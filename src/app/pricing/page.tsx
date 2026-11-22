@@ -31,7 +31,7 @@ export default function PricingPage() {
         <Faq items={BILLING_FAQ_ITEMS} heading={BILLING_FAQ_HEADING} />
         <FinalCta />
       </main>
-      <SiteFooter />
+      <SiteFooter credits={[]} />
     </>
   );
 }

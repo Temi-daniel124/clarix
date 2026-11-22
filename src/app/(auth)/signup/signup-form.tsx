@@ -175,8 +175,8 @@ export function SignUpForm() {
             </span>
 
             <span>
-              I understand Clarix will store my income figure and the payslip or bank statements
-              behind it to work out my limit, and that each cooperative only ever sees its own
+              I understand Clarix will store my income figure, the payslip behind it and my staff
+              ID to work out my limit, and that each cooperative only ever sees its own
               records.{" "}
               <Link href="/privacy" className="text-indigo underline underline-offset-2">
                 Read the full privacy notice

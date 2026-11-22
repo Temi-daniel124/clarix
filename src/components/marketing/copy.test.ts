@@ -54,7 +54,17 @@ test.each([
   "src/app/(auth)/signup/page.tsx",
   "src/app/(auth)/signup/signup-form.tsx",
   "src/components/clarix/eligibility-preview.tsx",
+  "src/components/marketing/for-members.tsx",
+  "src/components/marketing/pricing-page.tsx",
+  "src/app/pricing/page.tsx",
+  "src/app/for-members/page.tsx",
 ])("%s names no single employer", (file) => {
   const source = readFileSync(resolve(process.cwd(), file), "utf8");
   expect(source).not.toMatch(/FMC|Federal Medical|hospital|IPPIS|One salary/i);
+});
+
+test("the auth panel line and the member page's document line name the deciders, not one officer", () => {
+  expect(copy.AUTH_PANEL_LINE).not.toMatch(/FMC|Federal Medical|hospital|IPPIS|One salary/i);
+  expect(copy.FOR_MEMBERS_PAGE.stepSamples.privacy).not.toMatch(/the officer reviewing/i);
+  expect(copy.FOR_MEMBERS_PAGE.privacyBody).not.toMatch(/the officer reviewing/i);
 });

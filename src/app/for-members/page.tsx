@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FOR_MEMBERS_PAGE } from "@/components/marketing/copy";
+import { FOR_MEMBERS_PAGE, PHOTO_CREDITS } from "@/components/marketing/copy";
 import {
   FreeAlways,
   JoinSteps,
@@ -15,6 +15,9 @@ import { pageMetadata } from "@/lib/site";
  * The one primary is "Find your cooperative"; the nav's "Start free trial" stays secondary, and
  * there is no cooperative trial card here, because a member never starts one.
  */
+// The page's one photograph, market.jpg, is Tunde Buremo's (public/images/landing/CREDITS.md).
+const MEMBER_PAGE_CREDITS = PHOTO_CREDITS.filter((credit) => credit.name === "Tunde Buremo");
+
 const title = FOR_MEMBERS_PAGE.metaTitle;
 const description = FOR_MEMBERS_PAGE.metaDescription;
 
@@ -34,7 +37,7 @@ export default function ForMembersPage() {
         <MemberView />
         <FreeAlways />
       </main>
-      <SiteFooter />
+      <SiteFooter credits={MEMBER_PAGE_CREDITS} />
     </>
   );
 }

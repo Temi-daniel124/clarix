@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { EligibilityPreview } from "@/components/clarix/eligibility-preview";
 import { Wordmark } from "@/components/clarix/wordmark";
+import { AUTH_PANEL_LINE } from "@/components/marketing/copy";
 
 /**
  * Shared shell for Sign Up (1.3) and Log In (1.4).
@@ -22,8 +23,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
         <div className="max-w-[420px]">
           <EligibilityPreview pace="calm" />
           <p className="type-body mt-8 text-white/60">
-            Approve loans against what a member actually owes everywhere, not what one
-            cooperative can see.
+            {AUTH_PANEL_LINE}
           </p>
         </div>
 

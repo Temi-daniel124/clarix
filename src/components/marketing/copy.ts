@@ -291,6 +291,7 @@ export const FOR_MEMBERS_PAGE = {
   ctaHref: "/signup?as=member",
   signIn: "I already have an account",
   ticks: ["Free, always", "Salaried or not", "Your documents stay private"],
+  photoAlt: "A tomato and pepper seller arranging produce at Bodija Market, Ibadan",
   preview: {
     label:
       "A member's home screen: ₦100,863 she can still take on each month, ₦60,975 already committed against a ₦161,838 limit, and her savings in three cooperatives",
@@ -332,7 +333,7 @@ export const FOR_MEMBERS_PAGE = {
     resultMeta: "Thrift & credit · Lagos",
     file: "statement-jun-nov.pdf",
     fileMeta: "6 months found",
-    privacy: "Only the officer reviewing a loan you apply for can open it.",
+    privacy: "Only the people deciding a loan you apply for can open it.",
     application: "Your application is with Ikeja Traders Thrift",
     waiting: "Awaiting approval",
   },
@@ -358,7 +359,7 @@ export const FOR_MEMBERS_PAGE = {
   ],
   privacyHeading: "Who can see your documents",
   privacyBody:
-    "Only the officer reviewing a loan you apply for can open your payslip or bank statements, and only while they decide. Other cooperatives never see your records, only one combined figure for what you already repay each month.",
+    "Only the people deciding a loan you apply for, its cooperative's administrators and the officers allowed to approve loans, can open your payslip or bank statements, and only while it waits for a decision. Other cooperatives never see your records, only one combined figure for what you already repay each month.",
   privacyLink: "Read the privacy notice",
   freeHeading: "Free, always.",
   freeBody:
@@ -371,6 +372,10 @@ export const FINAL_CTA = {
   primary: "Start your free trial",
   secondary: "Book a walkthrough",
 } as const;
+
+/** The one line on the sign-in and sign-up panel, for members and staff alike. */
+export const AUTH_PANEL_LINE =
+  "One limit across every cooperative you belong to, so a loan is checked against what is actually left.";
 
 export const FOOTER = {
   home: "Clarix home",

@@ -24,11 +24,16 @@ export const metadata: Metadata = {
  * **Written against what this system does, and nothing else.** The isolation described is the
  * RLS in `supabase/migrations`, the aggregate-only cross-cooperative figure is
  * `capacity_for_user()`, the reviewer's window onto income evidence is D031, and the logged
- * access-grant exception is `access_grants` (D030). Since D032 and D038, Clarix serves any kind of
- * cooperative and a member's limit may come from a payslip, bank statements or a figure an officer
- * confirms, so the notice describes all three. Where Clarix does not yet do something, automatic
- * deletion on a schedule, for instance, it says so plainly rather than describing a policy nobody
- * has implemented. A privacy notice that overstates its own controls is worse than one that admits
+ * access-grant exception is `access_grants` (D030), and the reviewer's window is
+ * `payslip_under_review()`: every admin, and every officer allowed to approve loans, at the
+ * cooperative where the application waits. The staff ID is `users.employee_id`.
+ *
+ * Everything outside "Coming soon" is true of the schema today. D032, D038 and D039 add bank
+ * statements, a self-declared figure, repayment receipts, member numbers and cooperative
+ * verification, none of which the schema has yet, so they sit in that one plainly labelled section,
+ * each stated as what will apply when it launches. Move an item out of it only in the change that
+ * ships it. Where Clarix does not yet do something, automatic deletion on a schedule, for instance,
+ * it says so plainly rather than describing a policy nobody has implemented. A privacy notice that overstates its own controls is worse than one that admits
  * a gap, because the first is a promise the code does not keep.
  *
  * The lawful basis is consent, given at sign-up, which is what the checkbox on that screen records.
@@ -47,6 +52,7 @@ const SECTIONS = [
   { id: "retention", title: "How long we keep it" },
   { id: "rights", title: "Your rights" },
   { id: "protection", title: "How we protect it" },
+  { id: "coming", title: "Coming soon, not in Clarix yet" },
   { id: "changes", title: "Changes to this notice" },
 ] as const;
 
@@ -84,7 +90,8 @@ export default function PrivacyPage() {
           <p className={cn(LEAD, "max-w-[640px]")}>
             This notice explains what Clarix collects about you, why, who can see it, and what you
             can ask us to do about it. It is written for the Nigeria Data Protection Act 2023
-            (NDPA) and describes the system as it actually works today.
+            (NDPA) and describes the system as it actually works today, with what is coming next
+            set apart at the end.
           </p>
         </header>
 
@@ -134,30 +141,26 @@ export default function PrivacyPage() {
                   is never visible to Clarix or to any cooperative.
                 </li>
                 <li>
-                  <Strong>Membership details.</Strong> The member number a cooperative knows you by
-                  and, only if you are salaried and repay by salary deduction, the staff ID your
-                  employer gave you, so a cooperative can recognise you on its member list.
+                  <Strong>Your staff identification number.</Strong> The staff ID your employer
+                  gave you, which is how a cooperative recognises you as the person on its member
+                  list.
                 </li>
                 <li>
-                  <Strong>Your income figure.</Strong> The monthly figure your limit is worked out
-                  from, and the date it was confirmed. If you are salaried, that is your gross and
-                  net pay, read from a payslip. If you are not, it is your average monthly money
-                  coming in, read from three to six months of bank statements. You may instead give
-                  a figure yourself, which stays marked unverified until an officer at your
-                  cooperative confirms it.
+                  <Strong>Your income figure.</Strong> Your gross and net monthly pay, read from a
+                  payslip you upload and confirm, and the date it was confirmed. Your limit is
+                  worked out from it.
                 </li>
                 <li>
-                  <Strong>Income evidence.</Strong> The payslips or bank statements you upload to
-                  support that figure.
+                  <Strong>Payslip documents</Strong> that you upload as evidence of that figure.
                 </li>
                 <li>
                   <Strong>Cooperative records.</Strong> Which cooperatives you belong to, your
-                  savings balance and the entries behind it, your loan applications and repayments,
-                  and the receipts you attach when you record a repayment.
+                  savings balance and the entries behind it, and your loan applications and
+                  repayments.
                 </li>
               </ul>
               <p>
-                Your income figure, your income evidence and any staff ID are{" "}
+                Your income figure, your payslip documents and your staff ID are{" "}
                 <Strong>sensitive personal data</Strong> under the NDPA, and are treated as such
                 throughout.
               </p>
@@ -171,8 +174,8 @@ export default function PrivacyPage() {
               </p>
               <p>We use your data for two purposes, and only these.</p>
               <p>
-                The first is keeping your cooperative&rsquo;s records: your savings, loans,
-                repayments and statements, which you and your cooperative both rely on.
+                The first is keeping your cooperative&rsquo;s records: your savings, loans and
+                repayments, which you and your cooperative both rely on.
               </p>
               <p>
                 The second is the cross-cooperative check. Everything you repay each month, in
@@ -189,7 +192,7 @@ export default function PrivacyPage() {
               <ul className="flex list-disc flex-col gap-2 pl-5 marker:text-muted">
                 <li>
                   <Strong>Each cooperative sees only its own records.</Strong> A cooperative you
-                  belong to can see your name, your membership details, the savings and loans you
+                  belong to can see your name, your staff ID, the savings and loans you
                   hold <em>with them</em>, and the figure described below. It cannot see your
                   records at any other cooperative. This is enforced in the database itself rather
                   than by the screens.
@@ -199,18 +202,18 @@ export default function PrivacyPage() {
                   cooperative checks whether you can take a loan, Clarix tells them your limit, the
                   combined total you already repay each month across all your cooperatives, and
                   what is left. Other cooperatives never see your records: not which cooperatives
-                  those repayments are with, how many there are, or anything held at any of them. A
-                  cooperative that signed itself up takes no part in this check until Clarix has
-                  verified it is a real cooperative.
+                  those repayments are with, how many there are, or anything held at any of them.
                 </li>
                 <li>
-                  <Strong>Your income evidence.</Strong> The payslips and bank statements you upload
-                  are stored privately and are normally readable by you alone. There is one
-                  exception: while you have a loan application waiting for a decision at a
-                  cooperative, the officer there who is reviewing it can open the evidence your
-                  income figure came from, so they can check the figure before lending against it.
-                  That access ends the moment your application is decided or lapses. Nobody else can
-                  open it at any time, no other cooperative ever can, and nobody can change it.
+                  <Strong>Your payslip.</Strong> The payslips you upload are stored privately and
+                  are normally readable by you alone. There is one exception: while you have a loan
+                  application waiting for a decision at a cooperative, the staff at that cooperative
+                  who can decide it (its administrators and the officers allowed to approve loans)
+                  can open the payslip your income figure came from, so they can check the figure
+                  before lending against it. That access ends the moment your application is decided
+                  or lapses. Another cooperative can open it only while you have an application
+                  waiting there, on the same terms. Nobody else can open it at any time, and nobody
+                  can change it.
                 </li>
                 <li>
                   <Strong>The platform operator has no standing access to your money.</Strong>{" "}
@@ -236,7 +239,7 @@ export default function PrivacyPage() {
               <ul className="flex list-disc flex-col gap-2 pl-5 marker:text-muted">
                 <li>
                   <Strong>Supabase</Strong> hosts the database, the authentication system and the
-                  private storage your income evidence and receipts are kept in. Data is stored in
+                  private storage your payslips are kept in. Data is stored in
                   the European Union (Ireland).
                 </li>
                 <li>
@@ -245,7 +248,7 @@ export default function PrivacyPage() {
                 <li>
                   <Strong>Resend</Strong> delivers email, such as a sign-in confirmation or a
                   password reset link. Messages you send from the Help screen carry your name and
-                  email address and nothing else; your income, your documents and any staff ID are
+                  email address and nothing else; your income, your documents and your staff ID are
                   never included.
                 </li>
               </ul>
@@ -264,8 +267,7 @@ export default function PrivacyPage() {
               <p>
                 We keep your account, membership, savings and loan records for as long as your
                 account exists, because they are the record of money you and your cooperative both
-                rely on. Your income evidence is kept while your confirmed income figure is based on
-                it, so a cooperative can check a decision against its evidence.
+                rely on. Your payslip is kept while your confirmed income figure is based on it, so a cooperative can check a decision against its evidence.
               </p>
               <p>
                 We should be straightforward about the current state of this: Clarix does not yet
@@ -300,12 +302,48 @@ export default function PrivacyPage() {
             <Section id="protection">
               <p>
                 Access rules are enforced in the database rather than by the screens, which means a
-                boundary cannot be stepped around by guessing at a web address. Income evidence and
-                receipts are held in private storage that is readable only through those same
+                boundary cannot be stepped around by guessing at a web address. Payslips are held in
+                private storage that is readable only through those same
                 rules. Connections are encrypted. Cooperative staff actions that touch a
                 member&rsquo;s money are recorded in an audit log that nobody, including the
                 cooperative&rsquo;s own administrator, can edit or delete.
               </p>
+            </Section>
+
+            <Section id="coming">
+              <p>
+                <Strong>None of this is part of Clarix yet.</Strong> We will update this notice
+                before any of it goes live, and until then none of this data is collected. When each
+                one launches, this is what will apply:
+              </p>
+              <ul className="flex list-disc flex-col gap-2 pl-5 marker:text-muted">
+                <li>
+                  <Strong>Bank statements.</Strong> Members who are not salaried will be able to
+                  upload three to six months of bank statements instead of a payslip, and the
+                  figure will be your average monthly money coming in. Statements will be kept and
+                  opened exactly as payslips are, only by the staff deciding a loan while it waits.
+                </li>
+                <li>
+                  <Strong>A figure you give yourself.</Strong> You will be able to state your income
+                  without a document. It will stay marked unverified until an officer at your
+                  cooperative confirms it.
+                </li>
+                <li>
+                  <Strong>Repayment receipts.</Strong> When you record a repayment you will be able
+                  to attach the receipt. It will be stored privately and seen only by you and the
+                  staff at that cooperative who confirm repayments.
+                </li>
+                <li>
+                  <Strong>Member numbers.</Strong> A cooperative will be able to record the member
+                  number it knows you by, and a staff ID will be asked for only if you are salaried
+                  and repay by salary deduction.
+                </li>
+                <li>
+                  <Strong>Cooperative verification.</Strong> Cooperatives will be able to sign
+                  themselves up. One that does will take no part in the cross-cooperative check
+                  until Clarix has verified it is a real cooperative.
+                </li>
+              </ul>
             </Section>
 
             <Section id="changes">
@@ -331,7 +369,7 @@ export default function PrivacyPage() {
           </Link>
         </div>
       </main>
-      <SiteFooter />
+      <SiteFooter credits={[]} />
     </>
   );
 }

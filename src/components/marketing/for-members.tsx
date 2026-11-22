@@ -92,7 +92,7 @@ export function MembersIntro() {
         <div className="relative h-[380px] overflow-hidden rounded-[32px] bg-indigo-100 shadow-[0_30px_70px_-40px_rgba(14,18,48,0.55)] lg:h-[560px]">
           <Image
             src="/images/landing/market.jpg"
-            alt="A tomato and pepper seller arranging produce at Bodija Market, Ibadan"
+            alt={PAGE.photoAlt}
             fill
             preload
             sizes="(min-width: 1240px) 584px, (min-width: 1024px) 48vw, 100vw"

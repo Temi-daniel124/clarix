@@ -2,18 +2,20 @@ import Link from "next/link";
 import { Logo } from "@/components/brand/logo";
 import { SUPPORT_EMAIL } from "@/lib/support";
 import { cn } from "@/lib/utils";
-import { FOOTER, PHOTO_CREDITS } from "./copy";
+import { FOOTER, PHOTO_CREDITS, type PhotoCredit } from "./copy";
 
 /**
  * The light marketing footer (round-2 board). There is no Terms link until real terms exist.
  * Contact is the support mailbox itself, shown as text, so it can be read or copied as well as
- * clicked. The credit line names every photographer on the page (spec §9).
+ * clicked. The credit line names every photographer on the page (spec §9): each page passes the
+ * credits for the photos it shows (all six on the landing, the default), and a page with no
+ * photographs passes none, which hides the line.
  */
 const link = cn(
   "inline-flex min-h-11 min-w-11 items-center justify-center rounded-tag text-muted transition-colors duration-150 hover:text-indigo-night outline-none focus-visible:outline-2 focus-visible:outline-indigo-600 focus-visible:outline-offset-2",
 );
 
-export function SiteFooter() {
+export function SiteFooter({ credits = PHOTO_CREDITS }: { credits?: readonly PhotoCredit[] } = {}) {
   return (
     <footer className="border-t border-line bg-white">
       <div className="mx-auto flex w-full max-w-[1240px] flex-col gap-5 px-5 pt-7 pb-9 text-[14px] text-muted md:px-6">
@@ -50,20 +52,22 @@ export function SiteFooter() {
           <p>{FOOTER.copyright}</p>
         </div>
 
-        <p className="text-[12.5px] leading-[1.6]">
-          {FOOTER.photos}{" "}
-          {PHOTO_CREDITS.map((credit, index) => (
-            <span key={credit.href}>
-              <a
-                href={credit.href}
-                className="underline decoration-line underline-offset-2 transition-colors duration-150 hover:text-indigo-night hover:decoration-current"
-              >
-                {credit.label}
-              </a>
-              {index < PHOTO_CREDITS.length - 1 ? ", " : "."}
-            </span>
-          ))}
-        </p>
+        {credits.length > 0 ? (
+          <p className="text-[12.5px] leading-[1.6]">
+            {FOOTER.photos}{" "}
+            {credits.map((credit, index) => (
+              <span key={credit.href}>
+                <a
+                  href={credit.href}
+                  className="underline decoration-line underline-offset-2 transition-colors duration-150 hover:text-indigo-night hover:decoration-current"
+                >
+                  {credit.label}
+                </a>
+                {index < credits.length - 1 ? ", " : "."}
+              </span>
+            ))}
+          </p>
+        ) : null}
       </div>
     </footer>
   );
