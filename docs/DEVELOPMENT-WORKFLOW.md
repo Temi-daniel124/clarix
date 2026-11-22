@@ -1,13 +1,13 @@
 # DEVELOPMENT-WORKFLOW.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md` D015 and D016, which this document implements
+**Authority level: 3.** Defers to `DECISIONS.md` D015, D016 (identity now D033) and D032, which this document implements
 operationally. Every agent (Claude Code included) and every human working on this repo follows
 this loop and these two hard gates.
 
 ## The loop: PLAN → IMPLEMENT → TEST → REVIEW → CORRECT → ACCEPT
 
-1. **PLAN.** Before writing code, state which requirement in `MVP-SCOPE.md` (or which screen in
-   `docs/planning/*-ux-blueprint.md`) this work satisfies, and name the files it will touch. If
+1. **PLAN.** Before writing code, state which step in `BUILD-PLAN.md` (and which requirement in
+   `MVP-SCOPE.md`, screen in `docs/planning/`, and cases in `EDGE-CASES.md`) this work satisfies, and name the files it will touch. If
    the work doesn't map to something already written down in `DECISIONS.md`, `PRODUCT.md`,
    `MVP-SCOPE.md`, `ROLES-AND-PERMISSIONS.md`, or a UX blueprint, stop and raise it, don't
    improvise scope.
@@ -27,9 +27,11 @@ this loop and these two hard gates.
 5. **CORRECT.** Fix what review found. Don't silently lower the bar (e.g. don't skip the meter
    motif because it's fiddly), either implement it correctly or flag it explicitly as
    incomplete and say why.
-6. **ACCEPT.** Only after REVIEW passes clean: commit (see §1 below), push, let Vercel's Preview
-   deployment build it, and confirm the Preview looks and behaves correctly before it's
-   considered done. Update `docs/PROJECT-STATE.md`'s checklist if this closes an item there.
+6. **ACCEPT.** Only after REVIEW passes clean: commit (see §1 below), push **the branch**, open a
+   PR, let Vercel's Preview deployment build it, check it yourself at 360/390/1280/1440px, put the
+   Preview link and screenshots in the PR, tick the step in `BUILD-PLAN.md`, and update
+   `docs/PROJECT-STATE.md`. Then stop: the owner reviews and decides when it merges (§4, D032).
+   ACCEPT never includes merging.
 
 ---
 
@@ -39,8 +41,11 @@ Every commit in this repository must be authored as:
 
 ```
 Name:  Temiloluwa Adebayo
-Email: adrianwilliams128765@gmail.com
+Email: temmydaniel124@gmail.com
 ```
+
+(D033: the repository moved to GitHub `Temi-daniel124` and the Vercel account registered to this
+address on 22 November 2026; the earlier address in D016 is retired.)
 
 **Why this is a hard gate, not a convention:** a prior mismatch between the committing identity
 and what GitHub/Vercel expected caused Vercel to block a production deployment outright. This
@@ -59,11 +64,11 @@ repo's setting must not silently leak into other projects either):
 
 ```bash
 git config user.name "Temiloluwa Adebayo"
-git config user.email "adrianwilliams128765@gmail.com"
+git config user.email "temmydaniel124@gmail.com"
 ```
 
 **Also confirm, once, on the GitHub side (not a per-session check, but check it now):**
-`adrianwilliams128765@gmail.com` must appear under the GitHub account's **verified** email
+`temmydaniel124@gmail.com` must appear under the GitHub account's **verified** email
 addresses (Settings → Emails), and "Keep my email address private" must not be substituting a
 `noreply` address for commits pushed from this machine. That private-email substitution is a
 common, easy-to-miss cause of exactly the author-mismatch problem that caused the earlier block.
@@ -147,9 +152,26 @@ for it to run.
 | Eligibility arithmetic (Step 1/2 formulas in `DATA-MODEL.md`) | Unit tests, run locally and in CI, no Docker needed | Pure functions, no database required to test the math itself. |
 | UI/screen completeness against `docs/planning/*.md` | Manual review during REVIEW step, and Vercel Preview inspection | No automated visual-diff tooling in v1; the design bar is enforced by disciplined review, not a snapshot test suite (P1 candidate: Playwright + visual regression, see `TOOLING-POLICY.md`). |
 
-## 4. Branching and deploys
+## 4. Branching, pull requests and deploys (D032)
 
-Small, reviewable commits on short-lived branches, merged to the default branch once REVIEW
-passes. Every push triggers Vercel: a pull request gets a Preview deployment, a merge to the
-default branch deploys to production. Never force-push the default branch. Never skip the commit-
-identity check "to save time". It is the specific thing that broke deployment before.
+- **Never commit to `main`.** Every change, however small, is a branch named
+  `r2/<phase>-<step>-<short-name>` (or the branch a session was assigned) and a pull request.
+- Every push to a branch gets a Vercel Preview. The PR description carries: the BUILD-PLAN step, the
+  decisions and edge cases covered, the Preview URL, phone and desktop screenshots of every changed
+  screen, a "How to check it" list for the owner, and "Needs migration applied" if it has one.
+- **Only the owner merges**, or an agent the owner has told, in words, to merge that specific PR.
+  Approval on one PR does not cover another. Never enable auto-merge. Never promote a Preview to
+  Production by hand.
+- Never force-push, rebase or delete `main`. On a feature branch, prefer new commits over rewriting
+  history once a PR is open.
+- Keep branches short-lived: one BUILD-PLAN step each. If review asks for more, it goes on the same
+  branch; if it is a new step, it is a new branch.
+- Turn on branch protection for `main` (require a PR and passing checks): owner task, listed in
+  `PROJECT-STATE.md`.
+
+## 5. Visual QA (R2, light theme only, D037)
+
+For every UI PR: check at 360×800, 390×844, 1280×800 and 1440×900; with `prefers-reduced-motion`;
+with keyboard only on desktop; and against `DESIGN_SYSTEM.md` §11. Playwright (pre-installed in the
+cloud environment) is the way to take the screenshots: sign in with the demo accounts from the
+environment, never from a committed file. There is no dark-mode check any more.

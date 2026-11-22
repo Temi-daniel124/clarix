@@ -16,8 +16,11 @@ migration that creates the table.
 ## Supabase project isolation
 
 - **Project:** `Clarix`, project ref: `sxugaizwmqigtioqgefx` (`https://sxugaizwmqigtioqgefx.supabase.co`).
-- This is a **new, standalone project** inside an existing Supabase organization that already
-  contains one unrelated project. That unrelated project's database, storage, auth users, and API
+- **R2 (November 2026):** the owner's current Supabase account holds other, unrelated projects
+  (for other products) that other sessions use. Never list, query, pause, change or delete them, and
+  never sign that connection out. The Clarix production project itself still sits under the owner's
+  previous account until the owner moves it (`docs/PROJECT-STATE.md` → Waiting on the owner).
+- This is a **standalone project**; other projects exist alongside it. That unrelated project's database, storage, auth users, and API
   keys must never be queried, referenced, or connected to from this codebase, by any script,
   migration, or environment variable. If you are ever unsure which project a command targets,
   stop and confirm the project ref first.
@@ -216,9 +219,26 @@ reachable.
   (regenerate in Supabase/Resend/the AI provider's dashboard) rather than just removing it from a
   future commit, git history retains it either way.
 
+- **Known exposure to clean up (R2).** The project zip the owner shared in November 2026 contained
+  a `.env.local` with the live Supabase anon key and a Resend API key, and a `.vercel/` folder linked
+  to the retired Vercel project. The **Resend key must be rotated** (owner task). Delete `.vercel/`
+  before linking the new Vercel account. Never commit either; `.gitignore` already covers both.
+- **Access tokens given to an agent** (a Supabase personal access token, a Vercel token) live only in
+  that session's `.env.local` or environment, are never echoed into logs, commits, PRs or messages,
+  and are revoked by the owner when the session's work is done.
+- **Demo accounts (D048).** The four demo accounts' passwords are shared with the owner's audience
+  for the FMC demonstration. They must never appear in a committed file, a seed script, a PR or a
+  screenshot. Where the demo sign-in chips are switched on, the passwords come from a server-only
+  environment variable on that one deployment. Before a real cooperative's members join production,
+  the demo accounts are either moved to staging or their passwords are rotated.
+- **Billing data (D041, D042).** Invoices and payments are cooperative-level records readable by that
+  cooperative's admins and the Super Admin only. If Paystack is confirmed, its secret key is
+  server-only, webhooks are verified by signature, and no card data ever touches Clarix.
+
 ## PII and sensitive data handling
 
-- **Salary figures, IPPIS numbers, and uploaded payslip files are sensitive personal data** under
+- **Income figures (salary, average inflow, declared), member IDs (including IPPIS numbers), and
+  uploaded payslips and bank statements are sensitive personal data** under
   the Nigeria Data Protection Act (NDPA) 2023, handle them with a lawful basis (the employee's
   own signup/consent flow), and never expose more of them than a given screen's stated purpose
   requires.
@@ -261,6 +281,18 @@ reachable.
   (`docs/DECISIONS.md` D006), and no salary data is retained by that call path beyond what the
   API provider's own data-use terms allow, check those terms before enabling this path in
   production and note the outcome here.
+
+- **R2 extends the D031 window to bank statements** (D035): the same three conditions, the same
+  sixty-second signed URLs. Bank statements show every transaction a member made, so the review screen
+  shows the confirmed average and the period first, and the document only on an explicit "View
+  statement" action that is audit-logged.
+- **Generated documents (D044).** Statements and exports are produced server-side and streamed to the
+  requester; they are not stored in a bucket by default. The `generated_documents` row keeps only
+  metadata, a hash and the verification code. The public `/verify/[code]` page shows kind,
+  cooperative, period and date, never a name or a figure. Every export is audit-logged.
+- **Real documents are never demo data.** The sample IPPIS payslips shared during planning contain
+  real names, bank account numbers and pension PINs. They are never committed, seeded or used in
+  screenshots (`docs/EDGE-CASES.md` E35).
 
 ## Super Admin's Access Grant exception
 

@@ -1,107 +1,130 @@
 # PRODUCT.md, Clarix
 
 **Authority level: 2.** Defers to `DECISIONS.md` on anything that conflicts. This is the "why" and
-"for whom", for the "what to build," see `MVP-SCOPE.md`; for "who can do what," see
-`ROLES-AND-PERMISSIONS.md`.
+"for whom". For "what to build" see `MVP-SCOPE.md` and `BUILD-PLAN.md`; for "who can do what" see
+`ROLES-AND-PERMISSIONS.md`. Rewritten for Release 2 (22 November 2026, D034 to D042).
 
 ## The problem
 
-Federal Medical Centre, Abeokuta (FMC Abeokuta) hosts multiple independent staff cooperatives.
-Employees may join more than one. Each cooperative manages its own savings and loan approvals in
-isolation, with no visibility into what a member already owes at another cooperative in the same
-hospital. Nigerian law (Labour Act §5) caps total salary deductions at one-third of wages. Because
-no cooperative can see the others' obligations, combined deductions can silently breach that cap
-or exceed net pay outright. The conflict surfaces at payroll time, too late for anyone to act,
-and either the cooperative loses money and time chasing it, or the employee ends up
-over-committed. A real reviewed FMC Abeokuta IPPIS payslip confirms this is already happening: it
-shows three separate named cooperative deductions running simultaneously against one employee.
+Across Nigeria, people belong to more than one cooperative: a staff cooperative at work, a thrift
+society in their trade, a multipurpose cooperative in their community, a church or mosque society.
+Each cooperative approves loans on its own, with no view of what the member already owes at the
+others. When the repayments are deducted from a salary, Nigerian labour law caps the total at
+one-third of wages; when they come from a trader's or artisan's income, there is no cap at all, only
+a person who has promised more than they earn.
 
-Federal-level systems (IPPIS TPSMS/WACS) exist to consolidate third-party payroll deductions but
-are currently criticized for opacity, validating that the underlying problem is real, while also
-being a design lesson Clarix should not repeat.
+Either way the problem shows up too late: at payroll, or when repayments stop. The cooperative loses
+money and time chasing it, and the member ends up over-committed. A real FMC Abeokuta payslip showed
+three separate cooperative deductions running against one employee, at 30.3% of gross pay and 58.1%
+of net. That is the pattern Clarix exists to catch before the next loan is approved, wherever it
+happens.
+
+Today each cooperative also runs its books in spreadsheets, notebooks and WhatsApp. That is the
+second problem Clarix solves, because the cross-cooperative check is only as good as the records
+behind it.
 
 ## The product, in one sentence
 
-Clarix is a cross-cooperative deduction coordination layer: given a member and a proposed loan, it
-tells the cooperative, in real time, whether the member's *combined* obligations across every
-cooperative they belong to still fit within the legally agreed deduction cap, before the
-cooperative commits to a decision it can't safely undo at payroll time.
+Clarix gives every cooperative a member belongs to one honest answer, before a loan is approved, to
+"can this member really afford another repayment?", computed across all of their cooperatives
+without any of them seeing another's records, and it keeps the day-to-day books (members, savings,
+loans, imports, exports, statements) that make that answer correct.
 
-## Who it's for
+## Who it is for
 
-The customer is the cooperative, not the hospital. FMC Abeokuta is the pilot host, engaged and
-already agreed to a delivery price for the MVP. Clarix is not being built for, sold to, or
-governed by FMC as an institution. See `DECISIONS.md` D002 and D005.
+- **The customer is the cooperative.** It pays (D041); its admin and officers use Clarix daily.
+- **The member never pays** and gets one place to see every cooperative, savings, loans and what they
+  can still afford.
+- **An institution** (an employer such as FMC Abeokuta, a market association, a union) is optional
+  context: it can set a default repayment policy its cooperatives inherit and lower, but it is not a
+  user of Clarix and has no role (D001, D034).
 
-## Why now / why this works
+**FMC Abeokuta is the first customer**, not the product's boundary. Its five staff cooperatives are
+the pilot and the demo; nothing in the code or copy assumes them (D034).
 
-- Validated against six real competing Nigerian cooperative-software products (Coopify, Coopco,
-  ProbityCoop, Hyves, Coopra, SODLAPP), none offer cross-cooperative visibility, including the
-  most IPPIS-aware of them (SODLAPP explicitly isolates data company-scoped).
-- The governance rule that makes this legally and socially workable, automatic, minimum-
-  disclosure, no single human gatekeeper, was directly negotiated and agreed by the FMC Abeokuta
-  cooperative heads themselves (`DECISIONS.md` D003), not assumed by the product team.
-- The engagement is already paid for the MVP; the go-to-market motion after delivery is a free
-  "hook" month for all cooperatives/employees, followed by a paid recurring plan whose pricing is
-  designed later, after real usage evidence exists (see `MVP-SCOPE.md` → Success Metrics).
+## How it works, for a member
+
+1. Create an account with an email (phone sign-in later, D022) and join or find each cooperative.
+2. Optionally add proof of income: a payslip, 3 to 6 months of bank statements, or a declared figure
+   marked as not verified (D035). Without any, everything works except that the limit reads
+   "Not assessed yet".
+3. See one home: available to borrow, savings, loans and this month's repayments across every
+   cooperative.
+4. Apply for a loan at any one cooperative, with the live meter showing what fits. An application
+   above the limit is still sent; it just holds nothing and the cooperative decides (D040).
+
+## How it works, for a cooperative
+
+1. Onboarded by the Clarix team (self-signup comes once email works, `DECISIONS.md` → Open). Import
+   the member list and existing loans from the spreadsheet it already keeps (D036).
+2. Record contributions and repayments one by one or in bulk each month; reconcile what payroll or
+   the bank actually delivered.
+3. Every application arrives with the answer already worked out: the combined committed figure
+   across all cooperatives, the member's limit, and room left. Only that combined figure ever crosses
+   between cooperatives (D003).
+4. Export the books (CSV, Excel, PDF) and issue watermarked member statements (D044).
+5. 60 days free, then ₦150 per active member per month, ₦5,000 minimum (D041).
 
 ## Product principles
 
-1. **Coordinate, don't replace.** Clarix sits alongside each cooperative's own bookkeeping; it
-   never becomes their accounting system and never touches money directly (`DECISIONS.md` D004).
-2. **Minimum necessary disclosure, always.** No screen or API ever exposes more cross-cooperative
-   detail than the eligibility formula needs (`DECISIONS.md` D003).
-3. **Informs, never gatekeeps.** Clarix always allows a cooperative to submit or approve a request
-   that exceeds computed capacity. It just makes that choice visible and requires the person
-   making it to say why (see the "Submit/Approve anyway" pattern throughout the role blueprints).
-4. **The math is boring on purpose.** Eligibility is deterministic arithmetic, not a model
-   (`DECISIONS.md` D018), auditable is more valuable here than clever.
-5. **Design must earn trust visually, not just functionally.** A financial-coordination product
-   that looks like a generic AI-built dashboard undermines its own credibility. See
-   `DESIGN_SYSTEM.md`.
+1. **The check is the core; the books serve it.** Clarix keeps the records a cooperative needs day to
+   day, but every feature must make the cross-cooperative answer more correct or easier to act on
+   (D036). It is not a general accounting package and never moves money (D004).
+2. **Minimum necessary disclosure, always.** No screen or API exposes more cross-cooperative detail
+   than the eligibility formula needs (D003).
+3. **Informs, never gatekeeps.** A member can always apply and a cooperative can always approve above
+   the limit with a written reason. Nothing is silently dropped (D040).
+4. **Missing data degrades gracefully.** No income evidence, no staff ID, an odd spreadsheet: each
+   becomes "Not assessed yet" or "needs review", never a crash, a block, or silence
+   (`docs/EDGE-CASES.md`).
+5. **The maths is boring on purpose.** Deterministic arithmetic, auditable, no model in the decision
+   (D018).
+6. **It must look like it can be trusted with money.** A premium, calm, light interface that behaves
+   like a native app on a phone and a desktop (`DESIGN_SYSTEM.md`).
 
-## Non-goals (product-level; see `MVP-SCOPE.md` for the full P0/P1/P2 breakdown)
+## Non-goals
 
-No money movement. No payroll/IPPIS integration. No external lender/loan-shark tracking (no
-reliable, legal data source exists). No native mobile app. No multi-organization support in v1.
-No AI/ML in the eligibility decision itself. No organization-level roles (HR, payroll, auditor).
+No money movement and no deductions taken by Clarix. No payroll or IPPIS integration (D004). No
+tracking of lenders outside Clarix (no legal, reliable source exists). No native app-store app (the
+PWA installs). No AI in the eligibility decision. No institution-level roles (HR, payroll, auditor).
 
 ## The limit of what Clarix can see
 
-Clarix coordinates across the cooperatives that are on Clarix. It has no way of knowing about a
-loan taken anywhere else.
+Clarix coordinates across the cooperatives that are on Clarix. It cannot know about a loan taken
+anywhere else.
 
-If Cooperative A and Cooperative B are both on the platform and Cooperative C is not, a member who
-borrows from C and then applies at B will be assessed by B against a picture that does not include
-the loan from C. B will see the member's obligations at A and at B, add them correctly, and give an
-honest answer to the wrong question. Nothing in the design hides this and nothing can fix it from
-inside the product: there is no legal, reliable source for another cooperative's private loan book,
-which is the same reason external lender tracking is a non-goal above.
+If Cooperatives A and B are on Clarix and C is not, a member who borrows from C and then applies at
+B is assessed against A and B only. Two things follow, and both are said plainly to any cooperative
+considering joining:
 
-Two things follow, and both should be said plainly to any cooperative considering joining:
+- **The protection is real but partial, and it grows with adoption.** Every cooperative that joins
+  makes the answer more complete for every other one.
+- **A member or officer can declare other monthly repayments** (`docs/EDGE-CASES.md` E16), and they
+  count. That narrows the gap; it does not close it.
 
-- **The protection is real but partial, and it scales with adoption.** Every cooperative that joins
-  makes the figure more complete for every other cooperative already on it. With one cooperative
-  the deduction cap is only a solo check; the cross-cooperative answer that makes this product worth
-  having only exists once several are in.
-- **It is incomplete until they are all in.** An organization where most cooperatives have joined
-  gets most of the benefit, not all of it, and the gap is exactly the cooperatives still outside.
+Any claim that Clarix prevents over-borrowing, made without this qualification, is a claim the
+product cannot support. The landing page must not make it.
 
-This is written here rather than only in a pitch because it is a standing fact about how the system
-works, not a talking point. Any claim that Clarix prevents over-borrowing, made without this
-qualification, is a claim the product cannot support.
+## Competitors and position
 
-## Business model (context, not a spec to build against)
+Researched November 2026 (the owner holds the full pricing report; its conclusions are summarised here and in D041): CoopOS (₦100 per
+member), JIBTECH (₦400 falling to ₦200 per member), TrustCoop (₦30,000 flat), Coopco (₦15,000 to
+₦90,000 per month by tier), ProntoCoop, and the six reviewed in R1 (Coopify, ProbityCoop, Hyves,
+Coopra, SODLAPP). All of them run one cooperative's books; **none checks a member's obligations
+across cooperatives.** Clarix's position: the books at a fair per-member price, plus the one check no
+one else can give, which gets better the more cooperatives join.
 
-Paid MVP delivery (price already agreed with FMC Abeokuta cooperative heads) → free hook month
-for all committed cooperatives and their employees → a paid recurring plan, designed and priced
-after the hook month using real usage evidence, not before. Do not build pricing UI, plan tiers,
-or billing logic against assumed numbers. That work is explicitly deferred (`DECISIONS.md` →
-Open, not yet decided).
+## Business model
 
-## Success signals (see `MVP-SCOPE.md` for the full metrics list)
+Bill the cooperative only: ₦150 per active member per month, ₦5,000 minimum, yearly at 10× monthly,
+60-day free trial, 14-day grace, then read-only (never deleted). Free tiers until the first
+cooperative pays; at first revenue, paid hosting costs about ₦65,000 per month, so break-even is
+about 450 active members across all cooperatives (D041, D042, D049).
 
-The number that matters most: how many loan requests the eligibility check flagged as
-not-eligible that a cooperative, left to its own visibility, would otherwise have approved. That
-number is the evidence base for the paid-plan conversation, it's a product metric, not a vanity
-one.
+## Success signals
+
+- **The one that sells it:** loan applications the check flagged above the limit that the cooperative,
+  by its own account, would otherwise have approved.
+- Cooperatives that finish importing members and existing loans in their first week.
+- Members who open Clarix again in their second month.
+- Trial-to-paid conversion at day 60.

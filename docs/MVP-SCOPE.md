@@ -1,103 +1,79 @@
 # MVP-SCOPE.md, Clarix
 
-**Authority level: 3.** Defers to `DECISIONS.md`. This is what gets built for the agreed MVP
-payment. Anything not listed under Must-Have is out of scope for this phase, full stop. If a
-task during implementation seems to require something not listed here, stop and raise it rather
-than quietly building it.
+**Authority level: 3.** Defers to `DECISIONS.md`. Release 1 (R1, the FMC MVP) is built and live.
+This file now lists what Release 2 (R2) adds and what stays out. The order of work is
+`docs/BUILD-PLAN.md`. If a task seems to need something not listed here, stop and raise it.
 
-## Goals
+## R1: built and live (keep working; regressions are bugs)
 
-- A cooperative can submit a loan application and get a correct eligible/not-eligible answer,
-  computed against the member's *actual* cross-cooperative obligations, without seeing any other
-  cooperative's private records.
-- Two cooperatives cannot simultaneously approve loans against the same slice of an employee's
-  deduction headroom: the reservation mechanism must hold under real concurrent use.
-- An employee opens one dashboard and sees correct totals across every cooperative they belong to.
-- A cooperative admin can import their existing member roster from a spreadsheet without manually
-  re-typing records.
-- All committed FMC Abeokuta cooperatives are onboarded with real member data inside the pilot
-  window.
+Auth and accounts; cooperative onboarding by the Super Admin with admin invitations; roster import
+(CSV/XLSX, synonym matching, preview, template); member onboarding; per-cooperative isolation by RLS;
+deduction policy; the cross-cooperative eligibility check; capacity reservation with the advisory lock;
+loan lifecycle with expiry; member dashboard and cooperative detail; cooperative discovery; officer
+permission toggles; audit logs; payslip upload with typed figures; reconciliation screen; three
+reports; Super Admin time-boxed access grants; PWA install and offline page.
 
-## Non-Goals (v1)
+Known R1 defects fixed in R2 Phase 0: over-limit applications not stored (D040); `npm ci` failing;
+no way to enter existing loans; previews sharing the production database (D043); contradictory
+counts and stale timestamps on home screens.
 
-- No money movement. Clarix never holds, deposits, or transfers funds.
-- No payroll/IPPIS integration.
-- No external lender/loan-shark tracking.
-- No native mobile app.
-- No multi-organization support.
-- No AI/ML in the eligibility decision.
-- No organization-level roles (HR, payroll, auditor).
+## R2 goals
 
-## Must-Have (P0): the MVP
+- Any Nigerian cooperative, with or without an employer behind it, can use Clarix end to end (D034).
+- A member with no payslip, no staff ID or irregular income can join, save and apply (D035, D040).
+- A cooperative can bring its whole existing book (members and loans) in on day one (D036).
+- A cooperative can export its records and give members watermarked statements (D036, D044).
+- Every screen meets `DESIGN_SYSTEM.md`: light only, Figtree, summary homes with sheets (D037–D039).
+- Clarix can charge a cooperative after a 60-day trial without ever deleting its data (D041, D042).
 
-1. **Auth & account.** Single account per employee; email/phone + password; role assignment
-   (Admin/Officer set by Super Admin or an existing Admin at onboarding).
-2. **Cooperative onboarding via spreadsheet import.** Upload CSV/XLSX; automatic column matching
-   against a synonym dictionary ("IPPIS"/"Staff No."/"Employee ID" → `employee_id`,
-   "Savings"/"Contribution Balance" → `savings_balance`, etc.); a mapping screen to confirm or
-   remap anything unresolved; duplicate-row and duplicate-column detection before commit; a
-   downloadable blank template for irregular sheets; a Ready/Needs-review/Invalid preview with
-   inline correction. Nothing auto-committed without an explicit confirm.
-3. **Employee onboarding.** Signup, employee ID entry (validated against the organization's ID
-   format), payslip upload (image/PDF), extracted-field review-and-confirm screen, join/apply to
-   cooperative(s).
-4. **Per-cooperative data isolation**, enforced server-side via RLS (`DATA-MODEL.md`), not just
-   hidden in the UI.
-5. **Deduction policy engine**: configurable basis (gross/net) and percentage cap, set at
-   organization level by Super Admin; cooperatives inherit it.
-6. **Cross-cooperative eligibility check**: salary basis, cap, existing active+reserved
-   obligations across all cooperatives, available capacity, eligible/not-eligible for a requested
-   amount + tenure. Available any time, not gated to a submission event.
-7. **Capacity reservation**: submitting a loan atomically reserves the requested monthly amount;
-   see `DATA-MODEL.md` for the advisory-lock transaction.
-8. **Loan lifecycle**: draft → submitted (reserved) → approved (active) or rejected (released) →
-   completed. Reservation auto-expires (default 7 days, configurable) if never actioned.
-9. **Employee dashboard**: aggregate KPI cards (total savings, active loans, monthly deductions,
-   available capacity) across the employee's own memberships only.
-10. **Cooperative switcher**: dropdown/list on the employee side for per-cooperative detail.
-11. **Cooperative discovery**: public profile (name, description, requirements, packages/
-    benefits) visible to any employee; full member data visible only after joining.
-12. **Officer permission toggles**: Admin controls exactly what each officer can do, default-deny.
-13. **Audit log**: every view/edit of financial data records who, what, when, old→new value.
-14. **Payslip upload, salary basis only, not a deduction ledger.** See `DECISIONS.md` D006.
+## R2 Must-Have (P0), in build order
 
-## Nice-to-Have (P1, fast follow after MVP proves out)
+1. **Phase 0 fixes** (BUILD-PLAN 0.1–0.5).
+2. **Design foundation**: tokens, Figtree, light only, pill buttons, inputs, sheet and side panel, app
+   shells with cooperative switcher and command search (1.1–1.4).
+3. **Brand and SEO**: logo set, favicon and app icons, OG image, sitemap, robots, manifest (2.1–2.2).
+4. **Generalisation**: institution optional, member ID per cooperative, repayment policy per
+   cooperative, no FMC wording, onboarding without salary (3.1–3.3).
+5. **Summary home screens** for all four roles (4.1–4.4).
+6. **Public site** (landing with hero carousel or video, pricing, sign in/up, onboarding, legal) (5.x).
+7. **Inner screens** restyled, plus staff applying for a member, bulk monthly entry, and staff
+   notifications (6.x).
+8. **Income evidence**: payslip, bank statements, declared; ageing; sanity bands (7.x).
+9. **Books around the check**: import v2 with existing loans, PDF statements, exports, verification
+   codes, auto-join with confirmation (8.x).
+10. **Trial and billing**: trial clock, reminders, grace, read-only mode, manual payments, invoices
+    (9.1–9.4).
 
-- Automated payslip field extraction via the vision-capable LLM fallback (the confirm-before-save
-  step is retained regardless).
-- Email notifications (Resend) for a capacity breach or an expiring reservation.
-- Monthly reconciliation entry screen (expected vs. actually-received deduction).
-- Richer reporting/export for cooperative admins.
+## R2 Nice-to-Have (P1)
 
-## Future Considerations (P2, explicitly deferred, don't architect against)
+- Paystack checkout (9.5, after the owner confirms the provider).
+- Email for invites, statements and reminders (needs the domain and a verified Resend sender).
+- Cooperative self-signup from the public site (needs email).
+- OCR or vision fallback for photographed payslips and statements (needs its own decision and a
+  `SECURITY.md` update before a document leaves Clarix).
+- Repayment schedules other than equal monthly.
+- Playwright visual regression on the key screens.
 
-- Multi-organization support.
-- Licensed credit-bureau integration for external lender visibility.
-- Native mobile app.
-- Anomaly detection on deduction shortfalls once enough historical data exists.
+## Future (P2, do not architect against)
 
-## Success Metrics
+Phone sign-in (paid SMS); licensed credit-bureau checks; payroll integration; native store apps;
+anomaly detection on shortfalls; multi-currency.
 
-**Leading (check end of pilot week 1–2):**
-- % of committed cooperatives completing spreadsheet import without unresolved row errors.
-- Number of employees completing payslip upload + confirmation during onboarding.
-- Number of eligibility checks run by officers/admins.
+## Non-goals (unchanged in spirit)
 
-**Lagging (check end of month 1. This is the number that sells the paid plan):**
-- Count of loan requests flagged not-eligible that a cooperative, by their own account, would
-  otherwise have approved without the check.
-- Cooperative heads' own willingness-to-pay response when the paid-plan conversation opens.
+No money movement. No payroll/IPPIS integration. No lender tracking outside Clarix. No AI in the
+eligibility decision. No institution-level roles. No member-paid plans.
 
-## Timeline
+## Success metrics
 
-No hard external deadline. P0 above is the MVP that gets delivered for the agreed payment; P1 is
-the "more is coming" fast-follow that keeps cooperatives and employees engaged through the free
-hook month, ahead of the paid-plan conversation.
+**Leading (first two weeks of each cooperative):** import completed with existing loans; share of
+members with any income evidence; checks run per officer.
 
-## Screens-by-role (pointer)
+**Lagging (day 60):** over-limit applications the cooperative says it would otherwise have approved;
+trial-to-paid conversion; members returning in month two.
 
-The full screen-by-screen build spec for each role lives under `docs/planning/`:
-`clarix-employee-ux-blueprint.md`, `clarix-cooperative-admin-ux-blueprint.md`,
-`clarix-cooperative-officer-ux-blueprint.md`, `clarix-super-admin-ux-blueprint.md`. Treat those
-documents as the literal screen inventory for P0, build every screen they describe; don't invent
-additional ones without a reason traceable back to a P0 requirement above.
+## Screens by role (pointer)
+
+`docs/planning/`: the four role blueprints (read each one's R2 header first), plus
+`clarix-public-site-blueprint.md`, `clarix-documents-blueprint.md` and `clarix-billing-blueprint.md`.
+Build every screen they describe; do not invent screens without a reason traceable to a P0 item above.

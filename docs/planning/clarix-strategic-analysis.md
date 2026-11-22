@@ -1,5 +1,8 @@
 # Clarix, Strategic Analysis: Cross-Cooperative Loan & Deduction Coordination Platform
 
+> **Historical (R1).** The pre-build strategic analysis. Its market reasoning still holds; its
+> FMC-only scope and deferred pricing are superseded by `docs/PRODUCT.md` and D034, D041.
+
 *Prepared for: Joshua | Framework: Full strategic/competitive/product review | Date: September 2026*
 
 ---

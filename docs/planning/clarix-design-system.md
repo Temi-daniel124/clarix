@@ -1,5 +1,9 @@
 # Clarix Design System & Screen Specification
 
+> **Historical (R1).** Superseded by `DESIGN_SYSTEM.md` (Release 2, D037–D039, D045, D046) for tokens,
+> type, colour, motion, imagery and layout. Its §4 Watermelon curation is superseded by
+> `docs/REFERENCE-STUDY.md` §3. Keep for the reasoning; build from the new files.
+
 *Companion to `clarix-strategic-analysis.md` and `clarix-mvp-spec.md`. Covers visual language, motion, the Watermelon UI component set, and a screen-by-screen build spec. **See `/DESIGN_SYSTEM.md` at the repo root for the condensed, always-applicable rulebook**. This file is preserved as the original, fuller planning artifact, including the component-by-component curation table referenced from there.*
 
 ---

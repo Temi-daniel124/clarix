@@ -1,5 +1,32 @@
 # Clarix, Cooperative Officer Role: Screen-by-Screen Wireframe & User Flow
 
+> ## R2 header (22 November 2026): read this before any section below
+>
+> The R1 text below stays as the record of what was built; where this header and the body disagree,
+> **this header wins** (then `DESIGN_SYSTEM.md`, then `docs/DECISIONS.md` over both). The same global
+> changes as the admin blueprint's R2 header apply (Member wording, no FMC, light only, Figtree,
+> pills, no eyebrows, no cooperative name in the title).
+>
+> | Section | Status in R2 | Replacement |
+> |---|---|---|
+> | 3 Navigation | Phone: Home, Members, Loans, More + centre "+" (opens Record a payment); desktop light sidebar | `DESIGN_SYSTEM.md` §5.5 |
+> | 4.1 Officer Home | **Superseded** | "Officer home (R2)" below |
+> | 5.x Members | Same as admin R2 (pinned search, member sheet), within the officer's permissions | BUILD-PLAN 6.4 |
+> | 5.4 Record | Adds bulk monthly entry when the officer holds the record permission | BUILD-PLAN 6.7 |
+> | 6.2 Submit Loan Application | **Never built in R1; build in R2.** Start from the member sheet → "Apply for this member"; same flow and meter as the member's own apply; the member is notified and sees it in their Loans; over-limit stored as `pending_review` (D040) | BUILD-PLAN 6.6 |
+> | New permissions | `export` (records and statements) and `verify_income` join the default-deny toggles | `ROLES-AND-PERMISSIONS.md` |
+>
+> ### Officer home (R2), replaces 4.1
+>
+> - **Header:** "Hi, Chidi" + cooperative switcher chip + bell.
+> - **Hero:** a large member search field (52px, `radius-pill`, autofocus on desktop only) with the five
+>   most recently touched members as rows under it. This is the officer's real starting point.
+> - **One stat line:** "Recorded today: 4 entries, ₦62,000" (opens today's entries sheet with Timed Undo
+>   on each). When zero: "Nothing recorded today".
+> - **Needs you (max 3):** applications the officer may decide, soonest hold expiry first. Hidden when
+>   the officer cannot decide loans or nothing is waiting.
+> - Removed: the "Your pending tasks" essay empty state and the "Today" two-number block.
+
 *Textual UX blueprint for the Cooperative Officer role only. Companion to `clarix-design-system.md` (tokens, components, motion), `clarix-mvp-spec.md` (data model, permissions, reservation logic), `clarix-employee-ux-blueprint.md`, and `clarix-cooperative-admin-ux-blueprint.md`. No diagrams, every layout is described in words, in the order a real cooperative officer encounters it.*
 
 ---

@@ -1,5 +1,48 @@
 # Clarix, Cooperative Admin Role: Screen-by-Screen Wireframe & User Flow
 
+> ## R2 header (22 November 2026): read this before any section below
+>
+> The R1 text below stays as the record of what was built; where this header and the body disagree,
+> **this header wins** (then `DESIGN_SYSTEM.md`, then `docs/DECISIONS.md` over both).
+>
+> **Global changes:** "employee" reads "member"; "staff ID / IPPIS" reads the cooperative's Member ID
+> label; no FMC wording (D034). Light theme only, Figtree, pill buttons. No uppercase eyebrows. The
+> page title never contains the full cooperative name in a sentence; the name lives in the switcher
+> chip (phone) or sidebar (desktop).
+>
+> | Section | Status in R2 | Replacement |
+> |---|---|---|
+> | 1.1, 1.2 | Restyled to the public-site auth layout | `clarix-public-site-blueprint.md` §4 |
+> | 2.3 Loan Product & Policy | **Adds** the cooperative's repayment policy (basis, percentage, allow declared income, evidence age), capped by any institution policy (D035) | BUILD-PLAN 3.1 |
+> | 2.4 Roster Import | **Changed:** import v2 with existing loans and more columns | `clarix-documents-blueprint.md` §2–3 |
+> | 3 Navigation | **Changed:** phone tab bar Home, Members, Loans, More + centre "+"; desktop light sidebar with switcher and `Ctrl/⌘ K` | `DESIGN_SYSTEM.md` §5.5 |
+> | 4.1 Dashboard | **Superseded** | "Admin home (R2)" below |
+> | 5.1 Member list | **Changed:** search pinned; filters (On Clarix, Not yet joined, Has loans, Evidence missing); desktop table; row opens member panel | BUILD-PLAN 6.4 |
+> | 5.2 Member profile | Becomes the member sheet/panel with tabs Overview, Savings, Loans, Activity; adds "Add existing loan" and "Verify income" | BUILD-PLAN 0.3, 6.4, 7.x |
+> | 5.4 Record contribution | Adds **bulk monthly entry** (paste or upload the month's deductions list, review, confirm) and duplicate warning (E26) | BUILD-PLAN 6.7 |
+> | 6.1 Queue | Segments Waiting / Above limit / Active / Closed / Lapsed; over-limit applications show "Above limit by ₦X" (D040) | BUILD-PLAN 6.5 |
+> | 6.2 Review | Same meter the member sees; fixed bottom bar Approve / Decline; approve on an over-limit item asks for the reason in a sheet | BUILD-PLAN 6.5 |
+> | New: apply on a member's behalf | Officer blueprint 6.2 applies to admins too | BUILD-PLAN 6.6 |
+> | 7.6 Reports | **Changed:** report grid, each with date range and Export (CSV, XLSX, PDF) | documents blueprint §6 |
+> | New: Statements | Bulk member statements for a month | documents blueprint §4 |
+> | New: Billing | Trial status, plan, invoices | `clarix-billing-blueprint.md` §3 |
+>
+> ### Admin home (R2), replaces 4.1
+>
+> - **Header:** "Hi, Funmilayo" + cooperative switcher chip (short name) + bell.
+> - **Hero card:** "Savings held", rolling `hero-figure`, change this month ("+₦86,000 this month" in
+>   emerald, or "No entries yet this month" in `ink-500`). One secondary action "Record a payment".
+> - **Stat row:** Members ("15 · 8 on Clarix"), Active loans (value outstanding), Waiting (applications;
+>   amber when any is within 24h of hold expiry). Each opens its sheet.
+> - **Needs you (max 3), in this priority:** an application whose hold lapses soonest; an over-limit
+>   application; last month not reconciled; trial ending (from day 46); an invitation not taken up
+>   (only if nothing above). One line each, chevron, opens the review sheet.
+> - Setup checklist (until done) replaces Needs you as one compact card "3 of 5 set up" with the next
+>   step as its action; it never pushes the hero below the fold.
+> - Removed from home: "This month" paragraph cards, the tinted KPI panel, the install prompt (moves to
+>   More).
+> - "+" sheet: Record a payment, Add a member, Add an existing loan, Import, Apply for a member.
+
 *Textual UX blueprint for the Cooperative Admin role only. Companion to `clarix-design-system.md` (tokens, components, motion), `clarix-mvp-spec.md` (data model, permissions, reservation logic), and `clarix-employee-ux-blueprint.md` (the Employee role, described separately). No diagrams, every layout is described in words, in the order a real cooperative head encounters it.*
 
 ---
