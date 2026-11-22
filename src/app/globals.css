@@ -306,6 +306,21 @@
   }
 }
 
+/* The Adire ring pattern (spec §2 and §6): concentric indigo rings on a 48px grid, at the 7% and
+   4.5% weights of the round-2 landing board. It is the one sanctioned surface pattern; it sits
+   on a white figure card or the final CTA card, never as decoration on its own. */
+@utility ring-pattern {
+  background-image: radial-gradient(
+    circle at 50% 50%,
+    transparent 0 10px,
+    rgb(47 61 166 / 0.07) 10px 12px,
+    transparent 12px 18px,
+    rgb(47 61 166 / 0.045) 18px 19px,
+    transparent 19px
+  );
+  background-size: 48px 48px;
+}
+
 /* ---------------------------------------------------------------------------
    The landing entrance choreography.
 

@@ -1,5 +1,5 @@
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
@@ -30,7 +30,16 @@ function AccordionItem({ className, ...props }: AccordionPrimitive.Item.Props) {
   );
 }
 
-function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.Trigger.Props) {
+/**
+ * `indicator="plus"` is the landing FAQ's (round-2 board, Watermelon faq-2): a 28px pill that turns
+ * from the indigo wash to solid indigo and rotates its plus into a cross as the item opens.
+ */
+function AccordionTrigger({
+  className,
+  children,
+  indicator = "chevron",
+  ...props
+}: AccordionPrimitive.Trigger.Props & { indicator?: "chevron" | "plus" }) {
   return (
     <AccordionPrimitive.Header className="flex">
       <AccordionPrimitive.Trigger
@@ -44,11 +53,20 @@ function AccordionTrigger({ className, children, ...props }: AccordionPrimitive.
         {...props}
       >
         {children}
-        <ChevronDown
-          aria-hidden
-          strokeWidth={2}
-          className="size-5 shrink-0 text-text-muted transition-transform duration-200 group-aria-expanded/accordion-trigger:rotate-180"
-        />
+        {indicator === "plus" ? (
+          <span
+            aria-hidden
+            className="grid size-7 shrink-0 place-items-center rounded-pill bg-indigo-100 text-indigo-600 transition-[background-color,color,rotate] duration-300 group-aria-expanded/accordion-trigger:rotate-45 group-aria-expanded/accordion-trigger:bg-indigo-600 group-aria-expanded/accordion-trigger:text-white"
+          >
+            <Plus className="size-4" strokeWidth={2} />
+          </span>
+        ) : (
+          <ChevronDown
+            aria-hidden
+            strokeWidth={2}
+            className="size-5 shrink-0 text-text-muted transition-transform duration-200 group-aria-expanded/accordion-trigger:rotate-180"
+          />
+        )}
       </AccordionPrimitive.Trigger>
     </AccordionPrimitive.Header>
   );
