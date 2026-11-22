@@ -8,6 +8,19 @@ test("prefers the configured site URL and strips the slash", () => {
   expect(siteUrl()).toBe("https://clarix-orpin.vercel.app");
 });
 
+test("adds https:// when the configured URL has no scheme, so new URL() never throws", () => {
+  vi.stubEnv("NEXT_PUBLIC_SITE_URL", "clarix.example.ng/");
+  expect(siteUrl()).toBe("https://clarix.example.ng");
+  expect(() => new URL(siteUrl())).not.toThrow();
+
+  vi.stubEnv("NEXT_PUBLIC_SITE_URL", "http://localhost:3000");
+  expect(siteUrl()).toBe("http://localhost:3000");
+
+  vi.stubEnv("NEXT_PUBLIC_SITE_URL", "not a url");
+  vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "");
+  expect(siteUrl()).toBe("http://localhost:3000");
+});
+
 test("falls back to the Vercel production domain", () => {
   vi.stubEnv("NEXT_PUBLIC_SITE_URL", "");
   vi.stubEnv("VERCEL_PROJECT_PRODUCTION_URL", "clarix.example.ng");

@@ -11,11 +11,18 @@ export const SITE_DESCRIPTION =
 
 /**
  * The site's absolute origin, without a trailing slash: the configured public URL, else the
- * production domain Vercel provides, else the local dev server.
+ * production domain Vercel provides, else the local dev server. A configured value without a
+ * scheme ("clarix.ng") gets https://, and one that still will not parse is skipped, so
+ * `new URL(siteUrl())` can never throw.
  */
 export function siteUrl(): string {
   const configured = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (configured) return configured.replace(/\/+$/, "");
+  if (configured) {
+    const withScheme = /^[a-z][a-z\d+.-]*:\/\//i.test(configured) ? configured : `https://${configured}`;
+    const origin = withScheme.replace(/\/+$/, "");
+    // Anything still unparseable (a stray space, say) falls through to the next source.
+    if (URL.canParse(origin)) return origin;
+  }
 
   const vercel = process.env.VERCEL_PROJECT_PRODUCTION_URL?.trim();
   if (vercel) return `https://${vercel.replace(/\/+$/, "")}`;
