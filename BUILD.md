@@ -7,7 +7,8 @@ Practical setup and day-to-day commands. For *why* things are set up this way, s
 
 ## One-time machine setup
 
-Prerequisites: Node.js (LTS), the GitHub CLI (`gh`) or Git for Windows, the Supabase CLI
+Prerequisites: Node.js 26 (pinned in `.nvmrc` and `package.json` "engines", the same version
+Vercel builds with; `nvm use` picks it up), the GitHub CLI (`gh`) or Git for Windows, the Supabase CLI
 (`npm install -g supabase` or the standalone binary), and Vercel CLI (`npm install -g vercel`),
 all light installs, none of them Docker.
 
@@ -49,7 +50,7 @@ only database. Be deliberate, especially with anything destructive.
 ## Running the app locally
 
 ```bash
-npm install
+npm ci        # installs exactly what package-lock.json says; use `npm install` only to change a dependency
 npm run dev
 ```
 
@@ -61,6 +62,8 @@ local backend to start separately.
 
 ```bash
 npm test              # unit tests, eligibility/reservation arithmetic, pure functions, no DB
+npm run typecheck     # generates Next's route types, then tsc --noEmit
+npm run lint
 ```
 
 pgTAP / RLS / concurrency tests run only in GitHub Actions (`.github/workflows/db-tests.yml`),

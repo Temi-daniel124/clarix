@@ -221,6 +221,13 @@ its rows.
   history once a PR is open.
 - Keep branches short-lived: one BUILD-PLAN step each. If review asks for more, it goes on the same
   branch; if it is a new step, it is a new branch.
+- **Stacked steps.** When a step is built while the previous step's PR is still open, its branch
+  starts from that previous step's branch, never from `main`, and its PR's base is that branch, so
+  each PR shows only its own step. Title it "R2 <step number>: <step name>". The PR body lists the
+  whole chain of open PRs in merge order and every migration not yet applied. Nothing in the chain
+  is merged and nothing is pushed to `main`; the owner merges the whole chain later, in order.
+  Database rule is unchanged: a purely additive migration may be applied from the branch (say so in
+  the PR); anything that changes or removes what `main` uses stays unapplied until merge.
 - Branch protection on `main` is deferred by the owner; D032 is the rule until it is on.
 
 ## 5. Visual QA (R2, light theme only, D037)
