@@ -21,3 +21,4 @@ next-env.d.ts
 
 # PowerPoint lock files
 ~$*
+scripts/visual/out/

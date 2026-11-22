@@ -686,3 +686,21 @@ check until then. Super Admin invitations remain for cooperatives Clarix signs d
 the invite-only rule in the admin blueprint and the MVP spec.
 **Rationale:** Growth should not wait on a Super Admin, but an unverified cooperative must not
 see or add to the cross-cooperative picture (D003) until someone at Clarix has checked it is real.
+
+### D040: Where the Adire boards and the spec text disagree, the board wins (plan 1)
+**Status:** Locked
+**Decided:** 2026-11-22, during plan 1 (the Adire foundation and marketing site).
+**Decision:** Four calls made while building the marketing site, where the canvas boards and
+the spec's text differed:
+1. The segmented control's active pill is white on the indigo wash (board), not emerald (spec
+   text).
+2. Feature frames and CTA cards use radius 32, and the board's photo-frame and statement-sheet
+   shadows are allowed. Each is a named token in `globals.css` (`--radius-frame`,
+   `--radius-paper`, `--shadow-frame`, `--shadow-sheet`, `--shadow-segment`, and the field
+   rings `--shadow-field` / `--shadow-field-focus`), never an inline value.
+3. The H1 is 72px on desktop.
+4. The nav's call to action is secondary on every page, so each page's one primary is its own.
+   On /pricing that is a primary in the intro column, beside the estimator.
+**Rationale:** The boards are the owner's approved picture of the product, and the spec text was
+written before they were final. Naming the extra radius and shadows keeps the "no invented
+values" rule of DESIGN_SYSTEM.md true.

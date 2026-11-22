@@ -6,8 +6,9 @@ every milestone (an account created, a repo initialized, a schema pushed, a feat
 agent picking up this project cold should read this file first, right after `DECISIONS.md`, to
 know exactly what already exists and what doesn't.
 
-**Last updated:** 2026-09-13 (the access-grant flow, 7.2 and 7.3, **every screen in every
-blueprint is now built**).
+**Last updated:** 2026-11-22 (plan 1 of the Adire redesign is complete on branch
+`claude/vigilant-mendel-xlrugr`: the light design system, logo set, SEO files, pricing logic and
+the public marketing site, with a visual check that guards it).
 
 ## Redesign (started 2026-11-21)
 
@@ -15,7 +16,7 @@ The owner approved a full redesign ("Adire", light theme only) on 2026-11-21. De
 D039 in `DECISIONS.md` record it.
 
 - **Spec:** `docs/superpowers/specs/2026-11-21-clarix-adire-design-system-design.md`
-- **Plan 1 (current):** `docs/superpowers/plans/2026-11-21-adire-foundation-and-landing.md`
+- **Plan 1 (done, awaiting merge):** `docs/superpowers/plans/2026-11-21-adire-foundation-and-landing.md`
 - **Canvas:** https://claude.ai/artifact/EpN2uwZkXTKwzwLbZWBLe6
 - **Hosting:** the Vercel project is now `clarix` on the owner's account, at
   https://clarix-orpin.vercel.app. The old `clarix-3w5i.vercel.app` belongs to the previous
@@ -34,6 +35,42 @@ The seven plans:
 
 Plans 2 to 7 are written after the previous one is approved and merged. The sections below
 describe the app as it stood before the redesign.
+
+### Plan 1 checklist (Adire foundation and landing)
+
+- [x] **Task 1:** D032 to D039 recorded; the install repaired.
+- [x] **Task 2:** light-only tokens, type (Mona Sans wide plus Figtree), radius, shadow and the
+      one spring, in `src/app/globals.css`. No dark mode anywhere (D033).
+- [x] **Task 3:** buttons and chips in the spec's hierarchy (primary, secondary, tertiary,
+      destructive), all pills.
+- [x] **Task 4:** the logo family, app icons and manifest.
+- [x] **Task 5:** SEO files and per-page metadata (sitemap, robots, canonical and og:url per page,
+      the OG image).
+- [x] **Task 6:** pricing logic, `estimateBill` (D037), unit-tested.
+- [x] **Task 7:** landing navigation and hero (photo carousel, floating product cards, 3D tilt).
+- [x] **Task 8:** landing sections and footer.
+- [x] **Task 9:** `/pricing`, `/for-members` and `/privacy`.
+- [x] **Task 10:** `scripts/visual/check-marketing.mjs` (overflow, console errors, one primary
+      per screenful, reduced-motion carousel) passing on a production build; `DESIGN_SYSTEM.md`
+      now points at the Adire spec; blueprint §1.1 amended; D040 records the board-fidelity calls.
+
+### What is left (plans 2 to 7)
+
+2. **Getting in:** auth, invites, onboarding, cooperative self sign-up and Super Admin
+   verification (D039). The sign-in and sign-up screens still carry the dark navy panel until
+   this plan restyles them (spec §11.9).
+3. **Many organisations and income evidence (schema):** employers as records, bank statements
+   and the self-declared figure (D032, D038).
+4. **The member app.**
+5. **The staff apps (officer, admin) and receipts.**
+6. **Super admin and billing** (trial, grace, read-only; D037).
+7. **Statements, reports and exports.**
+
+**Keep the privacy notice true as these ship.** `/privacy` has a "Coming soon, not in Clarix
+yet" section (bank statements, the self-declared figure, repayment receipts, member numbers,
+cooperative verification). Each item must move into the main notice, reworded as fact, in the
+same pull request that ships it, chiefly in plans 2 and 3, and the "Last updated" date changes
+with it.
 
 ## Phase
 
@@ -120,14 +157,11 @@ marked P1 there.
   `DESIGN_SYSTEM.md`).
 - **GitHub repository:** `github.com/Temi-daniel124/clarix` (private), default branch `main`.
   Commit identity verified per-session as Temi-daniel124 / temmydaniel124@gmail.com.
-- **Vercel:** the project actually building this repository is **`clarix_app`**, which serves
-  `clarix-3w5i.vercel.app`. A second Vercel project named `clarix-3w5i` also exists in the same
-  account with its own separate URL. Earlier revisions of this document named `clarix-3w5i` as
-  the project, which was wrong. **Open items:** confirm whether the second project is also
-  connected to this repository and delete it if it is redundant, then decide the permanent
-  project name and URL before real users or a custom domain exist.
-  `vercel.json` pins the framework preset to Next.js, because `clarix_app` had been configured
-  before any app code existed and was looking for a `dist/` directory.
+- **Vercel:** the project is **`clarix`** on the owner's (Temi-daniel124) Vercel account, and
+  production is **https://clarix-orpin.vercel.app**, deployed from `main`; every other branch gets
+  a Preview. The earlier `clarix_app` / `clarix-3w5i` projects and `clarix-3w5i.vercel.app`
+  belong to the previous account and are no longer the live site, so mentions of them further
+  down are history. `vercel.json` pins the framework preset to Next.js.
 - **Supabase project `Clarix`**, ref `sxugaizwmqigtioqgefx`, linked locally (`supabase/.temp/`
   holds the link). The pre-existing unrelated project in the same organization is untouched.
   **Open item:** the region still needs recording in `docs/ARCHITECTURE.md`.
