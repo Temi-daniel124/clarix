@@ -27,7 +27,10 @@ export default async function LoansPage() {
 
   const [capacity, loans] = await Promise.all([loadCapacity(), loadLoans()]);
 
-  const open = loans.filter((loan) => loan.status === "active" || loan.status === "reserved");
+  const open = loans.filter(
+    (loan) =>
+      loan.status === "active" || loan.status === "reserved" || loan.status === "pending_review",
+  );
   const settled = loans.filter(
     (loan) => loan.status === "completed" || loan.status === "rejected" || loan.status === "expired",
   );

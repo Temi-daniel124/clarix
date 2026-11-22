@@ -270,6 +270,11 @@ Step 3 becomes: inside the lock, if `requested <= available` insert `reserved` a
 `NOT_ELIGIBLE_STORED`. `committed` (Step 1) counts only `reserved` (unexpired) and `active`. Approving
 a `pending_review` loan requires `approval_reason` and sets `active`.
 
+Built in migrations `20261122120000` (enum value, columns) and `20261122120100` (functions,
+constraint `loans_pending_review_holds_nothing`). There is no `approval_reason` column: the reason is
+the `note` argument of `decide_loan_application`, stored in `audit_log.note` as for every over-limit
+approval since R1.
+
 ### Existing loans (BUILD-PLAN 0.3 and 8.2, D036)
 
 ```

@@ -83,6 +83,17 @@ export default async function LoanDetailPage({ params }: { params: Promise<{ id:
         </section>
       ) : null}
 
+      {loan.status === "pending_review" ? (
+        <p
+          className="mt-6 flex items-start gap-3 rounded-card border border-warning/30 px-4 py-3 type-secondary text-warning"
+          style={{ backgroundColor: "color-mix(in srgb, var(--clarix-warning) 8%, transparent)" }}
+        >
+          <Clock className="mt-0.5 size-4 shrink-0" aria-hidden strokeWidth={2} />
+          Sent to {loan.cooperativeName}. It is above your limit, so nothing is held for you. The
+          cooperative will decide.
+        </p>
+      ) : null}
+
       {loan.status === "reserved" && loan.reservationExpiresAt ? (
         <p
           className="mt-6 flex items-start gap-3 rounded-card border border-warning/30 px-4 py-3 type-secondary text-warning"

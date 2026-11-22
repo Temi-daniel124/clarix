@@ -365,10 +365,12 @@ export type Database = {
           loan_product_id: string | null
           membership_id: string
           monthly_repayment: number
+          over_capacity: boolean
           rejected_at: string | null
           requested_amount: number
           reservation_expires_at: string | null
           reserved_at: string | null
+          shortfall_at_submission: number | null
           status: Database["public"]["Enums"]["loan_status"]
           tenure_months: number
         }
@@ -381,10 +383,12 @@ export type Database = {
           loan_product_id?: string | null
           membership_id: string
           monthly_repayment: number
+          over_capacity?: boolean
           rejected_at?: string | null
           requested_amount: number
           reservation_expires_at?: string | null
           reserved_at?: string | null
+          shortfall_at_submission?: number | null
           status?: Database["public"]["Enums"]["loan_status"]
           tenure_months: number
         }
@@ -397,10 +401,12 @@ export type Database = {
           loan_product_id?: string | null
           membership_id?: string
           monthly_repayment?: number
+          over_capacity?: boolean
           rejected_at?: string | null
           requested_amount?: number
           reservation_expires_at?: string | null
           reserved_at?: string | null
+          shortfall_at_submission?: number | null
           status?: Database["public"]["Enums"]["loan_status"]
           tenure_months?: number
         }
@@ -981,6 +987,7 @@ export type Database = {
       loan_status:
         | "draft"
         | "reserved"
+        | "pending_review"
         | "active"
         | "rejected"
         | "completed"
@@ -1130,7 +1137,7 @@ export const Constants = {
       deduction_basis: ["gross", "net"],
       document_review_status: ["pending_review", "confirmed", "corrected"],
       document_type: ["payslip"],
-      loan_status: ["draft","reserved","active","rejected","completed","expired"],
+      loan_status: ["draft","reserved","pending_review","active","rejected","completed","expired"],
       membership_status: ["pending", "active", "suspended"],
       access_grant_status: ["pending", "active", "expired", "revoked"],
       notification_category: [

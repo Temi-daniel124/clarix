@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { availableWithout, isAwaitingDecision, isLapsedReservation } from "@/lib/loan-status";
 
 /**
  * Reads behind Loan Management, admin blueprint Part 6.
@@ -28,6 +29,13 @@ export type LoanApplication = {
   cap: number | null;
   committedElsewhere: number | null;
   overCap: boolean;
+  /**
+   * Stored as pending_review because it was above the member's limit when they sent it (D040). It
+   * holds nothing; approving it needs a written reason.
+   */
+  overCapacity: boolean;
+  /** Monthly shortfall at the moment it was sent. Null for an application that fitted. */
+  shortfallAtSubmission: number | null;
 };
 
 export type LoanSummaryRow = {
@@ -55,7 +63,12 @@ type LoanRecord = {
   rejected_at: string | null;
   completed_at: string | null;
   reservation_expires_at: string | null;
+  over_capacity: boolean;
+  shortfall_at_submission: number | null;
 };
+
+const LOAN_COLUMNS =
+  "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, created_at, approved_at, rejected_at, completed_at, reservation_expires_at, over_capacity, shortfall_at_submission";
 
 async function loansForCooperative(cooperativeId: string) {
   const supabase = await createClient();
@@ -70,9 +83,7 @@ async function loansForCooperative(cooperativeId: string) {
 
   const { data: loans } = await supabase
     .from("loans")
-    .select(
-      "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, created_at, approved_at, rejected_at, completed_at, reservation_expires_at",
-    )
+    .select(LOAN_COLUMNS)
     .in("membership_id", membershipIds)
     .order("created_at", { ascending: true });
 
@@ -117,19 +128,10 @@ export async function loadApplications(cooperativeId: string): Promise<{
   const names = nameOf(memberships);
   const now = Date.now();
 
-  const pendingRecords = loans.filter(
-    (loan) =>
-      loan.status === "reserved" &&
-      loan.reservation_expires_at !== null &&
-      new Date(loan.reservation_expires_at).getTime() > now,
-  );
-
-  const lapsedRecords = loans.filter(
-    (loan) =>
-      loan.status === "reserved" &&
-      loan.reservation_expires_at !== null &&
-      new Date(loan.reservation_expires_at).getTime() <= now,
-  );
+  // Waiting covers a live reservation and an above-limit application alike (D040): both are the
+  // cooperative's to decide, and only the first holds any of the member's limit.
+  const pendingRecords = loans.filter((loan) => isAwaitingDecision(statusOf(loan), now));
+  const lapsedRecords = loans.filter((loan) => isLapsedReservation(statusOf(loan), now));
 
   const decidedRecords = loans
     .filter((loan) => ["active", "rejected", "completed", "expired"].includes(loan.status))
@@ -152,10 +154,12 @@ export async function loadApplications(cooperativeId: string): Promise<{
     const person = names.get(loan.membership_id);
     const capacity = withCapacity ? capacities.get(loan.membership_id) : undefined;
 
-    // The application is already counted in `committed` because it is reserved, so it comes back
-    // out to answer "what could they carry without it", which is what the decision is against.
-    const availableBefore = capacity
-      ? Math.max(capacity.cap - (capacity.committed - Number(loan.monthly_repayment)), 0)
+    const measured = capacity
+      ? availableWithout(
+          capacity,
+          { ...statusOf(loan), monthlyRepayment: Number(loan.monthly_repayment) },
+          now,
+        )
       : null;
 
     return {
@@ -177,12 +181,12 @@ export async function loadApplications(cooperativeId: string): Promise<{
         0,
         Math.floor((now - new Date(loan.created_at).getTime()) / 86_400_000),
       ),
-      availableBefore,
+      availableBefore: measured?.availableBefore ?? null,
       cap: capacity?.cap ?? null,
-      committedElsewhere: capacity
-        ? Math.max(capacity.committed - Number(loan.monthly_repayment), 0)
-        : null,
-      overCap: availableBefore !== null && Number(loan.monthly_repayment) > availableBefore,
+      committedElsewhere: measured?.committedElsewhere ?? null,
+      overCap: measured?.overCap ?? false,
+      overCapacity: Boolean(loan.over_capacity),
+      shortfallAtSubmission: nullableNumber(loan.shortfall_at_submission),
     };
   };
 
@@ -216,9 +220,7 @@ export async function loadApplication(loanId: string): Promise<
 
   const { data: loan } = await supabase
     .from("loans")
-    .select(
-      "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, created_at, approved_at, rejected_at, completed_at, reservation_expires_at, loan_product_id",
-    )
+    .select(`${LOAN_COLUMNS}, loan_product_id`)
     .eq("id", loanId)
     .maybeSingle();
 
@@ -273,12 +275,13 @@ export async function loadApplication(loanId: string): Promise<
   const committed = capacityRow ? Number(capacityRow.committed) : null;
   const monthly = Number(loan.monthly_repayment);
 
-  // Only a reservation is counted in `committed`; a loan already decided is either counted as
-  // active or not at all, so taking it back out would understate what the member carries.
-  const stillReserved = loan.status === "reserved";
-  const availableBefore =
+  const measured =
     cap !== null && committed !== null
-      ? Math.max(cap - (stillReserved ? committed - monthly : committed), 0)
+      ? availableWithout(
+          { cap, committed },
+          { status: loan.status, reservationExpiresAt: loan.reservation_expires_at, monthlyRepayment: monthly },
+          now,
+        )
       : null;
 
   return {
@@ -297,11 +300,12 @@ export async function loadApplication(loanId: string): Promise<
       ? Math.floor((new Date(loan.reservation_expires_at).getTime() - now) / 86_400_000)
       : null,
     waitingDays: Math.max(0, Math.floor((now - new Date(loan.created_at).getTime()) / 86_400_000)),
-    availableBefore,
+    availableBefore: measured?.availableBefore ?? null,
     cap,
-    committedElsewhere:
-      committed !== null ? Math.max(committed - (stillReserved ? monthly : 0), 0) : null,
-    overCap: availableBefore !== null && monthly > availableBefore,
+    committedElsewhere: measured?.committedElsewhere ?? null,
+    overCap: measured?.overCap ?? false,
+    overCapacity: Boolean(loan.over_capacity),
+    shortfallAtSubmission: nullableNumber(loan.shortfall_at_submission),
     savingsBalance: Number(membership.savings_balance ?? 0),
     salaryConfirmed: Boolean(person?.salary_verified_at),
     repaid,
@@ -364,6 +368,14 @@ export async function loadActiveLoans(cooperativeId: string): Promise<LoanSummar
       };
     })
     .sort((a, b) => (a.memberName ?? "~").localeCompare(b.memberName ?? "~"));
+}
+
+function statusOf(loan: LoanRecord) {
+  return { status: loan.status, reservationExpiresAt: loan.reservation_expires_at };
+}
+
+function nullableNumber(value: number | string | null | undefined): number | null {
+  return value === null || value === undefined ? null : Number(value);
 }
 
 function decidedAt(loan: LoanRecord): string | null {

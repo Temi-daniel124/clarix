@@ -131,6 +131,9 @@ function ApplicationCard({
             {formatNaira(application.requestedAmount)} over {application.tenureMonths} months ·{" "}
             {formatNaira(application.monthlyRepayment)} a month
           </p>
+          {!decided && application.overCapacity ? (
+            <AboveLimitChip application={application} className="mt-3" />
+          ) : null}
         </div>
 
         {decided ? (
@@ -170,12 +173,18 @@ function ApplicationCard({
           <p
             className={cn(
               "mt-2 type-caption",
-              application.overCap ? "text-danger" : "text-emerald",
+              application.overCapacity
+                ? "text-text-secondary"
+                : application.overCap
+                  ? "text-danger"
+                  : "text-emerald",
             )}
           >
-            {application.overCap
-              ? `Exceeds what is left of their limit by ${formatNaira(application.monthlyRepayment - application.availableBefore)} a month`
-              : `Fits, with ${formatNaira(application.availableBefore - application.monthlyRepayment)} a month still free`}
+            {application.overCapacity
+              ? "Nothing is held for them. Approving needs a written reason."
+              : application.overCap
+                ? `Exceeds what is left of their limit by ${formatNaira(application.monthlyRepayment - application.availableBefore)} a month`
+                : `Fits, with ${formatNaira(application.availableBefore - application.monthlyRepayment)} a month still free`}
           </p>
         </div>
       ) : null}
@@ -188,6 +197,46 @@ function ApplicationCard({
         </p>
       ) : null}
     </Link>
+  );
+}
+
+/**
+ * "Above limit by ₦X" (D040). The figure is today's, measured against what the member has left
+ * now; if room has opened up since they sent it, the chip says what was true when they did.
+ */
+export function AboveLimitChip({
+  application,
+  className,
+}: {
+  application: Pick<
+    LoanApplication,
+    "overCap" | "monthlyRepayment" | "availableBefore" | "shortfallAtSubmission"
+  >;
+  className?: string;
+}) {
+  const liveShortfall =
+    application.overCap && application.availableBefore !== null
+      ? application.monthlyRepayment - application.availableBefore
+      : null;
+
+  const label =
+    liveShortfall !== null
+      ? `Above limit by ${formatNaira(liveShortfall)}`
+      : application.shortfallAtSubmission !== null
+        ? `Was above limit by ${formatNaira(application.shortfallAtSubmission)}`
+        : "Above limit";
+
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border border-danger/30 px-3 py-1 type-caption tabular whitespace-nowrap text-danger",
+        className,
+      )}
+      style={{ backgroundColor: "color-mix(in srgb, var(--clarix-danger) 8%, transparent)" }}
+    >
+      <TriangleAlert aria-hidden strokeWidth={2} className="size-3.5" />
+      {label}
+    </span>
   );
 }
 

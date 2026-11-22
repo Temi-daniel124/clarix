@@ -57,7 +57,10 @@ export default async function CooperativeDetailPage({
   // most recent hid the active one behind a new reservation. Active first, because "how am I
   // doing here" is answered by what is actually being deducted.
   const openLoans = here
-    .filter((loan) => loan.status === "active" || loan.status === "reserved")
+    .filter(
+      (loan) =>
+        loan.status === "active" || loan.status === "reserved" || loan.status === "pending_review",
+    )
     .sort((a, b) => (a.status === "active" ? -1 : 1) - (b.status === "active" ? -1 : 1));
   const activeLoan = openLoans.find((loan) => loan.status === "active");
   const loanBalance = here
