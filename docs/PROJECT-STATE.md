@@ -15,7 +15,7 @@ code is on `main` yet.
 - **Release 1 is live** at `clarix-3w5i.vercel.app`, from `main` at `d1c3a0a` (PR #21). Every screen
   in the four role blueprints is built except officer 6.2 (apply on a member's behalf). 29 migrations,
   16 tables, all with RLS; 46 unit tests; 13 pgTAP suites in GitHub Actions; `next build` passes.
-- **Release 2 has started.** Decisions D032 to D049 are in `docs/DECISIONS.md`; the ordered work is
+- **Release 2 has started.** Decisions D032 to D050 are in `docs/DECISIONS.md`; the ordered work is
   `docs/BUILD-PLAN.md`. **0.1 (store over-limit applications) is built and in review**, not merged:
   migrations 030 and 031 are written and tested in CI but **not applied** to the shared database;
   they apply when the owner says "merge" (031 changes `submit_loan_application`, which `main` uses).
@@ -43,17 +43,22 @@ code is on `main` yet.
   `FilterChip` and `SegmentedControl`, every bespoke button moved onto them, and `/dev/components`
   (Previews only). It also fixed focus rings: R1's shared button and inputs showed none
   (`outline-none` cancelled them). No migration.
+  **1.3 (Sheet and side panel) is built and in review**, stacked on 1.2: `src/components/ui/sheet.tsx`
+  on Base UI's Drawer (50% and 92% detents, drag to dismiss, back button closes, 440px right panel
+  from 1024px, a `filter` kind that leaves the page usable), demoed on `/dev/components`. The same PR
+  bundles Figtree in the repository with `next/font/local` (D050), so builds no longer download it.
+  No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2). **Next step: BUILD-PLAN 1.3** (Sheet and side panel). Step 1.5 (designed 404,
-  error and loading-failure pages) is added, not built.
+  → #30 (1.1) → #31 (1.2) → #32 (1.3). **Next step: BUILD-PLAN 1.4** (App shells). Step 1.5 (designed
+  404, error and loading-failure pages) is added, not built.
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
   - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits
     render at one width (spread 0px at 400, 500, 600 and 700; 12.7px spread without it); ₦111,111
     and ₦888,888 are the same width.
   - Safari: no WebKit build is available in agent sessions, so the font file was checked instead.
-    The Figtree file `next/font` serves has an OpenType `tnum` feature that maps all ten digits to
-    one advance (620 units, against nine different advances without it). Safari shapes from the
+    The Figtree files (bundled in `src/app/fonts/` since D050, re-checked then) have an OpenType `tnum` feature that maps all ten digits to
+    one advance in each weight (623 to 632 units, against nine different advances without it). Safari shapes from the
     same table, so the result does not depend on the engine. The owner may still want to glance at
     a rolling number on an iPhone.
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
@@ -95,6 +100,12 @@ Deliberately deferred by the owner, so do not raise them as tasks:
 - Deleting the old `clarix_app` Vercel project (after the new one's designs are accepted).
 - Branch protection on `main`.
 - Moving the `Clarix` Supabase project to the new Supabase account.
+
+To accept a built step:
+- **BUILD-PLAN 1.3, the Sheet on your own phones.** Open `/dev/components` on the PR's Preview on an
+  iPhone (Safari) and an Android phone (Chrome): drag the sheet between half and nearly full, drag it
+  away, tap outside, and press Android's back button. If dragging feels wrong on iOS Safari, the
+  plan's fallback is `vaul`. A short screen recording from each phone goes in the PR.
 
 Needed later, at the step named:
 1. **Hero photos or a video** for the landing page: the owner picks from the shortlist PR 5.2 carries.

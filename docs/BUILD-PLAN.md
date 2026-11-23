@@ -134,12 +134,15 @@ Read for every step: `DESIGN_SYSTEM.md` in full.
 - **Accept when:** a `/dev/components` route (Preview only, `notFound()` in production) shows every
   variant and state; no non-pill button remains.
 
-### ☐ 1.3 Sheet and side panel
+### ☑ 1.3 Sheet and side panel
 - One `Sheet` component (§5.4) on Base UI Dialog: phone detents, drag to dismiss, back button closes,
   desktop 440px right panel, focus trap, reduced motion. Try Base UI first; if drag on iOS Safari is
   not smooth, use `vaul` (pre-approved in `docs/TOOLING-POLICY.md`).
 - **Accept when:** tested on a real iPhone and a real Android phone (owner's), with a short screen
   recording in the PR.
+- **Built** on Base UI's Drawer (Base UI Dialog with swipe and snap points), so `vaul` was not
+  needed. Chromium touch emulation and a recording are in the PR; the real-iPhone and real-Android
+  check is the owner's, listed in `docs/PROJECT-STATE.md` → "Waiting on the owner".
 
 ### ☐ 1.4 App shells
 - Phone: top bar, floating pill tab bar, centre "+" for staff, 112px bottom reserve on every scroll

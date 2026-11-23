@@ -150,7 +150,7 @@ the photo scrim on the public hero (`linear-gradient(180deg, rgba(11,18,32,0.10)
 
 ### 4.2 Typography
 
-**Figtree** via `next/font/google`, weights 400/500/600/700, `display: swap`, variable
+**Figtree** bundled in the repository and loaded with `next/font/local` (D050), weights 400/500/600/700, `display: swap`, variable
 `--font-figtree` (D038). Every money figure: `font-variant-numeric: tabular-nums`. First foundation
 task: verify Figtree's tabular figures render as equal-width digits in Chrome, Safari and Android
 Chrome; if not, money figures alone use Inter at the same sizes.
@@ -263,8 +263,9 @@ tabular figures. Phone inputs default to `+234`. Never placeholder-as-label.
 
 ### 5.4 Bottom sheet and side panel (the core R2 pattern, D039)
 
-One component, `Sheet`, built on Base UI Dialog (fall back to `vaul` only if drag gestures feel wrong on
-iOS Safari, see `docs/TOOLING-POLICY.md`).
+One component, `Sheet` (`src/components/ui/sheet.tsx`), built on Base UI Dialog in its Drawer form, which
+adds swipe-to-dismiss and snap points to the same dialog (fall back to `vaul` only if drag gestures feel
+wrong on iOS Safari, see `docs/TOOLING-POLICY.md`).
 
 - **Phone:** rises from the bottom with `springStandard`; `radius-sheet`; 36×4px grab handle in `ink-300`
   10px from the top; detents at 50% and 92% of viewport height; drag down or tap the 40% black backdrop

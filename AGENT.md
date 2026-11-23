@@ -13,7 +13,7 @@ the documents that step names, and do only that step in one branch and one pull 
 
 ## Read this first, in this order
 
-1. `docs/DECISIONS.md`: the log of record. Read D032 to D049 (Release 2) closely. Never contradict it;
+1. `docs/DECISIONS.md`: the log of record. Read D032 to D050 (Release 2) closely. Never contradict it;
    if something you are about to do conflicts with an entry, stop and say so.
 2. `docs/PROJECT-STATE.md`: what exists now, what is broken, and what is waiting on the owner.
 3. `docs/BUILD-PLAN.md`: the phase and step you are on, with its acceptance criteria.
