@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { formatNaira } from "@/lib/format";
 import { filterMembers } from "@/lib/members";
+import { memberCountLabel, memberCounts } from "@/lib/home-figures";
 import type { MemberRow } from "@/lib/supabase/admin-members";
 
 /**
@@ -74,8 +75,8 @@ export function MemberList({
       <div className="mt-4 flex flex-wrap items-baseline justify-between gap-4">
         <p className="type-secondary text-text-secondary">
           {filtered.length === members.length
-            ? `${members.length} ${members.length === 1 ? "member" : "members"}`
-            : `${filtered.length} of ${members.length}`}
+            ? listSummary(members)
+            : `${filtered.length} of ${members.length} shown`}
         </p>
 
         <div className="flex items-center gap-1" role="group" aria-label="Sort members">
@@ -231,4 +232,24 @@ function MemberName({ member }: { member: MemberRow }) {
       ) : null}
     </Link>
   );
+}
+
+/**
+ * The header of the list, from the one member-count rule (BUILD-PLAN 0.5): "15 members, 8 on
+ * Clarix". Rows that are not members yet (a pending application) or not active (suspended) are
+ * still listed, so they are named beside the count rather than silently making the list longer
+ * than its header.
+ */
+function listSummary(members: MemberRow[]): string {
+  const counts = memberCounts({
+    membershipStatuses: members.filter((member) => member.membershipId).map((member) => member.status),
+    rosterNotOnClarix: members.filter((member) => member.status === "not_on_clarix").length,
+  });
+
+  const extras = [
+    counts.pending > 0 ? `${counts.pending} asking to join` : null,
+    counts.suspended > 0 ? `${counts.suspended} suspended` : null,
+  ].filter(Boolean);
+
+  return [memberCountLabel(counts), ...extras].join(" · ");
 }

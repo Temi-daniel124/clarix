@@ -1,4 +1,5 @@
 import { createClient, getRequestUser } from "@/lib/supabase/server";
+import { latestChange } from "@/lib/home-figures";
 import { computeCapacity, type Capacity } from "@/lib/eligibility";
 import type { TrendPoint } from "@/components/clarix/trend-indicator";
 import { loadCapacity, loadLoans, type LoanSummary } from "./loans-data";
@@ -124,13 +125,20 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
       committedMonthlyRepayments: committing.reduce((sum, l) => sum + l.monthlyRepayment, 0),
     });
 
-  const lastUpdated = [
+  // BUILD-PLAN 0.5 rule 2: the figures above last changed when a ledger entry or a loan last did
+  // (or the member's income, which sets the limit). Joining a cooperative, which this used to read,
+  // changes none of them, and is why the live home said "Current as of 15 March" in November.
+  const lastUpdated = latestChange([
     profile.salary_verified_at,
-    ...cooperatives.map((entry) => entry.joinedAt),
-  ]
-    .filter((value): value is string => Boolean(value))
-    .sort()
-    .at(-1) ?? null;
+    ...(ledger ?? []).map((entry) => entry.recorded_at),
+    ...loans.flatMap((loan) => [
+      loan.createdAt,
+      loan.reservedAt,
+      loan.approvedAt,
+      loan.rejectedAt,
+      loan.completedAt,
+    ]),
+  ]);
 
   return {
     organizationName: organization?.name ?? "your organization",

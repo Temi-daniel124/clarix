@@ -83,7 +83,7 @@ Read: D036, `docs/planning/clarix-documents-blueprint.md` §3, `docs/EDGE-CASES.
   owner (D043.2), and how to create and remove a throwaway test cooperative.
 - **Accept when:** the strip shows on the Preview and not on Production.
 
-### ☐ 0.5 Fix the stale and contradictory figures on the live homes
+### ☑ 0.5 Fix the stale and contradictory figures on the live homes
 Observed in the live walkthrough (`docs/REFERENCE-STUDY.md` §1):
 - Admin home "Members 8" vs Members list "15 members" vs Platform list "7": define one rule (members
   = active memberships + roster entries not yet on Clarix, shown as "15 members, 8 on Clarix") and

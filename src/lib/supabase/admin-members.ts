@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
 import { isAwaitingDecision, loanBalance } from "@/lib/loan-status";
+import { memberCounts, type MemberCounts } from "@/lib/home-figures";
 
 /**
  * Reads behind the cooperative dashboard (admin blueprint 4.1) and member management (Part 5).
@@ -243,8 +244,8 @@ export type AttentionItem = {
 };
 
 export type CooperativeSummary = {
-  memberCount: number;
-  rosterWaiting: number;
+  /** BUILD-PLAN 0.5 rule 1, the same count the Members list and Platform show. */
+  members: MemberCounts;
   savingsHeld: number;
   activeLoans: number;
   pendingApplications: number;
@@ -432,8 +433,10 @@ export async function loadCooperativeSummary(
   ];
 
   return {
-    memberCount: (memberships ?? []).length,
-    rosterWaiting: (roster ?? []).filter((entry) => !entry.membership_id).length,
+    members: memberCounts({
+      membershipStatuses: (memberships ?? []).map((membership) => membership.status),
+      rosterNotOnClarix: (roster ?? []).filter((entry) => !entry.membership_id).length,
+    }),
     savingsHeld: (memberships ?? []).reduce(
       (total, membership) => total + Number(membership.savings_balance ?? 0),
       0,

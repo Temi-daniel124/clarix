@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { memberCounts } from "@/lib/home-figures";
 import type { DirectoryEntry, PlatformOverview } from "@/lib/platform";
 
 /**
@@ -39,12 +40,21 @@ export async function loadCooperativeDirectory(): Promise<DirectoryEntry[]> {
 
   if (error) throw new Error(`Could not read the cooperative directory: ${error.message}`);
 
-  return (data ?? []).map((row) => ({
+  return (data ?? []).map((row) => {
+    // `member_count` is active memberships. `roster_not_on_clarix_count` arrives with migration 033
+    // and reads as 0 until it is applied, which leaves the old figure rather than a wrong one.
+    const members = memberCounts({
+      membershipStatuses: Array.from({ length: row.member_count ?? 0 }, () => "active"),
+      rosterNotOnClarix: row.roster_not_on_clarix_count ?? 0,
+    });
+
+    return {
     id: row.id,
     name: row.name,
     status: row.status,
     createdAt: row.created_at,
-    memberCount: row.member_count ?? 0,
+    memberCount: members.total,
+    membersOnClarix: members.onClarix,
     officerCount: row.officer_count ?? 0,
     adminName: row.admin_name,
     adminEmail: row.admin_email,
@@ -55,5 +65,6 @@ export async function loadCooperativeDirectory(): Promise<DirectoryEntry[]> {
     pendingInviteSentAt: row.pending_invite_sent_at,
     hasExpiryOverride: row.has_expiry_override ?? false,
     internalNote: row.internal_note,
-  }));
+    };
+  });
 }

@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ApplicationQueue } from "@/components/admin/application-queue";
-import { LapsedNotice } from "@/components/admin/lapsed-notice";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { loadApplications } from "@/lib/supabase/admin-loans";
 import { preferredRole } from "@/lib/staff";
@@ -42,12 +41,14 @@ export default async function LoansPage() {
         </Button>
       </div>
 
-      {role.canApproveLoans ? (
-        <LapsedNotice cooperativeId={role.cooperativeId} count={lapsed.length} />
-      ) : null}
-
       <div className="mt-8">
-        <ApplicationQueue pending={pending} decided={decided} />
+        <ApplicationQueue
+          pending={pending}
+          decided={decided}
+          lapsed={lapsed}
+          cooperativeId={role.cooperativeId}
+          canTidy={role.canApproveLoans}
+        />
       </div>
     </div>
   );

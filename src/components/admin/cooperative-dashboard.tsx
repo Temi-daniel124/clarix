@@ -29,12 +29,12 @@ export function CooperativeDashboard({
       key: "members",
       label: "Members",
       icon: (props) => <Users {...props} />,
-      value: summary.memberCount,
+      value: summary.members.total,
       format: "count",
       accent: "var(--clarix-brand-secondary)",
       detail:
-        summary.rosterWaiting > 0
-          ? `${summary.rosterWaiting} more ${summary.rosterWaiting === 1 ? "person is" : "people are"} on your roster but have not joined Clarix yet. They appear here the day they do.`
+        summary.members.notOnClarix > 0
+          ? `${summary.members.onClarix} on Clarix. ${summary.members.notOnClarix} more on your roster ${summary.members.notOnClarix === 1 ? "has" : "have"} not joined yet.`
           : "Everyone on your roster holds a Clarix account.",
     },
     {

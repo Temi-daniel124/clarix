@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { invitePending, type DirectoryEntry } from "@/lib/platform";
+import { memberCountLabel } from "@/lib/home-figures";
 
 /**
  * Cooperative Directory (super-admin blueprint 5.1).
@@ -139,7 +140,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
                       <StatusBadge entry={entry} />
                     </td>
                     <td className="py-4 pr-4 type-secondary tabular text-text-secondary">
-                      {entry.memberCount}
+                      {memberCountLabel({ total: entry.memberCount, onClarix: entry.membersOnClarix })}
                     </td>
                     <td className="py-4 type-secondary text-text-secondary">
                       {entry.adminName ?? entry.adminEmail ?? "Nobody named yet"}
@@ -162,7 +163,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
                     <StatusBadge entry={entry} />
                   </div>
                   <p className="type-secondary mt-1 text-text-secondary">
-                    {entry.memberCount} {entry.memberCount === 1 ? "member" : "members"}
+                    {memberCountLabel({ total: entry.memberCount, onClarix: entry.membersOnClarix })}
                     {" · "}
                     {entry.adminName ?? entry.adminEmail ?? "no admin named yet"}
                   </p>
