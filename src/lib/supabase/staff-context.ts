@@ -1,6 +1,7 @@
 import { cache } from "react";
+import { cookies } from "next/headers";
 import { createClient, getRequestUser } from "@/lib/supabase/server";
-import { effectivePermissions, type StaffRole } from "@/lib/staff";
+import { SELECTED_COOPERATIVE_COOKIE, effectivePermissions, type StaffRole } from "@/lib/staff";
 
 /**
  * Everything an admin/officer screen needs about the signed-in person's relationship to a
@@ -44,6 +45,8 @@ export const loadStaffContext = cache(async function loadStaffContext(): Promise
   const user = await getRequestUser();
   if (!user) return null;
 
+  const selectedCooperativeId = (await cookies()).get(SELECTED_COOPERATIVE_COOKIE)?.value ?? null;
+
   const [{ data: profile }, { data: rows }, { data: platform }] = await Promise.all([
     supabase.from("users").select("name, email").eq("id", user.id).maybeSingle(),
     supabase
@@ -69,6 +72,7 @@ export const loadStaffContext = cache(async function loadStaffContext(): Promise
       title: row.title,
       canApproveLoans: permissions.can_approve_loans,
       permissions,
+      selected: row.cooperative_id === selectedCooperativeId,
     };
   });
 

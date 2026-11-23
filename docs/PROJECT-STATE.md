@@ -48,9 +48,14 @@ code is on `main` yet.
   from 1024px, a `filter` kind that leaves the page usable), demoed on `/dev/components`. The same PR
   bundles Figtree in the repository with `next/font/local` (D050), so builds no longer download it.
   No migration.
+  **1.4 (app shells) is built and in review**, stacked on 1.3: one `AppShell` for all four roles,
+  phone top bar and floating tab bar (centre "+" for staff, 112px bottom reserve), the light 248px
+  sidebar (72px collapsed), the `Ctrl/⌘ K` palette, the cooperative switcher (a cookie that
+  `preferredRole` honours, so every staff screen follows it) and "Switch to my member view". The
+  More screens lost their uppercase labels and gained Sign out. No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2) → #32 (1.3). **Next step: BUILD-PLAN 1.4** (App shells). Step 1.5 (designed
-  404, error and loading-failure pages) is added, not built.
+  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4). **Next step: BUILD-PLAN 1.5** (not-found, error
+  and loading-failure pages).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
   - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits

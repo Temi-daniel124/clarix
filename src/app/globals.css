@@ -118,6 +118,7 @@
   --color-navy-800: var(--clarix-navy-800);
   --color-on-navy: var(--clarix-on-navy);
   --color-on-navy-secondary: var(--clarix-on-navy-secondary);
+  --color-hairline-on-navy: var(--clarix-hairline-on-navy);
   --color-emerald-50: var(--clarix-emerald-50);
   --color-emerald-100: var(--clarix-emerald-100);
   --color-emerald-500: var(--clarix-emerald-500);
@@ -372,6 +373,9 @@
     0.9989, 0.9986, 0.9985, 0.9985, 0.9986, 0.9987
   );
   --duration-spring: 566ms;
+  /* fadeQuick (§4.6), for CSS transitions: hover, the palette, chips. */
+  --ease-quick: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --duration-quick: 160ms;
 }
 
 @keyframes clarix-drop-in {
@@ -429,9 +433,9 @@
 
    Its width is driven from a class the inline rail script sets before first paint, so a viewer
    who collapsed it last visit never sees it snap from one width to the other after hydration.
-   (A data attribute was tried first and did not survive hydration, see rail-script.tsx.) The transition uses --ease-spring, which IS springStandard from src/lib/motion.ts
-   solved as a CSS easing: the same physics as every JavaScript-driven spring in the product,
-   not a second motion vocabulary.
+   (A data attribute was tried first and did not survive hydration, see rail-script.tsx.) The
+   width changes at once: D046 animates transform and opacity only. 248px open, 72px icons only
+   (DESIGN_SYSTEM §5.5).
 --------------------------------------------------------------------------- */
 
 :root {
@@ -439,7 +443,7 @@
 }
 
 :root.rail-collapsed {
-  --sidebar-width: 76px;
+  --sidebar-width: 72px;
 }
 
 /* The loan-amount slider (blueprint 5.5). Styled to the tokens rather than left as the browser

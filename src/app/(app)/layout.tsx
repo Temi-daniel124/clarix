@@ -1,36 +1,24 @@
 import { redirect } from "next/navigation";
-import { AppBottomTabs, AppSidebar, AppTopBar } from "@/components/app-shell/app-nav";
-import { getRequestUser } from "@/lib/supabase/server";
+import { AppShell } from "@/components/shell/app-shell";
+import { loadShellContext } from "@/lib/supabase/shell-context";
 
 export const dynamic = "force-dynamic";
 
 /**
- * The authenticated app shell, blueprint Part 3.
- *
- * Every screen from the Dashboard onwards renders inside this: sidebar beside the content on
- * desktop, bottom tab bar below it on mobile. The content pane scrolls, the navigation does not.
+ * The member app shell (DESIGN_SYSTEM §5.5, BUILD-PLAN 1.4): top bar and floating tab bar on
+ * phones, the light sidebar from 1024px.
  *
  * The session check here is a redirect for people who are not signed in, not a security
  * boundary. What any of these screens can actually read is decided by RLS
  * (SECURITY.md: "no feature may rely on a UI-side check alone").
  */
 export default async function AppLayout({ children }: LayoutProps<"/">) {
-  const user = await getRequestUser();
-
-  if (!user) redirect("/login");
+  const shell = await loadShellContext();
+  if (!shell) redirect("/login");
 
   return (
-    <div className="flex min-h-app flex-1">
-      <AppSidebar />
-
-      <div className="flex min-w-0 flex-1 flex-col">
-        <AppTopBar />
-
-        {/* The bottom padding clears the floating mobile tab pill. */}
-        <main className="flex-1 pb-32 md:pb-12">{children}</main>
-      </div>
-
-      <AppBottomTabs />
-    </div>
+    <AppShell kind="member" identity={shell.identity}>
+      {children}
+    </AppShell>
   );
 }

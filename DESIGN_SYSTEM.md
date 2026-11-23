@@ -302,6 +302,20 @@ wrong on iOS Safari, see `docs/TOOLING-POLICY.md`).
 - Tables where density helps (members, loans, audit log): 48px rows, sticky header, hairline rules,
   tabular numbers right-aligned, row click opens the side panel.
 
+Built in BUILD-PLAN 1.4 as one `AppShell` for all four roles (`src/components/shell/`). Values the
+lines above leave open:
+
+| Part | Values |
+|---|---|
+| Breakpoint | Phone shell below 1024px (tablets included), sidebar from 1024px: the same line the Sheet switches at |
+| Phone top bar | 56px, `canvas` fill, `hairline` bottom border, 20px left gutter (24px from 768px). Staff at more than one cooperative: the avatar, greeting and cooperative line together are one 48px button that opens the switcher sheet. Bell is the `icon` button; unread dot 8px `red-500` with a 2px `canvas` ring |
+| Tab bar | 8px inner padding, so tabs are 48px tall. Inactive tab 48×48 icon only; active tab 16px side padding, 20px icon, 8px gap, `small` label, its `navy-800` pill slides between tabs on `springStandard`. Border `hairline-on-navy`. At most three tabs plus More; staff get the "+" in the middle |
+| Quick actions | The "+" opens a sheet of 52px rows (20px `ink-500` icon, `body` label, chevron), only actions the role may take |
+| Sidebar | Header 64px. Cooperative row 48px (32px initials mark on `emerald-100`, name and role in `small`). Search field 40px, `radius-sm`, `hairline-strong` border, `small` `ink-500` text and shortcut. Links 40px, `radius-sm`, 12px side padding, 20px icon, `body`; active `emerald-50` fill with `emerald-700` text and icon, hover `surface-sunken`. Group labels `small` `ink-500`, 24px above. Collapsed: 72px, icons centred, group labels become hairlines, the width changes at once (D046) |
+| Account menu | Pinned 48px row (avatar, name, role). Menu 224px, `radius-md`, `raised`, 4px padding, 40px `small` items: Profile, Help, the view switch, Sign out. On phones these live on the More screen |
+| Command palette | 560px wide, 96px from the top, `radius-lg`, `raised`, backdrop black 24%. 56px input row, 44px results grouped "Go to" and "Switch", `fadeQuick` in and out. Its input is the palette itself, so it draws no second focus ring of its own |
+| Switching | The cooperative switcher remembers the choice in an httpOnly cookie that only chooses between the person's own active roles. "Switch to my member view" appears for staff with an active membership; members who also work at a cooperative get the way back |
+
 ### 5.6 Other house components
 
 Segmented control (Continuous Tabs, pill track on `surface-sunken`, sliding white pill with
