@@ -56,6 +56,8 @@
 
   /* §4.5 Elevation: `raised` is the only shadow. `flat` is a hairline border; `pressed` is scale. */
   --clarix-shadow-raised: 0 12px 32px rgba(14, 17, 22, 0.1);
+  /* D051: the staff quick action's own emerald shadow, its only one. Used nowhere else. */
+  --clarix-shadow-quick-action: 0 8px 20px rgba(15, 159, 116, 0.28);
 
   /* R1 aliases (see the note above). Their values are R2's. */
   --clarix-background: var(--clarix-canvas);
@@ -142,6 +144,7 @@
 
   /* §4.5 Elevation */
   --shadow-raised: var(--clarix-shadow-raised);
+  --shadow-quick-action: var(--clarix-shadow-quick-action);
 
   /* §4.2 Figtree, the one face (D038). Its tabular figures are verified equal-width
      (docs/PROJECT-STATE.md, BUILD-PLAN 1.1), so money stays in Figtree too. */

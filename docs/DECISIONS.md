@@ -938,13 +938,18 @@ runner had already failed a build (R2 1.2); a font in the repository cannot.
 ### D051: The staff quick action rises above the tab bar
 **Status:** Locked
 **Supersedes:** the level 48px "+" in the R2 1.4 tab bar (DESIGN_SYSTEM §5.5 before 23 Nov 2026).
-**Decision:** On phones, the admin's and officer's "+" is not a fifth tab. It is a 52px
-`emerald-500` circle in a 72px `canvas` ring, centred on the tab bar's top edge so it reads as cut out
-of the navy and raised above it. The bar keeps equal slots (two tabs, the centre action, two tabs),
+**Decision:** On phones, the admin's and officer's "+" is not a fifth tab. It is a 56px
+`emerald-500` circle with a 4px `navy-900` border, the bar's own colour, so circle and bar read as
+one shape; it rises 20px above the bar's top edge and overlaps the bar below that, with only its own
+emerald shadow. The bar keeps equal slots (two tabs, the centre action, two tabs),
 each tab a 24px icon over a 12px label; the member bar keeps four equal slots with no centre action.
 Every value is in DESIGN_SYSTEM §4.2 (`tab-label`) and §5.5.
 **Rationale:** owner's choice, 23 Nov 2026, from a reference image: the quick action is the primary
 action on a staff phone, so it should look like one rather than sit level with the tabs.
+**Refined, 23 Nov 2026 (owner):** the first build (R2 1.4a) sat the circle in a 72px `canvas` ring.
+Because the tab bar floats over the page rather than docking to a light bar, that ring painted an
+off-white disc over whatever content scrolled beneath, which did not read as premium. The ring is
+gone; the button grows out of the bar instead (R2 1.4b).
 
 ---
 

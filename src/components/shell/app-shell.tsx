@@ -135,13 +135,13 @@ export function AppShell({ kind, permissions = NO_PERMISSIONS, identity, childre
 
         {/*
           §5.5: every phone screen keeps the floating bar clear, plus the safe area. 112px for the
-          bar alone; 140px where the raised quick action stands 36px above it (D051).
+          bar alone; 120px where the quick action rises 20px above it (D051).
         */}
         <main
           className={cn(
             "flex-1 lg:pb-12",
             staff && nav.quickActions.length > 0
-              ? "pb-[calc(140px+env(safe-area-inset-bottom))]"
+              ? "pb-[calc(120px+env(safe-area-inset-bottom))]"
               : "pb-[calc(112px+env(safe-area-inset-bottom))]",
           )}
         >
@@ -307,18 +307,18 @@ function TabBar({ nav, onQuickActions }: { nav: ShellNav; onQuickActions: (() =>
         <ul className="flex h-12 items-center">{slots}</ul>
 
         {onQuickActions ? (
-          // D051: the primary action rises out of the bar. A 72px ring in the page colour, centred
-          // on the bar's top edge, so the 52px circle reads as cut out of the navy and lifted.
-          <span className="absolute -top-px left-1/2 flex size-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-pill bg-canvas">
-            <button
-              type="button"
-              onClick={onQuickActions}
-              aria-label="Quick actions"
-              className="flex size-[52px] items-center justify-center rounded-pill bg-emerald-500 text-white shadow-raised transition-[background-color,transform] duration-[var(--duration-spring)] ease-[var(--ease-spring)] hover:bg-emerald-600 active:scale-[0.98] active:bg-emerald-700 motion-reduce:transition-none"
-            >
-              <Plus aria-hidden className="size-6" strokeWidth={1.75} />
-            </button>
-          </span>
+          // D051: the primary action grows out of the bar. A 56px emerald circle wearing a 4px border
+          // in the bar's own navy, so circle and bar read as one shape; it rises 20px above the bar's
+          // top edge (21px from the padding box, which starts inside the bar's 1px border) and the
+          // rest overlaps the bar. Its only shadow is its own emerald one.
+          <button
+            type="button"
+            onClick={onQuickActions}
+            aria-label="Quick actions"
+            className="absolute top-[-21px] left-1/2 flex size-14 -translate-x-1/2 items-center justify-center rounded-pill border-4 border-navy-900 bg-emerald-500 text-white shadow-quick-action transition-[background-color,scale] duration-[var(--duration-spring)] ease-[var(--ease-spring)] hover:bg-emerald-600 active:scale-[0.96] active:bg-emerald-700 motion-reduce:transition-none"
+          >
+            <Plus aria-hidden className="size-6" strokeWidth={1.75} />
+          </button>
         ) : null}
       </nav>
     </div>
