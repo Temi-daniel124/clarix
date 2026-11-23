@@ -249,6 +249,14 @@
   letter-spacing: 0;
 }
 
+/* §4.2 tab-label: the phone tab bar's labels only (D051). */
+@utility type-tab-label {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
 /* R1 type names, kept as aliases so every existing screen takes the R2 scale now (BUILD-PLAN 1.1).
    Each carries the exact values of the R2 role it maps to; none is a size of its own. Retired as
    Phases 4 to 6 rebuild each screen with the R2 names above.

@@ -15,7 +15,7 @@ code is on `main` yet.
 - **Release 1 is live** at `clarix-3w5i.vercel.app`, from `main` at `d1c3a0a` (PR #21). Every screen
   in the four role blueprints is built except officer 6.2 (apply on a member's behalf). 29 migrations,
   16 tables, all with RLS; 46 unit tests; 13 pgTAP suites in GitHub Actions; `next build` passes.
-- **Release 2 has started.** Decisions D032 to D050 are in `docs/DECISIONS.md`; the ordered work is
+- **Release 2 has started.** Decisions D032 to D051 are in `docs/DECISIONS.md`; the ordered work is
   `docs/BUILD-PLAN.md`. **0.1 (store over-limit applications) is built and in review**, not merged:
   migrations 030 and 031 are written and tested in CI but **not applied** to the shared database;
   they apply when the owner says "merge" (031 changes `submit_loan_application`, which `main` uses).
@@ -53,9 +53,12 @@ code is on `main` yet.
   sidebar (72px collapsed), the `Ctrl/⌘ K` palette, the cooperative switcher (a cookie that
   `preferredRole` honours, so every staff screen follows it) and "Switch to my member view". The
   More screens lost their uppercase labels and gained Sign out. No migration.
+  **1.4a (raised centre quick action) is built and in review**, stacked on 1.4: the owner's design
+  fix (D051). The staff "+" rises out of the tab bar in a canvas ring; every tab is an icon over a
+  12px label in equal slots; the staff bottom reserve is 140px. Not a BUILD-PLAN step. No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4). **Next step: BUILD-PLAN 1.5** (not-found, error
-  and loading-failure pages).
+  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a). **Next step: BUILD-PLAN 1.5**
+  (not-found, error and loading-failure pages).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
   - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits

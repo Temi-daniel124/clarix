@@ -12,7 +12,6 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu } from "@base-ui/react/menu";
-import { motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeftRight,
   Bell,
@@ -34,7 +33,6 @@ import { Sheet, SheetContent, SheetLink, useSheetNavigate } from "@/components/u
 import { Wordmark } from "@/components/clarix/wordmark";
 import { SIDEBAR_STORAGE_KEY } from "@/components/app-shell/rail-script";
 import { signOutAction, switchCooperativeAction } from "@/app/shell-actions";
-import { springStandard } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 import { CommandPalette, type PaletteCommand } from "./command-palette";
 import { otherViewFor } from "./other-view";
@@ -45,8 +43,8 @@ import type { ShellCooperative, ShellIdentity, ShellKind, ShellPermissions } fro
  * The app shell, one for all four roles (DESIGN_SYSTEM §5.5, BUILD-PLAN 1.4).
  *
  * Phone and tablet (<1024px): a 56px top bar (avatar, "Hi, Name", the cooperative for staff, the
- * bell) and a floating navy pill tab bar, with a centre "+" for cooperative staff. Every screen
- * keeps 112px clear at the bottom so the pill never covers content.
+ * bell) and a floating navy pill tab bar of equal slots, with a raised centre "+" for cooperative
+ * staff (D051). Every screen keeps the bar clear at the bottom so it never covers content.
  *
  * Desktop (≥1024px, the same line the Sheet switches at): a 248px light sidebar that collapses to
  * 72px, with the cooperative switcher, a Search field that opens the `Ctrl/⌘ K` palette, the
@@ -135,8 +133,20 @@ export function AppShell({ kind, permissions = NO_PERMISSIONS, identity, childre
           onSwitch={() => setSwitcherOpen(true)}
         />
 
-        {/* §5.5: 112px clear of the floating tab bar on every phone screen, plus the safe area. */}
-        <main className="flex-1 pb-[calc(112px+env(safe-area-inset-bottom))] lg:pb-12">{children}</main>
+        {/*
+          §5.5: every phone screen keeps the floating bar clear, plus the safe area. 112px for the
+          bar alone; 140px where the raised quick action stands 36px above it (D051).
+        */}
+        <main
+          className={cn(
+            "flex-1 lg:pb-12",
+            staff && nav.quickActions.length > 0
+              ? "pb-[calc(140px+env(safe-area-inset-bottom))]"
+              : "pb-[calc(112px+env(safe-area-inset-bottom))]",
+          )}
+        >
+          {children}
+        </main>
       </div>
 
       <TabBar nav={nav} onQuickActions={staff && nav.quickActions.length > 0 ? () => setQuickOpen(true) : null} />
@@ -270,67 +280,66 @@ function CooperativeMark({ name }: { name: string }) {
 
 function TabBar({ nav, onQuickActions }: { nav: ShellNav; onQuickActions: (() => void) | null }) {
   const pathname = usePathname();
-  const reduceMotion = Boolean(useReducedMotion());
   const moreActive = isMoreActive(pathname, nav);
 
-  const tabs = nav.tabs.map((tab) => (
-    <Tab key={tab.href} item={tab} active={isNavActive(pathname, tab, nav.home)} reduceMotion={reduceMotion} />
-  ));
-  const more = <Tab key="more" item={nav.more} active={moreActive} reduceMotion={reduceMotion} />;
+  const slot = (key: string, node: ReactNode) => (
+    <li key={key} className="flex min-w-0 flex-1 justify-center">
+      {node}
+    </li>
+  );
+  const tabs = nav.tabs.map((tab) =>
+    slot(tab.href, <Tab item={tab} active={isNavActive(pathname, tab, nav.home)} />),
+  );
+  const more = slot("more", <Tab item={nav.more} active={moreActive} />);
 
-  // Staff: the "+" sits in the middle, with the tabs either side of it.
+  // Staff: the centre slot is left empty for the raised action, with the tabs either side of it.
   const half = Math.ceil(nav.tabs.length / 2);
-  const items = onQuickActions
-    ? [
-        ...tabs.slice(0, half),
-        <button
-          key="quick"
-          type="button"
-          onClick={onQuickActions}
-          aria-label="Quick actions"
-          className="flex size-12 shrink-0 items-center justify-center rounded-pill bg-emerald-500 text-white transition-[background-color,transform] duration-[var(--duration-spring)] ease-[var(--ease-spring)] active:scale-[0.98] active:bg-emerald-700"
-        >
-          <Plus aria-hidden className="size-6" strokeWidth={1.75} />
-        </button>,
-        ...tabs.slice(half),
-        more,
-      ]
+  const slots = onQuickActions
+    ? [...tabs.slice(0, half), slot("quick", <span aria-hidden className="size-12" />), ...tabs.slice(half), more]
     : [...tabs, more];
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[calc(16px+env(safe-area-inset-bottom))] z-40 flex justify-center px-4 lg:hidden">
       <nav
         aria-label="Main"
-        className="pointer-events-auto flex h-16 w-full max-w-[360px] items-center justify-between rounded-pill border border-hairline-on-navy bg-navy-900 p-2 shadow-raised"
+        className="pointer-events-auto relative h-16 w-full max-w-[360px] rounded-pill border border-hairline-on-navy bg-navy-900 p-2 shadow-raised"
       >
-        {items}
+        <ul className="flex h-12 items-center">{slots}</ul>
+
+        {onQuickActions ? (
+          // D051: the primary action rises out of the bar. A 72px ring in the page colour, centred
+          // on the bar's top edge, so the 52px circle reads as cut out of the navy and lifted.
+          <span className="absolute -top-px left-1/2 flex size-[72px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-pill bg-canvas">
+            <button
+              type="button"
+              onClick={onQuickActions}
+              aria-label="Quick actions"
+              className="flex size-[52px] items-center justify-center rounded-pill bg-emerald-500 text-white shadow-raised transition-[background-color,transform] duration-[var(--duration-spring)] ease-[var(--ease-spring)] hover:bg-emerald-600 active:scale-[0.98] active:bg-emerald-700 motion-reduce:transition-none"
+            >
+              <Plus aria-hidden className="size-6" strokeWidth={1.75} />
+            </button>
+          </span>
+        ) : null}
       </nav>
     </div>
   );
 }
 
-function Tab({ item, active, reduceMotion }: { item: NavItem; active: boolean; reduceMotion: boolean }) {
+/** One equal slot: a 24px icon over its 12px label, 2px apart, centred. The whole slot is the target. */
+function Tab({ item, active }: { item: NavItem; active: boolean }) {
   const Icon = item.icon;
   return (
     <Link
       href={item.href}
       aria-current={active ? "page" : undefined}
-      aria-label={item.label}
       className={cn(
-        "relative flex h-12 shrink-0 items-center justify-center gap-2 rounded-pill",
-        active ? "px-4 text-white" : "w-12 text-on-navy-secondary",
+        "flex h-12 w-full min-w-11 flex-col items-center justify-center gap-0.5 rounded-pill",
+        "transition-colors duration-[var(--duration-quick)] ease-[var(--ease-quick)] motion-reduce:transition-none",
+        active ? "text-on-navy" : "text-on-navy-secondary",
       )}
     >
-      {active ? (
-        <motion.span
-          layoutId="tab-pill"
-          aria-hidden
-          transition={reduceMotion ? { duration: 0 } : springStandard}
-          className="absolute inset-0 rounded-pill bg-navy-800"
-        />
-      ) : null}
-      <Icon aria-hidden className="relative size-5 shrink-0" strokeWidth={1.75} />
-      {active ? <span className="type-small relative whitespace-nowrap">{item.label}</span> : null}
+      <Icon aria-hidden className="size-6 shrink-0" strokeWidth={1.75} />
+      <span className="type-tab-label max-w-full truncate">{item.label}</span>
     </Link>
   );
 }

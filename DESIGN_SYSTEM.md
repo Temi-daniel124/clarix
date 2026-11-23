@@ -163,6 +163,7 @@ Chrome; if not, money figures alone use Inter at the same sizes.
 | `heading` | 17px | 18px | 600, -0.01em, 1.3 | Section titles, card titles, list row primary |
 | `body` | 15px | 16px | 400, 0, 1.5 | Everything people read |
 | `small` | 13px | 13px | 500, 0, 1.4 | Labels, dates, metadata, chips. Sentence case, never uppercase |
+| `tab-label` | 12px | 12px | 500, 0, 16px | The phone tab bar's labels only (D051). Nowhere else |
 
 Rules: 700 is used only for the wordmark and the landing `display` if Figtree 600 looks thin at 60px
 on the owner's screen (decide in the landing PR, then write it here). At most three sizes visible in
@@ -285,11 +286,12 @@ wrong on iOS Safari, see `docs/TOOLING-POLICY.md`).
   staff (cooperative short name, chevron, opens the switcher sheet); bell on the right with an 8px
   unread dot. No theme toggle.
 - **Floating pill tab bar**: `navy-900`, `radius-pill`, `raised`, 64px tall, 16px from the screen
-  bottom plus safe area, max width 360px, centred. Four destinations; the active one shows a filled
-  `navy-800` pill with icon + label in white, the rest icon only in `on-navy` secondary. Staff roles
-  get a centre "+" (48px emerald circle) that opens the quick-action sheet. **Every scrollable screen
-  reserves 112px of bottom padding** so the tab bar never covers content (the live app's member
-  Insights strip and admin member list are covered today; see `docs/REFERENCE-STUDY.md`).
+  bottom plus safe area, max width 360px, centred. Equal slots, each an icon over its label (D051):
+  four for members and the platform, five for cooperative staff, whose centre slot holds the raised
+  quick action that opens the quick-action sheet. **Every scrollable screen reserves the bar's
+  height in bottom padding**, 112px, or 140px where the raised action stands above the bar, so
+  nothing is ever covered (the live app's member Insights strip and admin member list are covered
+  today; see `docs/REFERENCE-STUDY.md`).
 - Bottom sheets replace modals; full-screen flows (apply, import, onboarding) hide the tab bar and
   show a top bar with back and a thin progress line.
 
@@ -309,7 +311,9 @@ lines above leave open:
 |---|---|
 | Breakpoint | Phone shell below 1024px (tablets included), sidebar from 1024px: the same line the Sheet switches at |
 | Phone top bar | 56px, `canvas` fill, `hairline` bottom border, 20px left gutter (24px from 768px). Staff at more than one cooperative: the avatar, greeting and cooperative line together are one 48px button that opens the switcher sheet. Bell is the `icon` button; unread dot 8px `red-500` with a 2px `canvas` ring |
-| Tab bar | 8px inner padding, so tabs are 48px tall. Inactive tab 48×48 icon only; active tab 16px side padding, 20px icon, 8px gap, `small` label, its `navy-800` pill slides between tabs on `springStandard`. Border `hairline-on-navy`. At most three tabs plus More; staff get the "+" in the middle |
+| Tab bar (D051) | 64px tall, 8px inner padding, border `hairline-on-navy`. Equal-width slots across the inner width (2 tabs, the centre action, 2 tabs for staff; 4 tabs otherwise), each tab filling its slot 48px tall, so every target is at least 44px. Icon 24px lucide, 1.75 stroke, `tab-label` below it, 2px gap, both centred in the slot. Active `on-navy` white, inactive `on-navy` 64%, the change on `fadeQuick`. At most three tabs plus More |
+| Raised quick action (D051) | Staff only. A 72px `canvas` ring, centred horizontally on the bar, its centre on the bar's top edge (it rises 36px above the bar), holding a 52px `emerald-500` circle with a white 24px lucide `Plus`; `raised`, hover `emerald-600`, pressed `emerald-700` and `scale(0.98)` on `springStandard`. No label; `aria-label` "Quick actions". It opens the quick-action sheet. The empty centre slot under it keeps the four tabs evenly spaced |
+| Bottom reserve | Plus the safe area. 112px for the bar alone: its 16px offset, its 64px height and a 32px gap. 140px where the raised action stands above it: 16px offset, 64px bar, the ring's 36px rise and a 24px gap |
 | Quick actions | The "+" opens a sheet of 52px rows (20px `ink-500` icon, `body` label, chevron), only actions the role may take |
 | Sidebar | Header 64px. Cooperative row 48px (32px initials mark on `emerald-100`, name and role in `small`). Search field 40px, `radius-sm`, `hairline-strong` border, `small` `ink-500` text and shortcut. Links 40px, `radius-sm`, 12px side padding, 20px icon, `body`; active `emerald-50` fill with `emerald-700` text and icon, hover `surface-sunken`. Group labels `small` `ink-500`, 24px above. Collapsed: 72px, icons centred, group labels become hairlines, the width changes at once (D046) |
 | Account menu | Pinned 48px row (avatar, name, role). Menu 224px, `radius-md`, `raised`, 4px padding, 40px `small` items: Profile, Help, the view switch, Sign out. On phones these live on the More screen |
