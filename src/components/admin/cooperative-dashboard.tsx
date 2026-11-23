@@ -6,6 +6,7 @@ import { KpiCardGrid, type KpiCard } from "@/components/clarix/kpi-card-grid";
 import { cn } from "@/lib/utils";
 import { formatDayMonthTime, formatNaira } from "@/lib/format";
 import type { AttentionItem, CooperativeSummary } from "@/lib/supabase/admin-members";
+import { greeting } from "@/lib/greeting";
 
 /**
  * The Cooperative Dashboard (admin blueprint 4.1).
@@ -220,13 +221,6 @@ function AttentionRow({ item }: { item: AttentionItem }) {
       {body}
     </Link>
   );
-}
-
-function greeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 17) return "Good afternoon";
-  return "Good evening";
 }
 
 function formatDate(iso: string): string {

@@ -1,6 +1,7 @@
 import { createClient, getRequestUser } from "@/lib/supabase/server";
 import type { Capacity } from "@/lib/eligibility";
 import { loanBalance } from "@/lib/loan-status";
+import { loadLoanRows } from "./loan-rows";
 
 export type LoanStatus =
   | "draft"
@@ -94,14 +95,8 @@ export async function loadLoans(): Promise<LoanSummary[]> {
 
   const membershipIds = memberships.map((row) => row.id);
 
-  const [{ data: loans }, { data: repayments }] = await Promise.all([
-    supabase
-      .from("loans")
-      .select(
-        "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, reserved_at, reservation_expires_at, approved_at, rejected_at, completed_at, created_at, origin, outstanding_balance_at_entry, expected_end_date",
-      )
-      .in("membership_id", membershipIds)
-      .order("created_at", { ascending: false }),
+  const [loans, { data: repayments }] = await Promise.all([
+    loadLoanRows(supabase, membershipIds),
     supabase
       .from("savings_transactions")
       .select("loan_id, amount, recorded_at")
@@ -126,38 +121,36 @@ export async function loadLoans(): Promise<LoanSummary[]> {
     }),
   );
 
-  return (loans ?? []).map((loan) => {
-    const requested = Number(loan.requested_amount);
+  return loans.map((loan) => {
+    const requested = loan.requestedAmount;
     const repaid = Math.min(repaidByLoan.get(loan.id) ?? 0, requested);
-    const outstandingAtEntry =
-      loan.outstanding_balance_at_entry === null ? null : Number(loan.outstanding_balance_at_entry);
-    const balance = loanBalance({ requestedAmount: requested, outstandingAtEntry, repaid });
-    const membership = membershipById.get(loan.membership_id);
+    const balance = loanBalance({ requestedAmount: requested, outstandingAtEntry: loan.outstandingAtEntry, repaid });
+    const membership = membershipById.get(loan.membershipId);
 
     return {
       id: loan.id,
-      membershipId: loan.membership_id,
+      membershipId: loan.membershipId,
       cooperativeId: membership?.cooperativeId ?? "",
       cooperativeName: membership?.name ?? "Cooperative",
       requestedAmount: requested,
-      monthlyRepayment: Number(loan.monthly_repayment),
-      tenureMonths: loan.tenure_months,
-      status: loan.status,
+      monthlyRepayment: loan.monthlyRepayment,
+      tenureMonths: loan.tenureMonths,
+      status: loan.status as LoanStatus,
       repaid,
       remaining: balance.remaining,
       progress: balance.progress,
-      reservedAt: loan.reserved_at,
-      reservationExpiresAt: loan.reservation_expires_at,
-      approvedAt: loan.approved_at,
-      rejectedAt: loan.rejected_at,
-      completedAt: loan.completed_at,
-      createdAt: loan.created_at,
+      reservedAt: loan.reservedAt,
+      reservationExpiresAt: loan.reservationExpiresAt,
+      approvedAt: loan.approvedAt,
+      rejectedAt: loan.rejectedAt,
+      completedAt: loan.completedAt,
+      createdAt: loan.createdAt,
       nextRepaymentOn:
         loan.status === "active"
-          ? nextMonthAfter(lastRepaymentByLoan.get(loan.id) ?? loan.approved_at)
+          ? nextMonthAfter(lastRepaymentByLoan.get(loan.id) ?? loan.approvedAt)
           : null,
       preExisting: loan.origin === "pre_existing",
-      expectedEndDate: loan.expected_end_date,
+      expectedEndDate: loan.expectedEndDate,
     };
   });
 }

@@ -106,8 +106,9 @@ describe("otherViewFor", () => {
     expect(otherViewFor("staff", identity({ isMember: false }))).toBeNull();
   });
 
-  it("offers a member who also works at a cooperative the way back", () => {
-    expect(otherViewFor("member", identity({ hasStaffRole: true }))?.href).toBe("/admin");
+  it("offers a member who also works at a cooperative the way back, in a short label", () => {
+    expect(otherViewFor("member", identity({ hasStaffRole: true }))).toEqual({ href: "/admin", label: "Switch to staff view" });
+    expect(otherViewFor("member", identity({ isPlatformAdmin: true }))?.label).toBe("Switch to platform");
     expect(otherViewFor("member", identity({}))).toBeNull();
   });
 });

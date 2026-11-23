@@ -54,9 +54,11 @@ export function CapacityMeter({
   const usedRatio = cap > 0 ? committed / cap : 0;
   const proposedRatio = cap > 0 ? proposed / cap : 0;
 
+  // §3: amber once what is left, after any request being previewed, is within 10% of the limit.
+  const left = Math.max(0, available - proposed);
   const tone: MeterTone = !eligible
     ? "exceeded"
-    : available / (cap || 1) < 0.15
+    : cap > 0 && left / cap <= 0.1
       ? "tight"
       : "healthy";
 
@@ -93,10 +95,10 @@ export function CapacityMeter({
       />
 
       <dl className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1">
-        <Legend swatch="var(--clarix-brand-primary)" term="Committed" value={committed} />
+        <Legend swatch="var(--clarix-ink-300)" term="Committed" value={committed} />
         {proposed > 0 ? (
           <Legend
-            swatch={eligible ? "var(--clarix-brand-accent)" : "var(--clarix-danger)"}
+            swatch={eligible ? "var(--clarix-ink-500)" : "var(--clarix-red-500)"}
             term={proposedLabel}
             value={proposed}
           />

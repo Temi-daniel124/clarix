@@ -45,7 +45,14 @@ export function RollingNumber({
       <span className="sr-only">{ariaLabel ?? `${prefix}${formatted}`}</span>
 
       <span aria-hidden className="inline-flex items-baseline">
-        {prefix ? <span className="mr-[2px]">{prefix}</span> : null}
+        {/* §3: the naira sign one step down, 0.6em, `ink-500`, weight 500, beside the figure. */}
+        {prefix ? (
+          <span
+            className={cn(prefix === NAIRA && "mr-1 text-[0.6em] font-medium text-ink-500")}
+          >
+            {prefix}
+          </span>
+        ) : null}
 
         {characters.map((character, index) => {
           // Key from the right so a digit keeps its identity as the figure grows or shrinks,

@@ -65,8 +65,15 @@ code is on `main` yet.
   Preview-only demo credentials, refused in Production, and a CI check that no demo password or
   variable name reaches the client bundle. **The owner sets the eight Preview variables in Vercel**
   (names in BUILD.md). No migration.
+  **1.4d (walkthrough fixes) is built and in review**, stacked on 1.4c: the seven "Fix now" items
+  from `docs/WALKTHROUGH-1-4c.md`. The member's loans now share one read and one count with the
+  cooperative's Members list (they disagreed because the member's read named columns from the 0.3
+  migration, failed on the shared Preview database and showed "no loans"); savings trend, Lagos
+  greeting, §3 meter, sidebar height, view-switch labels and menu separators. No migration.
+  On a Preview before the chain merges, the admin Loans queue still reads columns from the 0.1 and
+  0.3 migrations (not in the walkthrough, so not changed); it works once they apply at merge.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b) → #36 (1.4c).
+  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b) → #36 (1.4c) → #37 (1.4d).
   **Next step: BUILD-PLAN 1.5**
   (not-found, error and loading-failure pages).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use

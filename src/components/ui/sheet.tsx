@@ -122,7 +122,9 @@ function Sheet({ open: openProp, defaultOpen = false, onOpenChange, kind = "defa
         open={open}
         onOpenChange={(next) => setOpen(next)}
         swipeDirection={desktop ? "right" : "down"}
-        snapPoints={desktop ? undefined : PHONE_DETENTS}
+        // Always the phone detents: Base UI applies snap points only to an up or down swipe, so the
+        // desktop panel ignores them, and changing the prop after mount trips Base UI's warning.
+        snapPoints={PHONE_DETENTS}
         modal={!sidePanelFilter}
         // A filter panel stays open while the list beside it is used; X and Esc close it.
         disablePointerDismissal={sidePanelFilter}
