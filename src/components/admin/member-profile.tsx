@@ -9,7 +9,7 @@ import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { IdentityMark } from "@/components/clarix/identity-mark";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
-import { formatNaira, formatShortDate } from "@/lib/format";
+import { formatMonthYear, formatNaira, formatShortDate } from "@/lib/format";
 import { springStandard } from "@/lib/motion";
 import type { MemberProfile } from "@/lib/supabase/admin-members";
 
@@ -52,10 +52,7 @@ export function MemberProfileView({
   const reduceMotion = useReducedMotion();
 
   const activeLoans = profile.loans.filter((loan) => loan.status === "active");
-  const loanBalance = activeLoans.reduce(
-    (total, loan) => total + Math.max(loan.requestedAmount - loan.repaid, 0),
-    0,
-  );
+  const loanBalance = activeLoans.reduce((total, loan) => total + loan.remaining, 0);
 
   return (
     <div>
@@ -288,17 +285,33 @@ function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: bool
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Loans with this cooperative</h2>
-        {canRecord && repayable.length > 0 ? (
-          <Button
-            size="sm"
-            variant="outline"
-            render={
-              <Link href={`/admin/members/${profile.membershipId}/record?type=loan_repayment`} />
-            }
-          >
-            <Plus className="size-4" aria-hidden strokeWidth={2.5} />
-            Record repayment
-          </Button>
+        {canRecord ? (
+          <div className="flex flex-wrap gap-2">
+            {/* D036: a loan already running before this cooperative joined Clarix. Only for an
+                active member, because the database refuses it for anyone else. */}
+            {profile.status === "active" ? (
+              <Button
+                size="sm"
+                variant="outline"
+                render={<Link href={`/admin/members/${profile.membershipId}/existing-loan`} />}
+              >
+                <Plus className="size-4" aria-hidden strokeWidth={2.5} />
+                Add existing loan
+              </Button>
+            ) : null}
+            {repayable.length > 0 ? (
+              <Button
+                size="sm"
+                variant="outline"
+                render={
+                  <Link href={`/admin/members/${profile.membershipId}/record?type=loan_repayment`} />
+                }
+              >
+                <Plus className="size-4" aria-hidden strokeWidth={2.5} />
+                Record repayment
+              </Button>
+            ) : null}
+          </div>
         ) : null}
       </div>
 
@@ -319,14 +332,21 @@ function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: bool
 
               <div className="min-w-0 flex-1">
                 <p className="type-card-title tabular text-text">
-                  {formatNaira(loan.requestedAmount)} over {loan.tenureMonths} months
+                  {loan.preExisting
+                    ? `${formatNaira(loan.requestedAmount)} loan`
+                    : `${formatNaira(loan.requestedAmount)} over ${loan.tenureMonths} months`}
                 </p>
                 <p className="type-secondary mt-1 text-text-secondary">
                   {formatNaira(loan.monthlyRepayment)} a month ·{" "}
                   {loan.status === "active"
-                    ? `${formatNaira(loan.repaid)} repaid so far`
+                    ? loan.preExisting
+                      ? `${formatNaira(loan.remaining)} left${loan.expectedEndDate ? ` · ends ${formatMonthYear(loan.expectedEndDate)}` : ""}`
+                      : `${formatNaira(loan.repaid)} repaid so far`
                     : describeStatus(loan.status, loan.reservationExpiresAt)}
                 </p>
+                {loan.preExisting ? (
+                  <p className="type-caption mt-1 text-text-muted">Entered as an existing loan</p>
+                ) : null}
               </div>
 
               <span className="type-caption whitespace-nowrap text-text-muted">
@@ -337,10 +357,6 @@ function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: bool
         </ul>
       )}
 
-      <p className="type-caption mt-4 max-w-[560px] text-text-muted">
-        Deciding an application, approving, or turning it down, is the Loans area, which is the
-        next part of Clarix being built. Recording what payroll has already taken works today.
-      </p>
     </div>
   );
 }

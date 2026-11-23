@@ -63,7 +63,7 @@ Read: D040, `docs/DATA-MODEL.md` → Eligibility, `docs/EDGE-CASES.md` E05, E06.
   changes. Add `npm ci` as the first CI step, and a `typecheck` script (`tsc --noEmit`) run in CI.
 - **Accept when:** a fresh clone runs `npm ci && npm run build` with no errors in CI.
 
-### ☐ 0.3 Let staff enter a loan a member already owes (D036)
+### ☑ 0.3 Let staff enter a loan a member already owes (D036)
 Read: D036, `docs/planning/clarix-documents-blueprint.md` §3, `docs/EDGE-CASES.md` E08.
 - Migration: `loans.origin` (`clarix` | `pre_existing`), `outstanding_balance_at_entry`,
   `expected_end_date`. A `pre_existing` loan is created directly as `active`, never passes through
@@ -98,7 +98,9 @@ Observed in the live walkthrough (`docs/REFERENCE-STUDY.md` §1):
 Found while building 0.1 (logged in `docs/PROJECT-STATE.md` → Known defects).
 - Migration: drop the `loans_update_staff` policy (migration `20260912054608`), which lets any
   active staff member `update` a loan row directly through the API, skipping the written reason,
-  the audit entry and the member's notification. Every change of status then goes through a
+  the audit entry and the member's notification. Drop `loans_insert_staff` from the same migration
+  for the same reason: it lets staff insert an `active` or `pre_existing` loan directly, around
+  `record_existing_loan`'s permission check and audit entry (found while building 0.3). Every change of status then goes through a
   SECURITY DEFINER function: `decide_loan_application`, `complete_loan`,
   `expire_lapsed_reservations` (and `record_existing_loan` from 0.3).
 - Before writing it, list every app code path that updates `loans` directly and move each onto an

@@ -21,7 +21,12 @@ code exists yet.
   **0.2 (`npm ci`) is built and in review**, stacked on 0.1: lockfile regenerated on Node 26 (the
   version Vercel uses, now pinned in `.nvmrc` and `engines`), `typecheck` script, and a CI workflow
   that runs `npm ci`, lint, typecheck, tests and build on every PR. No migration.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2). **Next step: BUILD-PLAN 0.3** (existing loans).
+  **0.3 (add an existing loan) is built and in review**, stacked on 0.2: Member → Loans → "Add
+  existing loan", migration 032 (additive). Migration 032 is **not applied**: the Supabase account
+  connected to agent sessions does not hold the `Clarix` project (it is still under the owner's
+  previous account), so it waits for the owner, like 030 and 031.
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → 0.3. **Next step: BUILD-PLAN 0.4**
+  (mark Previews).
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
 ## Known defects in the live product (fixed in Phase 0)
@@ -29,9 +34,9 @@ code exists yet.
 | Defect | Where | Step |
 |---|---|---|
 | "Submit anyway" applications are never stored; the member is told they were sent (fixed in the 0.1 PR, live once merged and migrations 030–031 applied) | `submit_loan_application`, migration `20260917213110_loan_product_on_application.sql` | 0.1 |
-| Staff can `update` a loan row directly (policy `loans_update_staff`), bypassing `decide_loan_application`'s reason rule and audit entry | migration `20260912054608` | 0.6 |
+| Staff can `update` or `insert` a loan row directly (policies `loans_update_staff`, `loans_insert_staff`), bypassing `decide_loan_application` and `record_existing_loan` with their reason, permission and audit entry | migration `20260912054608` | 0.6 |
 | `npm ci` fails: lockfile out of sync (fixed in the 0.2 PR) | `package-lock.json` | 0.2 |
-| Existing loans cannot be entered, so committed starts at ₦0 for every member | no screen or RPC | 0.3 |
+| Existing loans cannot be entered, so committed starts at ₦0 for every member (fixed in the 0.3 PR) | no screen or RPC | 0.3 |
 | Preview deployments share the live database (kept by the owner's choice, D043); nothing marks a Preview as such | layout | 0.4 |
 | Admin home "Members 8" vs list "15 members" vs platform "7"; member home "Current as of 15 March" in November; admin loans says 3 lapsed and "Nothing is waiting" at once | home queries | 0.5 |
 | Floating tab bar covers the last content on member home and staff member list (phone) | app shells | 1.4 |

@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
-import { isAwaitingDecision } from "@/lib/loan-status";
+import { isAwaitingDecision, loanBalance } from "@/lib/loan-status";
 
 /**
  * Reads behind the cooperative dashboard (admin blueprint 4.1) and member management (Part 5).
@@ -110,6 +110,11 @@ export type MemberLoan = {
   createdAt: string;
   reservationExpiresAt: string | null;
   repaid: number;
+  /** What is still owed: from the balance at entry for a loan entered as already running. */
+  remaining: number;
+  /** Entered by staff as already running when the cooperative joined (D036). */
+  preExisting: boolean;
+  expectedEndDate: string | null;
 };
 
 export type MemberLedgerEntry = {
@@ -158,7 +163,7 @@ export async function loadMemberProfile(membershipId: string): Promise<MemberPro
     supabase
       .from("loans")
       .select(
-        "id, requested_amount, monthly_repayment, tenure_months, status, created_at, reservation_expires_at",
+        "id, requested_amount, monthly_repayment, tenure_months, status, created_at, reservation_expires_at, origin, outstanding_balance_at_entry, expected_end_date",
       )
       .eq("membership_id", membershipId)
       .order("created_at", { ascending: false }),
@@ -203,6 +208,14 @@ export async function loadMemberProfile(membershipId: string): Promise<MemberPro
       createdAt: loan.created_at,
       reservationExpiresAt: loan.reservation_expires_at,
       repaid: repaidByLoan.get(loan.id) ?? 0,
+      remaining: loanBalance({
+        requestedAmount: Number(loan.requested_amount),
+        outstandingAtEntry:
+          loan.outstanding_balance_at_entry === null ? null : Number(loan.outstanding_balance_at_entry),
+        repaid: repaidByLoan.get(loan.id) ?? 0,
+      }).remaining,
+      preExisting: loan.origin === "pre_existing",
+      expectedEndDate: loan.expected_end_date,
     })),
     ledger: (ledger ?? []).map((entry) => ({
       id: entry.id,

@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { availableWithout, isAwaitingDecision, isLapsedReservation } from "@/lib/loan-status";
+import { availableWithout, isAwaitingDecision, isLapsedReservation, loanBalance } from "@/lib/loan-status";
 
 /**
  * Reads behind Loan Management, admin blueprint Part 6.
@@ -65,10 +65,11 @@ type LoanRecord = {
   reservation_expires_at: string | null;
   over_capacity: boolean;
   shortfall_at_submission: number | null;
+  outstanding_balance_at_entry: number | null;
 };
 
 const LOAN_COLUMNS =
-  "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, created_at, approved_at, rejected_at, completed_at, reservation_expires_at, over_capacity, shortfall_at_submission";
+  "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, created_at, approved_at, rejected_at, completed_at, reservation_expires_at, over_capacity, shortfall_at_submission, outstanding_balance_at_entry";
 
 async function loansForCooperative(cooperativeId: string) {
   const supabase = await createClient();
@@ -213,6 +214,13 @@ export async function loadApplication(loanId: string): Promise<
       /** Repayments recorded against this loan, for the progress meter blueprint 6.4 asks for. */
       repaid: number;
       repayments: RepaymentEntry[];
+      /** Set for a loan entered as already running (D036). */
+      outstandingAtEntry: number | null;
+      /**
+       * Whether this cooperative has entered any existing loans yet. Until it has, every
+       * member's committed figure may be missing loans that predate Clarix (E08).
+       */
+      existingLoansEntered: boolean;
     })
   | null
 > {
@@ -228,7 +236,7 @@ export async function loadApplication(loanId: string): Promise<
 
   const { data: membership } = await supabase
     .from("cooperative_memberships")
-    .select("id, savings_balance, users(name, employee_id, salary_verified_at)")
+    .select("id, cooperative_id, savings_balance, users(name, employee_id, salary_verified_at)")
     .eq("id", loan.membership_id)
     .maybeSingle();
 
@@ -236,7 +244,7 @@ export async function loadApplication(loanId: string): Promise<
 
   const person = Array.isArray(membership.users) ? membership.users[0] : membership.users;
 
-  const [{ data: capacityRows }, { data: product }] = await Promise.all([
+  const [{ data: capacityRows }, { data: product }, { data: existingLoansEntered }] = await Promise.all([
     supabase.rpc("capacity_for_membership", { target_membership_id: loan.membership_id }),
     loan.loan_product_id
       ? supabase
@@ -245,6 +253,9 @@ export async function loadApplication(loanId: string): Promise<
           .eq("id", loan.loan_product_id)
           .maybeSingle()
       : Promise.resolve({ data: null }),
+    supabase.rpc("cooperative_has_existing_loans", {
+      target_cooperative_id: membership.cooperative_id,
+    }),
   ]);
 
   // The repayment history behind this loan. Read separately rather than joined, because a loan
@@ -310,6 +321,10 @@ export async function loadApplication(loanId: string): Promise<
     salaryConfirmed: Boolean(person?.salary_verified_at),
     repaid,
     repayments,
+    outstandingAtEntry: nullableNumber(loan.outstanding_balance_at_entry),
+    // A failed lookup reads as "entered": the note is a prompt, and a false alarm on every
+    // review would teach staff to ignore it.
+    existingLoansEntered: existingLoansEntered !== false,
     product: product
       ? {
           name: product.name,
@@ -362,7 +377,11 @@ export async function loadActiveLoans(cooperativeId: string): Promise<LoanSummar
         monthlyRepayment: Number(loan.monthly_repayment),
         tenureMonths: loan.tenure_months,
         repaid: repaid.total,
-        remaining: Math.max(Number(loan.requested_amount) - repaid.total, 0),
+        remaining: loanBalance({
+          requestedAmount: Number(loan.requested_amount),
+          outstandingAtEntry: nullableNumber(loan.outstanding_balance_at_entry),
+          repaid: repaid.total,
+        }).remaining,
         approvedAt: loan.approved_at,
         nextExpected: nextMonthAfter(repaid.last ?? loan.approved_at),
       };

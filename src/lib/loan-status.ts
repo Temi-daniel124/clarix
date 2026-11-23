@@ -68,3 +68,81 @@ export function availableWithout(
     overCap: loan.monthlyRepayment > availableBefore,
   };
 }
+
+/**
+ * What is left on a loan, and how far through it the member is.
+ *
+ * A Clarix loan starts at its full amount. A loan entered as already running (D036, origin
+ * 'pre_existing') starts at what was still owed on the day it was entered: the difference between
+ * that and the original amount was repaid before Clarix, and counts as progress, not as debt.
+ */
+export function loanBalance(loan: {
+  requestedAmount: number;
+  /** Set only for a pre_existing loan. */
+  outstandingAtEntry: number | null;
+  /** Repayments recorded in Clarix against this loan. */
+  repaid: number;
+}): { remaining: number; progress: number } {
+  const principal = loan.requestedAmount;
+  const owedAtStart = loan.outstandingAtEntry ?? principal;
+  const paidBefore = Math.max(principal - owedAtStart, 0);
+  const remaining = Math.max(owedAtStart - loan.repaid, 0);
+  const progress = principal > 0 ? Math.min(1, (paidBefore + loan.repaid) / principal) : 0;
+
+  return { remaining, progress };
+}
+
+/**
+ * The default "expected end month" for an existing loan (documents blueprint §3): as many monthly
+ * repayments as the balance needs, counted from the start month or this month, whichever is later,
+ * because what is still owed is repaid from now on, not from when the loan began.
+ *
+ * Months are "YYYY-MM". Returns null until both figures are usable.
+ */
+export function defaultEndMonth(input: {
+  startMonth: string;
+  outstanding: number;
+  monthly: number;
+  today?: Date;
+}): string | null {
+  const start = parseMonth(input.startMonth);
+  if (!start || !(input.outstanding > 0) || !(input.monthly > 0)) return null;
+
+  const today = input.today ?? new Date();
+  const thisMonth = { year: today.getFullYear(), month: today.getMonth() + 1 };
+  const from = compareMonths(start, thisMonth) > 0 ? start : thisMonth;
+  const repayments = Math.ceil(input.outstanding / input.monthly);
+
+  return formatMonth(addMonths(from, repayments - 1));
+}
+
+/** Number of monthly repayments from one month to another, both included. */
+export function monthsInclusive(startMonth: string, endMonth: string): number | null {
+  const start = parseMonth(startMonth);
+  const end = parseMonth(endMonth);
+  if (!start || !end) return null;
+  return (end.year - start.year) * 12 + (end.month - start.month) + 1;
+}
+
+type Month = { year: number; month: number };
+
+function parseMonth(value: string): Month | null {
+  const match = /^(\d{4})-(\d{2})$/.exec(value);
+  if (!match) return null;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  return month >= 1 && month <= 12 ? { year, month } : null;
+}
+
+function addMonths(from: Month, count: number): Month {
+  const index = from.year * 12 + (from.month - 1) + count;
+  return { year: Math.floor(index / 12), month: (index % 12) + 1 };
+}
+
+function compareMonths(a: Month, b: Month): number {
+  return a.year * 12 + a.month - (b.year * 12 + b.month);
+}
+
+function formatMonth(value: Month): string {
+  return `${value.year}-${String(value.month).padStart(2, "0")}`;
+}
