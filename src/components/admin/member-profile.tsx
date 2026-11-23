@@ -1,16 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
 import { Plus, Receipt } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { IdentityMark } from "@/components/clarix/identity-mark";
 import { RollingNumber } from "@/components/clarix/rolling-number";
-import { cn } from "@/lib/utils";
+import { SegmentedControl, segmentId } from "@/components/ui/segmented-control";
 import { formatMonthYear, formatNaira, formatShortDate } from "@/lib/format";
-import { springStandard } from "@/lib/motion";
 import type { MemberProfile } from "@/lib/supabase/admin-members";
 
 const TABS = ["overview", "savings", "loans", "deductions"] as const;
@@ -49,7 +47,7 @@ export function MemberProfileView({
   canRecord: boolean;
 }) {
   const [tab, setTab] = useState<Tab>("overview");
-  const reduceMotion = useReducedMotion();
+  const tabsId = useId();
 
   const activeLoans = profile.loans.filter((loan) => loan.status === "active");
   const loanBalance = activeLoans.reduce((total, loan) => total + loan.remaining, 0);
@@ -71,42 +69,17 @@ export function MemberProfileView({
 
       {/* Continuous Tabs, the pill switcher the design system specifies. The moving pill is a
           layout animation on the one standard spring: the same physics as everything else. */}
-      <div
-        role="tablist"
-        aria-label="Member record"
-        className="mt-8 flex w-fit max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1"
-      >
-        {TABS.map((entry) => {
-          const selected = tab === entry;
+      <SegmentedControl
+        role="tabs"
+        id={tabsId}
+        label="Member record"
+        segments={TABS.map((entry) => ({ value: entry, label: TAB_LABELS[entry] }))}
+        value={tab}
+        onChange={setTab}
+        className="mt-8"
+      />
 
-          return (
-            <button
-              key={entry}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              onClick={() => setTab(entry)}
-              className={cn(
-                "relative rounded-full px-4 py-2 type-secondary font-medium whitespace-nowrap transition-colors duration-150",
-                "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-                selected ? "text-text" : "text-text-muted hover:text-text-secondary",
-              )}
-            >
-              {selected ? (
-                <motion.span
-                  layoutId="member-tab"
-                  aria-hidden
-                  transition={reduceMotion ? { duration: 0 } : springStandard}
-                  className="absolute inset-0 rounded-full bg-background"
-                />
-              ) : null}
-              <span className="relative">{TAB_LABELS[entry]}</span>
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mt-8">
+      <div className="mt-8" role="tabpanel" aria-labelledby={segmentId(tabsId, tab)}>
         {tab === "overview" ? (
           <Overview profile={profile} loanBalance={loanBalance} />
         ) : tab === "savings" ? (
@@ -216,7 +189,6 @@ function Savings({ profile, canRecord }: { profile: MemberProfile; canRecord: bo
         <h2 className="type-section text-text">Contributions</h2>
         {canRecord ? (
           <Button
-            size="sm"
             render={
               <Link href={`/admin/members/${profile.membershipId}/record?type=contribution`} />
             }
@@ -291,8 +263,7 @@ function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: bool
                 active member, because the database refuses it for anyone else. */}
             {profile.status === "active" ? (
               <Button
-                size="sm"
-                variant="outline"
+                variant="secondary"
                 render={<Link href={`/admin/members/${profile.membershipId}/existing-loan`} />}
               >
                 <Plus className="size-4" aria-hidden strokeWidth={2.5} />
@@ -301,8 +272,7 @@ function Loans({ profile, canRecord }: { profile: MemberProfile; canRecord: bool
             ) : null}
             {repayable.length > 0 ? (
               <Button
-                size="sm"
-                variant="outline"
+                variant="secondary"
                 render={
                   <Link href={`/admin/members/${profile.membershipId}/record?type=loan_repayment`} />
                 }

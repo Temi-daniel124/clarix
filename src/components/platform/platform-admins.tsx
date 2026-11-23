@@ -56,7 +56,7 @@ export function PlatformAdmins({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Who operates the platform</h2>
         {open ? null : (
-          <Button type="button" size="sm" onClick={() => setOpen(true)}>
+          <Button type="button" onClick={() => setOpen(true)}>
             <Plus className="size-4" aria-hidden strokeWidth={2.5} />
             Add a platform admin
           </Button>
@@ -95,13 +95,12 @@ export function PlatformAdmins({
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-4">
-            <Button type="button" size="sm" onClick={add} disabled={pending || !email.trim()}>
+            <Button type="button" onClick={add} disabled={pending || !email.trim()}>
               {pending ? "Adding…" : "Add"}
             </Button>
             <Button
               type="button"
-              variant="ghost"
-              size="sm"
+              variant="tertiary"
               onClick={() => {
                 setOpen(false);
                 setFeedback({});
@@ -206,13 +205,13 @@ function AdminRow({
       ) : removing ? (
         <div className="flex items-center gap-3">
           <span className="type-caption text-text-secondary">Removing in {countdown}s</span>
-          <Button variant="outline" size="sm" type="button" onClick={cancelRemoval}>
+          <Button variant="secondary" type="button" onClick={cancelRemoval}>
             <Undo2 className="size-4" aria-hidden strokeWidth={2} />
             Undo
           </Button>
         </div>
       ) : (
-        <Button variant="ghost" size="sm" type="button" onClick={beginRemoval}>
+        <Button variant="tertiary" type="button" onClick={beginRemoval}>
           <UserMinus className="size-4" aria-hidden strokeWidth={2} />
           Remove
         </Button>

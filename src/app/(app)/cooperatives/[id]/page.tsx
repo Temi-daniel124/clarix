@@ -71,7 +71,7 @@ export default async function CooperativeDetailPage({
 
   return (
     <div className="mx-auto w-full max-w-[820px] px-5 py-8 md:px-8 md:py-10">
-      <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/cooperatives" />}>
+      <Button variant="tertiary" className="-ml-3" render={<Link href="/cooperatives" />}>
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
         My cooperatives
       </Button>
@@ -133,13 +133,13 @@ export default async function CooperativeDetailPage({
 
       {/* Quick actions. "Apply for a loan" is hidden while one is already open here. */}
       <div className="mt-8 flex flex-wrap gap-3">
-        <Button variant="outline" render={<Link href={`/cooperatives/${id}/savings`} />}>
+        <Button variant="secondary" render={<Link href={`/cooperatives/${id}/savings`} />}>
           <FileText className="size-4" aria-hidden strokeWidth={2} />
           View savings statement
         </Button>
 
         {activeLoan ? (
-          <Button variant="outline" render={<Link href={`/loans/${activeLoan.id}`} />}>
+          <Button variant="secondary" render={<Link href={`/loans/${activeLoan.id}`} />}>
             View loan
             <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />
           </Button>

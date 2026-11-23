@@ -26,7 +26,7 @@ export default async function MemberPage({ params }: { params: Promise<{ id: str
 
   return (
     <div className="mx-auto w-full max-w-[860px] px-5 py-8 md:px-8 md:py-10">
-      <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/admin/members" />}>
+      <Button variant="tertiary" className="-ml-3" render={<Link href="/admin/members" />}>
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
         Members
       </Button>

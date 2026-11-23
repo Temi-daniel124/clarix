@@ -117,7 +117,7 @@ export function WelcomeTour() {
             <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />
           </Button>
 
-          <Button variant="ghost" onClick={() => router.push("/onboarding/employee-id")}>
+          <Button variant="tertiary" onClick={() => router.push("/onboarding/employee-id")}>
             Skip
           </Button>
         </div>

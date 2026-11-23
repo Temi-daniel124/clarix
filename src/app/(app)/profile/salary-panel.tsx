@@ -35,7 +35,7 @@ export function SalaryPanel({
           No salary has been confirmed on this account yet, so Clarix cannot work out a deduction
           limit for you. Uploading a payslip is the one step that fixes that.
         </p>
-        <Button className="mt-5" size="sm" render={<Link href="/profile/payslip" />}>
+        <Button className="mt-5" render={<Link href="/profile/payslip" />}>
           <Upload className="size-4" aria-hidden strokeWidth={2} />
           Upload a payslip
         </Button>
@@ -68,7 +68,7 @@ export function SalaryPanel({
       </p>
 
       <div className="mt-5 flex flex-wrap items-center gap-4">
-        <Button variant="outline" size="sm" render={<Link href="/profile/payslip" />}>
+        <Button variant="secondary" render={<Link href="/profile/payslip" />}>
           <Upload className="size-4" aria-hidden strokeWidth={2} />
           Re-upload payslip
         </Button>

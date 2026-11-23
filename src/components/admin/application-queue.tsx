@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion, useReducedMotion } from "motion/react";
 import { Clock, Inbox, TriangleAlert } from "lucide-react";
+import { Chip } from "@/components/ui/chip";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { cn } from "@/lib/utils";
 import { clampRatio, formatNaira } from "@/lib/format";
-import { springStandard } from "@/lib/motion";
 import type { LoanApplication } from "@/lib/supabase/admin-loans";
 import { queueSegments, type QueueSegment } from "@/lib/home-figures";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import { LapsedNotice } from "./lapsed-notice";
 
 /**
@@ -39,54 +39,26 @@ export function ApplicationQueue({
 }) {
   const [tab, setTab] = useState<QueueSegment>("pending");
   const [tidied, setTidied] = useState<number | null>(null);
-  const reduceMotion = useReducedMotion();
 
   // Lapsed is its own segment with its own count, never a banner above a list that says nothing
   // is waiting. It is only offered while it holds something.
   const segments = queueSegments({ pending: pending.length, lapsed: lapsed.length });
-  const current = segments.some((segment) => segment.key === tab) ? tab : "decided";
+  const current = segments.some((segment) => segment.value === tab) ? tab : "decided";
 
   const items = current === "pending" ? pending : current === "lapsed" ? lapsed : decided;
 
   return (
     <div>
-      <div
-        role="tablist"
-        aria-label="Applications"
-        className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1"
-      >
-        {segments.map((entry) => {
-          const selected = current === entry.key;
-
-          return (
-            <button
-              key={entry.key}
-              type="button"
-              role="tab"
-              aria-selected={selected}
-              onClick={() => {
-                setTidied(null);
-                setTab(entry.key);
-              }}
-              className={cn(
-                "relative rounded-full px-3 py-2 type-secondary font-medium whitespace-nowrap transition-colors duration-150 sm:px-4",
-                "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-                selected ? "text-text" : "text-text-muted hover:text-text-secondary",
-              )}
-            >
-              {selected ? (
-                <motion.span
-                  layoutId="queue-tab"
-                  aria-hidden
-                  transition={reduceMotion ? { duration: 0 } : springStandard}
-                  className="absolute inset-0 rounded-full bg-background"
-                />
-              ) : null}
-              <span className="relative">{entry.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <SegmentedControl
+        role="tabs"
+        label="Applications"
+        segments={segments}
+        value={current}
+        onChange={(next) => {
+          setTidied(null);
+          setTab(next);
+        }}
+      />
 
       {current === "lapsed" && canTidy ? (
         <LapsedNotice
@@ -261,16 +233,9 @@ export function AboveLimitChip({
         : "Above limit";
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-danger/30 px-3 py-1 type-caption tabular whitespace-nowrap text-danger",
-        className,
-      )}
-      style={{ backgroundColor: "color-mix(in srgb, var(--clarix-danger) 8%, transparent)" }}
-    >
-      <TriangleAlert aria-hidden strokeWidth={2} className="size-3.5" />
+    <Chip tone="stop" icon={<TriangleAlert aria-hidden />} className={className}>
       {label}
-    </span>
+    </Chip>
   );
 }
 

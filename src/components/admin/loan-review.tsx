@@ -69,7 +69,7 @@ export function LoanReview({
 
   return (
     <div>
-      <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/admin/loans" />}>
+      <Button variant="tertiary" className="-ml-3" render={<Link href="/admin/loans" />}>
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
         Applications
       </Button>
@@ -282,9 +282,8 @@ export function LoanReview({
 
       <div className="mt-6">
         <Button
-          variant="ghost"
-          size="sm"
-          className="-ml-2"
+          variant="tertiary"
+          className="-ml-3"
           render={<Link href={`/admin/members/${application.membershipId}`} />}
         >
           <UserRound className="size-4" aria-hidden strokeWidth={2} />

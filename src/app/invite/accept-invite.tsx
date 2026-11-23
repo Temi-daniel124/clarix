@@ -3,9 +3,9 @@
 import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Eye, EyeOff, TriangleAlert } from "lucide-react";
+import { ArrowRight, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input, PasswordInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createClient } from "@/lib/supabase/client";
 import { acceptInvitationAction } from "@/app/admin/actions";
@@ -148,28 +148,14 @@ export function AcceptInvite({
           <>
             <div className="flex flex-col gap-2">
               <Label htmlFor="invite-password">Set your password</Label>
-              <div className="relative">
-                <Input
-                  id="invite-password"
-                  type={revealed ? "text" : "password"}
-                  autoComplete="new-password"
-                  value={password}
-                  onChange={(event) => setPassword(event.target.value)}
-                  className="pr-12"
-                />
-                <button
-                  type="button"
-                  onClick={() => setRevealed((current) => !current)}
-                  aria-label={revealed ? "Hide password" : "Show password"}
-                  className="absolute inset-y-0 right-3 flex items-center text-text-muted transition-colors duration-150 hover:text-text-secondary focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
-                >
-                  {revealed ? (
-                    <EyeOff className="size-4" aria-hidden strokeWidth={2} />
-                  ) : (
-                    <Eye className="size-4" aria-hidden strokeWidth={2} />
-                  )}
-                </button>
-              </div>
+              <PasswordInput
+                id="invite-password"
+                autoComplete="new-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+                revealed={revealed}
+                onRevealedChange={setRevealed}
+              />
               <p className="type-caption text-text-muted">At least 8 characters.</p>
             </div>
 

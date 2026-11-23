@@ -51,7 +51,7 @@ export function AccessRequests({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Requests</h2>
         {open ? null : (
-          <Button type="button" size="sm" onClick={() => setOpen(true)}>
+          <Button type="button" onClick={() => setOpen(true)}>
             <Plus className="size-4" aria-hidden strokeWidth={2.5} />
             New access request
           </Button>
@@ -130,7 +130,7 @@ export function AccessRequests({
             <Button type="submit" disabled={pending}>
               {pending ? "Submitting…" : "Submit request"}
             </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            <Button type="button" variant="tertiary" onClick={() => setOpen(false)}>
               <X className="size-4" aria-hidden strokeWidth={2} />
               Cancel
             </Button>
@@ -212,7 +212,6 @@ function GrantCard({ grant, now }: { grant: AccessGrant; now: Date }) {
         <div className="mt-5 flex flex-wrap items-center gap-4">
           {grant.membershipId ? (
             <Button
-              size="sm"
               render={<Link href={`/platform/access-requests/${grant.id}/${grant.membershipId}`} />}
             >
               Open the record
@@ -225,7 +224,7 @@ function GrantCard({ grant, now }: { grant: AccessGrant; now: Date }) {
             </p>
           )}
 
-          <Button variant="ghost" size="sm" type="button" onClick={end} disabled={pending}>
+          <Button variant="tertiary" type="button" onClick={end} disabled={pending}>
             {pending ? "Ending…" : "End this access now"}
           </Button>
         </div>

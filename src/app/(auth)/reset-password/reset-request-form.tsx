@@ -45,7 +45,7 @@ export function ResetRequestForm() {
           up to reset it for you.
         </p>
 
-        <Button variant="outline" className="mt-8" render={<Link href="/login" />}>
+        <Button variant="secondary" className="mt-8" render={<Link href="/login" />}>
           <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
           Back to sign in
         </Button>

@@ -35,7 +35,7 @@ export default async function LoansPage() {
           </p>
         </div>
 
-        <Button variant="outline" size="sm" render={<Link href="/admin/loans/active" />}>
+        <Button variant="secondary" render={<Link href="/admin/loans/active" />}>
           Active loans
           <ArrowRight className="size-4" aria-hidden strokeWidth={2} />
         </Button>

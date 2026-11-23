@@ -4,11 +4,12 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Chip } from "@/components/ui/chip";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
 import { formatNaira } from "@/lib/format";
 import { filterMembers } from "@/lib/members";
 import { memberCountLabel, memberCounts } from "@/lib/home-figures";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 import type { MemberRow } from "@/lib/supabase/admin-members";
 
 /**
@@ -65,7 +66,7 @@ export function MemberList({
         </div>
 
         {canAddMember ? (
-          <Button size="default" render={<Link href="/admin/members/new" />}>
+          <Button render={<Link href="/admin/members/new" />}>
             <Plus className="size-4" aria-hidden strokeWidth={2.5} />
             Add member
           </Button>
@@ -79,25 +80,15 @@ export function MemberList({
             : `${filtered.length} of ${members.length} shown`}
         </p>
 
-        <div className="flex items-center gap-1" role="group" aria-label="Sort members">
-          {(["name", "recent"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setSort(option)}
-              aria-pressed={sort === option}
-              className={cn(
-                "rounded-full px-3 py-2 type-caption font-medium transition-colors duration-150",
-                "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-                sort === option
-                  ? "bg-text/8 text-text"
-                  : "text-text-muted hover:text-text-secondary",
-              )}
-            >
-              {option === "name" ? "By name" : "Recently joined"}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          label="Sort members"
+          segments={[
+            { value: "name", label: "By name" },
+            { value: "recent", label: "Recently joined" },
+          ]}
+          value={sort}
+          onChange={setSort}
+        />
       </div>
 
       {filtered.length === 0 ? (
@@ -214,9 +205,7 @@ function MemberName({ member }: { member: MemberRow }) {
     return (
       <span className="flex flex-wrap items-center gap-2">
         <span className="type-body text-text-secondary">{member.name ?? "Unnamed"}</span>
-        <span className="rounded-full border border-border px-2 py-1 type-caption text-text-muted">
-          Not on Clarix yet
-        </span>
+        <Chip>Not on Clarix yet</Chip>
       </span>
     );
   }

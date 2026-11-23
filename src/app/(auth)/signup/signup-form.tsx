@@ -3,9 +3,9 @@
 import { useActionState, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowRight, Check, Eye, EyeOff, TriangleAlert } from "lucide-react";
+import { ArrowRight, Check, TriangleAlert } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input, PasswordInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { springStandard } from "@/lib/motion";
@@ -101,32 +101,18 @@ export function SignUpForm() {
               <div className="flex flex-col gap-2">
                 <Label htmlFor="password">Password</Label>
 
-                <div className="relative">
-                  <Input
-                    id="password"
-                    name="password"
-                    type={revealed ? "text" : "password"}
-                    autoComplete="new-password"
-                    placeholder="At least 8 characters"
-                    className="pr-12"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    aria-invalid={Boolean(state.fieldErrors?.password)}
-                    aria-describedby="password-strength"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setRevealed((value) => !value)}
-                    aria-label={revealed ? "Hide password" : "Show password"}
-                    className="absolute inset-y-0 right-0 flex w-12 items-center justify-center rounded-r-card text-text-muted transition-colors duration-150 hover:text-text focus-visible:outline-2 focus-visible:outline-indigo"
-                  >
-                    {revealed ? (
-                      <EyeOff className="size-4" aria-hidden strokeWidth={2} />
-                    ) : (
-                      <Eye className="size-4" aria-hidden strokeWidth={2} />
-                    )}
-                  </button>
-                </div>
+                <PasswordInput
+                  id="password"
+                  name="password"
+                  autoComplete="new-password"
+                  placeholder="At least 8 characters"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  aria-invalid={Boolean(state.fieldErrors?.password)}
+                  aria-describedby="password-strength"
+                  revealed={revealed}
+                  onRevealedChange={setRevealed}
+                />
 
                 {/* The label sits under the bar rather than beside it: "Enter a password" and
                     "Very strong" are different enough in length that any fixed-width column

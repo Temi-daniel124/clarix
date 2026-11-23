@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ChevronRight, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { Chip, type ChipTone } from "@/components/ui/chip";
 import { formatFullDate, formatNaira } from "@/lib/format";
 import { MeterBar } from "./meter-bar";
 import type { LoanSummary } from "@/lib/supabase/loans-data";
@@ -82,20 +82,16 @@ export function LoanCard({ loan, showCooperative = true }: { loan: LoanSummary; 
 }
 
 export function StatusPill({ status }: { status: string }) {
-  const tone =
+  const tone: ChipTone =
     status === "active"
-      ? "border-emerald/30 text-emerald"
+      ? "positive"
       : status === "reserved" || status === "pending_review"
-        ? "border-warning/30 text-warning"
+        ? "attention"
         : status === "rejected" || status === "expired"
-          ? "border-danger/30 text-danger"
-          : "border-border text-text-muted";
+          ? "stop"
+          : "neutral";
 
-  return (
-    <span className={cn("inline-flex rounded-full border px-3 py-1 type-caption", tone)}>
-      {STATUS_LABEL[status] ?? status}
-    </span>
-  );
+  return <Chip tone={tone}>{STATUS_LABEL[status] ?? status}</Chip>;
 }
 
 export function formatDate(iso: string): string {

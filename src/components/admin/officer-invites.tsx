@@ -57,7 +57,7 @@ export function OfficerInvites({
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Officers</h2>
         {open ? null : (
-          <Button type="button" size="sm" onClick={() => setOpen(true)}>
+          <Button type="button" onClick={() => setOpen(true)}>
             <Plus className="size-4" aria-hidden strokeWidth={2.5} />
             Invite an officer
           </Button>
@@ -180,10 +180,10 @@ export function OfficerInvites({
           </div>
 
           <div className="mt-6 flex flex-wrap items-center gap-4">
-            <Button type="submit" size="sm" disabled={pending}>
+            <Button type="submit" disabled={pending}>
               {pending ? "Sending…" : "Send invite"}
             </Button>
-            <Button type="button" variant="ghost" size="sm" onClick={() => setOpen(false)}>
+            <Button type="button" variant="tertiary" onClick={() => setOpen(false)}>
               {state.saved ? "Done" : "Cancel"}
             </Button>
             <SectionFeedback saved={state.saved} error={state.error} />
@@ -227,8 +227,7 @@ function InvitationRow({ invitation }: { invitation: PendingInvitation }) {
       </div>
 
       <Button
-        variant="ghost"
-        size="icon"
+        variant="icon"
         aria-label={`Withdraw the invitation to ${invitation.email}`}
         disabled={pending}
         onClick={() =>

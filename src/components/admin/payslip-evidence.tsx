@@ -73,7 +73,7 @@ export function PayslipEvidence({
       </dl>
 
       <div className="mt-5 flex flex-wrap items-center gap-4">
-        <Button variant="outline" size="sm" type="button" onClick={open} disabled={pending}>
+        <Button variant="secondary" type="button" onClick={open} disabled={pending}>
           <ExternalLink className="size-4" aria-hidden strokeWidth={2} />
           {pending ? "Opening…" : "Open the payslip"}
         </Button>

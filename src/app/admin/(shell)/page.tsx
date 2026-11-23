@@ -141,7 +141,7 @@ export default async function AdminHomePage() {
               ))}
             </ul>
 
-            <Button className="mt-6" size="sm" render={<Link href={remaining[0].href} />}>
+            <Button className="mt-6" render={<Link href={remaining[0].href} />}>
               {remaining.length === ADMIN_SETUP_STEPS.length ? "Start setting up" : "Carry on"}
               <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />
             </Button>

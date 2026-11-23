@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { invitePending, type DirectoryEntry } from "@/lib/platform";
 import { memberCountLabel } from "@/lib/home-figures";
+import { SegmentedControl } from "@/components/ui/segmented-control";
 
 /**
  * Cooperative Directory (super-admin blueprint 5.1).
@@ -57,7 +58,7 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
           />
         </div>
 
-        <Button size="default" render={<Link href="/platform/cooperatives/new" />}>
+        <Button render={<Link href="/platform/cooperatives/new" />}>
           <Plus className="size-4" aria-hidden strokeWidth={2.5} />
           Create cooperative
         </Button>
@@ -70,25 +71,16 @@ export function CooperativeDirectory({ entries }: { entries: DirectoryEntry[] })
             : `${filtered.length} of ${entries.length}`}
         </p>
 
-        <div className="flex items-center gap-1" role="group" aria-label="Filter by status">
-          {(["all", "active", "inactive"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setFilter(option)}
-              aria-pressed={filter === option}
-              className={cn(
-                "rounded-full px-3 py-2 type-caption transition-colors duration-150",
-                "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-                filter === option
-                  ? "bg-text/8 font-medium text-text"
-                  : "text-text-muted hover:text-text",
-              )}
-            >
-              {option === "all" ? "All" : option === "active" ? "Active" : "Inactive"}
-            </button>
-          ))}
-        </div>
+        <SegmentedControl
+          label="Filter by status"
+          segments={[
+            { value: "all", label: "All" },
+            { value: "active", label: "Active" },
+            { value: "inactive", label: "Inactive" },
+          ]}
+          value={filter}
+          onChange={setFilter}
+        />
       </div>
 
       {filtered.length === 0 ? (

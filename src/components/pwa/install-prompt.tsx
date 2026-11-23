@@ -107,14 +107,13 @@ export function InstallPrompt() {
           </p>
 
           {manualOnly ? null : (
-            <Button size="sm" onClick={install}>
+            <Button onClick={install}>
               Install
             </Button>
           )}
 
           <Button
-            size="icon"
-            variant="ghost"
+            variant="icon"
             onClick={dismiss}
             aria-label="Not now"
             className="shrink-0"

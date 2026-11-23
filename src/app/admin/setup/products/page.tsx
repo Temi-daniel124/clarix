@@ -44,7 +44,7 @@ export default async function SetupProductsPage() {
           Continue to members
           <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />
         </Button>
-        <Button variant="ghost" size="sm" render={<Link href="/admin" />}>
+        <Button variant="tertiary" render={<Link href="/admin" />}>
           Finish the rest later
         </Button>
       </div>

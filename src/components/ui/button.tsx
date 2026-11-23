@@ -1,78 +1,89 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
+import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * The base-ui button primitive, fully reskinned to DESIGN_SYSTEM.md.
+ * The one button (DESIGN_SYSTEM.md §5.1, D045), on the base-ui primitive.
  *
- * Nothing of the shadcn preset's default styling survives here: heights come from the 4/8/12/
- * 16/20/24/32/40/48/64 spacing scale, colours come from the five-token Clarix palette, and the
- * radius comes from the card radius variable. Per DESIGN_SYSTEM.md § Component sourcing
- * discipline, an adopted component is never left in its demo colours or radii.
+ * Every button is a pill. Heights are the phone value first and the desktop value from 768px, the
+ * same breakpoint the type scale switches at. The label is 15px at 600; icons inside are 18px with
+ * an 8px gap and the house 1.75px stroke (§6), whatever size a call site passed. Pressed is
+ * `scale(0.98)` on the standard spring (§4.5); disabled is 40% opacity with no hover.
+ *
+ *   primary      emerald-500, hover 600, pressed 700. One per screen or sheet.
+ *   secondary    surface-sunken, hover #EAEAE4. The "other" action.
+ *   tertiary     transparent, underline on hover. Text actions inside lists and sheets.
+ *   destructive  red-500. Always behind Timed Undo or a sheet confirmation.
+ *   on-navy      white on navy bands.
+ *   icon         40×40 (44×44 on phones), a 20px icon in ink-500. Give it an aria-label.
  */
 const buttonVariants = cva(
   [
-    "group/button inline-flex shrink-0 items-center justify-center gap-2",
-    "whitespace-nowrap font-medium select-none",
-    "transition-[background-color,border-color,color,opacity] duration-150",
-    "outline-none focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-    // Disabled is a real state with its own tokens, not the brand colour at reduced opacity,
-    // a faded emerald reads as a broken button rather than an unavailable one, and its label
-    // stops being legible. Each filled variant swaps to the neutral border tone below.
-    "disabled:pointer-events-none",
-    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+    "group/button relative inline-flex shrink-0 items-center justify-center gap-2 rounded-pill",
+    "whitespace-nowrap select-none text-[15px] leading-none font-semibold tracking-[-0.01em]",
+    "transition-[background-color,color,transform] duration-[var(--duration-spring)] ease-[var(--ease-spring)]",
+    "active:scale-[0.98]",
+    "disabled:pointer-events-none disabled:opacity-40",
+    "data-[loading]:pointer-events-none",
+    "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:size-[18px] [&_svg]:[stroke-width:1.75]",
   ].join(" "),
   {
     variants: {
       variant: {
-        /** The single primary call to action on a screen. Emerald, per the accent token. */
         primary:
-          "bg-emerald text-white hover:bg-emerald/90 active:bg-emerald/95 disabled:bg-border disabled:text-text-muted",
-        /** Dark-surface actions: the landing page top bar, navy panels. */
-        navy: "bg-navy text-background hover:bg-navy/90 disabled:bg-border disabled:text-text-muted",
-        outline:
-          "border border-border bg-surface text-text hover:bg-background active:bg-background disabled:text-text-muted",
-        ghost: "text-text-secondary hover:bg-background hover:text-text disabled:text-text-muted",
-        link: "h-auto p-0 text-indigo underline-offset-4 hover:underline disabled:text-text-muted disabled:no-underline",
-        danger: "bg-danger text-white hover:bg-danger/90 disabled:bg-border disabled:text-text-muted",
-      },
-      size: {
-        /** 48px: the standard CTA height, comfortable as a touch target. */
-        default: "h-12 rounded-card px-6 type-body",
-        /** 40px, dense contexts such as a top bar. */
-        sm: "h-10 rounded-card px-4 text-[14px]",
-        icon: "size-10 rounded-card",
-        inline: "h-auto rounded-none p-0",
+          "h-[52px] px-6 md:h-11 md:px-5 bg-emerald-500 text-white hover:bg-emerald-600 active:bg-emerald-700",
+        secondary:
+          "h-[52px] px-6 md:h-11 md:px-5 bg-surface-sunken text-ink-900 hover:bg-[#eaeae4]",
+        tertiary:
+          "h-11 px-3 md:h-9 bg-transparent text-ink-900 underline-offset-4 decoration-1 hover:underline",
+        destructive: "h-[52px] px-6 md:h-11 md:px-5 bg-red-500 text-white",
+        "on-navy": "h-[52px] px-6 md:h-12 md:px-5 bg-white text-navy-900",
+        icon: "size-11 md:size-10 bg-transparent text-ink-500 hover:bg-surface-sunken [&_svg]:size-5",
       },
     },
     defaultVariants: {
       variant: "primary",
-      size: "default",
     },
   },
 );
 
-function Button({
-  className,
-  variant,
-  size,
-  nativeButton,
-  ...props
-}: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
-  // base-ui assumes it is rendering a real <button> unless told otherwise. Every Clarix button
-  // that navigates is rendered as a Next <Link>, i.e. an <a>, and leaving nativeButton at its
-  // default made base-ui strip native button semantics and log an accessibility error on each
-  // one. Anything given a `render` element is therefore declared non-native by default, while
-  // an explicit prop still wins.
+type ButtonProps = ButtonPrimitive.Props &
+  VariantProps<typeof buttonVariants> & {
+    /**
+     * A 16px spinner takes the place of the leading icon and the label stays (§5.1). The button
+     * stops taking clicks while it is set, without dimming: it is busy, not unavailable.
+     */
+    loading?: boolean;
+  };
+
+function Button({ className, variant, nativeButton, loading = false, children, ...props }: ButtonProps) {
+  // base-ui assumes it renders a real <button> unless told otherwise. A Clarix button that
+  // navigates is rendered as a Next <Link>, an <a>, so anything given a `render` element is
+  // declared non-native by default, while an explicit prop still wins.
   const resolvedNativeButton = nativeButton ?? (props.render ? false : undefined);
 
   return (
     <ButtonPrimitive
       data-slot="button"
+      data-loading={loading ? "" : undefined}
+      aria-busy={loading || undefined}
       nativeButton={resolvedNativeButton}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant }),
+        // The spinner replaces the leading icon: hide an icon that comes straight after it.
+        loading && "[&>[data-spinner]+svg]:hidden",
+        className,
+      )}
       {...props}
-    />
+    >
+      {loading ? (
+        <span data-spinner className="inline-flex">
+          <LoaderCircle aria-hidden className="!size-4 animate-spin" />
+        </span>
+      ) : null}
+      {children}
+    </ButtonPrimitive>
   );
 }
 

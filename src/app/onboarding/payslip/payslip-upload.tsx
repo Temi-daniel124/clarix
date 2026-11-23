@@ -198,8 +198,7 @@ export function PayslipUpload({
             </div>
 
             <Button
-              size="icon"
-              variant="ghost"
+              variant="icon"
               aria-label="Remove this file"
               onClick={() => setFile(null)}
             >

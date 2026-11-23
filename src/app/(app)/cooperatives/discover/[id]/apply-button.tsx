@@ -62,7 +62,7 @@ export function ApplyButton({
         </p>
 
         {returnTo === "onboarding" ? (
-          <Button variant="ghost" className="mt-4" render={<Link href="/onboarding/cooperatives" />}>
+          <Button variant="tertiary" className="mt-4" render={<Link href="/onboarding/cooperatives" />}>
             <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
             Back to setting up
           </Button>

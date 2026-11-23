@@ -53,12 +53,12 @@ export function JoinPrompt({ unjoinedCount }: { unjoinedCount: number }) {
               : `There are ${unjoinedCount} more cooperatives at your organization you have not joined.`}
           </p>
 
-          <Button size="sm" variant="outline" render={<Link href="/cooperatives/discover" />}>
+          <Button variant="secondary" render={<Link href="/cooperatives/discover" />}>
             Browse
             <ArrowRight className="size-3.5" aria-hidden strokeWidth={2.5} />
           </Button>
 
-          <Button size="icon" variant="ghost" onClick={dismiss} aria-label="Dismiss">
+          <Button variant="icon" onClick={dismiss} aria-label="Dismiss">
             <X className="size-4" strokeWidth={2} />
           </Button>
         </motion.section>

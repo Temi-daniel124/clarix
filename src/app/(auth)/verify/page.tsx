@@ -41,7 +41,7 @@ export default function VerifyPage() {
         trying again.
       </p>
 
-      <Button variant="outline" className="mt-8 w-full" render={<Link href="/login" />}>
+      <Button variant="secondary" className="mt-8 w-full" render={<Link href="/login" />}>
         Back to sign in
       </Button>
     </div>

@@ -63,7 +63,7 @@ export default async function AdminNotificationsPage() {
               : "New applications, reservations approaching their expiry, and officers taking up an invitation will appear here. None of those sends a notification yet, what needs your attention today is on your cooperative's home screen instead, which is fed from the same records."}
           </p>
 
-          <Button variant="outline" size="sm" className="mt-8" render={<Link href="/admin" />}>
+          <Button variant="secondary" className="mt-8" render={<Link href="/admin" />}>
             {isOfficer ? "See what is waiting on you" : "See what is waiting"}
           </Button>
         </div>

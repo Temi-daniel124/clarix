@@ -49,9 +49,9 @@ describe("latestChange and updatedLabel (rule 2: the member home's freshness lin
 describe("queueSegments (rule 3: lapsed holds never contradict 'Nothing is waiting')", () => {
   it("gives lapsed holds their own segment with a count", () => {
     expect(queueSegments({ pending: 0, lapsed: 3 })).toEqual([
-      { key: "pending", label: "Waiting" },
-      { key: "lapsed", label: "Lapsed (3)" },
-      { key: "decided", label: "Recently decided" },
+      { value: "pending", label: "Waiting" },
+      { value: "lapsed", label: "Lapsed (3)" },
+      { value: "decided", label: "Recently decided" },
     ]);
   });
 
