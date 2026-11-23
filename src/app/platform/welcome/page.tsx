@@ -29,7 +29,7 @@ export default async function PlatformWelcomePage() {
   if (!staff.isPlatformAdmin) redirect(landingPathFor(staff.roles));
 
   return (
-    <div className="flex min-h-dvh flex-1 flex-col">
+    <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[640px] items-center justify-between px-5 py-6 md:px-8">
         <Wordmark />
         <ThemeToggle />

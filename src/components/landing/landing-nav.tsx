@@ -38,7 +38,7 @@ export function LandingNav() {
   const [open, setOpen] = useState(false);
 
   return (
-    <div className="fixed inset-x-0 top-0 z-50 w-full px-4 pt-4 md:px-6 md:pt-6">
+    <div className="fixed inset-x-0 top-[var(--clarix-preview-offset,0px)] z-50 w-full px-4 pt-4 md:px-6 md:pt-6">
       <nav
         aria-label="Main"
         className="enter-drop mx-auto flex h-14 w-full max-w-[980px] items-center justify-between gap-2 rounded-full border border-white/10 bg-navy-surface/88 pr-2 pl-2 shadow-[0_8px_30px_rgba(11,18,32,0.18)] backdrop-blur-xl md:h-16 md:pr-3"

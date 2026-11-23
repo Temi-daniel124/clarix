@@ -37,6 +37,11 @@
   --color-success: var(--clarix-success);
   --color-warning: var(--clarix-warning);
   --color-danger: var(--clarix-danger);
+  /* R2 status tints, DESIGN_SYSTEM.md §4.1, exact values. Added ahead of the Phase 1 token
+     replacement for the Preview strip (BUILD-PLAN 0.4); Phase 1 keeps them as they are. Light
+     only (D037), so they are constants rather than theme-switched variables. */
+  --color-amber-50: #fdf5e6;
+  --color-amber-700: #9a5f00;
 
   /* Radius, DESIGN_SYSTEM.md § Spacing, radius, shadow.
      14px on mobile, 16px on desktop, 20px for large feature cards. */
@@ -240,6 +245,21 @@
   font-size: 12px;
   line-height: 1.4;
   font-weight: 500;
+}
+
+/* DESIGN_SYSTEM.md §4.2 `small`: 13px, 500, letter-spacing 0, line-height 1.4. Labels, dates,
+   metadata, chips. Sentence case, never uppercase. */
+@utility type-small {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* A shell that fills the viewport below the Preview strip, when there is one (BUILD-PLAN 0.4).
+   `--clarix-preview-offset` is set on <body> only on non-Production deployments. */
+@utility min-h-app {
+  min-height: calc(100dvh - var(--clarix-preview-offset, 0px));
 }
 
 /*

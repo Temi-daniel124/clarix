@@ -12,7 +12,7 @@ import { ThemeToggle } from "@/components/theme/theme-toggle";
  */
 export default function OnboardingLayout({ children }: LayoutProps<"/onboarding">) {
   return (
-    <div className="flex min-h-dvh flex-1 flex-col">
+    <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[640px] items-center justify-between px-5 py-6 md:px-8">
         <Link href="/" aria-label="Clarix home">
           <Wordmark />

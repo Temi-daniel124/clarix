@@ -30,7 +30,7 @@ export default async function AdminSetupLayout({ children }: { children: ReactNo
   if (role.role !== "admin") redirect("/admin");
 
   return (
-    <div className="flex min-h-dvh flex-1 flex-col">
+    <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[720px] items-center justify-between px-5 py-6 md:px-8">
         <Link href="/admin" aria-label="Cooperative home" className="min-w-0">
           <Wordmark />

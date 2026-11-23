@@ -27,7 +27,7 @@ export default async function PlatformLayout({ children }: { children: ReactNode
   if (!staff.isPlatformAdmin) redirect(landingPathFor(staff.roles));
 
   return (
-    <div className="flex min-h-dvh flex-1">
+    <div className="flex min-h-app flex-1">
       <PlatformSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">

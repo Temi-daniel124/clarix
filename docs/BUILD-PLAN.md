@@ -75,7 +75,7 @@ Read: D036, `docs/planning/clarix-documents-blueprint.md` §3, `docs/EDGE-CASES.
   cooperative; pgTAP covers RLS (an officer at another cooperative cannot create one) and the
   committed sum; the bulk version waits for 8.2.
 
-### ☐ 0.4 Mark every Preview as using the live demo data (D043)
+### ☑ 0.4 Mark every Preview as using the live demo data (D043)
 - Preview and Production share one database by the owner's decision. Add a 32px `amber-50` strip
   with `amber-700` `small` text "Preview · uses the live demo data" at the top of every page when
   `VERCEL_ENV !== "production"`. It does not scroll away on phones and is not dismissible.

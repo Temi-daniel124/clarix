@@ -50,7 +50,7 @@ export function ElevatedAccessBanner({ grant }: { grant: AccessGrant }) {
     <div
       role="status"
       aria-live="polite"
-      className="sticky top-0 z-50 border-b border-warning/45"
+      className="sticky top-[var(--clarix-preview-offset,0px)] z-50 border-b border-warning/45"
       style={{ backgroundColor: "color-mix(in srgb, var(--clarix-warning) 14%, var(--clarix-surface))" }}
     >
       <div className="mx-auto flex w-full max-w-[860px] items-start gap-3 px-5 py-4 md:px-8">
