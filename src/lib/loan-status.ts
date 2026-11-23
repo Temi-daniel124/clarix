@@ -146,3 +146,21 @@ function compareMonths(a: Month, b: Month): number {
 function formatMonth(value: Month): string {
   return `${value.year}-${String(value.month).padStart(2, "0")}`;
 }
+
+/**
+ * The loan figures every screen shows about one member (walkthrough 1.4d item 1): how many loans
+ * are running, and what is committed against their limit each month. The member home, the member's
+ * Loans screen and the cooperative's Members list all call this, over rows from `loadLoanRows`.
+ */
+export function summariseLoans(
+  loans: Array<LoanStatusRecord & { monthlyRepayment: number }>,
+  now: number = Date.now(),
+): { activeCount: number; committedMonthly: number; total: number } {
+  let activeCount = 0;
+  let committedMonthly = 0;
+  for (const loan of loans) {
+    if (loan.status === "active") activeCount += 1;
+    if (holdsCapacity(loan, now)) committedMonthly += loan.monthlyRepayment;
+  }
+  return { activeCount, committedMonthly: Math.round(committedMonthly * 100) / 100, total: loans.length };
+}

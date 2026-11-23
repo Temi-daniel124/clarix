@@ -10,6 +10,7 @@ import { loadDashboardData } from "@/lib/supabase/dashboard-data";
 import { InsightsStrip } from "./insights-strip";
 import { JoinPrompt } from "./join-prompt";
 import { updatedLabel } from "@/lib/home-figures";
+import { greeting } from "@/lib/greeting";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Home" };
@@ -107,13 +108,6 @@ export default async function DashboardPage() {
       )}
     </div>
   );
-}
-
-function greeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 17) return "Good afternoon";
-  return "Good evening";
 }
 
 

@@ -154,6 +154,23 @@ Read for every step: `DESIGN_SYSTEM.md` in full.
 - **Built** as one `AppShell` (`src/components/shell/`) for member, admin, officer and platform, with
   the values recorded in DESIGN_SYSTEM §5.5. The screens inside are unchanged; they are rebuilt in
   Phases 4 to 6.
+- Followed by three owner-requested refinements, each its own PR: 1.4a and 1.4b (the raised centre
+  quick action, D051) and 1.4c (the D048 demo sign-in chips, pulled forward from 5.4).
+
+### ☑ 1.4d Walkthrough fixes
+The "Fix now" items from the owner's signed-in walkthrough of the 1.4c Preview
+(`docs/WALKTHROUGH-1-4c.md`), before 1.5.
+- One source for a member's loans and committed figure: the member home, the member's Loans screen
+  and the cooperative's Members list (and member page) read rows through `loadLoanRows` and count
+  them with `summariseLoans`. A database read error is thrown, never shown as "no loans".
+- The savings sparkline reads only the member's own ledger and walks back from the real balance.
+- One Africa/Lagos greeting helper for every home.
+- The meter follows DESIGN_SYSTEM §3 in its one component; the ₦ sign is 0.6em `ink-500` 500.
+- The desktop sidebar pins only while it fits the window; otherwise it scrolls with the page.
+- Short view-switch labels ("Switch to staff view", "Switch to platform").
+- The account menu's dividers are real separators; the menu, items, arrow keys and Escape verified.
+- **Accept when:** a test proves the three loan screens agree for one member, and the walkthrough's
+  seven items are fixed at 360/390/1280/1440px.
 
 
 ### ☐ 1.5 Not-found, error and loading-failure pages
@@ -255,6 +272,13 @@ Audit log. Calm, factual copy.
 **Accept (each):** nothing above the fold except header, hero, stats, needs-you; every tappable thing
 opens a sheet or panel; numbers agree with inner screens; §11 passes at all four widths.
 
+**Also, from the 1.4c walkthrough (`docs/WALKTHROUGH-1-4c.md`), each home must lose:** uppercase
+eyebrows; an icon tile on every stat; a fourth stat; a greeting that names the whole cooperative; the
+install banner above the greeting (it moves below the hero, or into Profile); the stale "Updated on…"
+and "Last entry recorded…" lines; the sparkle "Insights" cards; grey letter avatars (initials on
+`emerald-100`, §5.5); and on the platform home the redundant "Cooperatives 5 / Active 5" pair. The
+member home gains the meter for Available to borrow (4.1).
+
 ---
 
 ## Phase 5: public site, sign in, sign up, onboarding
@@ -279,7 +303,14 @@ production-like build with indexing allowed); no claim on the page that the app 
 
 ## Phase 6: inner screens
 
-One PR per bullet. Each uses sheets for detail and passes §11.
+One PR per bullet. Each uses sheets for detail and passes §11. From the 1.4c walkthrough
+(`docs/WALKTHROUGH-1-4c.md`), every screen rebuilt here also drops the paragraph intro under its
+title (one line at most, §2 rule 4), and: the Loans empty state is one line and one action, not a
+paragraph and a second primary button (6.2); Cooperatives loads with a skeleton, not a full-screen
+spinner (6.1); cooperatives show their logo or initials, not a generic building tile (6.1, 6.9); a
+cooperative with no admin yet reads in plain words, not "Nobody named yet" (6.9); and the officer's
+content column is the same width as the admin's (6.4 to 6.8). Platform sign-in took about 10
+seconds in the walkthrough; look at what the platform home loads first (6.9).
 
 - ☐ 6.1 Member: Cooperatives list + cooperative sheet; Discover
 - ☐ 6.2 Member: Loans list, loan sheet with the state timeline (Applied → Capacity held → Approved →

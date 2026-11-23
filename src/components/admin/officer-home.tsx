@@ -10,6 +10,7 @@ import { formatNaira } from "@/lib/format";
 import { filterMembers } from "@/lib/members";
 import type { MemberRow } from "@/lib/supabase/admin-members";
 import type { OfficerTask } from "@/lib/supabase/officer-home";
+import { greeting } from "@/lib/greeting";
 
 /**
  * Officer Home (officer blueprint 4.1).
@@ -255,9 +256,3 @@ function TodayFigure({
   );
 }
 
-function greeting(): string {
-  const hour = new Date().getHours();
-  if (hour < 12) return "Good morning";
-  if (hour < 17) return "Good afternoon";
-  return "Good evening";
-}

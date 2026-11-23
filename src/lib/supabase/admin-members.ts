@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
-import { isAwaitingDecision, loanBalance } from "@/lib/loan-status";
+import { isAwaitingDecision, loanBalance, summariseLoans } from "@/lib/loan-status";
+import { loadLoanRows, type LoanRow } from "./loan-rows";
 import { memberCounts, type MemberCounts } from "@/lib/home-figures";
 
 /**
@@ -35,7 +36,7 @@ export type MemberRow = {
 export async function loadMembers(cooperativeId: string): Promise<MemberRow[]> {
   const supabase = await createClient();
 
-  const [{ data: memberships }, { data: roster }, { data: loans }] = await Promise.all([
+  const [{ data: memberships }, { data: roster }] = await Promise.all([
     supabase
       .from("cooperative_memberships")
       .select("id, status, savings_balance, joined_at, user_id, users(name, employee_id)")
@@ -44,17 +45,17 @@ export async function loadMembers(cooperativeId: string): Promise<MemberRow[]> {
       .from("member_roster_entries")
       .select("id, employee_id, name, savings_balance, membership_id")
       .eq("cooperative_id", cooperativeId),
-    supabase.from("loans").select("membership_id, status, reservation_expires_at"),
   ]);
 
-  const activeByMembership = new Map<string, number>();
-  for (const loan of loans ?? []) {
-    if (loan.status !== "active") continue;
-    activeByMembership.set(
-      loan.membership_id,
-      (activeByMembership.get(loan.membership_id) ?? 0) + 1,
-    );
+  // The same rows and the same count the member's own screens use (walkthrough 1.4d item 1).
+  const loans = await loadLoanRows(supabase, (memberships ?? []).map((membership) => membership.id));
+  const loansByMembership = new Map<string, LoanRow[]>();
+  for (const loan of loans) {
+    loansByMembership.set(loan.membershipId, [...(loansByMembership.get(loan.membershipId) ?? []), loan]);
   }
+  const activeByMembership = new Map(
+    [...loansByMembership].map(([membershipId, rows]) => [membershipId, summariseLoans(rows).activeCount]),
+  );
 
   const rows: MemberRow[] = (memberships ?? []).map((membership) => {
     const person = Array.isArray(membership.users) ? membership.users[0] : membership.users;
@@ -156,18 +157,12 @@ export async function loadMemberProfile(membershipId: string): Promise<MemberPro
 
   const person = Array.isArray(membership.users) ? membership.users[0] : membership.users;
 
-  const [{ data: capacityRows }, { data: loans }, { data: ledger }] = await Promise.all([
+  const [{ data: capacityRows }, loans, { data: ledger }] = await Promise.all([
     // The same calculation the member sees on their own dashboard, reached through the staff
     // door rather than reimplemented (migration 012). It returns an aggregate and nothing else:
     // never which cooperative an obligation sits with (DECISIONS.md D003).
     supabase.rpc("capacity_for_membership", { target_membership_id: membershipId }),
-    supabase
-      .from("loans")
-      .select(
-        "id, requested_amount, monthly_repayment, tenure_months, status, created_at, reservation_expires_at, origin, outstanding_balance_at_entry, expected_end_date",
-      )
-      .eq("membership_id", membershipId)
-      .order("created_at", { ascending: false }),
+    loadLoanRows(supabase, [membershipId]),
     supabase
       .from("savings_transactions")
       .select("id, type, amount, description, recorded_at, loan_id")
@@ -200,23 +195,22 @@ export async function loadMemberProfile(membershipId: string): Promise<MemberPro
           available: Number(capacityRow.available),
         }
       : null,
-    loans: (loans ?? []).map((loan) => ({
+    loans: loans.map((loan) => ({
       id: loan.id,
-      requestedAmount: Number(loan.requested_amount),
-      monthlyRepayment: Number(loan.monthly_repayment),
-      tenureMonths: loan.tenure_months,
+      requestedAmount: loan.requestedAmount,
+      monthlyRepayment: loan.monthlyRepayment,
+      tenureMonths: loan.tenureMonths,
       status: loan.status,
-      createdAt: loan.created_at,
-      reservationExpiresAt: loan.reservation_expires_at,
+      createdAt: loan.createdAt,
+      reservationExpiresAt: loan.reservationExpiresAt,
       repaid: repaidByLoan.get(loan.id) ?? 0,
       remaining: loanBalance({
-        requestedAmount: Number(loan.requested_amount),
-        outstandingAtEntry:
-          loan.outstanding_balance_at_entry === null ? null : Number(loan.outstanding_balance_at_entry),
+        requestedAmount: loan.requestedAmount,
+        outstandingAtEntry: loan.outstandingAtEntry,
         repaid: repaidByLoan.get(loan.id) ?? 0,
       }).remaining,
       preExisting: loan.origin === "pre_existing",
-      expectedEndDate: loan.expected_end_date,
+      expectedEndDate: loan.expectedEndDate,
     })),
     ledger: (ledger ?? []).map((entry) => ({
       id: entry.id,

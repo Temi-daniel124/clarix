@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { LoanCard } from "@/components/clarix/loan-card";
 import { loadCapacity, loadLoans } from "@/lib/supabase/loans-data";
+import { summariseLoans } from "@/lib/loan-status";
 import { createClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
@@ -26,6 +27,9 @@ export default async function LoansPage() {
   if (!user) redirect("/login");
 
   const [capacity, loans] = await Promise.all([loadCapacity(), loadLoans()]);
+  // The same committed figure the member home and the cooperative's Members list use
+  // (walkthrough 1.4d item 1), from the same rows the list below is drawn from.
+  const { committedMonthly } = summariseLoans(loans);
 
   const open = loans.filter(
     (loan) =>
@@ -55,7 +59,7 @@ export default async function LoansPage() {
         <section className="mt-8 rounded-feature border border-border bg-surface p-5 md:p-6">
           <CapacityMeter
             cap={capacity.cap}
-            committed={capacity.committed}
+            committed={committedMonthly}
             caption="Your monthly deduction limit, and what every cooperative has committed against it so far."
           />
         </section>

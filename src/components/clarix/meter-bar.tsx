@@ -67,26 +67,37 @@ export function MeterBar({
 
   const transition = reduceMotion ? { duration: 0 } : springStandard;
 
-  const requestFill =
-    tone === "exceeded"
+  // DESIGN_SYSTEM §3, on a capacity meter: committed `ink-300`, what is still available
+  // `emerald-500` (the track itself), `amber-500` once it is within 10% of the limit, and
+  // whatever runs past the limit `red-500`. A previewed request that fits is `ink-500`: it is
+  // about to join what is committed, so it sits in the same grey family, a step darker.
+  // A neutral track (repayment progress, setup steps, password strength) is not a limit: its
+  // fill keeps the brand ink on a hairline track.
+  const capacity = track === "capacity";
+  const committedFill = capacity ? "var(--clarix-ink-300)" : "var(--clarix-brand-primary)";
+  // Past the limit, only the overflow is red (§3); the part of the request that still fits stays ink-500.
+  const requestFill = capacity
+    ? "var(--clarix-ink-500)"
+    : tone === "exceeded"
       ? "var(--clarix-danger)"
       : tone === "tight"
         ? "var(--clarix-warning)"
         : "var(--clarix-brand-accent)";
+  const trackFill = capacity
+    ? tone === "tight"
+      ? "var(--clarix-amber-500)"
+      : "var(--clarix-emerald-500)"
+    : "var(--clarix-border)";
 
   return (
     <div
       className={cn(
         "relative w-full overflow-hidden rounded-full",
-        size === "compact" ? "h-2" : "h-3",
+        // §3: 8px on phones, 10px from 768px; the compact meter inside lists is 8px everywhere.
+        size === "compact" ? "h-2" : "h-2 md:h-2.5",
         className,
       )}
-      style={{
-        backgroundColor:
-          track === "capacity"
-            ? "color-mix(in srgb, var(--clarix-brand-accent) 14%, transparent)"
-            : "var(--clarix-border)",
-      }}
+      style={{ backgroundColor: trackFill }}
       role="meter"
       aria-valuemin={0}
       aria-valuemax={100}
@@ -94,10 +105,10 @@ export function MeterBar({
       aria-label={label ?? "Share of the deduction cap already committed"}
     >
       <div className="absolute inset-0 flex">
-        {/* Committed: the neutral segment. */}
+        {/* Committed. */}
         <motion.div
           className="h-full shrink-0"
-          style={{ backgroundColor: "var(--clarix-brand-primary)" }}
+          style={{ backgroundColor: committedFill }}
           animate={{ width: `${committedWidth * 100}%` }}
           transition={transition}
         />
@@ -114,7 +125,7 @@ export function MeterBar({
         <motion.div
           className="h-full shrink-0"
           style={{
-            backgroundColor: "var(--clarix-danger)",
+            backgroundColor: "var(--clarix-red-500)",
             backgroundImage:
               "repeating-linear-gradient(115deg, rgba(255,255,255,0.28) 0 3px, transparent 3px 7px)",
           }}

@@ -3,6 +3,8 @@ import { latestChange } from "@/lib/home-figures";
 import { computeCapacity, type Capacity } from "@/lib/eligibility";
 import type { TrendPoint } from "@/components/clarix/trend-indicator";
 import { loadCapacity, loadLoans, type LoanSummary } from "./loans-data";
+import { summariseLoans } from "@/lib/loan-status";
+import { buildSavingsTrend } from "@/lib/savings-trend";
 
 export type JoinedCooperative = {
   membershipId: string;
@@ -80,9 +82,13 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
       .eq("status", "active"),
     loadCapacity(),
     loadLoans(),
+    // Only this member's own ledger (walkthrough 1.4d item 2). Without the filter, RLS also returns
+    // every member's entries to someone who is staff at a cooperative, and the home showed that
+    // cooperative's growth as this person's.
     supabase
       .from("savings_transactions")
-      .select("amount, type, recorded_at, membership_id")
+      .select("amount, type, recorded_at, membership_id, cooperative_memberships!inner(user_id)")
+      .eq("cooperative_memberships.user_id", user.id)
       .order("recorded_at", { ascending: true }),
   ]);
 
@@ -101,14 +107,9 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
   const activeMemberships = cooperatives.filter((entry) => entry.status === "active");
   const totalSavings = activeMemberships.reduce((sum, entry) => sum + entry.savingsBalance, 0);
 
-  // Loans that currently hold capacity: active, plus reservations that have not lapsed.
-  const committing = loans.filter(
-    (loan) =>
-      loan.status === "active" ||
-      (loan.status === "reserved" &&
-        loan.reservationExpiresAt !== null &&
-        new Date(loan.reservationExpiresAt) > new Date()),
-  );
+  // The same count and committed sum the member's Loans screen and the cooperative's Members list
+  // show (walkthrough 1.4d item 1): active loans, plus reservations that have not lapsed.
+  const loanFigures = summariseLoans(loans);
 
   // The database function is the source of truth, because only it can see across cooperatives.
   // computeCapacity() is the same arithmetic from src/lib/eligibility.ts and stands in if the
@@ -122,7 +123,7 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
         basis: organization?.deduction_basis ?? "gross",
         maxPercentage: Number(organization?.deduction_max_percentage ?? 0),
       },
-      committedMonthlyRepayments: committing.reduce((sum, l) => sum + l.monthlyRepayment, 0),
+      committedMonthlyRepayments: loanFigures.committedMonthly,
     });
 
   // BUILD-PLAN 0.5 rule 2: the figures above last changed when a ledger entry or a loan last did
@@ -143,13 +144,13 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
   return {
     organizationName: organization?.name ?? "your organization",
     employeeId: profile.employee_id,
-    savingsTrend: buildSavingsTrend(ledger ?? []),
+    savingsTrend: buildSavingsTrend(ledger ?? [], totalSavings),
     firstName: profile.name?.trim().split(/\s+/)[0] ?? null,
     salaryConfirmed: Boolean(profile.salary_verified_at),
     capacity,
     totalSavings,
-    activeLoanCount: loans.filter((loan) => loan.status === "active").length,
-    monthlyDeductions: committing.reduce((sum, loan) => sum + loan.monthlyRepayment, 0),
+    activeLoanCount: loanFigures.activeCount,
+    monthlyDeductions: loanFigures.committedMonthly,
     cooperatives,
     unjoinedCount: Math.max(0, (cooperativeCount ?? 0) - cooperatives.length),
     lastUpdated,
@@ -259,34 +260,6 @@ function buildInsights({
   }
 
   return insights.slice(0, 3);
-}
-
-/**
- * Month-end savings balance, oldest first, for the sparkline.
- *
- * Only contributions and recorded withdrawals move a savings balance: a loan repayment leaves
- * the salary and does not add to savings, so it is excluded. Fewer than two months of history
- * returns nothing, and the card shows its honest empty state rather than a single flat point.
- */
-function buildSavingsTrend(
-  ledger: Array<{ amount: number; type: string; recorded_at: string }>,
-): TrendPoint[] {
-  const savings = ledger.filter(
-    (row) => row.type === "contribution" || row.type === "withdrawal_record",
-  );
-  if (savings.length < 2) return [];
-
-  const byMonth = new Map<string, number>();
-  let running = 0;
-
-  for (const row of savings) {
-    running += row.type === "contribution" ? Number(row.amount) : -Number(row.amount);
-    byMonth.set(row.recorded_at.slice(0, 7), running);
-  }
-
-  return [...byMonth.entries()]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([month, value]) => ({ at: month, value }));
 }
 
 /** Naira for insight copy. Kept local so this module has no dependency on a React component. */

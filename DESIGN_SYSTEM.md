@@ -103,7 +103,11 @@ limit, and nowhere is there a second way of drawing that relationship.**
 - `MeterBar` / `CapacityMeter`: a 8px (phone) / 10px (desktop) horizontal track, radius full.
   `committed` in `ink-300`, `available` in `emerald-500`. When a request would exceed the limit, the
   overflow segment is `red-500` and the figure turns red; when within 10% of the limit, the available
-  segment is `amber-500`.
+  segment is `amber-500`. A request being previewed that still fits draws in `ink-500` (it is about
+  to join what is committed, so it sits in the same grey family, a step darker); only the part past
+  the limit is red. All of this lives in `MeterBar` (`src/components/clarix/meter-bar.tsx`) and
+  nowhere else (walkthrough 1.4d). Progress bars that are not a limit (repayment progress, setup
+  steps, password strength) use its `neutral` track and keep the brand ink fill.
 - Ring variant (the brand submark) only for the splash/loading state and the logo.
 - **The naira sign** is set one step smaller and in `ink-500` beside the figure: `₦` 0.6em, weight 500.
   Kobo are never shown on screens (rounded to the naira); they are shown on PDFs and exports.
