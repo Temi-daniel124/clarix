@@ -169,10 +169,14 @@ select throws_ok(
 -- Rejecting releases the hold immediately
 -- ---------------------------------------------------------------------------
 
+-- A fixture, so written as the table owner. Since migration 034 no staff account can insert a
+-- loan directly; this one stands in for what submit_loan_application would have stored.
+reset role;
 insert into public.loans (id, membership_id, requested_amount, monthly_repayment, tenure_months,
                           status, reserved_at, reservation_expires_at)
 values ('d7777777-7777-7777-7777-777777777777', 'b6666666-6666-6666-6666-666666666666',
         120000, 10000, 12, 'reserved', now(), now() + interval '7 days');
+set local role authenticated;
 
 select is(
   (select available from public.capacity_for_membership('b6666666-6666-6666-6666-666666666666')),
@@ -197,10 +201,14 @@ select is(
 -- An over-cap approval needs a reason, and the reason is kept
 -- ---------------------------------------------------------------------------
 
+-- A fixture, so written as the table owner. Since migration 034 no staff account can insert a
+-- loan directly; this one stands in for what submit_loan_application would have stored.
+reset role;
 insert into public.loans (id, membership_id, requested_amount, monthly_repayment, tenure_months,
                           status, reserved_at, reservation_expires_at)
 values ('d8888888-8888-8888-8888-888888888888', 'b6666666-6666-6666-6666-666666666666',
         960000, 80000, 12, 'reserved', now(), now() + interval '7 days');
+set local role authenticated;
 
 select throws_ok(
   $$ select * from public.decide_loan_application('d8888888-8888-8888-8888-888888888888', 'approve') $$,
