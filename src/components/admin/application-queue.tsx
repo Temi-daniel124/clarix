@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 import { clampRatio, formatNaira } from "@/lib/format";
 import { springStandard } from "@/lib/motion";
 import type { LoanApplication } from "@/lib/supabase/admin-loans";
+import { queueSegments, type QueueSegment } from "@/lib/home-figures";
+import { LapsedNotice } from "./lapsed-notice";
 
 /**
  * Loan Applications Queue (admin blueprint 6.1).
@@ -23,34 +25,51 @@ import type { LoanApplication } from "@/lib/supabase/admin-loans";
 export function ApplicationQueue({
   pending,
   decided,
+  lapsed,
+  cooperativeId,
+  canTidy,
 }: {
   pending: LoanApplication[];
   decided: LoanApplication[];
+  /** Reservations whose hold ran out before anyone decided (BUILD-PLAN 0.5 rule 3). */
+  lapsed: LoanApplication[];
+  cooperativeId: string;
+  /** Moving lapsed holds out of the queue needs the permission to decide loans. */
+  canTidy: boolean;
 }) {
-  const [tab, setTab] = useState<"pending" | "decided">("pending");
+  const [tab, setTab] = useState<QueueSegment>("pending");
+  const [tidied, setTidied] = useState<number | null>(null);
   const reduceMotion = useReducedMotion();
 
-  const items = tab === "pending" ? pending : decided;
+  // Lapsed is its own segment with its own count, never a banner above a list that says nothing
+  // is waiting. It is only offered while it holds something.
+  const segments = queueSegments({ pending: pending.length, lapsed: lapsed.length });
+  const current = segments.some((segment) => segment.key === tab) ? tab : "decided";
+
+  const items = current === "pending" ? pending : current === "lapsed" ? lapsed : decided;
 
   return (
     <div>
       <div
         role="tablist"
         aria-label="Applications"
-        className="flex w-fit gap-1 rounded-full border border-border bg-surface p-1"
+        className="flex w-fit max-w-full gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1"
       >
-        {(["pending", "decided"] as const).map((entry) => {
-          const selected = tab === entry;
+        {segments.map((entry) => {
+          const selected = current === entry.key;
 
           return (
             <button
-              key={entry}
+              key={entry.key}
               type="button"
               role="tab"
               aria-selected={selected}
-              onClick={() => setTab(entry)}
+              onClick={() => {
+                setTidied(null);
+                setTab(entry.key);
+              }}
               className={cn(
-                "relative rounded-full px-4 py-2 type-secondary font-medium whitespace-nowrap transition-colors duration-150",
+                "relative rounded-full px-3 py-2 type-secondary font-medium whitespace-nowrap transition-colors duration-150 sm:px-4",
                 "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
                 selected ? "text-text" : "text-text-muted hover:text-text-secondary",
               )}
@@ -63,15 +82,30 @@ export function ApplicationQueue({
                   className="absolute inset-0 rounded-full bg-background"
                 />
               ) : null}
-              <span className="relative">
-                {entry === "pending"
-                  ? `Waiting${pending.length > 0 ? ` (${pending.length})` : ""}`
-                  : "Recently decided"}
-              </span>
+              <span className="relative">{entry.label}</span>
             </button>
           );
         })}
       </div>
+
+      {current === "lapsed" && canTidy ? (
+        <LapsedNotice
+          cooperativeId={cooperativeId}
+          count={lapsed.length}
+          onTidied={(count) => {
+            setTidied(count);
+            setTab("decided");
+          }}
+        />
+      ) : null}
+
+      {current === "decided" && tidied !== null && tidied > 0 ? (
+        <p role="status" className="mt-6 type-secondary text-text-secondary">
+          {tidied === 1
+            ? "One lapsed request moved here."
+            : `${tidied} lapsed requests moved here.`}
+        </p>
+      ) : null}
 
       {items.length === 0 ? (
         <div className="mt-6 rounded-feature border border-border bg-surface px-6 py-10 text-center">
@@ -82,11 +116,11 @@ export function ApplicationQueue({
             <Inbox className="size-5" strokeWidth={1.75} />
           </span>
           <p className="type-body mt-5 text-text">
-            {tab === "pending" ? "Nothing is waiting on a decision" : "Nothing decided yet"}
+            {current === "pending" ? "Nothing is waiting on a decision" : "Nothing decided yet"}
           </p>
           <p className="type-secondary mx-auto mt-2 max-w-[420px] text-text-secondary">
-            {tab === "pending"
-              ? "When a member applies, their request appears here with the eligibility answer already worked out."
+            {current === "pending"
+              ? "New applications appear here with the eligibility answer worked out."
               : "Approvals and rejections move here once you have made them."}
           </p>
         </div>
@@ -94,7 +128,7 @@ export function ApplicationQueue({
         <ul className="mt-6 flex flex-col gap-3">
           {items.map((application) => (
             <li key={application.id}>
-              <ApplicationCard application={application} decided={tab === "decided"} />
+              <ApplicationCard application={application} decided={current !== "pending"} />
             </li>
           ))}
         </ul>
@@ -245,5 +279,7 @@ function describeDecision(status: string): string {
   if (status === "rejected") return "Turned down";
   if (status === "completed") return "Repaid in full";
   if (status === "expired") return "Hold lapsed";
+  // A reservation still stored as reserved whose hold has run out: the Lapsed segment.
+  if (status === "reserved") return "Hold lapsed";
   return status;
 }

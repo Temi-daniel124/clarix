@@ -20,7 +20,10 @@ export type DirectoryEntry = {
   name: string;
   status: "active" | "inactive";
   createdAt: string;
+  /** Members = active memberships + roster entries not yet on Clarix (BUILD-PLAN 0.5 rule 1). */
   memberCount: number;
+  /** The active memberships within that: people with a Clarix account. */
+  membersOnClarix: number;
   officerCount: number;
   /** The staff Admin, once one has been named. Never a member. */
   adminName: string | null;

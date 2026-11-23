@@ -298,6 +298,15 @@ when given, else the balance at entry; `tenure_months` is the months from start 
 repayments recorded since (`src/lib/loan-status.ts` → `loanBalance`). `cooperative_has_existing_loans
 (cooperative_id)` answers the E08 note.
 
+### Member count (BUILD-PLAN 0.5)
+
+**Members = active memberships + roster entries not yet on Clarix** (`member_roster_entries` with
+`membership_id is null`), shown as "15 members, 8 on Clarix". A `pending` membership (asking to join)
+and a `suspended` one are not counted, and the Members list names them beside the count. Defined once
+in `src/lib/home-figures.ts`; the Platform reads the two parts from `platform_cooperative_directory()`
+(`member_count`, `roster_not_on_clarix_count`, migration `20261123120000`). This is the size of a
+cooperative's book, not D041's billing "active member" (a member with activity that month).
+
 ### Institutions and member IDs (BUILD-PLAN 3.1, D034)
 
 ```

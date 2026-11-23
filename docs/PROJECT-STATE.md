@@ -27,8 +27,11 @@ code exists yet.
   previous account), so it waits for the owner, like 030 and 031.
   **0.4 (Preview strip) is built and in review**, stacked on 0.3: "Preview · uses the live demo
   data" on every page outside Production, and `supabase/seed/README.md`. No migration.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4). **Next step: BUILD-PLAN
-  0.5** (stale and contradictory home figures).
+  **0.5 (one source per home figure) is built and in review**, stacked on 0.4: the three rules live
+  in `src/lib/home-figures.ts`; migration 033 adds the roster count to the Platform directory and
+  applies at merge.
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5). **Next step:
+  BUILD-PLAN 0.6** (every loan status change through a function), the last of Phase 0.
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
 ## Known defects in the live product (fixed in Phase 0)
@@ -40,7 +43,7 @@ code exists yet.
 | `npm ci` fails: lockfile out of sync (fixed in the 0.2 PR) | `package-lock.json` | 0.2 |
 | Existing loans cannot be entered, so committed starts at ₦0 for every member (fixed in the 0.3 PR) | no screen or RPC | 0.3 |
 | Preview deployments share the live database (kept by the owner's choice, D043); nothing marks a Preview as such (fixed in the 0.4 PR) | layout | 0.4 |
-| Admin home "Members 8" vs list "15 members" vs platform "7"; member home "Current as of 15 March" in November; admin loans says 3 lapsed and "Nothing is waiting" at once | home queries | 0.5 |
+| Admin home "Members 8" vs list "15 members" vs platform "7"; member home "Current as of 15 March" in November; admin loans says 3 lapsed and "Nothing is waiting" at once (fixed in the 0.5 PR) | home queries | 0.5 |
 | Floating tab bar covers the last content on member home and staff member list (phone) | app shells | 1.4 |
 | Payslips are not read; members type the figures | onboarding | 7.3 |
 | Every signup is attached to the FMC organisation row | `handle_new_auth_user` (migration 001) | 3.1 |

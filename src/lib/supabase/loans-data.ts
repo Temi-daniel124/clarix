@@ -27,6 +27,7 @@ export type LoanSummary = {
   reservedAt: string | null;
   reservationExpiresAt: string | null;
   approvedAt: string | null;
+  rejectedAt: string | null;
   completedAt: string | null;
   createdAt: string;
   nextRepaymentOn: string | null;
@@ -97,7 +98,7 @@ export async function loadLoans(): Promise<LoanSummary[]> {
     supabase
       .from("loans")
       .select(
-        "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, reserved_at, reservation_expires_at, approved_at, completed_at, created_at, origin, outstanding_balance_at_entry, expected_end_date",
+        "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, reserved_at, reservation_expires_at, approved_at, rejected_at, completed_at, created_at, origin, outstanding_balance_at_entry, expected_end_date",
       )
       .in("membership_id", membershipIds)
       .order("created_at", { ascending: false }),
@@ -148,6 +149,7 @@ export async function loadLoans(): Promise<LoanSummary[]> {
       reservedAt: loan.reserved_at,
       reservationExpiresAt: loan.reservation_expires_at,
       approvedAt: loan.approved_at,
+      rejectedAt: loan.rejected_at,
       completedAt: loan.completed_at,
       createdAt: loan.created_at,
       nextRepaymentOn:

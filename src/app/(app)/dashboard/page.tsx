@@ -9,7 +9,7 @@ import { InstallPrompt } from "@/components/pwa/install-prompt";
 import { loadDashboardData } from "@/lib/supabase/dashboard-data";
 import { InsightsStrip } from "./insights-strip";
 import { JoinPrompt } from "./join-prompt";
-import { formatDayMonthTime } from "@/lib/format";
+import { updatedLabel } from "@/lib/home-figures";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Home" };
@@ -73,7 +73,7 @@ export default async function DashboardPage() {
           {data.lastUpdated ? (
             <p className="flex items-center gap-2 type-caption text-text-muted">
               <Clock aria-hidden strokeWidth={1.75} className="size-3.5" />
-              Current as of {formatUpdated(data.lastUpdated)}
+              {updatedLabel(data.lastUpdated)}
             </p>
           ) : null}
         </div>
@@ -116,6 +116,4 @@ function greeting(): string {
   return "Good evening";
 }
 
-function formatUpdated(iso: string): string {
-  return formatDayMonthTime(iso);
-}
+

@@ -117,7 +117,15 @@ export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
           value={entry.adminName ?? "Nobody named yet"}
           note={entry.adminEmail ?? undefined}
         />
-        <Fact label="Members" value={String(entry.memberCount)} />
+        <Fact
+          label="Members"
+          value={String(entry.memberCount)}
+          note={
+            entry.memberCount === entry.membersOnClarix
+              ? undefined
+              : `${entry.membersOnClarix} on Clarix`
+          }
+        />
         <Fact label="Officers" value={String(entry.officerCount)} />
       </dl>
 

@@ -1015,6 +1015,7 @@ export type Database = {
           pending_invite_sent_at: string | null
           has_expiry_override: boolean
           internal_note: string | null
+          roster_not_on_clarix_count: number
         }[]
       }
     }
