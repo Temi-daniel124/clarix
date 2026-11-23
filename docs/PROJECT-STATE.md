@@ -34,7 +34,7 @@ code is on `main` yet.
   **0.6 (every loan write through a function) is built and in review**, stacked on 0.5: migration
   034 drops `loans_insert_staff` and `loans_update_staff` and revokes direct writes on `loans`;
   applies at merge. No app code wrote loans directly, and a unit test now keeps it that way.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → 0.6.
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6).
   **Next step: BUILD-PLAN 1.1** (tokens, light only, Figtree), the start of Phase 1.
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
