@@ -361,16 +361,21 @@ export type Database = {
           approved_by: string | null
           completed_at: string | null
           created_at: string
+          entered_by: string | null
+          expected_end_date: string | null
           id: string
           loan_product_id: string | null
           membership_id: string
           monthly_repayment: number
+          origin: Database["public"]["Enums"]["loan_origin"]
+          outstanding_balance_at_entry: number | null
           over_capacity: boolean
           rejected_at: string | null
           requested_amount: number
           reservation_expires_at: string | null
           reserved_at: string | null
           shortfall_at_submission: number | null
+          started_on: string | null
           status: Database["public"]["Enums"]["loan_status"]
           tenure_months: number
         }
@@ -379,16 +384,21 @@ export type Database = {
           approved_by?: string | null
           completed_at?: string | null
           created_at?: string
+          entered_by?: string | null
+          expected_end_date?: string | null
           id?: string
           loan_product_id?: string | null
           membership_id: string
           monthly_repayment: number
+          origin?: Database["public"]["Enums"]["loan_origin"]
+          outstanding_balance_at_entry?: number | null
           over_capacity?: boolean
           rejected_at?: string | null
           requested_amount: number
           reservation_expires_at?: string | null
           reserved_at?: string | null
           shortfall_at_submission?: number | null
+          started_on?: string | null
           status?: Database["public"]["Enums"]["loan_status"]
           tenure_months: number
         }
@@ -397,16 +407,21 @@ export type Database = {
           approved_by?: string | null
           completed_at?: string | null
           created_at?: string
+          entered_by?: string | null
+          expected_end_date?: string | null
           id?: string
           loan_product_id?: string | null
           membership_id?: string
           monthly_repayment?: number
+          origin?: Database["public"]["Enums"]["loan_origin"]
+          outstanding_balance_at_entry?: number | null
           over_capacity?: boolean
           rejected_at?: string | null
           requested_amount?: number
           reservation_expires_at?: string | null
           reserved_at?: string | null
           shortfall_at_submission?: number | null
+          started_on?: string | null
           status?: Database["public"]["Enums"]["loan_status"]
           tenure_months?: number
         }
@@ -855,6 +870,30 @@ export type Database = {
         Returns: boolean
       }
       claim_staff_invitations: { Args: never; Returns: number }
+      cooperative_has_existing_loans: {
+        Args: { target_cooperative_id: string }
+        Returns: boolean
+      }
+      record_existing_loan: {
+        Args: {
+          expected_end_month: string
+          loan_product_id?: string
+          monthly_repayment: number
+          note?: string
+          original_amount?: number
+          outstanding_balance: number
+          start_month: string
+          target_membership_id: string
+        }
+        Returns: {
+          available_after: number
+          available_before: number
+          cap: number
+          committed_after: number
+          committed_before: number
+          loan_id: string
+        }[]
+      }
       complete_loan: {
         Args: { note?: string; target_loan_id: string }
         Returns: {
@@ -984,6 +1023,7 @@ export type Database = {
       deduction_basis: "gross" | "net"
       document_review_status: "pending_review" | "confirmed" | "corrected"
       document_type: "payslip"
+      loan_origin: "clarix" | "pre_existing"
       loan_status:
         | "draft"
         | "reserved"
@@ -1137,6 +1177,7 @@ export const Constants = {
       deduction_basis: ["gross", "net"],
       document_review_status: ["pending_review", "confirmed", "corrected"],
       document_type: ["payslip"],
+      loan_origin: ["clarix", "pre_existing"],
       loan_status: ["draft","reserved","pending_review","active","rejected","completed","expired"],
       membership_status: ["pending", "active", "suspended"],
       access_grant_status: ["pending", "active", "expired", "revoked"],

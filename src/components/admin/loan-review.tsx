@@ -22,6 +22,8 @@ type Application = LoanApplication & {
   salaryConfirmed: boolean;
   repaid: number;
   repayments: RepaymentEntry[];
+  outstandingAtEntry: number | null;
+  existingLoansEntered: boolean;
 };
 
 /**
@@ -83,6 +85,15 @@ export function LoanReview({
           {formatNaira(application.requestedAmount)} over {application.tenureMonths} months ·{" "}
           {formatNaira(application.monthlyRepayment)} a month
         </p>
+
+        {/* E08, documents blueprint §3: until this cooperative has entered the loans members
+            already owed when it joined, "committed" may be short of the truth. One line, amber. */}
+        {pending && !application.existingLoansEntered ? (
+          <p className="mt-3 flex items-center gap-2 type-caption text-warning">
+            <TriangleAlert aria-hidden strokeWidth={2} className="size-3.5 shrink-0" />
+            Existing loans not entered yet for this cooperative
+          </p>
+        ) : null}
 
         {pending && application.overCapacity ? (
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -262,6 +273,7 @@ export function LoanReview({
             requestedAmount={application.requestedAmount}
             monthlyRepayment={application.monthlyRepayment}
             repaid={application.repaid}
+            outstandingAtEntry={application.outstandingAtEntry}
             repayments={application.repayments}
             canClose={canDecide}
           />

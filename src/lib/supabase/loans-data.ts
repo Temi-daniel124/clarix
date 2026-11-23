@@ -1,5 +1,6 @@
 import { createClient, getRequestUser } from "@/lib/supabase/server";
 import type { Capacity } from "@/lib/eligibility";
+import { loanBalance } from "@/lib/loan-status";
 
 export type LoanStatus =
   | "draft"
@@ -29,6 +30,9 @@ export type LoanSummary = {
   completedAt: string | null;
   createdAt: string;
   nextRepaymentOn: string | null;
+  /** Entered by staff as already running when the cooperative joined (D036). */
+  preExisting: boolean;
+  expectedEndDate: string | null;
 };
 
 export type LedgerEntry = {
@@ -93,7 +97,7 @@ export async function loadLoans(): Promise<LoanSummary[]> {
     supabase
       .from("loans")
       .select(
-        "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, reserved_at, reservation_expires_at, approved_at, completed_at, created_at",
+        "id, membership_id, requested_amount, monthly_repayment, tenure_months, status, reserved_at, reservation_expires_at, approved_at, completed_at, created_at, origin, outstanding_balance_at_entry, expected_end_date",
       )
       .in("membership_id", membershipIds)
       .order("created_at", { ascending: false }),
@@ -124,6 +128,9 @@ export async function loadLoans(): Promise<LoanSummary[]> {
   return (loans ?? []).map((loan) => {
     const requested = Number(loan.requested_amount);
     const repaid = Math.min(repaidByLoan.get(loan.id) ?? 0, requested);
+    const outstandingAtEntry =
+      loan.outstanding_balance_at_entry === null ? null : Number(loan.outstanding_balance_at_entry);
+    const balance = loanBalance({ requestedAmount: requested, outstandingAtEntry, repaid });
     const membership = membershipById.get(loan.membership_id);
 
     return {
@@ -136,8 +143,8 @@ export async function loadLoans(): Promise<LoanSummary[]> {
       tenureMonths: loan.tenure_months,
       status: loan.status,
       repaid,
-      remaining: Math.max(0, requested - repaid),
-      progress: requested > 0 ? Math.min(1, repaid / requested) : 0,
+      remaining: balance.remaining,
+      progress: balance.progress,
       reservedAt: loan.reserved_at,
       reservationExpiresAt: loan.reservation_expires_at,
       approvedAt: loan.approved_at,
@@ -147,6 +154,8 @@ export async function loadLoans(): Promise<LoanSummary[]> {
         loan.status === "active"
           ? nextMonthAfter(lastRepaymentByLoan.get(loan.id) ?? loan.approved_at)
           : null,
+      preExisting: loan.origin === "pre_existing",
+      expectedEndDate: loan.expected_end_date,
     };
   });
 }

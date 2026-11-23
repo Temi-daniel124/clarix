@@ -24,8 +24,11 @@ export function CapacityMeter({
   caption,
   showVerdict = false,
   showHeadline = true,
+  proposedLabel = "This request",
   className,
 }: {
+  /** Legend label for the proposed segment. "This loan" where nothing is being requested. */
+  proposedLabel?: string;
   /** The deduction ceiling: salary basis × the organization's maximum percentage. */
   cap: number;
   /** Monthly obligations already reserved or active, summed across every cooperative. */
@@ -94,7 +97,7 @@ export function CapacityMeter({
         {proposed > 0 ? (
           <Legend
             swatch={eligible ? "var(--clarix-brand-accent)" : "var(--clarix-danger)"}
-            term="This request"
+            term={proposedLabel}
             value={proposed}
           />
         ) : null}

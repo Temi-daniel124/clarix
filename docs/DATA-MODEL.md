@@ -280,6 +280,7 @@ approval since R1.
 ```
 loans.origin                       'clarix' | 'pre_existing'   default 'clarix'
 loans.outstanding_balance_at_entry numeric(14,2)   -- pre_existing only
+loans.started_on                   date            -- pre_existing required: first day of the start month
 loans.expected_end_date            date            -- pre_existing required; clarix derived from tenure
 loans.entered_by                   fk -> users     -- staff who keyed or imported it
 ```
@@ -287,6 +288,15 @@ loans.entered_by                   fk -> users     -- staff who keyed or importe
 A `pre_existing` loan is inserted as `active` through `record_existing_loan(...)` (SECURITY DEFINER,
 checks the caller's record permission at that cooperative), never through reservation. It counts in
 `committed` immediately.
+
+Built in migration `20261123090000` (BUILD-PLAN 0.3). `started_on` was added to the contract above
+because the sheet asks for a start month and nothing else held it. Constraint
+`loans_pre_existing_shape`: a `pre_existing` loan is `active` or `completed` and has a balance above
+zero, a start month and an end month no earlier than it. `requested_amount` holds the original amount
+when given, else the balance at entry; `tenure_months` is the months from start to end, both included
+(at most 120). What is left on a `pre_existing` loan is `outstanding_balance_at_entry` minus the
+repayments recorded since (`src/lib/loan-status.ts` → `loanBalance`). `cooperative_has_existing_loans
+(cooperative_id)` answers the E08 note.
 
 ### Institutions and member IDs (BUILD-PLAN 3.1, D034)
 

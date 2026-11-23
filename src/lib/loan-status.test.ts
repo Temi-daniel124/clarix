@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   availableWithout,
+  defaultEndMonth,
   holdsCapacity,
   isAwaitingDecision,
   isLapsedReservation,
+  loanBalance,
+  monthsInclusive,
 } from "./loan-status";
 
 /**
@@ -91,5 +94,63 @@ describe("availableWithout", () => {
       availableWithout({ cap: 83_250, committed: 150_000 }, { ...pendingReview, monthlyRepayment: 10_000 }, NOW)
         .availableBefore,
     ).toBe(0);
+  });
+});
+
+
+describe("loanBalance", () => {
+  it("counts a Clarix loan from its full amount", () => {
+    expect(loanBalance({ requestedAmount: 600_000, outstandingAtEntry: null, repaid: 150_000 })).toEqual({
+      remaining: 450_000,
+      progress: 0.25,
+    });
+  });
+
+  it("counts an existing loan from what was owed when it was entered", () => {
+    // ₦450,000 originally, ₦300,000 still owed on entry, ₦50,000 recorded since.
+    expect(loanBalance({ requestedAmount: 450_000, outstandingAtEntry: 300_000, repaid: 50_000 })).toEqual({
+      remaining: 250_000,
+      progress: 200_000 / 450_000,
+    });
+  });
+
+  it("with no original amount, the balance at entry is the whole loan", () => {
+    expect(loanBalance({ requestedAmount: 300_000, outstandingAtEntry: 300_000, repaid: 0 })).toEqual({
+      remaining: 300_000,
+      progress: 0,
+    });
+  });
+
+  it("never goes below zero", () => {
+    expect(loanBalance({ requestedAmount: 100_000, outstandingAtEntry: 50_000, repaid: 80_000 }).remaining).toBe(0);
+  });
+});
+
+describe("defaultEndMonth", () => {
+  const today = new Date("2026-11-23T12:00:00Z");
+
+  it("counts the repayments still needed from this month when the loan began earlier", () => {
+    // ₦300,000 at ₦25,000 is 12 repayments: Nov 2026 to Oct 2027.
+    expect(defaultEndMonth({ startMonth: "2025-06", outstanding: 300_000, monthly: 25_000, today })).toBe("2027-10");
+  });
+
+  it("rounds a part repayment up to a whole month", () => {
+    expect(defaultEndMonth({ startMonth: "2026-11", outstanding: 100_000, monthly: 30_000, today })).toBe("2027-02");
+  });
+
+  it("is this month when one repayment clears it", () => {
+    expect(defaultEndMonth({ startMonth: "2026-01", outstanding: 20_000, monthly: 25_000, today })).toBe("2026-11");
+  });
+
+  it("waits for usable figures", () => {
+    expect(defaultEndMonth({ startMonth: "", outstanding: 300_000, monthly: 25_000, today })).toBeNull();
+    expect(defaultEndMonth({ startMonth: "2026-01", outstanding: 0, monthly: 25_000, today })).toBeNull();
+  });
+});
+
+describe("monthsInclusive", () => {
+  it("counts both ends", () => {
+    expect(monthsInclusive("2025-06", "2026-12")).toBe(19);
+    expect(monthsInclusive("2026-01", "2026-01")).toBe(1);
   });
 });

@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { MeterBar } from "@/components/clarix/meter-bar";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { clampRatio, formatFullDate, formatNaira } from "@/lib/format";
+import { loanBalance } from "@/lib/loan-status";
 import { completeLoanAction } from "@/app/admin/loan-actions";
 import type { RepaymentEntry } from "@/lib/supabase/admin-loans";
 
@@ -34,9 +35,12 @@ export function LoanClose({
   repaid,
   repayments,
   canClose,
+  outstandingAtEntry = null,
 }: {
   loanId: string;
   memberName: string;
+  /** Set for a loan entered as already running (D036): what was owed when it was entered. */
+  outstandingAtEntry?: number | null;
   requestedAmount: number;
   monthlyRepayment: number;
   repaid: number;
@@ -54,7 +58,11 @@ export function LoanClose({
   const [done, setDone] = useState<{ releasedMonthly: number } | null>(null);
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const outstanding = Math.max(requestedAmount - repaid, 0);
+  const { remaining: outstanding, progress } = loanBalance({
+    requestedAmount,
+    outstandingAtEntry,
+    repaid,
+  });
   const shortOfLedger = outstanding > 0;
 
   const commit = useCallback(() => {
@@ -110,8 +118,8 @@ export function LoanClose({
         <MeterBar
           size="compact"
           track="neutral"
-          usedRatio={requestedAmount > 0 ? clampRatio(repaid / requestedAmount) : 1}
-          label={`${formatNaira(repaid)} repaid of ${formatNaira(requestedAmount)}`}
+          usedRatio={requestedAmount > 0 ? clampRatio(progress) : 1}
+          label={`${formatNaira(requestedAmount - outstanding)} repaid of ${formatNaira(requestedAmount)}`}
         />
       </div>
 
