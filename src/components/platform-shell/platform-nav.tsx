@@ -37,7 +37,7 @@ export function PlatformSidebar() {
 
   return (
     <aside
-      className="theme-dark sticky top-0 hidden h-dvh w-[248px] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface md:flex"
+      className="theme-dark sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] w-[248px] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface md:flex"
     >
       <div className="px-5 py-5">
         <Link href="/platform" aria-label="Clarix platform home" className="block min-w-0">

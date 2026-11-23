@@ -1,8 +1,11 @@
+import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
 import { ThemeScript } from "@/components/theme/theme-script";
+import { PREVIEW_STRIP_OFFSET, PreviewStrip } from "@/components/clarix/preview-strip";
+import { sharesLiveDataOutsideProduction } from "@/lib/environment";
 
 /** Inter, one family, loaded once, DESIGN_SYSTEM.md § Typography. */
 const inter = Inter({
@@ -42,6 +45,9 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
+  // D043: every deployment but Production shares the live demo data, and says so (BUILD-PLAN 0.4).
+  const preview = sharesLiveDataOutsideProduction();
+
   return (
 // <html> deliberately carries no className. ThemeScript writes the colour-scheme and
     // sidebar classes onto this element before first paint, and leaving React with no className
@@ -57,7 +63,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <head>
         <ThemeScript />
       </head>
-      <body className={`${inter.variable} flex min-h-full flex-col`}>
+      <body
+        className={`${inter.variable} flex min-h-full flex-col`}
+        style={preview ? ({ "--clarix-preview-offset": PREVIEW_STRIP_OFFSET } as CSSProperties) : undefined}
+      >
+        {preview ? <PreviewStrip /> : null}
         {/*
           Chrome fires `beforeinstallprompt` during page load, typically BEFORE React has
           hydrated, so a listener registered inside a component effect misses it altogether and

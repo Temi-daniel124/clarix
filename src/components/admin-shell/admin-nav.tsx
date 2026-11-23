@@ -65,7 +65,7 @@ export function AdminSidebar({
 
   return (
     <aside
-      className="theme-dark sticky top-0 hidden h-dvh shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
+      className="theme-dark sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
       style={{ width: "var(--sidebar-width)" }}
     >
       <div

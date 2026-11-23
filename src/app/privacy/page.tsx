@@ -30,7 +30,7 @@ const UPDATED = "13 September 2026";
 
 export default function PrivacyPage() {
   return (
-    <div className="flex min-h-dvh flex-1 flex-col">
+    <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[760px] items-center justify-between px-5 py-6 md:px-8">
         <Link href="/" aria-label="Clarix home">
           <Wordmark />

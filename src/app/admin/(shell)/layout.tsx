@@ -42,7 +42,7 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   const canViewMembers = role.permissions.can_view_members;
 
   return (
-    <div className="flex min-h-dvh flex-1">
+    <div className="flex min-h-app flex-1">
       <AdminSidebar
         cooperativeName={role.cooperativeName}
         role={role.role}

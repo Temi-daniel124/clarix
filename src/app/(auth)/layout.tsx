@@ -12,7 +12,7 @@ import { Wordmark } from "@/components/clarix/wordmark";
  */
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
-    <div className="flex min-h-dvh flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
+    <div className="flex min-h-app flex-1 flex-col lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
       {/* Left panel, desktop only. */}
       <aside className="theme-dark relative hidden flex-col justify-between bg-navy-surface p-12 lg:flex">
         <Link href="/" className="w-fit" aria-label="Clarix home">

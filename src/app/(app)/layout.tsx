@@ -20,7 +20,7 @@ export default async function AppLayout({ children }: LayoutProps<"/">) {
   if (!user) redirect("/login");
 
   return (
-    <div className="flex min-h-dvh flex-1">
+    <div className="flex min-h-app flex-1">
       <AppSidebar />
 
       <div className="flex min-w-0 flex-1 flex-col">
