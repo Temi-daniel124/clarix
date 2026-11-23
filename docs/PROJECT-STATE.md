@@ -27,7 +27,7 @@ code exists yet.
   previous account), so it waits for the owner, like 030 and 031.
   **0.4 (Preview strip) is built and in review**, stacked on 0.3: "Preview · uses the live demo
   data" on every page outside Production, and `supabase/seed/README.md`. No migration.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → 0.4. **Next step: BUILD-PLAN
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4). **Next step: BUILD-PLAN
   0.5** (stale and contradictory home figures).
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
