@@ -60,8 +60,14 @@ code is on `main` yet.
   refinement of D051. The canvas ring is gone; the button is a 56px emerald circle with a 4px navy
   border, rising 20px above the bar, with its own emerald shadow. Staff bottom reserve 120px. Not a
   BUILD-PLAN step. No migration.
+  **1.4c (demo sign-in chips, D048) is built and in review**, stacked on 1.4b, pulled forward from
+  5.4 at the owner's request: "Sign in as" chips on the sign-in page, a server action holding the
+  Preview-only demo credentials, refused in Production, and a CI check that no demo password or
+  variable name reaches the client bundle. **The owner sets the eight Preview variables in Vercel**
+  (names in BUILD.md). No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b). **Next step: BUILD-PLAN 1.5**
+  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b) → #36 (1.4c).
+  **Next step: BUILD-PLAN 1.5**
   (not-found, error and loading-failure pages).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
@@ -114,6 +120,10 @@ Deliberately deferred by the owner, so do not raise them as tasks:
 - Moving the `Clarix` Supabase project to the new Supabase account.
 
 To accept a built step:
+- **R2 1.4c, the demo sign-in chips.** In Vercel → Settings → Environment Variables, on the
+  **Preview** environment only: `NEXT_PUBLIC_DEMO_MODE=true` and the four demo accounts'
+  `DEMO_EMAIL_*` / `DEMO_PASSWORD_*` (names in BUILD.md; mark the passwords Sensitive), then
+  redeploy the Preview. Until then the chips stay hidden.
 - **BUILD-PLAN 1.3, the Sheet on your own phones.** Open `/dev/components` on the PR's Preview on an
   iPhone (Safari) and an Android phone (Chrome): drag the sheet between half and nearly full, drag it
   away, tap outside, and press Android's back button. If dragging feels wrong on iOS Safari, the

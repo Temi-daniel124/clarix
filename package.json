@@ -12,6 +12,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:bundle": "vitest run --config vitest.bundle.config.ts",
     "typecheck": "next typegen && tsc --noEmit"
   },
   "dependencies": {

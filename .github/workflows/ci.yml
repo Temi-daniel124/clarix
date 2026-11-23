@@ -44,6 +44,20 @@ jobs:
         run: npm test
 
       # No Supabase keys here: the app builds without them (src/lib/supabase/env.ts), and CI
-      # never holds a key to the shared project (SECURITY.md).
+      # never holds a key to the shared project (SECURITY.md). The DEMO_* values are canaries,
+      # not real accounts: demo mode is on so the chips code is built, and the next step proves
+      # none of these values or names reached the browser (D048).
       - name: Production build
         run: npm run build
+        env:
+          NEXT_PUBLIC_DEMO_MODE: "true"
+          DEMO_EMAIL_MEMBER: canary-member@example.test
+          DEMO_PASSWORD_MEMBER: ci-canary-member-7f3k
+          DEMO_EMAIL_ADMIN: canary-admin@example.test
+          DEMO_PASSWORD_ADMIN: ci-canary-admin-9q2w
+
+      - name: No demo password in the client bundle
+        run: npm run test:bundle
+        env:
+          DEMO_PASSWORD_MEMBER: ci-canary-member-7f3k
+          DEMO_PASSWORD_ADMIN: ci-canary-admin-9q2w
