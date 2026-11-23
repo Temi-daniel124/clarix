@@ -25,7 +25,7 @@ code exists yet.
   existing loan", migration 032 (additive). Migration 032 is **not applied**: the Supabase account
   connected to agent sessions does not hold the `Clarix` project (it is still under the owner's
   previous account), so it waits for the owner, like 030 and 031.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → 0.3. **Next step: BUILD-PLAN 0.4**
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3). **Next step: BUILD-PLAN 0.4**
   (mark Previews).
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
