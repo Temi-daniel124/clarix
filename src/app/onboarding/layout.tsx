@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 /**
  * Shell for the onboarding sequence (blueprint 2.1–2.5).
@@ -17,7 +16,6 @@ export default function OnboardingLayout({ children }: LayoutProps<"/onboarding"
         <Link href="/" aria-label="Clarix home">
           <Wordmark />
         </Link>
-        <ThemeToggle />
       </header>
 
       <main className="mx-auto w-full max-w-[640px] flex-1 px-5 pb-16 md:px-8">{children}</main>

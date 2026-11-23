@@ -2,7 +2,6 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { pendingInvites, preferredRole } from "@/lib/staff";
 
@@ -41,7 +40,6 @@ export default async function OfficerLayout({ children }: { children: ReactNode 
             {role.cooperativeName}
           </span>
         </Link>
-        <ThemeToggle />
       </header>
 
       <main className="mx-auto w-full max-w-[720px] flex-1 px-5 pb-20 md:px-8">{children}</main>

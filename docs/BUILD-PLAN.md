@@ -115,7 +115,7 @@ Found while building 0.1 (logged in `docs/PROJECT-STATE.md` → Known defects).
 
 Read for every step: `DESIGN_SYSTEM.md` in full.
 
-### ☐ 1.1 Tokens, light only, Figtree
+### ☑ 1.1 Tokens, light only, Figtree
 - Replace the token block in `src/app/globals.css` with `DESIGN_SYSTEM.md` §4.1–4.5. Map them into
   Tailwind 4 `@theme`. Delete the dark block, every `dark:` class, `src/components/theme/*`, the
   ThemeScript in `src/app/layout.tsx`, and set `themeColor` to `#F7F7F4` only.

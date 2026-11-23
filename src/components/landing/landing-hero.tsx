@@ -22,7 +22,7 @@ import { HeroBackdrop } from "./hero-backdrop";
  */
 export function LandingHero() {
   return (
-    <div className="theme-dark relative isolate bg-navy-surface">
+    <div className="surface-navy relative isolate bg-navy-surface">
       <HeroBackdrop />
 
       <div className="relative z-10">

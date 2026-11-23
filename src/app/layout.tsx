@@ -1,16 +1,20 @@
 import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Figtree } from "next/font/google";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
-import { ThemeScript } from "@/components/theme/theme-script";
+import { RailScript } from "@/components/app-shell/rail-script";
 import { PREVIEW_STRIP_OFFSET, PreviewStrip } from "@/components/clarix/preview-strip";
 import { sharesLiveDataOutsideProduction } from "@/lib/environment";
 
-/** Inter, one family, loaded once, DESIGN_SYSTEM.md § Typography. */
-const inter = Inter({
-  variable: "--font-inter",
+/**
+ * Figtree, the one typeface (D038, DESIGN_SYSTEM.md §4.2), in exactly the four weights the design
+ * system uses. (next/font does not take a weight range for Figtree; it lists the weights singly.)
+ */
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -36,12 +40,8 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: [
-    // Matches the DESIGN_SYSTEM.md background tokens, so the installed app's chrome
-    // continues the page rather than framing it.
-    { media: "(prefers-color-scheme: light)", color: "#F6F8FB" },
-    { media: "(prefers-color-scheme: dark)", color: "#0B0B0E" },
-  ],
+  // Light only (D037): the installed app's chrome continues the R2 canvas.
+  themeColor: "#F7F7F4",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -49,22 +49,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   const preview = sharesLiveDataOutsideProduction();
 
   return (
-// <html> deliberately carries no className. ThemeScript writes the colour-scheme and
-    // sidebar classes onto this element before first paint, and leaving React with no className
-    // of its own here means React never owns that attribute and cannot overwrite them. This is
-    // the same arrangement next-themes requires, and it is defensive rather than a fix for an
-    // observed production bug: the classes survive hydration in a production build either way,
-    // but `next dev` resets the root className during hydration, which makes the preference look
-    // lost while developing.
-    //
-    // So the font variable and the layout classes live on <body>, html's height comes from CSS,
-    // and suppressHydrationWarning covers the attributes the script adds.
+// <html> deliberately carries no className. RailScript writes the sidebar's class onto this
+    // element before first paint, and leaving React with no className of its own here means React
+    // never owns that attribute and cannot overwrite it. So the font variable and the layout
+    // classes live on <body>, html's height comes from CSS, and suppressHydrationWarning covers
+    // the class the script adds.
     <html lang="en" suppressHydrationWarning>
       <head>
-        <ThemeScript />
+        <RailScript />
       </head>
       <body
-        className={`${inter.variable} flex min-h-full flex-col`}
+        className={`${figtree.variable} flex min-h-full flex-col`}
         style={preview ? ({ "--clarix-preview-offset": PREVIEW_STRIP_OFFSET } as CSSProperties) : undefined}
       >
         {preview ? <PreviewStrip /> : null}

@@ -71,9 +71,9 @@ export function EligibilityPreview({
     <div
       className={cn(
         "w-full rounded-feature border border-border bg-surface p-6 md:p-8",
-        // The hero variant always sits on the fixed navy ground, so it holds the light palette
-        // in both themes, see the .theme-light note in globals.css.
-        pace === "hero" && "theme-light",
+        // The hero variant sits on the navy ground, so it resets to the light values: a white
+        // product window on navy (see .surface-light in globals.css).
+        pace === "hero" && "surface-light",
         pace === "calm" && "border-white/10 bg-white/[0.04]",
         className,
       )}

@@ -7,8 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis, PanelLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { SIDEBAR_STORAGE_KEY } from "@/components/theme/theme-script";
+import { SIDEBAR_STORAGE_KEY } from "@/components/app-shell/rail-script";
 import { springStandard } from "@/lib/motion";
 import {
   DESTINATIONS,
@@ -60,7 +59,7 @@ export function AppSidebar() {
       /* Width comes from the CSS variable so the collapsed state is correct on first paint. */
       /* Sticky and full-height: the blueprint calls this navigation persistent, and a rail that
          scrolls away on a long screen is not. */
-      className="theme-dark sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] shrink-0 flex-col border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
+      className="surface-navy sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] shrink-0 flex-col border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
       style={{ width: "var(--sidebar-width)" }}
     >
       <div
@@ -104,15 +103,6 @@ export function AppSidebar() {
         </ul>
       </nav>
 
-      <div
-        className={cn(
-          "border-t border-white/8 px-4 py-4",
-          collapsed ? "flex justify-center" : "flex items-center justify-between gap-3",
-        )}
-      >
-        {collapsed ? null : <span className="type-caption text-white/40">Appearance</span>}
-        <ThemeToggle tone="onDark" />
-      </div>
     </aside>
   );
 }
@@ -178,7 +168,7 @@ export function AppBottomTabs() {
     <div
       /* Safe-area padding keeps the pill clear of the iOS home indicator, which
          DESIGN_SYSTEM.md § PWA app-shell behavior requires of every fixed element. */
-      className="theme-dark fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden"
+      className="surface-navy fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden"
     >
       <nav
         aria-label="Main"
@@ -276,7 +266,6 @@ export function AppTopBar() {
       <Link href="/dashboard" aria-label="Clarix home">
         <Wordmark />
       </Link>
-      <ThemeToggle />
     </header>
   );
 }
