@@ -143,7 +143,7 @@ export function RosterImport({
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <h2 className="type-section text-text">Import members</h2>
-        <Button type="button" variant="ghost" size="sm" onClick={downloadTemplate}>
+        <Button type="button" variant="tertiary" onClick={downloadTemplate}>
           <Download className="size-4" aria-hidden strokeWidth={2} />
           Download a blank template
         </Button>
@@ -212,8 +212,7 @@ export function RosterImport({
                 </p>
               </div>
               <Button
-                size="icon"
-                variant="ghost"
+                variant="icon"
                 aria-label="Choose a different file"
                 onClick={() => {
                   setSheet(null);
@@ -425,13 +424,14 @@ function RowReview({
         </h3>
 
         {attention.length > 0 ? (
-          <button
+          <Button
             type="button"
+            variant="tertiary"
             onClick={() => setShowing(showing === "all" ? "attention" : "all")}
-            className="type-secondary font-medium text-indigo underline-offset-4 transition-colors duration-150 hover:underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+            className="-mr-3"
           >
             {showing === "all" ? "Show only rows needing attention" : `Show all ${rows.length} rows`}
-          </button>
+          </Button>
         ) : null}
       </div>
 

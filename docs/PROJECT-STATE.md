@@ -38,8 +38,14 @@ code is on `main` yet.
   to §4.5 in `globals.css`, R1 token names kept as aliases onto R2 values until Phases 4 to 6
   rebuild each screen; the dark palette, theme toggle and ThemeScript are gone (the sidebar's
   remembered width moved to `RailScript`). No migration.
+  **1.2 (buttons, inputs, chips, segmented control) is built and in review**, stacked on 1.1: the
+  §5.1 button (pill, six variants, loading), §5.2 inputs (money, phone, password), `Chip`,
+  `FilterChip` and `SegmentedControl`, every bespoke button moved onto them, and `/dev/components`
+  (Previews only). It also fixed focus rings: R1's shared button and inputs showed none
+  (`outline-none` cancelled them). No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1). **Next step: BUILD-PLAN 1.2** (buttons, inputs, chips, segmented control).
+  → #30 (1.1) → 1.2. **Next step: BUILD-PLAN 1.3** (Sheet and side panel). Step 1.5 (designed 404,
+  error and loading-failure pages) is added, not built.
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
   - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits

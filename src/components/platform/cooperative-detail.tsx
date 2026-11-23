@@ -96,9 +96,8 @@ export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
   return (
     <div>
       <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-2"
+        variant="tertiary"
+        className="-ml-3"
         render={<Link href="/platform/cooperatives" />}
       >
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
@@ -168,7 +167,7 @@ export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
               the first time they sign in with that address.
             </p>
 
-            <Button variant="outline" size="sm" className="mt-4" type="button" onClick={resend}>
+            <Button variant="secondary" className="mt-4" type="button" onClick={resend}>
               <Mail className="size-4" aria-hidden strokeWidth={2} />
               Reissue the invitation
             </Button>
@@ -182,7 +181,7 @@ export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
                 {pendingStatus === "inactive" ? "Deactivating" : "Reactivating"} {entry.name} in{" "}
                 {countdown}s
               </p>
-              <Button variant="outline" size="sm" type="button" onClick={cancelStatusChange}>
+              <Button variant="secondary" type="button" onClick={cancelStatusChange}>
                 <Undo2 className="size-4" aria-hidden strokeWidth={2} />
                 Undo
               </Button>
@@ -199,8 +198,7 @@ export function CooperativeDetail({ entry }: { entry: DirectoryEntry }) {
               </p>
 
               <Button
-                variant={entry.status === "active" ? "outline" : "primary"}
-                size="sm"
+                variant={entry.status === "active" ? "secondary" : "primary"}
                 className="mt-4"
                 type="button"
                 onClick={beginStatusChange}

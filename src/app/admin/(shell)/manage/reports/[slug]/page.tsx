@@ -51,7 +51,7 @@ export default async function ReportPage({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="mx-auto w-full max-w-[860px] px-5 py-8 md:px-8 md:py-10">
-      <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/admin/manage/reports" />}>
+      <Button variant="tertiary" className="-ml-3" render={<Link href="/admin/manage/reports" />}>
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
         Reports
       </Button>

@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { NOTIFICATION_CATEGORIES } from "@/lib/notifications";
 import type { NotificationItem } from "@/lib/supabase/notifications-data";
@@ -49,13 +50,9 @@ export function NotificationList({
               })
             }
           >
-            <button
-              type="submit"
-              disabled={marking}
-              className="type-secondary font-medium text-indigo underline-offset-4 transition-colors duration-150 hover:underline disabled:text-text-muted disabled:no-underline focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
-            >
-              {marking ? "Marking…" : "Mark all as read"}
-            </button>
+            <Button type="submit" variant="tertiary" loading={marking} className="-mr-3">
+              Mark all as read
+            </Button>
           </form>
         ) : null}
       </div>

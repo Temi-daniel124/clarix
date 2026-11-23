@@ -5,11 +5,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Input, MoneyInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SectionFeedback } from "@/components/clarix/section-feedback";
-import { cn } from "@/lib/utils";
-import { formatNaira, NAIRA } from "@/lib/format";
+import { SegmentedControl } from "@/components/ui/segmented-control";
+import { formatNaira } from "@/lib/format";
 import { recordSavingsAction, type MemberActionState } from "@/app/admin/member-actions";
 
 const INITIAL: MemberActionState = {};
@@ -24,7 +24,9 @@ type EntryType = "contribution" | "withdrawal_record" | "loan_repayment";
 const TYPE_LABELS: Record<EntryType, string> = {
   contribution: "Contribution",
   withdrawal_record: "Withdrawal",
-  loan_repayment: "Loan repayment",
+  // "Repayment" rather than "Loan repayment": the three options must fit one row at 360px,
+  // and the field below names the loan.
+  loan_repayment: "Repayment",
 };
 
 /**
@@ -78,7 +80,7 @@ export function RecordEntryForm({
           <Button render={<Link href={`/admin/members/${membershipId}`} />}>
             Back to {memberName}
           </Button>
-          <Button variant="outline" onClick={() => router.refresh()}>
+          <Button variant="secondary" onClick={() => router.refresh()}>
             Record another
           </Button>
         </div>
@@ -89,9 +91,8 @@ export function RecordEntryForm({
   return (
     <div>
       <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-2"
+        variant="tertiary"
+        className="-ml-3"
         render={<Link href={`/admin/members/${membershipId}`} />}
       >
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
@@ -112,28 +113,17 @@ export function RecordEntryForm({
         <input type="hidden" name="type" value={type} />
         {type === "loan_repayment" ? <input type="hidden" name="loanId" value={loanId} /> : null}
 
-        <fieldset className="flex flex-col gap-2">
-          <legend className="type-secondary font-medium text-text">What is this?</legend>
-          <div className="mt-1 flex flex-wrap gap-2">
-            {available.map((option) => (
-              <button
-                key={option}
-                type="button"
-                onClick={() => setType(option)}
-                aria-pressed={type === option}
-                className={cn(
-                  "rounded-full border px-4 py-2 type-secondary font-medium transition-colors duration-150",
-                  "focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2",
-                  type === option
-                    ? "border-emerald bg-background text-text"
-                    : "border-border text-text-secondary hover:text-text",
-                )}
-              >
-                {TYPE_LABELS[option]}
-              </button>
-            ))}
-          </div>
-        </fieldset>
+        <div className="flex flex-col gap-2">
+          <span className="type-small text-ink-500">
+            What is this?
+          </span>
+          <SegmentedControl
+            label="What is this?"
+            segments={available.map((option) => ({ value: option, label: TYPE_LABELS[option] }))}
+            value={type}
+            onChange={setType}
+          />
+        </div>
 
         {type === "loan_repayment" && loans.length > 1 ? (
           <div className="flex flex-col gap-2">
@@ -155,23 +145,13 @@ export function RecordEntryForm({
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="amount">Amount</Label>
-          <div className="relative">
-            <span
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-4 flex items-center type-body text-text-muted"
-            >
-              {NAIRA}
-            </span>
-            <Input
-              id="amount"
-              name="amount"
-              inputMode="decimal"
-              value={amount}
-              onChange={(event) => setAmount(event.target.value.replace(/[^0-9.,]/g, ""))}
-              aria-invalid={Boolean(state.fieldErrors?.amount)}
-              className="pl-10 tabular"
-            />
-          </div>
+          <MoneyInput
+            id="amount"
+            name="amount"
+            value={amount}
+            onValueChange={setAmount}
+            aria-invalid={Boolean(state.fieldErrors?.amount)}
+          />
           <FieldError message={state.fieldErrors?.amount} />
         </div>
 

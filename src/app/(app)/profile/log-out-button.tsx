@@ -18,8 +18,7 @@ export function LogOutButton() {
 
   return (
     <Button
-      variant="outline"
-      size="sm"
+      variant="secondary"
       disabled={pending}
       onClick={() => startTransition(() => logOutAction())}
       className="text-text-secondary"

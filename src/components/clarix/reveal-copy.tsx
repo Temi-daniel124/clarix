@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, Copy, Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { springStandard } from "@/lib/motion";
 
@@ -91,31 +92,20 @@ export function RevealCopy({
         </AnimatePresence>
 
         {/* The accessible name says what is hidden; the masked dots above are decorative. */}
-        <button
+        <Button
           type="button"
+          variant="icon"
           onClick={() => setRevealed((current) => !current)}
           aria-label={revealed ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
-          className="ml-2 flex size-9 items-center justify-center rounded-card text-text-muted transition-colors duration-150 hover:bg-background hover:text-text-secondary focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+          aria-pressed={revealed}
+          className="ml-2"
         >
-          {revealed ? (
-            <EyeOff className="size-4" aria-hidden strokeWidth={2} />
-          ) : (
-            <Eye className="size-4" aria-hidden strokeWidth={2} />
-          )}
-        </button>
+          {revealed ? <EyeOff aria-hidden /> : <Eye aria-hidden />}
+        </Button>
 
-        <button
-          type="button"
-          onClick={copy}
-          aria-label={`Copy ${label.toLowerCase()}`}
-          className="flex size-9 items-center justify-center rounded-card text-text-muted transition-colors duration-150 hover:bg-background hover:text-text-secondary focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
-        >
-          {copied ? (
-            <Check className="size-4 text-emerald" aria-hidden strokeWidth={2.5} />
-          ) : (
-            <Copy className="size-4" aria-hidden strokeWidth={2} />
-          )}
-        </button>
+        <Button type="button" variant="icon" onClick={copy} aria-label={`Copy ${label.toLowerCase()}`}>
+          {copied ? <Check aria-hidden className="text-emerald-700" /> : <Copy aria-hidden />}
+        </Button>
 
         {/* Announced once per copy, without moving anything on screen. */}
         <span aria-live="polite" className="sr-only">

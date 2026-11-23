@@ -71,7 +71,7 @@ export function PersonalInfoForm({
       </div>
 
       <div className="flex flex-wrap items-center gap-4">
-        <Button type="submit" disabled={pending} size="sm">
+        <Button type="submit" disabled={pending}>
           {pending ? "Saving…" : "Save changes"}
         </Button>
         <SectionFeedback saved={state.saved} error={state.error} />

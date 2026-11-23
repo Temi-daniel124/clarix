@@ -53,8 +53,7 @@ export function LapsedNotice({
         </p>
 
         <Button
-          variant="outline"
-          size="sm"
+          variant="secondary"
           disabled={pending}
           onClick={() =>
             startTransition(async () => {

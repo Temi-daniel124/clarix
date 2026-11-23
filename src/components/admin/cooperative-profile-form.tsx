@@ -46,8 +46,7 @@ export function CooperativeProfileForm({
 
         <Button
           type="button"
-          variant="outline"
-          size="sm"
+          variant="secondary"
           onClick={() => setPreviewing((current) => !current)}
           aria-pressed={previewing}
         >
@@ -123,7 +122,7 @@ export function CooperativeProfileForm({
           </section>
 
           <div className="flex flex-wrap items-center gap-4">
-            <Button type="submit" disabled={pending} size="sm">
+            <Button type="submit" disabled={pending}>
               {pending ? "Saving…" : "Save profile"}
             </Button>
             <SectionFeedback saved={state.saved} error={state.error} />

@@ -56,7 +56,7 @@ export function LoanProductsManager({
         <h2 className="type-section text-text">Loan products</h2>
 
         {editing === null ? (
-          <Button type="button" size="sm" onClick={() => setEditing("new")}>
+          <Button type="button" onClick={() => setEditing("new")}>
             <Plus className="size-4" aria-hidden strokeWidth={2.5} />
             Add loan product
           </Button>
@@ -128,12 +128,11 @@ function ProductRow({
       </div>
 
       <div className="flex shrink-0 items-center gap-1">
-        <Button variant="ghost" size="icon" aria-label={`Edit ${product.name}`} onClick={onEdit}>
+        <Button variant="icon" aria-label={`Edit ${product.name}`} onClick={onEdit}>
           <Pencil className="size-4" strokeWidth={2} />
         </Button>
         <Button
-          variant="ghost"
-          size="icon"
+          variant="icon"
           aria-label={`Remove ${product.name}`}
           disabled={pending}
           onClick={() =>
@@ -228,8 +227,7 @@ function ProductForm({
             <div className="flex items-center gap-3">
               <Button
                 type="button"
-                variant="outline"
-                size="icon"
+                variant="icon"
                 aria-label="Fewer months"
                 disabled={tenure <= 1}
                 onClick={() => setTenure((value) => Math.max(1, value - 1))}
@@ -241,8 +239,7 @@ function ProductForm({
               </span>
               <Button
                 type="button"
-                variant="outline"
-                size="icon"
+                variant="icon"
                 aria-label="More months"
                 disabled={tenure >= 120}
                 onClick={() => setTenure((value) => Math.min(120, value + 1))}
@@ -277,19 +274,19 @@ function ProductForm({
         ) : null}
 
         <div>
-          <button
+          <Button
             type="button"
+            variant="tertiary"
             onClick={() => setAdvanced((current) => !current)}
             aria-expanded={advanced}
-            className="flex items-center gap-2 type-secondary font-medium text-text-secondary transition-colors duration-150 hover:text-text focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+            className="-ml-3"
           >
             <ChevronDown
               aria-hidden
-              strokeWidth={2}
-              className={cn("size-4 transition-transform duration-200", advanced && "rotate-180")}
+              className={cn("transition-transform duration-200", advanced && "rotate-180")}
             />
             Advanced settings
-          </button>
+          </Button>
 
           {advanced ? (
             <div className="mt-5 flex flex-col gap-5 border-l-2 border-border pl-5">
@@ -329,10 +326,10 @@ function ProductForm({
       </div>
 
       <div className="mt-6 flex flex-wrap items-center gap-4">
-        <Button type="submit" size="sm" disabled={pending}>
+        <Button type="submit" disabled={pending}>
           {pending ? "Saving…" : product ? "Save changes" : "Add product"}
         </Button>
-        <Button type="button" variant="ghost" size="sm" onClick={onDone}>
+        <Button type="button" variant="tertiary" onClick={onDone}>
           {state.saved ? "Done" : "Cancel"}
         </Button>
         <SectionFeedback saved={state.saved} error={state.error} />

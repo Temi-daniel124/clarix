@@ -116,7 +116,7 @@ export function AdminWelcomeTour() {
             <ArrowRight className="size-4" aria-hidden strokeWidth={2.5} />
           </Button>
 
-          <Button variant="ghost" size="sm" render={<Link href="/admin" />}>
+          <Button variant="tertiary" render={<Link href="/admin" />}>
             Skip setup for now
           </Button>
         </div>

@@ -115,13 +115,13 @@ export type QueueSegment = "pending" | "lapsed" | "decided";
 export function queueSegments(counts: {
   pending: number;
   lapsed: number;
-}): Array<{ key: QueueSegment; label: string }> {
-  const segments: Array<{ key: QueueSegment; label: string }> = [
-    { key: "pending", label: counts.pending > 0 ? `Waiting (${counts.pending})` : "Waiting" },
+}): Array<{ value: QueueSegment; label: string }> {
+  const segments: Array<{ value: QueueSegment; label: string }> = [
+    { value: "pending", label: counts.pending > 0 ? `Waiting (${counts.pending})` : "Waiting" },
   ];
 
-  if (counts.lapsed > 0) segments.push({ key: "lapsed", label: `Lapsed (${counts.lapsed})` });
+  if (counts.lapsed > 0) segments.push({ value: "lapsed", label: `Lapsed (${counts.lapsed})` });
 
-  segments.push({ key: "decided", label: "Recently decided" });
+  segments.push({ value: "decided", label: "Recently decided" });
   return segments;
 }

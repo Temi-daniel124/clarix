@@ -208,7 +208,7 @@ export function LoanDecision({
             </div>
 
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => {
                 if (timer.current) clearInterval(timer.current);
                 setPending(null);
@@ -227,7 +227,7 @@ export function LoanDecision({
           >
             {/* Deliberately far apart: these are not a default and its danger twin. */}
             <Button
-              variant={overCap ? "danger" : "primary"}
+              variant={overCap ? "destructive" : "primary"}
               disabled={overCap && note.trim().length < 3}
               onClick={() => begin("approve")}
             >
@@ -236,7 +236,7 @@ export function LoanDecision({
             </Button>
 
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => begin("reject")}
             >
               <X className="size-4" aria-hidden strokeWidth={2} />

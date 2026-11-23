@@ -62,7 +62,7 @@ export default async function ApplyPage({
   if (!chosen) {
     return (
       <div className="mx-auto w-full max-w-[640px] px-5 py-10 md:px-8">
-        <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/loans" />}>
+        <Button variant="tertiary" className="-ml-3" render={<Link href="/loans" />}>
           <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
           Loans
         </Button>
@@ -128,9 +128,8 @@ export default async function ApplyPage({
   return (
     <div className="mx-auto w-full max-w-[640px] px-5 py-8 md:px-8 md:py-10">
       <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-2"
+        variant="tertiary"
+        className="-ml-3"
         render={<Link href={`/cooperatives/${chosen.cooperative_id}`} />}
       >
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />

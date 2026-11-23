@@ -126,7 +126,7 @@ Read for every step: `DESIGN_SYSTEM.md` in full.
 - **Accept when:** `grep -r "dark:" src` returns nothing; no screen has a theme toggle; every screen
   renders in Figtree on the Preview; a screenshot pair (before/after) for five screens is in the PR.
 
-### ☐ 1.2 Buttons, inputs, chips, segmented control
+### ☑ 1.2 Buttons, inputs, chips, segmented control
 - Rebuild `src/components/ui/button.tsx` with the five variants in §5.1 (pill, heights, pressed
   scale, inner spinner). Inputs per §5.2 including the `₦` money input and `+234` phone input.
   Chips and Continuous Tabs per §5.6.
@@ -149,6 +149,17 @@ Read for every step: `DESIGN_SYSTEM.md` in full.
   also members.
 - **Accept when:** all four roles' shells pass §11 at 360/390/1280/1440px.
 
+
+### ☐ 1.5 Not-found, error and loading-failure pages
+- Replace Next's default black 404 (it ignores the light theme, D037) and the bare error boundaries
+  with designed pages in the Calm Ledger style: `src/app/not-found.tsx`, `src/app/error.tsx`,
+  `src/app/global-error.tsx`, plus a `not-found` and `error` inside each signed-in shell so the
+  sidebar and tab bar stay. One line that says what happened, one primary action (back to home, or
+  try again), the small meter-ring line drawing from §7, no stack traces or error codes on screen.
+- A page whose data fails to load says so in one line with a "Try again" that refetches, instead of
+  rendering an empty screen that reads as "nothing here" (AGENT.md: nothing silently fails).
+- **Accept when:** visiting an unknown URL, throwing in a route and failing a data read each show
+  the designed page at 360/390/1280/1440px; no Next default page can be reached.
 ---
 
 ## Phase 2: brand files and SEO

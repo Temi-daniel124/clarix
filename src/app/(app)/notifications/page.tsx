@@ -58,7 +58,7 @@ export default async function NotificationsPage() {
             waiting for you. This page stays empty until they can. It is not hiding anything.
           </p>
 
-          <Button variant="outline" size="sm" className="mt-8" render={<Link href="/profile" />}>
+          <Button variant="secondary" className="mt-8" render={<Link href="/profile" />}>
             Choose what you hear about
           </Button>
         </div>

@@ -6,13 +6,13 @@ import { useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { ArrowLeft, ArrowRight, Check, Undo2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { MoneyInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { CapacityMeter } from "@/components/clarix/capacity-meter";
 import { RollingNumber } from "@/components/clarix/rolling-number";
 import { cn } from "@/lib/utils";
-import { formatNaira, NAIRA } from "@/lib/format";
+import { formatNaira } from "@/lib/format";
 import { springStandard } from "@/lib/motion";
 import { defaultEndMonth } from "@/lib/loan-status";
 import {
@@ -147,7 +147,7 @@ export function ExistingLoanForm({
             Back to {memberName}
           </Button>
           <Button
-            variant="outline"
+            variant="secondary"
             onClick={() => {
               setState({});
               setOutstanding("");
@@ -174,9 +174,8 @@ export function ExistingLoanForm({
   return (
     <div>
       <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-2"
+        variant="tertiary"
+        className="-ml-3"
         render={<Link href={`/admin/members/${membershipId}`} />}
       >
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
@@ -288,7 +287,7 @@ export function ExistingLoanForm({
         {products.length > 0 ? (
           <div className="flex flex-col gap-2">
             <Label htmlFor="product">
-              Loan product <span className="font-normal text-text-muted">(optional)</span>
+              Loan product <span>(optional)</span>
             </Label>
             <select
               id="product"
@@ -309,7 +308,7 @@ export function ExistingLoanForm({
 
         <div className="flex flex-col gap-2">
           <Label htmlFor="note">
-            Note <span className="font-normal text-text-muted">(optional)</span>
+            Note <span>(optional)</span>
           </Label>
           <Textarea
             id="note"
@@ -344,7 +343,7 @@ export function ExistingLoanForm({
               </div>
               <Button
                 type="button"
-                variant="outline"
+                variant="secondary"
                 onClick={() => {
                   if (timer.current) clearInterval(timer.current);
                   setPending(false);
@@ -397,27 +396,16 @@ function MoneyField({
     <div className="flex flex-col gap-2">
       <Label htmlFor={id}>
         {label}
-        {optional ? <span className="font-normal text-text-muted"> (optional)</span> : null}
+        {optional ? <span>(optional)</span> : null}
       </Label>
-      <div className="relative">
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-4 flex items-center type-body text-text-muted"
-        >
-          {NAIRA}
-        </span>
-        <Input
-          id={id}
-          inputMode="decimal"
-          autoComplete="off"
-          value={value}
-          disabled={disabled}
-          onChange={(event) => onChange(groupThousands(event.target.value))}
-          aria-invalid={Boolean(error)}
-          aria-describedby={error ? `${id}-error` : undefined}
-          className="pl-10 tabular"
-        />
-      </div>
+      <MoneyInput
+        id={id}
+        value={value}
+        disabled={disabled}
+        onValueChange={onChange}
+        aria-invalid={Boolean(error)}
+        aria-describedby={error ? `${id}-error` : undefined}
+      />
       {error ? (
         <p id={`${id}-error`} role="alert" className="type-caption text-danger">
           {error}
@@ -520,12 +508,4 @@ function MonthField({
 function toNumber(value: string): number {
   const amount = Number(value.replace(/[₦,\s]/g, ""));
   return Number.isFinite(amount) ? amount : 0;
-}
-
-/** "1500000" → "1,500,000" as it is typed (DESIGN_SYSTEM.md §8: ₦ always with separators). */
-function groupThousands(raw: string): string {
-  const cleaned = raw.replace(/[^0-9.]/g, "");
-  const [whole, ...rest] = cleaned.split(".");
-  const grouped = whole.replace(/^0+(?=\d)/, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  return rest.length > 0 ? `${grouped}.${rest.join("").slice(0, 2)}` : grouped;
 }

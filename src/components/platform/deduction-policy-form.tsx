@@ -220,8 +220,7 @@ export function DeductionPolicyForm({ policy }: { policy: DeductionPolicy }) {
             </Button>
             <Button
               type="button"
-              variant="ghost"
-              size="sm"
+              variant="tertiary"
               onClick={() => setConfirming(false)}
               disabled={pending}
             >

@@ -187,7 +187,7 @@ export function LoanClose({
               </p>
             </div>
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => {
                 if (timer.current) clearInterval(timer.current);
                 setPending(false);

@@ -50,9 +50,8 @@ export function CreateCooperativeForm() {
   return (
     <div>
       <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-2"
+        variant="tertiary"
+        className="-ml-3"
         render={<Link href="/platform/cooperatives" />}
       >
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />

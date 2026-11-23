@@ -239,8 +239,7 @@ export function ApplicationForm({
           <div className="mt-3 flex items-center gap-4">
             <Button
               type="button"
-              variant="outline"
-              size="icon"
+              variant="icon"
               aria-label="Fewer months"
               disabled={tenure <= 1}
               onClick={() => setTenure((value) => Math.max(1, value - 1))}
@@ -254,8 +253,7 @@ export function ApplicationForm({
 
             <Button
               type="button"
-              variant="outline"
-              size="icon"
+              variant="icon"
               aria-label="More months"
               disabled={tenure >= maxTenure}
               onClick={() => setTenure((value) => Math.min(maxTenure, value + 1))}
@@ -360,7 +358,7 @@ export function ApplicationForm({
         >
           <Button
             type="submit"
-            variant={preview.eligible ? "primary" : "danger"}
+            variant={preview.eligible ? "primary" : "destructive"}
             disabled={pending}
             className="w-full"
           >
@@ -454,7 +452,7 @@ function SubmittedPanel({
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Button render={<Link href={`/loans/${result.loanId}`} />}>View this application</Button>
-        <Button variant="outline" render={<Link href={`/cooperatives/${target.cooperativeId}`} />}>
+        <Button variant="secondary" render={<Link href={`/cooperatives/${target.cooperativeId}`} />}>
           Back to {target.cooperativeName}
         </Button>
       </div>

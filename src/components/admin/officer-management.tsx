@@ -292,7 +292,7 @@ function OfficerRow({
                   placeholder="Treasurer, Secretary, optional"
                   className="max-w-[280px]"
                 />
-                <Button variant="outline" size="sm" onClick={saveTitle}>
+                <Button variant="secondary" onClick={saveTitle}>
                   Save title
                 </Button>
               </div>
@@ -309,17 +309,16 @@ function OfficerRow({
                   <p className="min-w-0 flex-1 type-secondary text-text">
                     Removing access in {countdown}… nothing has changed yet.
                   </p>
-                  <Button variant="outline" size="sm" onClick={cancelRemoval}>
+                  <Button variant="secondary" onClick={cancelRemoval}>
                     <Undo2 className="size-4" aria-hidden strokeWidth={2} />
                     Undo
                   </Button>
                 </div>
               ) : (
                 <Button
-                  variant="ghost"
-                  size="sm"
+                  variant="tertiary"
                   onClick={beginRemoval}
-                  className="-ml-2 text-danger"
+                  className="-ml-3 text-danger"
                 >
                   <Trash2 className="size-4" aria-hidden strokeWidth={2} />
                   Remove their access

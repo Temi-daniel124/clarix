@@ -75,7 +75,7 @@ export function ContactForm({ supportEmail }: { supportEmail: string }) {
         ) : null}
 
         <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
-          <Button type="submit" disabled={pending} size="sm">
+          <Button type="submit" disabled={pending}>
             {pending ? "Sending…" : "Send message"}
             {pending ? null : <Send className="size-4" aria-hidden strokeWidth={2} />}
           </Button>

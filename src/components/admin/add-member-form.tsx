@@ -39,7 +39,7 @@ export function AddMemberForm({
 
   return (
     <div>
-      <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/admin/members" />}>
+      <Button variant="tertiary" className="-ml-3" render={<Link href="/admin/members" />}>
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
         Members
       </Button>

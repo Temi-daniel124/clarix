@@ -310,6 +310,15 @@ on desktop), Reveal & Copy (member ID, verification codes, invite links), Comman
 button (import confirm, bulk statement generation), Range Slider + Rolling Number (loan amount),
 skeletons shaped like the real rows. Exact Watermelon mapping and the lucide swaps: `docs/REFERENCE-STUDY.md` §3.
 
+Dimensions set in BUILD-PLAN 1.2 (`src/components/ui/`), where the sections above give none:
+
+| Component | Values |
+|---|---|
+| Segmented control | Track `surface-sunken`, `radius-pill`, 4px padding, 4px between options. Option 44px tall on phones (the §10 touch target), 36px from 768px; 12px side padding on phones, 16px from 640px; `small` text, `ink-500` at rest, `ink-900` selected on a white pill. No shadow |
+| Status chip (`Chip`) | 28px tall, 12px side padding, `radius-sm`, `small`, 16px icon with 8px gap. Tones: neutral `surface-sunken`/`ink-500`, positive `emerald-100`/`emerald-700`, attention `amber-50`/`amber-700`, stop `red-50`/`red-700` |
+| Filter chip (`FilterChip`) | 36px tall, 16px side padding, `radius-pill`, `small`. Off: `surface` with a `hairline-strong` border, hover `surface-sunken`. On: `ink-900` fill, white text. Pressed `scale(0.98)` |
+| Focus ring | One rule for every control: `:focus-visible` 2px solid `indigo-500`, 2px offset (`globals.css`). Components do not restyle it |
+
 ## 6. Icons
 
 **`lucide-react` only** (D013), 1.75px stroke, 20px in lists and nav, 18px in buttons, 16px in chips.

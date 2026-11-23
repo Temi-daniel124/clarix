@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis, PanelLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
 import { SIDEBAR_STORAGE_KEY } from "@/components/app-shell/rail-script";
@@ -74,19 +75,21 @@ export function AppSidebar() {
           </Link>
         )}
 
-        <button
+        {/* The house icon button, read for the navy ground it sits on (on-navy secondary at rest,
+            white on a navy-800 pill when hovered). */}
+        <Button
           type="button"
+          variant="icon"
           onClick={toggle}
           aria-label={collapsed ? "Expand navigation" : "Collapse navigation"}
           aria-expanded={!collapsed}
-          className="flex size-9 shrink-0 items-center justify-center rounded-card text-white/55 transition-colors duration-150 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
+          className="text-on-navy-secondary hover:bg-navy-800 hover:text-on-navy"
         >
           <PanelLeft
             aria-hidden
-            strokeWidth={1.75}
-            className={cn("size-[18px] transition-transform duration-200", collapsed && "rotate-180")}
+            className={cn("transition-transform duration-200", collapsed && "rotate-180")}
           />
-        </button>
+        </Button>
       </div>
 
       <nav aria-label="Main" className="flex-1 px-3">

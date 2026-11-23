@@ -177,7 +177,7 @@ export function CooperativeBrowser({ cooperatives }: { cooperatives: BrowsableCo
         </Button>
 
         {hasAny && appliedCount === 0 ? (
-          <Button variant="ghost" onClick={() => router.push("/dashboard")}>
+          <Button variant="tertiary" onClick={() => router.push("/dashboard")}>
             Skip for now
           </Button>
         ) : null}

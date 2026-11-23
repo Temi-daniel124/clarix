@@ -29,7 +29,7 @@ export default async function ProfilePayslipPage() {
   return (
     <div className="mx-auto w-full max-w-[640px] px-5 pb-10 md:px-8">
       <div className="pt-8 md:pt-10">
-        <Button variant="ghost" size="sm" className="-ml-2" render={<Link href="/profile" />}>
+        <Button variant="tertiary" className="-ml-3" render={<Link href="/profile" />}>
           <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />
           Profile
         </Button>

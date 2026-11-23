@@ -42,9 +42,8 @@ export default async function LoanDetailPage({ params }: { params: Promise<{ id:
   return (
     <div className="mx-auto w-full max-w-[720px] px-5 py-8 md:px-8 md:py-10">
       <Button
-        variant="ghost"
-        size="sm"
-        className="-ml-2"
+        variant="tertiary"
+        className="-ml-3"
         render={<Link href={`/cooperatives/${loan.cooperativeId}`} />}
       >
         <ArrowLeft className="size-4" aria-hidden strokeWidth={2} />

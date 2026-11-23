@@ -64,8 +64,7 @@ export function LandingNav() {
 
         <div className="flex items-center gap-2">
           <Button
-            size="sm"
-            variant="outline"
+            variant="secondary"
             className="hidden border-white/15 bg-white/10 text-white hover:bg-white/15 sm:inline-flex"
             render={<Link href="/login" />}
           >
@@ -115,7 +114,7 @@ export function LandingNav() {
                 </Button>
 
                 <Button
-                  variant="outline"
+                  variant="secondary"
                   className="mt-3 w-full border-white/15 bg-white/10 text-white hover:bg-white/15"
                   render={<Link href="/login" />}
                 >
