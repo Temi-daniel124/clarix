@@ -39,7 +39,7 @@ code is on `main` yet.
   rebuild each screen; the dark palette, theme toggle and ThemeScript are gone (the sidebar's
   remembered width moved to `RailScript`). No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → 1.1. **Next step: BUILD-PLAN 1.2** (buttons, inputs, chips, segmented control).
+  → #30 (1.1). **Next step: BUILD-PLAN 1.2** (buttons, inputs, chips, segmented control).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
   - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits
