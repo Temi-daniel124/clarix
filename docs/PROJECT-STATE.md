@@ -5,9 +5,10 @@ waiting on the owner. Keep it short. Update it at the end of every session that 
 `BUILD-PLAN.md` step. History lives in git and in `docs/archive/PROJECT-STATE-2026-09.md` (the full
 R1 build log, 1,375 lines, last updated 13 September 2026).
 
-**Last updated:** 22 November 2026. The R2 governing docs (the 14 ranked in `AGENT.md`), the build
+**Last updated:** 23 November 2026. **Phase 0 is built** (0.1 to 0.6), in six stacked PRs waiting
+on the owner. The R2 governing docs (the 14 ranked in `AGENT.md`), the build
 plan and every role and screen blueprint are merged to `main` (PR #23, approved by the owner). No R2
-code exists yet.
+code is on `main` yet.
 
 ## Where things stand
 
@@ -30,8 +31,11 @@ code exists yet.
   **0.5 (one source per home figure) is built and in review**, stacked on 0.4: the three rules live
   in `src/lib/home-figures.ts`; migration 033 adds the roster count to the Platform directory and
   applies at merge.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5). **Next step:
-  BUILD-PLAN 0.6** (every loan status change through a function), the last of Phase 0.
+  **0.6 (every loan write through a function) is built and in review**, stacked on 0.5: migration
+  034 drops `loans_insert_staff` and `loans_update_staff` and revokes direct writes on `loans`;
+  applies at merge. No app code wrote loans directly, and a unit test now keeps it that way.
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → 0.6.
+  **Next step: BUILD-PLAN 1.1** (tokens, light only, Figtree), the start of Phase 1.
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
 ## Known defects in the live product (fixed in Phase 0)
@@ -39,7 +43,7 @@ code exists yet.
 | Defect | Where | Step |
 |---|---|---|
 | "Submit anyway" applications are never stored; the member is told they were sent (fixed in the 0.1 PR, live once merged and migrations 030–031 applied) | `submit_loan_application`, migration `20260917213110_loan_product_on_application.sql` | 0.1 |
-| Staff can `update` or `insert` a loan row directly (policies `loans_update_staff`, `loans_insert_staff`), bypassing `decide_loan_application` and `record_existing_loan` with their reason, permission and audit entry | migration `20260912054608` | 0.6 |
+| Staff can `update` or `insert` a loan row directly (policies `loans_update_staff`, `loans_insert_staff`), bypassing `decide_loan_application` and `record_existing_loan` with their reason, permission and audit entry (fixed in the 0.6 PR) | migration `20260912054608` | 0.6 |
 | `npm ci` fails: lockfile out of sync (fixed in the 0.2 PR) | `package-lock.json` | 0.2 |
 | Existing loans cannot be entered, so committed starts at ₦0 for every member (fixed in the 0.3 PR) | no screen or RPC | 0.3 |
 | Preview deployments share the live database (kept by the owner's choice, D043); nothing marks a Preview as such (fixed in the 0.4 PR) | layout | 0.4 |

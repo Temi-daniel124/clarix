@@ -94,7 +94,7 @@ Observed in the live walkthrough (`docs/REFERENCE-STUDY.md` §1):
   show the lapsed group as its own segment with a count, never contradict it in the same view.
 - **Accept when:** a unit test per rule, and the three screens agree on the demo data.
 
-### ☐ 0.6 Every loan status change goes through `decide_loan_application`
+### ☑ 0.6 Every loan status change goes through `decide_loan_application`
 Found while building 0.1 (logged in `docs/PROJECT-STATE.md` → Known defects).
 - Migration: drop the `loans_update_staff` policy (migration `20260912054608`), which lets any
   active staff member `update` a loan row directly through the API, skipping the written reason,

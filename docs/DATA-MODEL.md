@@ -298,6 +298,15 @@ when given, else the balance at entry; `tenure_months` is the months from start 
 repayments recorded since (`src/lib/loan-status.ts` → `loanBalance`). `cooperative_has_existing_loans
 (cooperative_id)` answers the E08 note.
 
+### Loan writes (BUILD-PLAN 0.6)
+
+`loans` has **no insert, update or delete policy and no write privilege** for `authenticated` or
+`anon` (migration `20261123150000`). It is read through RLS and written only by the SECURITY DEFINER
+functions `submit_loan_application`, `decide_loan_application`, `complete_loan`,
+`expire_lapsed_reservations` and `record_existing_loan`, each of which checks the caller's
+permission and writes the audit entry. A direct write fails with `permission denied` (42501). A new
+way of changing a loan is a new function, never a new policy.
+
 ### Member count (BUILD-PLAN 0.5)
 
 **Members = active memberships + roster entries not yet on Clarix** (`member_roster_entries` with
