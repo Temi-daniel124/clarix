@@ -95,6 +95,26 @@ NEXT_PUBLIC_SITE_URL          # R2 (D047)
 NEXT_PUBLIC_DEMO_MODE         # R2 (D048): demo deployments only
 ```
 
+**Demo sign-in chips (D048), Preview only.** Set these on the **Preview** environment only, never on
+Production (where the chips are refused regardless). Mark every `DEMO_PASSWORD_*` **Sensitive** in
+Vercel. A role whose two variables are not both set simply has no chip. Values never go in a
+committed file, a PR, a screenshot or a message.
+
+```
+NEXT_PUBLIC_DEMO_MODE=true    # turns the chips on for that deployment
+DEMO_EMAIL_MEMBER
+DEMO_PASSWORD_MEMBER          # Sensitive
+DEMO_EMAIL_ADMIN
+DEMO_PASSWORD_ADMIN           # Sensitive
+DEMO_EMAIL_OFFICER
+DEMO_PASSWORD_OFFICER         # Sensitive
+DEMO_EMAIL_PLATFORM
+DEMO_PASSWORD_PLATFORM        # Sensitive
+```
+
+`npm run test:bundle` (run by CI after the build) fails if any `DEMO_PASSWORD_*` value or any of
+these names appears in the client bundle.
+
 `SUPABASE_SERVICE_ROLE_KEY` and `AI_PAYSLIP_API_KEY` are not used by the app; leave them unset.
 Preview and Production use the same Supabase values (D043).
 

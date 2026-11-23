@@ -266,7 +266,9 @@ Read: `docs/planning/clarix-public-site-blueprint.md` (every step here is specif
   phone mockup tilt
 - ☐ 5.3 Pricing section and `/pricing` page (D041), only after 9.1's price function exists so figures
   come from one source
-- ☐ 5.4 Sign in and sign up (split layout on desktop, demo chips behind D048)
+- ☐ 5.4 Sign in and sign up (split layout on desktop, demo chips behind D048). The D048 chips
+  already exist, pulled forward at the owner's request as R2 1.4c; 5.4 restyles them with the rest
+  of the screen rather than building them.
 - ☐ 5.5 Onboarding screens restyled (one question per screen, thin progress line)
 - ☐ 5.6 Privacy, terms and help as reading pages
 

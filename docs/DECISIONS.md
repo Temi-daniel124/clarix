@@ -910,6 +910,11 @@ four demo roles, so the presenter switches roles in one tap. It renders only whe
 `NEXT_PUBLIC_DEMO_MODE=true`, which is set **only on a demo or preview deployment the owner names**,
 never in Production. The chips submit the normal sign-in form; demo passwords live in that
 deployment's environment variables, never in the repository.
+**Refined, 23 Nov 2026 (owner, R2 1.4c):** the chips are pulled forward so Previews can be reviewed
+signed in. A chip sends only its role to a server action that reads `DEMO_EMAIL_<ROLE>` and
+`DEMO_PASSWORD_<ROLE>` from server-only variables and signs in through the same Supabase call as the
+form, so a password never reaches the browser. The action refuses unless `NEXT_PUBLIC_DEMO_MODE` is
+"true" and the deployment is not Production; a role without both variables has no chip.
 **Rationale:** the domain is not bought, Resend cannot send to anyone yet, so demo accounts are how
 Clarix is shown until FMC pays.
 

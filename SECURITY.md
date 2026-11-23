@@ -233,6 +233,17 @@ reachable.
   screenshot. Where the demo sign-in chips are switched on, the passwords come from a server-only
   environment variable on that one deployment. Before a real cooperative's members join production,
   the demo accounts are removed or their passwords are rotated (part of the go-live rotation).
+  - The variables, **Preview environment only**, never Production: `NEXT_PUBLIC_DEMO_MODE`,
+    `DEMO_EMAIL_MEMBER`, `DEMO_PASSWORD_MEMBER`, `DEMO_EMAIL_ADMIN`, `DEMO_PASSWORD_ADMIN`,
+    `DEMO_EMAIL_OFFICER`, `DEMO_PASSWORD_OFFICER`, `DEMO_EMAIL_PLATFORM`, `DEMO_PASSWORD_PLATFORM`.
+    Every `DEMO_PASSWORD_*` is marked **Sensitive** in Vercel. No `NEXT_PUBLIC_` prefix on any of
+    the eight.
+  - Each chip sends only its role. The server action (`src/app/(auth)/demo-actions.ts`) reads the
+    two variables, refuses unless `NEXT_PUBLIC_DEMO_MODE` is `"true"` **and** `VERCEL_ENV` is not
+    `"production"`, and signs in through the same Supabase call as the form. Nothing logs the
+    credentials. The page sends the browser role ids and labels only, never an email.
+  - CI builds with canary passwords and `npm run test:bundle` fails if a value or a variable name
+    reaches `.next/static`.
 - **Billing data (D041, D042).** Invoices and payments are cooperative-level records readable by that
   cooperative's admins and the Super Admin only. Paystack (confirmed 22 Nov 2026): its secret key is
   server-only, webhooks are verified by signature, and no card data ever touches Clarix.
