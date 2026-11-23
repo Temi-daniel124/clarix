@@ -935,6 +935,17 @@ latin-ext together, 430 to 431 glyphs) with the `tnum` feature money relies on. 
 **Rationale:** owner's instruction (BUILD-PLAN 1.3 PR). A Google Fonts download failing on a CI
 runner had already failed a build (R2 1.2); a font in the repository cannot.
 
+### D051: The staff quick action rises above the tab bar
+**Status:** Locked
+**Supersedes:** the level 48px "+" in the R2 1.4 tab bar (DESIGN_SYSTEM §5.5 before 23 Nov 2026).
+**Decision:** On phones, the admin's and officer's "+" is not a fifth tab. It is a 52px
+`emerald-500` circle in a 72px `canvas` ring, centred on the tab bar's top edge so it reads as cut out
+of the navy and raised above it. The bar keeps equal slots (two tabs, the centre action, two tabs),
+each tab a 24px icon over a 12px label; the member bar keeps four equal slots with no centre action.
+Every value is in DESIGN_SYSTEM §4.2 (`tab-label`) and §5.5.
+**Rationale:** owner's choice, 23 Nov 2026, from a reference image: the quick action is the primary
+action on a staff phone, so it should look like one rather than sit level with the tabs.
+
 ---
 
 ## Standing operational constraints
