@@ -17,7 +17,7 @@ the bar, don't add it without raising it first.
 | Email | Resend | Invite links, notifications (P1) |
 | Payslip OCR fallback | Claude or OpenAI API (whichever is chosen) | Server-only, never the eligibility decision itself, `DECISIONS.md` D018 |
 | Hosting | Vercel (Hobby until first revenue, D049) | `ARCHITECTURE.md` |
-| Typeface | Figtree via `next/font/google` (no npm package, self-hosted at build) | D038. Inter via `next/font` only as the tabular-figure fallback for money if Figtree fails the test |
+| Typeface | Figtree via `next/font/local`: four woff2 files committed in `src/app/fonts/` with their OFL licence (D050); no npm package, no download at build | D038. Inter via `next/font` only as the tabular-figure fallback for money if Figtree fails the test |
 | Schema management | Supabase CLI (`supabase link`, `db diff`, `db push`) | `DECISIONS.md` D015: no local Docker |
 | DB testing | pgTAP, via GitHub Actions hosted runner | `DEVELOPMENT-WORKFLOW.md` |
 | Validation | Zod (or an equivalent already-standard schema-validation library) | For form and API-boundary validation; pick one and use it everywhere, don't mix two |

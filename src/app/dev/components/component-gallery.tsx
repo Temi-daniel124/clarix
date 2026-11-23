@@ -7,6 +7,7 @@ import { Chip, FilterChip } from "@/components/ui/chip";
 import { Input, MoneyInput, PasswordInput, PhoneInput } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 
 /**
@@ -153,9 +154,83 @@ export function ComponentGallery() {
           />
         </Row>
       </Section>
+
+      <Section
+        title="Sheet"
+        note="§5.4. Phone: drag between 50% and 92%, drag down, tap outside or press back. Desktop: a 440px panel, Esc or X."
+      >
+        <Row label="detail">
+          <Sheet>
+            <SheetTrigger render={<Button variant="secondary" />}>A loan</SheetTrigger>
+            <SheetContent
+              title="Adaeze Okafor"
+              description="Loan applied 3 days ago"
+              footer={
+                <>
+                  <SheetClose render={<Button variant="secondary" />}>Turn down</SheetClose>
+                  <SheetClose render={<Button />}>Approve</SheetClose>
+                </>
+              }
+            >
+              <dl className="flex flex-col">
+                {LOAN_ROWS.map(([term, value]) => (
+                  <div key={term} className="flex items-baseline justify-between gap-4 border-b border-hairline py-4">
+                    <dt className="type-body text-ink-500">{term}</dt>
+                    <dd className="type-body tabular text-ink-900">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="type-body mt-6 text-ink-500">
+                The request fits: ₦12,500 a month against ₦31,250 still free across every cooperative
+                she belongs to. Approving moves the hold to an active loan; turning it down releases
+                the hold at once.
+              </p>
+            </SheetContent>
+          </Sheet>
+        </Row>
+        <Row label="confirmation">
+          <Sheet>
+            <SheetTrigger render={<Button variant="secondary" />}>Record a payment</SheetTrigger>
+            <SheetContent
+              title="Record ₦25,000?"
+              description="Savings for Tunde Bakare, March 2026"
+              footer={<SheetClose render={<Button />}>Record payment</SheetClose>}
+            >
+              <p className="type-body text-ink-500">
+                It appears on his statement straight away. You can undo it for ten seconds afterwards.
+              </p>
+            </SheetContent>
+          </Sheet>
+        </Row>
+        <Row label="filter">
+          <Sheet kind="filter">
+            <SheetTrigger render={<Button variant="secondary" />}>Filter members</SheetTrigger>
+            <SheetContent title="Filter" description="The list updates as you choose.">
+              <div className="flex flex-wrap gap-2">
+                {["active", "pending", "suspended", "has a loan"].map((value) => (
+                  <FilterChip key={value} selected={filters.includes(value)} onClick={() => toggle(value)}>
+                    {capitalise(value)}
+                  </FilterChip>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+        </Row>
+      </Section>
     </main>
   );
 }
+
+const LOAN_ROWS = [
+  ["Amount", "₦150,000"],
+  ["Over", "12 months"],
+  ["Monthly repayment", "₦12,500"],
+  ["Repayment limit", "₦83,250"],
+  ["Committed elsewhere", "₦39,500"],
+  ["Still free after this", "₦31,250"],
+  ["Savings", "₦212,000"],
+  ["Member since", "June 2019"],
+] as const;
 
 function Section({ title, note, children }: { title: string; note: string; children: ReactNode }) {
   return (

@@ -924,6 +924,17 @@ must work on the free tier (`docs/TOOLING-POLICY.md`).
 anyone but the account owner. Every screen that depends on email must say so plainly and offer the
 working path (a copyable link, a download) rather than pretend a message was sent.
 
+### D050: Figtree is bundled in the repository
+**Status:** Locked
+**Supersedes:** the `next/font/google` loading in D038. The typeface, the four weights and the
+tabular-figure rule stand.
+**Decision:** Figtree's four static weights (400, 500, 600, 700) are committed as woff2 files in
+`src/app/fonts/`, with the SIL Open Font License beside them, and loaded with `next/font/local` under
+the same `--font-figtree` variable and `display: swap`. They are the full instances (latin and
+latin-ext together, 430 to 431 glyphs) with the `tnum` feature money relies on. No build downloads a font.
+**Rationale:** owner's instruction (BUILD-PLAN 1.3 PR). A Google Fonts download failing on a CI
+runner had already failed a build (R2 1.2); a font in the repository cannot.
+
 ---
 
 ## Standing operational constraints
