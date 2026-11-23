@@ -34,8 +34,22 @@ code is on `main` yet.
   **0.6 (every loan write through a function) is built and in review**, stacked on 0.5: migration
   034 drops `loans_insert_staff` and `loans_update_staff` and revokes direct writes on `loans`;
   applies at merge. No app code wrote loans directly, and a unit test now keeps it that way.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6).
-  **Next step: BUILD-PLAN 1.1** (tokens, light only, Figtree), the start of Phase 1.
+  **1.1 (tokens, light only, Figtree) is built and in review**, stacked on 0.6: DESIGN_SYSTEM §4.1
+  to §4.5 in `globals.css`, R1 token names kept as aliases onto R2 values until Phases 4 to 6
+  rebuild each screen; the dark palette, theme toggle and ThemeScript are gone (the sidebar's
+  remembered width moved to `RailScript`). No migration.
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
+  → #30 (1.1). **Next step: BUILD-PLAN 1.2** (buttons, inputs, chips, segmented control).
+- **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
+  Figtree; the Inter fallback is not needed and Inter is no longer loaded.
+  - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits
+    render at one width (spread 0px at 400, 500, 600 and 700; 12.7px spread without it); ₦111,111
+    and ₦888,888 are the same width.
+  - Safari: no WebKit build is available in agent sessions, so the font file was checked instead.
+    The Figtree file `next/font` serves has an OpenType `tnum` feature that maps all ten digits to
+    one advance (620 units, against nine different advances without it). Safari shapes from the
+    same table, so the result does not depend on the engine. The owner may still want to glance at
+    a rolling number on an iPhone.
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
 ## Known defects in the live product (fixed in Phase 0)

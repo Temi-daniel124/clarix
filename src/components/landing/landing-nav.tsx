@@ -6,7 +6,6 @@ import { Dialog } from "@base-ui/react/dialog";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 /**
  * Landing page navigation (employee blueprint 1.1), built on the Watermelon navigation-5
@@ -64,8 +63,6 @@ export function LandingNav() {
         </div>
 
         <div className="flex items-center gap-2">
-          <ThemeToggle tone="onDark" className="hidden sm:inline-flex" />
-
           <Button
             size="sm"
             variant="outline"
@@ -87,7 +84,7 @@ export function LandingNav() {
             <Dialog.Portal>
               <Dialog.Backdrop className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0" />
 
-              <Dialog.Popup className="theme-dark fixed inset-x-3 top-3 z-50 origin-top rounded-feature border border-white/12 bg-navy-surface p-5 transition-all duration-200 data-ending-style:-translate-y-2 data-ending-style:opacity-0 data-starting-style:-translate-y-2 data-starting-style:opacity-0">
+              <Dialog.Popup className="surface-navy fixed inset-x-3 top-3 z-50 origin-top rounded-feature border border-white/12 bg-navy-surface p-5 transition-all duration-200 data-ending-style:-translate-y-2 data-ending-style:opacity-0 data-starting-style:-translate-y-2 data-starting-style:opacity-0">
                 <div className="flex items-center justify-between">
                   <Wordmark tone="onDark" />
                   <Dialog.Close
@@ -111,11 +108,6 @@ export function LandingNav() {
                     </li>
                   ))}
                 </ul>
-
-                <div className="mt-6 flex items-center justify-between gap-4">
-                  <span className="type-caption text-white/45">Appearance</span>
-                  <ThemeToggle tone="onDark" />
-                </div>
 
                 <Button className="mt-6 w-full" render={<Link href="/signup" />}>
                   Get started

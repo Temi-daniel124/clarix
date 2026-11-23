@@ -135,6 +135,7 @@ ring and inline link colour.
 | `navy-900` | `#0B1220` | Brand surface: landing hero band, auth side panel, PDF header, tab bar |
 | `navy-800` | `#141C2E` | Hover/pressed on navy, tab bar active pill |
 | `on-navy` | `#FFFFFF` / `rgba(255,255,255,0.64)` | Text on navy (primary / secondary) |
+| `hairline-on-navy` | `rgba(255,255,255,0.12)` | Every border and divider on a navy ground (tab bar, auth panel). Added in BUILD-PLAN 1.1: `hairline` is invisible on navy, and nothing else covered it |
 | `emerald-50` | `#ECF8F3` | Positive tint background, selected row |
 | `emerald-100` | `#D3F0E4` | Chip background, meter track tint on navy |
 | `emerald-500` | `#0F9F74` | Primary button, available segment, positive figures |

@@ -6,7 +6,6 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import { springStandard } from "@/lib/motion";
 import {
   PLATFORM_ACCOUNT,
@@ -37,7 +36,7 @@ export function PlatformSidebar() {
 
   return (
     <aside
-      className="theme-dark sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] w-[248px] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface md:flex"
+      className="surface-navy sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] w-[248px] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface md:flex"
     >
       <div className="px-5 py-5">
         <Link href="/platform" aria-label="Clarix platform home" className="block min-w-0">
@@ -75,10 +74,6 @@ export function PlatformSidebar() {
         </ul>
       </nav>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-t border-white/8 px-4 py-4">
-        <span className="type-caption text-white/40">Appearance</span>
-        <ThemeToggle tone="onDark" />
-      </div>
     </aside>
   );
 }
@@ -128,7 +123,7 @@ export function PlatformBottomTabs() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="theme-dark fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
+    <div className="surface-navy fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
       <nav
         aria-label="Main"
         className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border border-white/10 bg-navy-surface/88 p-2 shadow-[0_8px_30px_rgba(11,18,32,0.28)] backdrop-blur-xl"
@@ -215,7 +210,6 @@ export function PlatformTopBar() {
         <span className="block type-caption text-text-muted">Clarix</span>
         <span className="block truncate type-card-title text-text">Platform administration</span>
       </Link>
-      <ThemeToggle />
     </header>
   );
 }

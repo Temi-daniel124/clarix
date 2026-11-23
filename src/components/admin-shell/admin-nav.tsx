@@ -7,8 +7,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Ellipsis, PanelLeft, Settings2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Wordmark } from "@/components/clarix/wordmark";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
-import { SIDEBAR_STORAGE_KEY } from "@/components/theme/theme-script";
+import { SIDEBAR_STORAGE_KEY } from "@/components/app-shell/rail-script";
 import { springStandard } from "@/lib/motion";
 import { isAdminActive, isMoreActive, staffNav, type AdminDestination } from "./destinations";
 
@@ -65,7 +64,7 @@ export function AdminSidebar({
 
   return (
     <aside
-      className="theme-dark sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
+      className="surface-navy sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] shrink-0 flex-col overflow-y-auto border-r border-white/8 bg-navy-surface transition-[width] duration-[var(--duration-spring)] ease-[var(--ease-spring)] md:flex"
       style={{ width: "var(--sidebar-width)" }}
     >
       <div
@@ -150,15 +149,6 @@ export function AdminSidebar({
         </ul>
       </nav>
 
-      <div
-        className={cn(
-          "mt-4 border-t border-white/8 px-4 py-4",
-          collapsed ? "flex justify-center" : "flex items-center justify-between gap-3",
-        )}
-      >
-        {collapsed ? null : <span className="type-caption text-white/40">Appearance</span>}
-        <ThemeToggle tone="onDark" />
-      </div>
     </aside>
   );
 }
@@ -226,7 +216,7 @@ export function AdminBottomTabs({ role, canImport, canViewMembers }: StaffNavPro
   });
 
   return (
-    <div className="theme-dark fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
+    <div className="surface-navy fixed inset-x-0 bottom-0 z-40 px-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden">
       <nav
         aria-label="Main"
         className="mx-auto flex w-fit max-w-full items-center gap-1 rounded-full border border-white/10 bg-navy-surface/88 p-2 shadow-[0_8px_30px_rgba(11,18,32,0.28)] backdrop-blur-xl"
@@ -329,7 +319,6 @@ export function AdminTopBar({
         >
           <Settings2 aria-hidden strokeWidth={1.75} className="size-[18px]" />
         </Link>
-        <ThemeToggle />
       </div>
     </header>
   );

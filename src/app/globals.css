@@ -2,57 +2,167 @@
 @import "shadcn/tailwind.css";
 
 /* ---------------------------------------------------------------------------
-   Clarix design tokens.
+   Clarix design tokens, Release 2 ("Calm Ledger"): DESIGN_SYSTEM.md §4.1 to §4.5, exactly.
 
-   Every value below is transcribed from DESIGN_SYSTEM.md. Nothing here is invented,
-   and no other hue exists in the product. If a screen needs a colour, a type size, a
-   spacing step, a radius, a shadow or a spring that is not defined here, that is a
-   design-system question to raise, not a value to add locally.
+   Light theme only (D037). There is no dark palette, no theme class and no theme toggle: every
+   value below is the one value it has. If a screen needs a colour, size, radius or shadow that is
+   not here, it is a design-system question (add it to §4 with the reason, in the same PR), never a
+   value invented inline.
 
-   The shadcn/base-ui variables (--background, --primary, --card, ...) are deliberately
-   remapped onto Clarix values rather than left at their neutral preset, so any base-ui
-   component added later inherits the Clarix palette instead of demo styling.
+   Two layers:
+     1. The R2 tokens by their DESIGN_SYSTEM.md names (canvas, ink-900, emerald-500, radius-md...).
+        New code uses these.
+     2. The R1 names the existing screens were written against (background, text-secondary,
+        rounded-card...), kept as aliases that point at R2 values. They exist so every screen takes
+        the R2 palette at once (BUILD-PLAN 1.1); each is retired as Phases 4 to 6 rebuild the screen
+        that uses it. Nothing new should reach for an alias.
+
+   The shadcn/base-ui variables (--background, --primary, ...) are mapped onto the same values, so
+   any base-ui component inherits the Clarix palette rather than a neutral preset.
 --------------------------------------------------------------------------- */
 
-@custom-variant dark (&:where(.dark, .dark *));
+:root {
+  color-scheme: light;
+
+  /* §4.1 Colour */
+  --clarix-canvas: #f7f7f4;
+  --clarix-surface: #ffffff;
+  --clarix-surface-sunken: #f1f1ec;
+  --clarix-hairline: #e8e8e3;
+  --clarix-hairline-strong: #d9d9d2;
+  --clarix-ink-900: #0e1116;
+  --clarix-ink-500: #5c6370;
+  --clarix-ink-400: #7d838d;
+  --clarix-ink-300: #b9bdc3;
+  --clarix-navy-900: #0b1220;
+  --clarix-navy-800: #141c2e;
+  --clarix-on-navy: #ffffff;
+  --clarix-on-navy-secondary: rgba(255, 255, 255, 0.64);
+  /* Not in the §4.1 table before this PR: the hairline on a navy ground (the tab bar, the auth
+     panel). Added to DESIGN_SYSTEM.md §4.1 in the same PR. */
+  --clarix-hairline-on-navy: rgba(255, 255, 255, 0.12);
+  --clarix-emerald-50: #ecf8f3;
+  --clarix-emerald-100: #d3f0e4;
+  --clarix-emerald-500: #0f9f74;
+  --clarix-emerald-600: #0b8a64;
+  --clarix-emerald-700: #08704f;
+  --clarix-amber-50: #fdf5e6;
+  --clarix-amber-500: #d98a04;
+  --clarix-amber-700: #9a5f00;
+  --clarix-red-50: #fceded;
+  --clarix-red-500: #d64545;
+  --clarix-red-700: #a82e2e;
+  --clarix-indigo-500: #4f46e5;
+
+  /* §4.5 Elevation: `raised` is the only shadow. `flat` is a hairline border; `pressed` is scale. */
+  --clarix-shadow-raised: 0 12px 32px rgba(14, 17, 22, 0.1);
+
+  /* R1 aliases (see the note above). Their values are R2's. */
+  --clarix-background: var(--clarix-canvas);
+  --clarix-border: var(--clarix-hairline);
+  --clarix-text-primary: var(--clarix-ink-900);
+  --clarix-text-secondary: var(--clarix-ink-500);
+  --clarix-text-muted: var(--clarix-ink-400);
+  --clarix-brand-primary: var(--clarix-navy-900);
+  --clarix-brand-accent: var(--clarix-emerald-500);
+  --clarix-brand-secondary: var(--clarix-indigo-500);
+  --clarix-success: var(--clarix-emerald-500);
+  /* As text, amber-500 on white is 2.6:1. The R1 `warning` colour is used for text throughout, so
+     it maps to amber-700, the §4.1 value for amber text; tints mixed from it stay amber. */
+  --clarix-warning: var(--clarix-amber-700);
+  --clarix-danger: var(--clarix-red-500);
+  --clarix-radius-card: 14px;
+}
+
+/* A subtree on a navy ground: the desktop sidebars, the floating tab bar, the auth side panel, the
+   landing hero. Not a theme: the same R2 values, read for the ground the subtree sits on, so text,
+   hairlines and surfaces inside it are on-navy rather than ink-on-white. */
+.surface-navy {
+  --clarix-background: var(--clarix-navy-900);
+  --clarix-surface: var(--clarix-navy-800);
+  --clarix-surface-sunken: var(--clarix-navy-800);
+  --clarix-border: var(--clarix-hairline-on-navy);
+  --clarix-hairline: var(--clarix-hairline-on-navy);
+  --clarix-text-primary: var(--clarix-on-navy);
+  --clarix-text-secondary: var(--clarix-on-navy-secondary);
+  --clarix-text-muted: var(--clarix-on-navy-secondary);
+  --clarix-brand-primary: var(--clarix-on-navy);
+}
+
+/* A light card set on a navy ground (the landing hero's product preview): the root values again,
+   so it renders as a crisp white window rather than inheriting the navy subtree around it. */
+.surface-light {
+  --clarix-background: var(--clarix-canvas);
+  --clarix-surface: #ffffff;
+  --clarix-surface-sunken: #f1f1ec;
+  --clarix-border: #e8e8e3;
+  --clarix-hairline: #e8e8e3;
+  --clarix-text-primary: var(--clarix-ink-900);
+  --clarix-text-secondary: var(--clarix-ink-500);
+  --clarix-text-muted: var(--clarix-ink-400);
+  --clarix-brand-primary: var(--clarix-navy-900);
+}
 
 @theme inline {
-  /* Palette, DESIGN_SYSTEM.md § Color */
-  --color-background: var(--clarix-background);
+  /* §4.1, by R2 name */
+  --color-canvas: var(--clarix-canvas);
   --color-surface: var(--clarix-surface);
+  --color-surface-sunken: var(--clarix-surface-sunken);
+  --color-hairline: var(--clarix-hairline);
+  --color-hairline-strong: var(--clarix-hairline-strong);
+  --color-ink-900: var(--clarix-ink-900);
+  --color-ink-500: var(--clarix-ink-500);
+  --color-ink-400: var(--clarix-ink-400);
+  --color-ink-300: var(--clarix-ink-300);
+  --color-navy-900: var(--clarix-navy-900);
+  --color-navy-800: var(--clarix-navy-800);
+  --color-on-navy: var(--clarix-on-navy);
+  --color-on-navy-secondary: var(--clarix-on-navy-secondary);
+  --color-emerald-50: var(--clarix-emerald-50);
+  --color-emerald-100: var(--clarix-emerald-100);
+  --color-emerald-500: var(--clarix-emerald-500);
+  --color-emerald-600: var(--clarix-emerald-600);
+  --color-emerald-700: var(--clarix-emerald-700);
+  --color-amber-50: var(--clarix-amber-50);
+  --color-amber-500: var(--clarix-amber-500);
+  --color-amber-700: var(--clarix-amber-700);
+  --color-red-50: var(--clarix-red-50);
+  --color-red-500: var(--clarix-red-500);
+  --color-red-700: var(--clarix-red-700);
+  --color-indigo-500: var(--clarix-indigo-500);
+
+  /* §4.4 Radius, nested */
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-sheet: 24px;
+  --radius-pill: 9999px;
+
+  /* §4.5 Elevation */
+  --shadow-raised: var(--clarix-shadow-raised);
+
+  /* §4.2 Figtree, the one face (D038). Its tabular figures are verified equal-width
+     (docs/PROJECT-STATE.md, BUILD-PLAN 1.1), so money stays in Figtree too. */
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+
+  /* R1 aliases, by R1 name, pointing at R2 values */
+  --color-background: var(--clarix-background);
   --color-border: var(--clarix-border);
   --color-text: var(--clarix-text-primary);
   --color-text-secondary: var(--clarix-text-secondary);
   --color-text-muted: var(--clarix-text-muted);
   --color-navy: var(--clarix-brand-primary);
-
-  /* The fixed dark surface: the landing page header and the auth panel stay navy in BOTH
-     themes, because they are a deliberate dark ground rather than a themed surface. This is
-     the same #0B1220 as brand-primary's light value, held constant on purpose, without it,
-     `bg-navy` would flip to the pale dark-mode brand-primary and the header would invert. */
-  --color-navy-surface: #0b1220;
-  --color-on-navy: #ffffff;
+  --color-navy-surface: var(--clarix-navy-900);
   --color-emerald: var(--clarix-brand-accent);
   --color-indigo: var(--clarix-brand-secondary);
   --color-success: var(--clarix-success);
   --color-warning: var(--clarix-warning);
   --color-danger: var(--clarix-danger);
-  /* R2 status tints, DESIGN_SYSTEM.md §4.1, exact values. Added ahead of the Phase 1 token
-     replacement for the Preview strip (BUILD-PLAN 0.4); Phase 1 keeps them as they are. Light
-     only (D037), so they are constants rather than theme-switched variables. */
-  --color-amber-50: #fdf5e6;
-  --color-amber-700: #9a5f00;
-
-  /* Radius, DESIGN_SYSTEM.md § Spacing, radius, shadow.
-     14px on mobile, 16px on desktop, 20px for large feature cards. */
-  --radius-card: var(--clarix-radius-card);
-  --radius-feature: 20px;
-  --radius: var(--clarix-radius-card);
-
-  /* Shadow. One subtle elevation only. Prefer the 1px border wherever both would stack. */
-  --shadow-elevation: 0 4px 20px rgba(15, 23, 42, 0.04);
-
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --radius-card: var(--radius-md);
+  --radius-feature: var(--radius-lg);
+  --radius: var(--radius-md);
+  --shadow-elevation: var(--clarix-shadow-raised);
 
   /* shadcn / base-ui surface mapping */
   --color-foreground: var(--clarix-text-primary);
@@ -60,196 +170,129 @@
   --color-card-foreground: var(--clarix-text-primary);
   --color-popover: var(--clarix-surface);
   --color-popover-foreground: var(--clarix-text-primary);
-  --color-primary: var(--clarix-brand-primary);
-  --color-primary-foreground: var(--clarix-surface);
-  --color-secondary: var(--clarix-background);
-  --color-secondary-foreground: var(--clarix-text-primary);
-  --color-muted: var(--clarix-background);
-  --color-muted-foreground: var(--clarix-text-secondary);
-  --color-accent: var(--clarix-brand-accent);
-  --color-accent-foreground: var(--clarix-surface);
-  --color-destructive: var(--clarix-danger);
-  --color-input: var(--clarix-border);
-  --color-ring: var(--clarix-brand-secondary);
-}
-
-:root {
-  color-scheme: light;
-
-  --clarix-background: #f6f8fb;
-  --clarix-surface: #ffffff;
-  --clarix-border: #e7eaf0;
-  --clarix-text-primary: #111827;
-  --clarix-text-secondary: #667085;
-  --clarix-text-muted: #98a2b3;
-  --clarix-brand-primary: #0b1220;
-  --clarix-brand-accent: #16a57a;
-  --clarix-brand-secondary: #4f46e5;
-  --clarix-success: #16a57a;
-  --clarix-warning: #f59e0b;
-  --clarix-danger: #dc4a4a;
-
-  --clarix-radius-card: 14px;
-}
-
-@media (min-width: 768px) {
-  :root {
-    --clarix-radius-card: 16px;
-  }
-}
-
-/* Dark pairs, DESIGN_SYSTEM.md § Color, right-hand column. Carried through as the
-   components are written rather than retrofitted later. */
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    color-scheme: dark;
-
-    --clarix-background: #0b0b0e;
-    --clarix-surface: #151517;
-    --clarix-border: #2c2c30;
-    --clarix-text-primary: #f5f5f7;
-    --clarix-text-secondary: #9c9ca6;
-    --clarix-text-muted: #6b6b75;
-    --clarix-brand-primary: #e5e7eb;
-    --clarix-brand-accent: #34d399;
-    --clarix-brand-secondary: #818cf8;
-    --clarix-success: #34d399;
-    --clarix-warning: #fbbf24;
-    --clarix-danger: #f87171;
-  }
-}
-
-/* Scoped light palette.
-   The landing header and the auth panel are a FIXED navy ground in both themes. A card sitting
-   on that ground must stay a bright surface, or in dark mode it becomes near-black on navy,
-   three nearly identical dark greys stacked on each other, which is both unreadable and exactly
-   the "card inside card inside card" trap DESIGN_SYSTEM.md's checklist names. Applying this
-   class re-declares the same light token values for a subtree, so the hero preview renders as a
-   crisp product window on navy in both themes without a single off-palette colour. */
-.theme-light {
-  color-scheme: light;
-
-  --clarix-background: #f6f8fb;
-  --clarix-surface: #ffffff;
-  --clarix-border: #e7eaf0;
-  --clarix-text-primary: #111827;
-  --clarix-text-secondary: #667085;
-  --clarix-text-muted: #98a2b3;
-  --clarix-brand-primary: #0b1220;
-  --clarix-brand-accent: #16a57a;
-  --clarix-brand-secondary: #4f46e5;
-  --clarix-success: #16a57a;
-  --clarix-warning: #f59e0b;
-  --clarix-danger: #dc4a4a;
-}
-
-/* Scoped dark palette: the mirror of .theme-light above, and needed for the same reason.
-   The auth page's left panel is a fixed navy ground. Without this, its nested components
-   resolved --clarix-text-primary from the ROOT theme, so in light mode the capacity figure
-   rendered near-black on navy and was effectively invisible. Scoping the dark palette to that
-   subtree makes every token inside it correct for the ground it is actually sitting on. */
-.theme-dark {
-  color-scheme: dark;
-
-  --clarix-background: #0b0b0e;
-  --clarix-surface: #151517;
-  --clarix-border: #2c2c30;
-  --clarix-text-primary: #f5f5f7;
-  --clarix-text-secondary: #9c9ca6;
-  --clarix-text-muted: #6b6b75;
-  --clarix-brand-primary: #e5e7eb;
-  --clarix-brand-accent: #34d399;
-  --clarix-brand-secondary: #818cf8;
-  --clarix-success: #34d399;
-  --clarix-warning: #fbbf24;
-  --clarix-danger: #f87171;
-}
-
-.dark {
-  color-scheme: dark;
-
-  --clarix-background: #0b0b0e;
-  --clarix-surface: #151517;
-  --clarix-border: #2c2c30;
-  --clarix-text-primary: #f5f5f7;
-  --clarix-text-secondary: #9c9ca6;
-  --clarix-text-muted: #6b6b75;
-  --clarix-brand-primary: #e5e7eb;
-  --clarix-brand-accent: #34d399;
-  --clarix-brand-secondary: #818cf8;
-  --clarix-success: #34d399;
-  --clarix-warning: #fbbf24;
-  --clarix-danger: #f87171;
+  --color-primary: var(--clarix-emerald-500);
+  --color-primary-foreground: #ffffff;
+  --color-secondary: var(--clarix-surface-sunken);
+  --color-secondary-foreground: var(--clarix-ink-900);
+  --color-muted: var(--clarix-surface-sunken);
+  --color-muted-foreground: var(--clarix-ink-500);
+  --color-accent: var(--clarix-emerald-500);
+  --color-accent-foreground: #ffffff;
+  --color-destructive: var(--clarix-red-500);
+  --color-input: var(--clarix-hairline-strong);
+  --color-ring: var(--clarix-indigo-500);
 }
 
 /* ---------------------------------------------------------------------------
-   Type scale, DESIGN_SYSTEM.md § Typography, exactly.
-   Mobile size is the base; the desktop size takes over at the md breakpoint.
+   Type, DESIGN_SYSTEM.md §4.2, exactly. Phone size is the base; the desktop size takes over at
+   the md breakpoint (768px). Figtree throughout; money is tabular wherever it appears.
 --------------------------------------------------------------------------- */
 
-@utility type-display {
+@utility type-hero-figure {
   font-size: 40px;
   line-height: 1.05;
   font-weight: 600;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  @media (width >= 48rem) {
+    font-size: 56px;
+  }
+}
+
+@utility type-display {
+  font-size: 36px;
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  @media (width >= 48rem) {
+    font-size: 60px;
+  }
+}
+
+@utility type-title {
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
   letter-spacing: -0.02em;
   @media (width >= 48rem) {
-    font-size: 64px;
+    font-size: 28px;
   }
 }
 
-@utility type-page-title {
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  @media (width >= 48rem) {
-    font-size: 32px;
-  }
-}
-
-@utility type-section {
-  font-size: 18px;
-  line-height: 1.35;
+@utility type-heading {
+  font-size: 17px;
+  line-height: 1.3;
   font-weight: 600;
   letter-spacing: -0.01em;
   @media (width >= 48rem) {
-    font-size: 20px;
+    font-size: 18px;
   }
 }
 
-@utility type-card-title {
-  font-size: 16px;
-  line-height: 1.4;
-  font-weight: 600;
-}
-
 @utility type-body {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.5;
   font-weight: 400;
+  letter-spacing: 0;
   @media (width >= 48rem) {
     font-size: 16px;
   }
 }
 
-@utility type-secondary {
+/* §4.2 `small`: 13px, 500, letter-spacing 0, line-height 1.4. Labels, dates, metadata, chips.
+   Sentence case, never uppercase. */
+@utility type-small {
   font-size: 13px;
-  line-height: 1.55;
-  font-weight: 400;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+/* R1 type names, kept as aliases so every existing screen takes the R2 scale now (BUILD-PLAN 1.1).
+   Each carries the exact values of the R2 role it maps to; none is a size of its own. Retired as
+   Phases 4 to 6 rebuild each screen with the R2 names above.
+     type-page-title -> title       type-section, type-card-title -> heading
+     type-secondary  -> small       type-caption -> small
+     type-kpi, type-kpi-fit -> title, tabular (a stat value; one hero-figure per screen at most) */
+
+@utility type-page-title {
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   @media (width >= 48rem) {
-    font-size: 14px;
+    font-size: 28px;
   }
 }
 
-@utility type-caption {
-  font-size: 12px;
-  line-height: 1.4;
-  font-weight: 500;
+@utility type-section {
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  @media (width >= 48rem) {
+    font-size: 18px;
+  }
 }
 
-/* DESIGN_SYSTEM.md §4.2 `small`: 13px, 500, letter-spacing 0, line-height 1.4. Labels, dates,
-   metadata, chips. Sentence case, never uppercase. */
-@utility type-small {
+@utility type-card-title {
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  @media (width >= 48rem) {
+    font-size: 18px;
+  }
+}
+
+@utility type-secondary {
+  font-size: 13px;
+  line-height: 1.4;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+@utility type-caption {
   font-size: 13px;
   line-height: 1.4;
   font-weight: 500;
@@ -263,36 +306,33 @@
 }
 
 /*
- * A KPI figure that fits its card at any width.
- *
- * Same ceiling as type-kpi, 28px on mobile and 36px from 48rem, and the same weight, tracking and
- * tabular figures, so a figure that fits renders exactly as type-kpi would. It only ever shrinks,
- * and only when its character count would otherwise run past the card: six-figure balances in the
- * two-column mobile grid did exactly that, by up to 19px.
+ * A stat figure that fits its card at any width: R2 `title` (22px phone, 28px desktop, 600,
+ * -0.02em), tabular, shrinking only when its character count would run past the card.
  *
  * Needs a container ancestor (Tailwind's `@container`) and `--kpi-chars` set to the rendered
- * length of the figure. 0.72em is the measured advance per character of a tabular Inter figure
- * with its naira sign and separators, rounded up so the fit is never exact to the pixel.
+ * length of the figure. A tabular Figtree figure at 600 with its naira sign and separators measures
+ * 0.593em per character ("₦111,111" at 28px is 132.8px, BUILD-PLAN 1.1); 0.62em is the tabular digit
+ * advance itself, used so the fit is never exact to the pixel.
  */
 @utility type-kpi-fit {
-  font-size: min(28px, calc(100cqi / (var(--kpi-chars, 8) * 0.72)));
-  line-height: 1.1;
-  font-weight: 700;
+  font-size: min(22px, calc(100cqi / (var(--kpi-chars, 8) * 0.62)));
+  line-height: 1.2;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   @media (width >= 48rem) {
-    font-size: min(36px, calc(100cqi / (var(--kpi-chars, 8) * 0.72)));
+    font-size: min(28px, calc(100cqi / (var(--kpi-chars, 8) * 0.62)));
   }
 }
 
 @utility type-kpi {
-  font-size: 28px;
-  line-height: 1.1;
-  font-weight: 700;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
   @media (width >= 48rem) {
-    font-size: 36px;
+    font-size: 28px;
   }
 }
 
@@ -387,9 +427,9 @@
 /* ---------------------------------------------------------------------------
    The desktop sidebar rail.
 
-   Its width is driven from a class the inline theme script sets before first paint, so a viewer
+   Its width is driven from a class the inline rail script sets before first paint, so a viewer
    who collapsed it last visit never sees it snap from one width to the other after hydration.
-   (A data attribute was tried first and did not survive hydration, see theme-script.tsx.) The transition uses --ease-spring, which IS springStandard from src/lib/motion.ts
+   (A data attribute was tried first and did not survive hydration, see rail-script.tsx.) The transition uses --ease-spring, which IS springStandard from src/lib/motion.ts
    solved as a CSS easing: the same physics as every JavaScript-driven spring in the product,
    not a second motion vocabulary.
 --------------------------------------------------------------------------- */
@@ -455,8 +495,8 @@
     border-color: var(--clarix-border);
   }
 
-  /* Was `h-full` on <html> in JSX. It has to be CSS now, because <html> must carry no React
-     className for the pre-paint theme script's classes to survive hydration. */
+  /* Was `h-full` on <html> in JSX. It has to be CSS, because <html> must carry no React className
+     for the pre-paint rail script's class to survive hydration. */
   html {
     height: 100%;
   }
@@ -464,7 +504,7 @@
   body {
     background-color: var(--clarix-background);
     color: var(--clarix-text-primary);
-    font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
 
