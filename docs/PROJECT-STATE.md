@@ -30,7 +30,7 @@ code exists yet.
   **0.5 (one source per home figure) is built and in review**, stacked on 0.4: the three rules live
   in `src/lib/home-figures.ts`; migration 033 adds the roster count to the Platform directory and
   applies at merge.
-  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → 0.5. **Next step:
+  **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5). **Next step:
   BUILD-PLAN 0.6** (every loan status change through a function), the last of Phase 0.
 - PR #22 (an earlier redesign attempt) was rejected and its branch deleted. Nothing from it carries over.
 
