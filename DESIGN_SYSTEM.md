@@ -196,15 +196,17 @@ Breakpoints: `sm 640`, `md 768`, `lg 1024`, `xl 1280`. Test every screen at **36
 | `radius-sheet` | 24px top corners only | Bottom sheets |
 | `radius-pill` | 9999px | **Every button** (D045), the tab bar, segmented controls, filter chips |
 
-### 4.5 Elevation (three levels only)
+### 4.5 Elevation (three levels, and one named exception)
 
 | Level | Value | Use |
 |---|---|---|
 | `flat` | 1px `hairline` border, no shadow | Default for cards and lists |
 | `raised` | `0 12px 32px rgba(14,17,22,0.10)` + 1px `hairline` | Sheets, popovers, menus, the floating tab bar, the desktop side panel |
+| `quick-action` | `0 8px 20px rgba(15,159,116,0.28)`, no grey shadow | The staff quick-action button on the phone tab bar only (D051). The one emerald shadow in the product |
 | `pressed` | no shadow, `scale(0.98)` | Buttons and tappable cards while pressed |
 
-Never stack a shadow on a card that already has a border unless it is `raised`. No coloured glows.
+Never stack a shadow on a card that already has a border unless it is `raised`. No coloured glows: the
+`quick-action` shadow is the single exception, owner-chosen for one button (D051).
 
 ### 4.6 Motion (`src/lib/motion.ts` holds these; never declare another)
 
@@ -289,7 +291,7 @@ wrong on iOS Safari, see `docs/TOOLING-POLICY.md`).
   bottom plus safe area, max width 360px, centred. Equal slots, each an icon over its label (D051):
   four for members and the platform, five for cooperative staff, whose centre slot holds the raised
   quick action that opens the quick-action sheet. **Every scrollable screen reserves the bar's
-  height in bottom padding**, 112px, or 140px where the raised action stands above the bar, so
+  height in bottom padding**, 112px, or 120px where the quick action rises above the bar, so
   nothing is ever covered (the live app's member Insights strip and admin member list are covered
   today; see `docs/REFERENCE-STUDY.md`).
 - Bottom sheets replace modals; full-screen flows (apply, import, onboarding) hide the tab bar and
@@ -312,8 +314,8 @@ lines above leave open:
 | Breakpoint | Phone shell below 1024px (tablets included), sidebar from 1024px: the same line the Sheet switches at |
 | Phone top bar | 56px, `canvas` fill, `hairline` bottom border, 20px left gutter (24px from 768px). Staff at more than one cooperative: the avatar, greeting and cooperative line together are one 48px button that opens the switcher sheet. Bell is the `icon` button; unread dot 8px `red-500` with a 2px `canvas` ring |
 | Tab bar (D051) | 64px tall, 8px inner padding, border `hairline-on-navy`. Equal-width slots across the inner width (2 tabs, the centre action, 2 tabs for staff; 4 tabs otherwise), each tab filling its slot 48px tall, so every target is at least 44px. Icon 24px lucide, 1.75 stroke, `tab-label` below it, 2px gap, both centred in the slot. Active `on-navy` white, inactive `on-navy` 64%, the change on `fadeQuick`. At most three tabs plus More |
-| Raised quick action (D051) | Staff only. A 72px `canvas` ring, centred horizontally on the bar, its centre on the bar's top edge (it rises 36px above the bar), holding a 52px `emerald-500` circle with a white 24px lucide `Plus`; `raised`, hover `emerald-600`, pressed `emerald-700` and `scale(0.98)` on `springStandard`. No label; `aria-label` "Quick actions". It opens the quick-action sheet. The empty centre slot under it keeps the four tabs evenly spaced |
-| Bottom reserve | Plus the safe area. 112px for the bar alone: its 16px offset, its 64px height and a 32px gap. 140px where the raised action stands above it: 16px offset, 64px bar, the ring's 36px rise and a 24px gap |
+| Raised quick action (D051, refined 23 Nov 2026) | Staff only. A 56px `emerald-500` circle with a 4px `navy-900` border (the bar's own colour, inside the 56px), so circle and bar read as one shape; a white 24px lucide `Plus`, centred. Centred horizontally on the bar, it rises 20px above the bar's top edge and the other 36px overlap the bar. No ring. Its only shadow is `quick-action`; hover `emerald-600`, pressed `emerald-700` and `scale(0.96)` on `springStandard`. No label; `aria-label` "Quick actions". It opens the quick-action sheet. The empty centre slot under it keeps the four tabs evenly spaced |
+| Bottom reserve | Plus the safe area. 112px for the bar alone: its 16px offset, its 64px height and a 32px gap. 120px where the quick action rises above it: 16px offset, 64px bar, the button's 20px rise and a 20px gap (at least 16px is required) |
 | Quick actions | The "+" opens a sheet of 52px rows (20px `ink-500` icon, `body` label, chevron), only actions the role may take |
 | Sidebar | Header 64px. Cooperative row 48px (32px initials mark on `emerald-100`, name and role in `small`). Search field 40px, `radius-sm`, `hairline-strong` border, `small` `ink-500` text and shortcut. Links 40px, `radius-sm`, 12px side padding, 20px icon, `body`; active `emerald-50` fill with `emerald-700` text and icon, hover `surface-sunken`. Group labels `small` `ink-500`, 24px above. Collapsed: 72px, icons centred, group labels become hairlines, the width changes at once (D046) |
 | Account menu | Pinned 48px row (avatar, name, role). Menu 224px, `radius-md`, `raised`, 4px padding, 40px `small` items: Profile, Help, the view switch, Sign out. On phones these live on the More screen |

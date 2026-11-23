@@ -55,9 +55,13 @@ code is on `main` yet.
   More screens lost their uppercase labels and gained Sign out. No migration.
   **1.4a (raised centre quick action) is built and in review**, stacked on 1.4: the owner's design
   fix (D051). The staff "+" rises out of the tab bar in a canvas ring; every tab is an icon over a
-  12px label in equal slots; the staff bottom reserve is 140px. Not a BUILD-PLAN step. No migration.
+  12px label in equal slots. Not a BUILD-PLAN step. No migration.
+  **1.4b (quick action grows out of the bar) is built and in review**, stacked on 1.4a: the owner's
+  refinement of D051. The canvas ring is gone; the button is a 56px emerald circle with a 4px navy
+  border, rising 20px above the bar, with its own emerald shadow. Staff bottom reserve 120px. Not a
+  BUILD-PLAN step. No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a). **Next step: BUILD-PLAN 1.5**
+  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b). **Next step: BUILD-PLAN 1.5**
   (not-found, error and loading-failure pages).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
