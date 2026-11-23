@@ -9,8 +9,11 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
+  type ComponentProps,
   type ReactNode,
 } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Drawer } from "@base-ui/react/drawer";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -54,7 +57,11 @@ function useIsDesktop() {
 
 type SheetKind = "default" | "filter";
 
-const SheetContext = createContext<{ desktop: boolean; kind: SheetKind } | null>(null);
+const SheetContext = createContext<{
+  desktop: boolean;
+  kind: SheetKind;
+  closeThen: (next: () => void) => void;
+} | null>(null);
 
 function useSheet() {
   const context = useContext(SheetContext);
@@ -87,11 +94,30 @@ function Sheet({ open: openProp, defaultOpen = false, onOpenChange, kind = "defa
     [openProp, onOpenChange],
   );
 
-  useBackButtonCloses(open, setOpen);
+  const id = useId();
+  useBackButtonCloses(id, open, setOpen);
   const sidePanelFilter = desktop && kind === "filter";
 
+  /**
+   * Leaving from inside a sheet (a link, or an action that redirects): close it first and let its
+   * history entry go, then move on. Navigating while the entry is still there would leave a stale
+   * "sheet open" step behind the new page, so Back would appear to do nothing once.
+   */
+  const closeThen = useCallback(
+    (next: () => void) => {
+      if (window.history.state?.clarixSheet !== id) {
+        setOpen(false);
+        next();
+        return;
+      }
+      window.addEventListener("popstate", () => next(), { once: true });
+      setOpen(false);
+    },
+    [id, setOpen],
+  );
+
   return (
-    <SheetContext.Provider value={{ desktop, kind }}>
+    <SheetContext.Provider value={{ desktop, kind, closeThen }}>
       <Drawer.Root
         open={open}
         onOpenChange={(next) => setOpen(next)}
@@ -116,8 +142,7 @@ function Sheet({ open: openProp, defaultOpen = false, onOpenChange, kind = "defa
  * link followed from inside the sheet has already moved on, and going back then would undo it.
  * The push waits a tick so React's development double-run of effects does not push twice.
  */
-function useBackButtonCloses(open: boolean, setOpen: (open: boolean) => void) {
-  const id = useId();
+function useBackButtonCloses(id: string, open: boolean, setOpen: (open: boolean) => void) {
   const setOpenRef = useRef(setOpen);
   useEffect(() => {
     setOpenRef.current = setOpen;
@@ -149,6 +174,32 @@ function useBackButtonCloses(open: boolean, setOpen: (open: boolean) => void) {
 
 const SheetTrigger = Drawer.Trigger;
 const SheetClose = Drawer.Close;
+
+/** Close the sheet, then run `next` (a navigation or an action that redirects). */
+function useSheetNavigate() {
+  return useSheet().closeThen;
+}
+
+/**
+ * A link that leaves the sheet: it closes first, then navigates, so the sheet's history entry
+ * never sits behind the new page. A modified click (new tab, new window) is left to the browser.
+ */
+function SheetLink({ href, onClick, ...props }: ComponentProps<typeof Link>) {
+  const closeThen = useSheetNavigate();
+  const router = useRouter();
+  return (
+    <Link
+      href={href}
+      onClick={(event) => {
+        onClick?.(event);
+        if (event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        closeThen(() => router.push(String(href)));
+      }}
+      {...props}
+    />
+  );
+}
 
 type SheetContentProps = {
   title: ReactNode;
@@ -273,4 +324,4 @@ function SheetContent({ title, description, footer, className, children }: Sheet
   );
 }
 
-export { Sheet, SheetTrigger, SheetClose, SheetContent };
+export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetLink, useSheetNavigate };

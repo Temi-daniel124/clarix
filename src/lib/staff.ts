@@ -27,7 +27,16 @@ export type StaffRole = {
    * as every flag granted rather than as the empty jsonb their record usually carries.
    */
   permissions: Record<PermissionKey, boolean>;
+  /**
+   * The cooperative this person last switched to (the shell's cooperative switcher, BUILD-PLAN
+   * 1.4). Only ever true for one of their own roles: the cookie it comes from is matched against
+   * the rows RLS returned, so it chooses between roles and never grants one.
+   */
+  selected?: boolean;
 };
+
+/** Which cooperative a staff member is working in, when they hold roles at more than one. */
+export const SELECTED_COOPERATIVE_COOKIE = "clarix.cooperative";
 
 /** An admin passes every permission check in the database, so they read as granted everywhere. */
 export function effectivePermissions(
@@ -87,10 +96,14 @@ export function readsCanApproveLoans(permissions: unknown): boolean {
   return (permissions as Record<string, unknown>).can_approve_loans === true;
 }
 
-/** An admin outranks an officer, and an active role outranks an unaccepted invitation. */
+/**
+ * The role every staff screen works in. The cooperative chosen in the switcher wins; without a
+ * choice, an admin outranks an officer, and an active role outranks an unaccepted invitation.
+ */
 export function preferredRole(roles: StaffRole[]): StaffRole | null {
   const active = roles.filter((role) => role.status === "active");
   return (
+    active.find((role) => role.selected) ??
     active.find((role) => role.role === "admin") ??
     active[0] ??
     null

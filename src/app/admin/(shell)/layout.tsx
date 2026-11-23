@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { redirect } from "next/navigation";
-import { AdminBottomTabs, AdminSidebar, AdminTopBar } from "@/components/admin-shell/admin-nav";
-import { loadStaffContext } from "@/lib/supabase/staff-context";
+import { AppShell } from "@/components/shell/app-shell";
+import { loadShellContext } from "@/lib/supabase/shell-context";
 import { pendingInvites, preferredRole } from "@/lib/staff";
 
 export const dynamic = "force-dynamic";
@@ -28,8 +28,9 @@ export const dynamic = "force-dynamic";
  * bar around it invites wandering off halfway through.
  */
 export default async function AdminLayout({ children }: { children: ReactNode }) {
-  const staff = await loadStaffContext();
-  if (!staff) redirect("/login");
+  const shell = await loadShellContext();
+  if (!shell) redirect("/login");
+  const { staff, identity } = shell;
 
   const role = preferredRole(staff.roles);
 
@@ -38,24 +39,16 @@ export default async function AdminLayout({ children }: { children: ReactNode })
     redirect("/dashboard");
   }
 
-  const canImport = role.permissions.can_import_members;
-  const canViewMembers = role.permissions.can_view_members;
-
   return (
-    <div className="flex min-h-app flex-1">
-      <AdminSidebar
-        cooperativeName={role.cooperativeName}
-        role={role.role}
-        canImport={canImport}
-        canViewMembers={canViewMembers}
-      />
-
-      <div className="flex min-w-0 flex-1 flex-col">
-        <AdminTopBar cooperativeName={role.cooperativeName} role={role.role} />
-        <main className="flex-1 pb-32 md:pb-12">{children}</main>
-      </div>
-
-      <AdminBottomTabs role={role.role} canImport={canImport} canViewMembers={canViewMembers} />
-    </div>
+    <AppShell
+      kind={role.role}
+      identity={identity}
+      permissions={{
+        canImport: role.permissions.can_import_members,
+        canViewMembers: role.permissions.can_view_members,
+      }}
+    >
+      {children}
+    </AppShell>
   );
 }

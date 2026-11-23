@@ -144,13 +144,16 @@ Read for every step: `DESIGN_SYSTEM.md` in full.
   needed. Chromium touch emulation and a recording are in the PR; the real-iPhone and real-Android
   check is the owner's, listed in `docs/PROJECT-STATE.md` → "Waiting on the owner".
 
-### ☐ 1.4 App shells
+### ☑ 1.4 App shells
 - Phone: top bar, floating pill tab bar, centre "+" for staff, 112px bottom reserve on every scroll
   container (fixes the covered content in the live app).
 - Desktop: 248px light sidebar, collapsible, command palette (`Ctrl/⌘ K`), cooperative switcher for
   staff who hold roles at more than one cooperative, and "Switch to my member view" for staff who are
   also members.
 - **Accept when:** all four roles' shells pass §11 at 360/390/1280/1440px.
+- **Built** as one `AppShell` (`src/components/shell/`) for member, admin, officer and platform, with
+  the values recorded in DESIGN_SYSTEM §5.5. The screens inside are unchanged; they are rebuilt in
+  Phases 4 to 6.
 
 
 ### ☐ 1.5 Not-found, error and loading-failure pages
