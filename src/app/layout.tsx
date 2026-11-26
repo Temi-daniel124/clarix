@@ -1,29 +1,12 @@
 import type { CSSProperties } from "react";
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
+import { figtree } from "./fonts";
 import "./globals.css";
 import { ServiceWorkerRegistrar } from "@/components/pwa/service-worker-registrar";
 import { RailScript } from "@/components/app-shell/rail-script";
 import { PREVIEW_STRIP_OFFSET, PreviewStrip } from "@/components/clarix/preview-strip";
 import { sharesLiveDataOutsideProduction } from "@/lib/environment";
 
-/**
- * Figtree, the one typeface (D038, DESIGN_SYSTEM.md §4.2), in exactly the four weights the design
- * system uses. The files live in the repository (src/app/fonts, SIL OFL 1.1, licence beside them),
- * so a build never downloads a font: a Google Fonts hiccup on a CI runner once failed a build.
- * They are Figtree's full static instances, latin and latin-ext together, with the `tnum` feature
- * that money's tabular figures rely on (§4.2).
- */
-const figtree = localFont({
-  variable: "--font-figtree",
-  src: [
-    { path: "./fonts/Figtree-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/Figtree-500.woff2", weight: "500", style: "normal" },
-    { path: "./fonts/Figtree-600.woff2", weight: "600", style: "normal" },
-    { path: "./fonts/Figtree-700.woff2", weight: "700", style: "normal" },
-  ],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: {

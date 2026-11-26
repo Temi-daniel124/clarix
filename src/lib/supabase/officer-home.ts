@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { must } from "./must";
 import { formatNaira } from "@/lib/format";
 import { isAwaitingDecision } from "@/lib/loan-status";
 
@@ -40,10 +41,10 @@ export async function loadOfficerHome(
 ): Promise<OfficerHomeData> {
   const supabase = await createClient();
 
-  const { data: memberships } = await supabase
-    .from("cooperative_memberships")
-    .select("id, users(name, employee_id)")
-    .eq("cooperative_id", cooperativeId);
+  const { data: memberships } = await must(
+    supabase.from("cooperative_memberships").select("id, users(name, employee_id)").eq("cooperative_id", cooperativeId),
+    "the cooperative's members",
+  );
 
   const membershipIds = (memberships ?? []).map((row) => row.id);
 
@@ -55,16 +56,22 @@ export async function loadOfficerHome(
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).toISOString();
 
   const [{ data: loans }, { data: entries }] = await Promise.all([
-    supabase
-      .from("loans")
-      .select("id, membership_id, status, requested_amount, created_at, reservation_expires_at")
-      .in("membership_id", membershipIds),
-    supabase
-      .from("savings_transactions")
-      .select("membership_id")
-      .in("membership_id", membershipIds)
-      .eq("recorded_by", userId)
-      .gte("recorded_at", startOfDay),
+    must(
+      supabase
+        .from("loans")
+        .select("id, membership_id, status, requested_amount, created_at, reservation_expires_at")
+        .in("membership_id", membershipIds),
+      "the cooperative's loans",
+    ),
+    must(
+      supabase
+        .from("savings_transactions")
+        .select("membership_id")
+        .in("membership_id", membershipIds)
+        .eq("recorded_by", userId)
+        .gte("recorded_at", startOfDay),
+      "today's entries",
+    ),
   ]);
 
   const nameByMembership = new Map<string, string>();

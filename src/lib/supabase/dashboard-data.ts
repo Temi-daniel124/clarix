@@ -1,4 +1,5 @@
 import { createClient, getRequestUser } from "@/lib/supabase/server";
+import { must } from "./must";
 import { latestChange } from "@/lib/home-figures";
 import { computeCapacity, type Capacity } from "@/lib/eligibility";
 import type { TrendPoint } from "@/components/clarix/trend-indicator";
@@ -55,13 +56,16 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
   const user = await getRequestUser();
   if (!user) return null;
 
-  const { data: profile } = await supabase
-    .from("users")
-    .select(
-      "name, employee_id, salary_gross, salary_net, salary_verified_at, organization_id, organizations(name, deduction_basis, deduction_max_percentage)",
-    )
-    .eq("id", user.id)
-    .maybeSingle();
+  const { data: profile } = await must(
+    supabase
+      .from("users")
+      .select(
+        "name, employee_id, salary_gross, salary_net, salary_verified_at, organization_id, organizations(name, deduction_basis, deduction_max_percentage)",
+      )
+      .eq("id", user.id)
+      .maybeSingle(),
+    "the member's profile",
+  );
 
   if (!profile) return null;
 
@@ -71,10 +75,13 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
 
   const [{ data: memberships }, { count: cooperativeCount }, capacityFromDb, loans, { data: ledger }] =
     await Promise.all([
-    supabase
-      .from("cooperative_memberships")
-      .select("id, cooperative_id, status, savings_balance, joined_at, cooperatives(name)")
-      .eq("user_id", user.id),
+    must(
+      supabase
+        .from("cooperative_memberships")
+        .select("id, cooperative_id, status, savings_balance, joined_at, cooperatives(name)")
+        .eq("user_id", user.id),
+      "the member's cooperatives",
+    ),
     supabase
       .from("cooperatives")
       .select("id", { count: "exact", head: true })
@@ -85,11 +92,14 @@ export async function loadDashboardData(): Promise<DashboardData | null> {
     // Only this member's own ledger (walkthrough 1.4d item 2). Without the filter, RLS also returns
     // every member's entries to someone who is staff at a cooperative, and the home showed that
     // cooperative's growth as this person's.
-    supabase
-      .from("savings_transactions")
-      .select("amount, type, recorded_at, membership_id, cooperative_memberships!inner(user_id)")
-      .eq("cooperative_memberships.user_id", user.id)
-      .order("recorded_at", { ascending: true }),
+    must(
+      supabase
+        .from("savings_transactions")
+        .select("amount, type, recorded_at, membership_id, cooperative_memberships!inner(user_id)")
+        .eq("cooperative_memberships.user_id", user.id)
+        .order("recorded_at", { ascending: true }),
+      "the member's savings",
+    ),
   ]);
 
   const cooperatives: JoinedCooperative[] = (memberships ?? []).map((row) => {

@@ -2,6 +2,7 @@ import { createClient, getRequestUser } from "@/lib/supabase/server";
 import type { Capacity } from "@/lib/eligibility";
 import { loanBalance } from "@/lib/loan-status";
 import { loadLoanRows } from "./loan-rows";
+import { must } from "./must";
 import { nextDeductionOn } from "@/lib/deduction-schedule";
 
 export type LoanStatus =
@@ -87,10 +88,10 @@ export async function loadLoans(): Promise<LoanSummary[]> {
   const user = await getRequestUser();
   if (!user) return [];
 
-  const { data: memberships } = await supabase
-    .from("cooperative_memberships")
-    .select("id, cooperative_id, cooperatives(name)")
-    .eq("user_id", user.id);
+  const { data: memberships } = await must(
+    supabase.from("cooperative_memberships").select("id, cooperative_id, cooperatives(name)").eq("user_id", user.id),
+    "the member's cooperatives",
+  );
 
   if (!memberships || memberships.length === 0) return [];
 
@@ -98,11 +99,14 @@ export async function loadLoans(): Promise<LoanSummary[]> {
 
   const [loans, { data: repayments }] = await Promise.all([
     loadLoanRows(supabase, membershipIds),
-    supabase
-      .from("savings_transactions")
-      .select("loan_id, amount, recorded_at")
-      .in("membership_id", membershipIds)
-      .eq("type", "loan_repayment"),
+    must(
+      supabase
+        .from("savings_transactions")
+        .select("loan_id, amount, recorded_at")
+        .in("membership_id", membershipIds)
+        .eq("type", "loan_repayment"),
+      "loan repayments",
+    ),
   ]);
 
   const repaidByLoan = new Map<string, number>();
@@ -165,11 +169,14 @@ export async function loadLoans(): Promise<LoanSummary[]> {
 export async function loadLedger(membershipId: string): Promise<LedgerEntry[]> {
   const supabase = await createClient();
 
-  const { data } = await supabase
-    .from("savings_transactions")
-    .select("id, type, amount, description, recorded_at, loan_id")
-    .eq("membership_id", membershipId)
-    .order("recorded_at", { ascending: false });
+  const { data } = await must(
+    supabase
+      .from("savings_transactions")
+      .select("id, type, amount, description, recorded_at, loan_id")
+      .eq("membership_id", membershipId)
+      .order("recorded_at", { ascending: false }),
+    "the savings ledger",
+  );
 
   return (data ?? []).map((row) => ({
     id: row.id,
