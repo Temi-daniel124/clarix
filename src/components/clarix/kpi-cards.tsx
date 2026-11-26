@@ -69,7 +69,12 @@ export function KpiCards({
       value: monthlyDeductions,
       accent: "var(--clarix-brand-primary)",
       detail: "What your cooperatives take from your salary each month in total.",
-      trend: { points: [], emptyLabel: "No history yet" },
+      // BUILD-PLAN 1.4e: Clarix keeps no deduction history to plot here, so with loans running
+      // there is no honest second line and the card shows none. With none, the true line.
+      trend:
+        activeLoanCount > 0 || monthlyDeductions > 0
+          ? undefined
+          : { points: [], emptyLabel: "Nothing deducted yet" },
     },
     {
       key: "capacity",

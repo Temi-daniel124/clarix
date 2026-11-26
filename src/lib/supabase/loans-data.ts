@@ -2,6 +2,7 @@ import { createClient, getRequestUser } from "@/lib/supabase/server";
 import type { Capacity } from "@/lib/eligibility";
 import { loanBalance } from "@/lib/loan-status";
 import { loadLoanRows } from "./loan-rows";
+import { nextDeductionOn } from "@/lib/deduction-schedule";
 
 export type LoanStatus =
   | "draft"
@@ -147,7 +148,12 @@ export async function loadLoans(): Promise<LoanSummary[]> {
       createdAt: loan.createdAt,
       nextRepaymentOn:
         loan.status === "active"
-          ? nextMonthAfter(lastRepaymentByLoan.get(loan.id) ?? loan.approvedAt)
+          ? nextDeductionOn({
+              anchor: lastRepaymentByLoan.get(loan.id) ?? loan.approvedAt,
+              approvedAt: loan.approvedAt,
+              tenureMonths: loan.tenureMonths,
+              expectedEndDate: loan.expectedEndDate,
+            })
           : null,
       preExisting: loan.origin === "pre_existing",
       expectedEndDate: loan.expectedEndDate,
@@ -173,17 +179,4 @@ export async function loadLedger(membershipId: string): Promise<LedgerEntry[]> {
     recordedAt: row.recorded_at,
     loanId: row.loan_id,
   }));
-}
-
-/**
- * When the next deduction is expected: one month after the last one recorded.
- *
- * Presented as an expectation, never as a fact. Clarix has no payroll connection (D005) and
- * cannot know a deduction happened until a cooperative records it.
- */
-function nextMonthAfter(iso: string | null): string | null {
-  if (!iso) return null;
-  const date = new Date(iso);
-  date.setMonth(date.getMonth() + 1);
-  return date.toISOString();
 }
