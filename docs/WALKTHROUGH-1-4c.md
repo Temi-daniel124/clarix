@@ -29,6 +29,8 @@ These are bugs or breaks of DESIGN_SYSTEM.md that no later step covers.
    must be 0.6em, `ink-500`, weight 500. Fix it in the single meter component so every use changes.
 5. Sidebar shows its own scrollbar on a short window (about 585px tall). The nav should fit or
    scroll with the page, with no inner scrollbar at normal heights.
+   *Replaced by 1.4e item 1 (owner's feedback on the 1.4d fix): the sidebar is always pinned at
+   full height, and only its nav list scrolls, when it does not fit. See `docs/BUILD-PLAN.md` 1.4e.*
 6. "Switch to my cooperative console" wraps onto two lines and uses jargon. Use a short label, for
    example "Switch to admin" or "Admin view", on one line.
 7. Account menu items are not exposed as menu items to assistive tech. Give the menu `role="menu"`

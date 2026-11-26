@@ -166,11 +166,25 @@ The "Fix now" items from the owner's signed-in walkthrough of the 1.4c Preview
 - The savings sparkline reads only the member's own ledger and walks back from the real balance.
 - One Africa/Lagos greeting helper for every home.
 - The meter follows DESIGN_SYSTEM §3 in its one component; the ₦ sign is 0.6em `ink-500` 500.
-- The desktop sidebar pins only while it fits the window; otherwise it scrolls with the page.
+- ~~The desktop sidebar pins only while it fits the window~~; replaced by 1.4e item 1.
 - Short view-switch labels ("Switch to staff view", "Switch to platform").
 - The account menu's dividers are real separators; the menu, items, arrow keys and Escape verified.
 - **Accept when:** a test proves the three loan screens agree for one member, and the walkthrough's
   seven items are fixed at 360/390/1280/1440px.
+
+### ☑ 1.4e Sidebar scroll and small fixes
+- Sidebar (the owner's feedback, replacing 1.4d item 5): always pinned at the full window height;
+  logo row, switcher and search fixed at the top, account row at the bottom; only the nav list
+  between them scrolls, and only when it does not fit, with `overscroll-behavior: contain` and a
+  thin scrollbar shown while hovering or scrolling. 1.4d's fits-the-window switch is gone. Nav rows
+  36px and group labels 16px above / 4px below, so the full admin nav fits at 1280×800.
+- Member home: no "No history yet" under Monthly deductions when loans are running.
+- Loan cards: the next deduction is the next date on the loan's monthly schedule, never one in the
+  past, and left out once the schedule has ended.
+- The sign-in page's sample meter is the shared `MeterBar` with the §3 colours; its hydration
+  mismatch under reduced motion is fixed.
+- **Accept when:** the sidebar is checked at 585, 800 and 900px tall for member, admin and officer on
+  a long and a short page, and the three small fixes at 360/390/1280/1440px.
 
 
 ### ☐ 1.5 Not-found, error and loading-failure pages

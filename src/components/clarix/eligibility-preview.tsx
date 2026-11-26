@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Building2 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -41,6 +41,10 @@ const FRAMES: Frame[] = [
   { committed: 54_000, proposed: 34_000, note: "Checking a request of ₦34,000 a month" },
 ];
 
+function subscribeNever() {
+  return () => {};
+}
+
 export function EligibilityPreview({
   pace = "hero",
   className,
@@ -63,9 +67,13 @@ export function EligibilityPreview({
     return () => window.clearInterval(timer);
   }, [pace, reduceMotion]);
 
-  // Reduced motion holds the frame that carries the most meaning: a real request being
-  // checked against real remaining capacity, rather than looping through the others.
-  const frame = reduceMotion ? FRAMES[2] : FRAMES[index];
+  // Reduced motion holds the frame that carries the most meaning: a real request being checked
+  // against real remaining capacity. Only once hydrated: the server cannot know the preference, so
+  // the first render must match its markup (they disagreed on the cooperative count, and React
+  // logged a hydration error on every sign-in page).
+  const hydrated = useSyncExternalStore(subscribeNever, () => true, () => false);
+  const reduce = hydrated && Boolean(reduceMotion);
+  const frame = reduce ? FRAMES[2] : FRAMES[index];
 
   return (
     <div
@@ -128,9 +136,9 @@ export function EligibilityPreview({
       <div className="mt-4 min-h-[20px]">
         <motion.p
           key={frame.note}
-          initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+          initial={reduce ? false : { opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={reduceMotion ? { duration: 0 } : springStandard}
+          transition={reduce ? { duration: 0 } : springStandard}
           className={cn("type-caption", pace === "calm" ? "text-white/50" : "text-text-secondary")}
         >
           {frame.note}

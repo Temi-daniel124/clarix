@@ -549,3 +549,19 @@
     outline-offset: 2px;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   The desktop sidebar's nav list (BUILD-PLAN 1.4e). A thin scrollbar that is invisible at rest
+   and shows only while the list is hovered or being scrolled (`data-scrolling`, set by the shell).
+   Colour from §4.1: the thumb is `ink-300`, the same grey as a disabled icon.
+--------------------------------------------------------------------------- */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  transition: scrollbar-color var(--duration-quick) var(--ease-quick);
+}
+
+.sidebar-scroll:hover,
+.sidebar-scroll[data-scrolling] {
+  scrollbar-color: var(--clarix-ink-300) transparent;
+}

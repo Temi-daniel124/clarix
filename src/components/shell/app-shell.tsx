@@ -2,7 +2,6 @@
 
 import {
   useCallback,
-  useLayoutEffect,
   useRef,
   useEffect,
   useMemo,
@@ -445,38 +444,17 @@ function useShortcutLabel() {
 }
 
 /**
- * Whether the sidebar's content fits the window below the Preview strip. Starts false, so the first
- * paint is the version that is always right (part of the page, no inner scrollbar), then pins the
- * sidebar once it is known to fit, and re-checks as the window or the sidebar changes size.
+ * Marks the sidebar's nav list while it is being scrolled, so its thin scrollbar shows during a
+ * scroll as well as on hover (globals.css `.sidebar-scroll`), then fades back out.
  */
-function useFitsWindow(ref: React.RefObject<HTMLElement | null>): boolean {
-  const [fits, setFits] = useState(false);
-  useLayoutEffect(() => {
-    const aside = ref.current;
-    if (!aside) return;
-    function measure() {
-      const element = ref.current;
-      if (!element) return;
-      // The content's own height: every child at its natural size, whatever the aside is set to.
-      const natural = [...element.children].reduce((sum, child) => {
-        const box = child as HTMLElement;
-        const style = getComputedStyle(box);
-        const inner = box.tagName === "NAV" ? [...box.children].reduce((h, c) => h + (c as HTMLElement).offsetHeight, 0) + parseFloat(style.paddingTop) + parseFloat(style.paddingBottom) : box.offsetHeight;
-        return sum + inner + parseFloat(style.marginTop) + parseFloat(style.marginBottom);
-      }, 0);
-      const offset = parseFloat(getComputedStyle(document.body).getPropertyValue("--clarix-preview-offset")) || 0;
-      setFits(natural <= window.innerHeight - offset);
-    }
-    measure();
-    const observer = new ResizeObserver(measure);
-    for (const child of aside.children) observer.observe(child);
-    window.addEventListener("resize", measure);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [ref]);
-  return fits;
+function useScrollingFlag() {
+  const timer = useRef<number | undefined>(undefined);
+  return useCallback((event: React.UIEvent<HTMLElement>) => {
+    const element = event.currentTarget;
+    element.dataset.scrolling = "";
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => delete element.dataset.scrolling, 800);
+  }, []);
 }
 
 function Sidebar({
@@ -501,8 +479,7 @@ function Sidebar({
   const pathname = usePathname();
   const collapsed = useSyncExternalStore(subscribeToRail, readRail, () => false);
   const shortcut = useShortcutLabel();
-  const asideRef = useRef<HTMLElement>(null);
-  const fits = useFitsWindow(asideRef);
+  const onNavScroll = useScrollingFlag();
   const staff = kind === "admin" || kind === "officer";
 
   const toggle = useCallback(() => {
@@ -518,16 +495,11 @@ function Sidebar({
   }, []);
 
   return (
+    // BUILD-PLAN 1.4e: always pinned at the full window height, like a macOS sidebar. The logo row,
+    // switcher and search stay at the top and the account row at the bottom; only the nav list in
+    // between scrolls, and only when it does not fit.
     <aside
-      ref={asideRef}
-      className={cn(
-        "hidden shrink-0 flex-col self-start border-r border-hairline bg-surface lg:flex",
-        // Walkthrough 1.4d item 5: pinned beside the page while it fits the window; on a short
-        // window it simply scrolls with the page, so it never grows a scrollbar of its own.
-        fits
-          ? "sticky top-[var(--clarix-preview-offset,0px)] h-[calc(100dvh-var(--clarix-preview-offset,0px))]"
-          : "min-h-[calc(100dvh-var(--clarix-preview-offset,0px))]",
-      )}
+      className="sticky top-[var(--clarix-preview-offset,0px)] hidden h-[calc(100dvh-var(--clarix-preview-offset,0px))] shrink-0 flex-col self-start overflow-hidden border-r border-hairline bg-surface lg:flex"
       style={{ width: "var(--sidebar-width)" }}
     >
       <div className={cn("flex h-16 shrink-0 items-center px-3", collapsed ? "justify-center" : "justify-between pl-5")}>
@@ -587,17 +559,22 @@ function Sidebar({
         )}
       </div>
 
-      <nav aria-label="Main" className="mt-2 flex-1 px-3 pb-4">
+      {/* overscroll-contain: scrolling the list never scrolls the page behind it. */}
+      <nav
+        aria-label="Main"
+        onScroll={onNavScroll}
+        className="sidebar-scroll mt-2 min-h-0 flex-1 overflow-y-auto overscroll-contain px-3 pb-4"
+      >
         {nav.groups.map((group, index) => (
           <div key={group.label ?? index}>
             {group.label ? (
               collapsed ? (
-                <div aria-hidden className="mx-3 my-4 h-px bg-hairline" />
+                <div aria-hidden className="mx-3 my-3 h-px bg-hairline" />
               ) : (
-                <p className="type-small px-3 pt-6 pb-2 text-ink-500">{group.label}</p>
+                <p className="type-small px-3 pt-4 pb-1 text-ink-500">{group.label}</p>
               )
             ) : null}
-            <ul className="flex flex-col gap-1" aria-label={group.label}>
+            <ul className="flex flex-col" aria-label={group.label}>
               {group.items.map((item) => (
                 <li key={item.href}>
                   <SidebarLink item={item} active={isNavActive(pathname, item, nav.home)} collapsed={collapsed} />
@@ -637,7 +614,7 @@ function SidebarLink({ item, active, collapsed }: { item: NavItem; active: boole
       aria-current={active ? "page" : undefined}
       title={collapsed ? item.label : undefined}
       className={cn(
-        "type-body flex h-10 items-center gap-3 rounded-sm transition-colors duration-[var(--duration-quick)] ease-[var(--ease-quick)]",
+        "type-body flex h-9 items-center gap-3 rounded-sm transition-colors duration-[var(--duration-quick)] ease-[var(--ease-quick)]",
         collapsed ? "justify-center" : "px-3",
         active ? "bg-emerald-50 font-medium text-emerald-700" : "text-ink-900 hover:bg-surface-sunken",
       )}
