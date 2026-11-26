@@ -362,6 +362,11 @@ If an icon does not exist in lucide, say so and ask; never add another package.
   home **Highlights** strip (max 3 swipeable cards, Minimal Carousel) using the cooperative's own
   uploaded image or a brand pattern, shown only when there is something real.
 - **Empty states:** a small line drawing made of the meter ring and lucide strokes, one line, one action.
+- **Status pages** (not found, didn't load; BUILD-PLAN 1.5, `src/components/clarix/status-page.tsx`):
+  the drawing is a 64px ring, 2px `hairline-strong` track with a two-thirds `ink-300` arc from 12
+  o'clock, and a 24px lucide icon (stroke 1.75, `ink-500`) at its centre; the line is `title` in
+  `ink-900`, 24px below; the one action is a primary pill, 32px below. Centred in a 560px column with
+  80px above and below. No codes, digests or stack traces on screen.
 - Never: abstract 3D shapes, glowing blobs, coins, suits shaking hands, people laughing at laptops,
   non-Nigerian settings, AI-generated people.
 

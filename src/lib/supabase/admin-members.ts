@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatNaira } from "@/lib/format";
 import { isAwaitingDecision, loanBalance, summariseLoans } from "@/lib/loan-status";
 import { loadLoanRows, type LoanRow } from "./loan-rows";
+import { must } from "./must";
 import { memberCounts, type MemberCounts } from "@/lib/home-figures";
 
 /**
@@ -37,14 +38,20 @@ export async function loadMembers(cooperativeId: string): Promise<MemberRow[]> {
   const supabase = await createClient();
 
   const [{ data: memberships }, { data: roster }] = await Promise.all([
-    supabase
-      .from("cooperative_memberships")
-      .select("id, status, savings_balance, joined_at, user_id, users(name, employee_id)")
-      .eq("cooperative_id", cooperativeId),
-    supabase
-      .from("member_roster_entries")
-      .select("id, employee_id, name, savings_balance, membership_id")
-      .eq("cooperative_id", cooperativeId),
+    must(
+      supabase
+        .from("cooperative_memberships")
+        .select("id, status, savings_balance, joined_at, user_id, users(name, employee_id)")
+        .eq("cooperative_id", cooperativeId),
+      "the cooperative's members",
+    ),
+    must(
+      supabase
+        .from("member_roster_entries")
+        .select("id, employee_id, name, savings_balance, membership_id")
+        .eq("cooperative_id", cooperativeId),
+      "the cooperative's roster",
+    ),
   ]);
 
   // The same rows and the same count the member's own screens use (walkthrough 1.4d item 1).
@@ -145,13 +152,16 @@ export type MemberProfile = {
 export async function loadMemberProfile(membershipId: string): Promise<MemberProfile | null> {
   const supabase = await createClient();
 
-  const { data: membership } = await supabase
-    .from("cooperative_memberships")
-    .select(
-      "id, cooperative_id, status, savings_balance, joined_at, users(name, employee_id, email, salary_verified_at)",
-    )
-    .eq("id", membershipId)
-    .maybeSingle();
+  const { data: membership } = await must(
+    supabase
+      .from("cooperative_memberships")
+      .select(
+        "id, cooperative_id, status, savings_balance, joined_at, users(name, employee_id, email, salary_verified_at)",
+      )
+      .eq("id", membershipId)
+      .maybeSingle(),
+    "the member",
+  );
 
   if (!membership) return null;
 
@@ -163,11 +173,14 @@ export async function loadMemberProfile(membershipId: string): Promise<MemberPro
     // never which cooperative an obligation sits with (DECISIONS.md D003).
     supabase.rpc("capacity_for_membership", { target_membership_id: membershipId }),
     loadLoanRows(supabase, [membershipId]),
-    supabase
-      .from("savings_transactions")
-      .select("id, type, amount, description, recorded_at, loan_id")
-      .eq("membership_id", membershipId)
-      .order("recorded_at", { ascending: false }),
+    must(
+      supabase
+        .from("savings_transactions")
+        .select("id, type, amount, description, recorded_at, loan_id")
+        .eq("membership_id", membershipId)
+        .order("recorded_at", { ascending: false }),
+      "the member's ledger",
+    ),
   ]);
 
   const capacityRow = Array.isArray(capacityRows) ? capacityRows[0] : capacityRows;

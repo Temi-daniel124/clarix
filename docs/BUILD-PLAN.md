@@ -187,7 +187,7 @@ The "Fix now" items from the owner's signed-in walkthrough of the 1.4c Preview
   a long and a short page, and the three small fixes at 360/390/1280/1440px.
 
 
-### ☐ 1.5 Not-found, error and loading-failure pages
+### ☑ 1.5 Not-found, error and loading-failure pages
 - Replace Next's default black 404 (it ignores the light theme, D037) and the bare error boundaries
   with designed pages in the Calm Ledger style: `src/app/not-found.tsx`, `src/app/error.tsx`,
   `src/app/global-error.tsx`, plus a `not-found` and `error` inside each signed-in shell so the
@@ -197,6 +197,14 @@ The "Fix now" items from the owner's signed-in walkthrough of the 1.4c Preview
   rendering an empty screen that reads as "nothing here" (AGENT.md: nothing silently fails).
 - **Accept when:** visiting an unknown URL, throwing in a route and failing a data read each show
   the designed page at 360/390/1280/1440px; no Next default page can be reached.
+- **Built (r2/1-5-error-pages):** one `StatusPage` (ring drawing, one line, one action) behind
+  `NotFoundPage` and `RouteError`; root `not-found`, `error` and `global-error` (own `<html>`, the
+  shared `fonts.ts`); a `not-found` and `error` in the member, admin and platform shells, with an
+  `[...missing]` catch-all in admin and platform so unknown URLs there keep the sidebar. Data reads
+  on the member home, loans, admin members and officer home go through `must()`, which throws on a
+  query error so the shell's "This page didn't load" with "Try again" (`retry()`) shows instead of an
+  empty list. The admin Loans queue is left out until the 0.1/0.3 migrations apply (it reads their
+  columns); it moves to `must()` in 6.5.
 ---
 
 ## Phase 2: brand files and SEO
