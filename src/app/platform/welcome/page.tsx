@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ArrowRight, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { landingPathFor } from "@/lib/staff";
 
@@ -30,7 +30,7 @@ export default async function PlatformWelcomePage() {
   return (
     <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[640px] items-center justify-between px-5 py-6 md:px-8">
-        <Wordmark />
+        <Logo />
       </header>
 
       <main className="mx-auto flex w-full max-w-[640px] flex-1 flex-col justify-center px-5 pb-20 md:px-8">

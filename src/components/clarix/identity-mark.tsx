@@ -2,43 +2,23 @@ import { UserRound } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * The person's mark on the dashboard: their initial on a tinted plate, or a neutral icon when
- * Clarix does not know their name yet.
- *
- * Not a photo, and deliberately not a stock avatar. DESIGN_SYSTEM.md's anti-generic checklist
- * rules out stock imagery outright and that is a locked decision (DECISIONS.md D017), so this is
- * built from something the product actually knows about the person instead.
- *
- * The tint is chosen deterministically from the name, so the same person always gets the same
- * colour and it never looks randomly assigned between visits. It picks only from the Clarix
- * palette, emerald, indigo, navy, because no other hue enters the product, not even here.
+ * The person's avatar (not the logo): their initials on `emerald-100` in `emerald-700`, the same
+ * avatar the app shell draws (DESIGN_SYSTEM.md §5.5), or a neutral person icon when Clarix does not
+ * know their name yet. Never a photo or a stock avatar (D017), and one colour for everyone.
  */
-
-const TINTS = [
-  "var(--clarix-brand-accent)",
-  "var(--clarix-brand-secondary)",
-  "var(--clarix-brand-primary)",
-] as const;
-
 export function IdentityMark({ name, className }: { name: string | null; className?: string }) {
-  const initial = name?.trim().charAt(0).toUpperCase() ?? "";
-  const tint = TINTS[hashToIndex(name ?? "", TINTS.length)];
+  const initials = initialsFor(name);
 
   return (
     <span
       aria-hidden
       className={cn(
-        "flex size-12 items-center justify-center rounded-feature border",
+        "flex size-12 items-center justify-center rounded-pill bg-emerald-100 text-emerald-700",
         className,
       )}
-      style={{
-        backgroundColor: `color-mix(in srgb, ${tint} 14%, transparent)`,
-        borderColor: `color-mix(in srgb, ${tint} 28%, transparent)`,
-        color: tint,
-      }}
     >
-      {initial ? (
-        <span className="type-section font-semibold leading-none">{initial}</span>
+      {initials ? (
+        <span className="type-heading leading-none">{initials}</span>
       ) : (
         <UserRound className="size-5" strokeWidth={1.75} />
       )}
@@ -46,11 +26,9 @@ export function IdentityMark({ name, className }: { name: string | null; classNa
   );
 }
 
-/** Small stable hash, so a given name always lands on the same tint. */
-function hashToIndex(value: string, buckets: number): number {
-  let hash = 0;
-  for (let index = 0; index < value.length; index += 1) {
-    hash = (hash * 31 + value.charCodeAt(index)) % 1_000_003;
-  }
-  return hash % buckets;
+/** "Funmilayo Adeyemi" → "FA"; a first name alone → its first letter. */
+function initialsFor(name: string | null): string {
+  const parts = name?.trim().split(/\s+/).filter(Boolean) ?? [];
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return parts[0]?.[0]?.toUpperCase() ?? "";
 }

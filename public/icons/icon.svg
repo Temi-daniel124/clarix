@@ -1,9 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="Clarix">
-  <!-- The app icon is the signature motif: a capacity meter curled into a ring, two-thirds
-       committed and one-third still available. Navy ground, emerald available segment -
-       DESIGN_SYSTEM.md tokens only. -->
-  <rect width="512" height="512" rx="112" fill="#0B1220"/>
-  <circle cx="256" cy="256" r="132" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="44"/>
-  <circle cx="256" cy="256" r="132" fill="none" stroke="#16A57A" stroke-width="44" stroke-linecap="round"
-          stroke-dasharray="553.2 829.4" transform="rotate(-90 256 256)"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Clarix"><rect width="512" height="512" rx="112.64" fill="#0B1220"/><circle cx="256" cy="256" r="145.92" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="92.16"/><circle cx="256" cy="256" r="145.92" fill="none" stroke="#0F9F74" stroke-width="92.16" stroke-linecap="round" stroke-dasharray="611.23 916.84" transform="rotate(-90 256 256)"/></svg>

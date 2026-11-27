@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { EligibilityPreview } from "@/components/clarix/eligibility-preview";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 
 /**
  * Shared shell for Sign Up (1.3) and Log In (1.4).
@@ -16,7 +16,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
       {/* Left panel, desktop only. */}
       <aside className="surface-navy relative hidden flex-col justify-between bg-navy-surface p-12 lg:flex">
         <Link href="/" className="w-fit" aria-label="Clarix home">
-          <Wordmark tone="onDark" />
+          <Logo tone="on-navy" />
         </Link>
 
         <div className="max-w-[420px]">
@@ -35,7 +35,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
       {/* Form panel. */}
       <main className="flex flex-1 flex-col px-5 pt-16 pb-12 md:px-8 lg:justify-center lg:px-16 lg:pt-12">
         <Link href="/" className="mb-10 w-fit lg:hidden" aria-label="Clarix home">
-          <Wordmark />
+          <Logo />
         </Link>
 
         <div className="mx-auto w-full max-w-[420px] lg:mx-0">{children}</div>

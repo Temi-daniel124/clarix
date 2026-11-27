@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 
 /**
  * Shell for the onboarding sequence (blueprint 2.1–2.5).
@@ -14,7 +14,7 @@ export default function OnboardingLayout({ children }: LayoutProps<"/onboarding"
     <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[640px] items-center justify-between px-5 py-6 md:px-8">
         <Link href="/" aria-label="Clarix home">
-          <Wordmark />
+          <Logo />
         </Link>
       </header>
 

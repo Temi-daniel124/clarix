@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Dialog } from "@base-ui/react/dialog";
 import { ArrowRight, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 
 /**
  * Landing page navigation (employee blueprint 1.1), built on the Watermelon navigation-5
@@ -47,7 +47,7 @@ export function LandingNav() {
           aria-label="Clarix home"
           className="rounded-full px-3 focus-visible:outline-2 focus-visible:outline-indigo focus-visible:outline-offset-2"
         >
-          <Wordmark tone="onDark" />
+          <Logo tone="on-navy" />
         </Link>
 
         <div className="hidden items-center gap-8 px-4 md:flex">
@@ -85,7 +85,7 @@ export function LandingNav() {
 
               <Dialog.Popup className="surface-navy fixed inset-x-3 top-3 z-50 origin-top rounded-feature border border-white/12 bg-navy-surface p-5 transition-all duration-200 data-ending-style:-translate-y-2 data-ending-style:opacity-0 data-starting-style:-translate-y-2 data-starting-style:opacity-0">
                 <div className="flex items-center justify-between">
-                  <Wordmark tone="onDark" />
+                  <Logo tone="on-navy" />
                   <Dialog.Close
                     className="flex size-10 items-center justify-center rounded-full text-white/70 transition-colors duration-150 hover:bg-white/10 hover:text-white focus-visible:outline-2 focus-visible:outline-indigo"
                     aria-label="Close menu"

@@ -209,7 +209,7 @@ The "Fix now" items from the owner's signed-in walkthrough of the 1.4c Preview
 
 ## Phase 2: brand files and SEO
 
-### ☐ 2.1 Logo variation set
+### ☑ 2.1 Logo variation set
 Read: `docs/BRAND.md`.
 - SVG masters in `public/brand/`: primary, secondary (stacked), submark, favicon mark, mono navy, mono
   white, mono black. A `Logo` component with `variant` and `tone` props replaces `wordmark.tsx`
@@ -219,6 +219,12 @@ Read: `docs/BRAND.md`.
   `src/app/icon.png`, `src/app/apple-icon.png`.
 - **Accept when:** a `/dev/brand` Preview page shows every variation on paper, white and navy, at
   minimum size; the browser tab, iOS home screen and Android install show the new mark.
+- **Built (r2/2-1-logo-variations):** the masters and exports listed in `docs/BRAND.md` → "Files",
+  with the exact construction under "As built"; `Logo` (`variant` primary, stacked or submark;
+  `tone` default, on-navy, mono-navy, mono-white or mono-black) at all 12 places `Wordmark` was,
+  which is deleted; `IdentityMark` is initials on `emerald-100`; `/dev/brand` on Preview and local
+  only. The icons also move from the old `#16A57A` to the `emerald-500` token. The manifest still
+  lists the SVG icons; its PNG icons and wording are 2.2.
 
 ### ☐ 2.2 SEO and app files (D047)
 - `src/app/sitemap.ts`, `src/app/robots.ts`, update `src/app/manifest.ts` (name "Clarix", description
