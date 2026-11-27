@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetLink, useSheetNavigate } from "@/components/ui/sheet";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 import { SIDEBAR_STORAGE_KEY } from "@/components/app-shell/rail-script";
 import { signOutAction, switchCooperativeAction } from "@/app/shell-actions";
 import { cn } from "@/lib/utils";
@@ -505,7 +505,7 @@ function Sidebar({
       <div className={cn("flex h-16 shrink-0 items-center px-3", collapsed ? "justify-center" : "justify-between pl-5")}>
         {collapsed ? null : (
           <Link href={nav.home} aria-label="Clarix home" className="rounded-sm">
-            <Wordmark />
+            <Logo />
           </Link>
         )}
         <Button

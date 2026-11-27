@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 import { SUPPORT_EMAIL } from "@/lib/support";
 
 export const metadata: Metadata = {
@@ -32,7 +32,7 @@ export default function PrivacyPage() {
     <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[760px] items-center justify-between px-5 py-6 md:px-8">
         <Link href="/" aria-label="Clarix home">
-          <Wordmark />
+          <Logo />
         </Link>
       </header>
 

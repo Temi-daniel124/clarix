@@ -81,10 +81,13 @@ code is on `main` yet.
   Next default page remains; unknown URLs, a throw in a route and a failed data read each show the
   designed one-line page (in the shell where there is one) with "Back to home" or "Try again". No
   migration.
+  **2.1 (logo variation set) is built and in review**, stacked on 1.5: SVG masters, PNG, favicon and
+  app icon exports, one `Logo` component in place of `Wordmark`, initials avatars on `emerald-100`,
+  and `/dev/brand` for the owner to approve the set. No migration.
   **Open chain, merge in order:** #24 (0.1) → #25 (0.2) → #26 (0.3) → #27 (0.4) → #28 (0.5) → #29 (0.6)
-  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b) → #36 (1.4c) → #37 (1.4d) → #38 (1.4e) → #39 (1.5).
-  **Next step: BUILD-PLAN 2.1**
-  (logo variation set).
+  → #30 (1.1) → #31 (1.2) → #32 (1.3) → #33 (1.4) → #34 (1.4a) → #35 (1.4b) → #36 (1.4c) → #37 (1.4d) → #38 (1.4e) → #39 (1.5) → #40 (2.1).
+  **Next step: BUILD-PLAN 2.2**
+  (SEO and app files).
 - **D038, Figtree's tabular figures: pass** (checked 23 Nov 2026, BUILD-PLAN 1.1). Money figures use
   Figtree; the Inter fallback is not needed and Inter is no longer loaded.
   - Chrome (desktop) and Android Chrome (Pixel 7 emulation): with `tabular-nums` all ten digits

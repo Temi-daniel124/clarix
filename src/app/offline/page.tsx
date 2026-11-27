@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { CloudOff } from "lucide-react";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 
 export const metadata: Metadata = {
   title: "No connection",
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 export default function OfflinePage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center px-5 py-16 text-center">
-      <Wordmark />
+      <Logo />
 
       <span
         aria-hidden

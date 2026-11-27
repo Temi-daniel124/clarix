@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 import { loadStaffContext } from "@/lib/supabase/staff-context";
 import { pendingInvites, preferredRole } from "@/lib/staff";
 
@@ -35,7 +35,7 @@ export default async function OfficerLayout({ children }: { children: ReactNode 
     <div className="flex min-h-app flex-1 flex-col">
       <header className="mx-auto flex w-full max-w-[720px] items-center justify-between px-5 py-6 md:px-8">
         <Link href="/admin" aria-label="Cooperative home" className="min-w-0">
-          <Wordmark />
+          <Logo />
           <span className="mt-1 block truncate type-caption text-text-muted">
             {role.cooperativeName}
           </span>

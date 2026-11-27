@@ -44,20 +44,45 @@ Optional tagline under the primary on marketing material only: "Cooperative fina
 - Cooperative logos, where uploaded, always sit **beside** Clarix's (PDF header right side, app header
   avatar), never merged into it.
 
-## Files (all generated in BUILD-PLAN 2.1)
+## As built (BUILD-PLAN 2.1)
+
+The exact numbers, in Figtree font units (1000 per em, cap height 700, x-height 500), shared by the SVG
+masters and the `Logo` component (`src/components/clarix/logo.tsx`, geometry in `logo-geometry.ts`):
+
+- **Wordmark:** Figtree 600's own outlines for "Clarix", shaped with the font's kerning and tracked
+  −20 units (−0.02em), one path, baseline at 0; ink box 39 to 2498 wide, 726 above the baseline to
+  12 below.
+- **Ring:** outer diameter 840 (cap 700 × 1.2), stroke 142.8 (17%), radius 348.6; the arc is
+  two-thirds of the circumference from 12 o'clock, round caps.
+- **Primary:** gap 294 (0.35 × ring); the ring's centre sits 250 above the baseline (the middle of
+  the x-height). Box 3593 × 896, so 24px tall is the 96px minimum width.
+- **Stacked:** gap 210 (0.25 × ring), box 2459 × 1788; 47px tall is the 64px minimum width.
+- **Tones:** `default` (ink-900 word, ink-300 track, emerald-500 arc), `on-navy` (white word, white
+  16% track, emerald-500 arc), `mono-white` (all white, track 40%), `mono-navy` and `mono-black` (one
+  colour, track stroke 45% of the arc's).
+- **Favicon / app icon:** a 512 tile, `navy-900`, radius 22% (112.6); ring outer diameter 75% of the
+  tile (the 12.5% clear space each side), stroke 24% of it. **Apple:** the same ring on a square tile
+  with no radius, because iOS masks its own corners. **Maskable:** square tile, ring 75% of the
+  central 80% safe zone (60% of the tile).
+- PNGs are rendered straight at their pixel size, not shrunk from a large one.
+
+## Files (generated in BUILD-PLAN 2.1)
 
 ```
 public/brand/
-  clarix-primary.svg            clarix-primary-white.svg      clarix-primary-mono-navy.svg
-  clarix-stacked.svg            clarix-stacked-white.svg
-  clarix-submark.svg            clarix-submark-white.svg      clarix-submark-mono-black.svg
+  clarix-{primary,stacked,submark}.svg                 (default, light grounds)
+  clarix-{primary,stacked,submark}-on-navy.svg         (colour on navy)
+  clarix-{primary,stacked,submark}-white.svg           (mono white)
+  clarix-{primary,stacked,submark}-mono-navy.svg
+  clarix-{primary,stacked,submark}-mono-black.svg
   clarix-favicon-mark.svg
-  png/clarix-{primary,stacked,submark}-{512,1024}.png
+  png/clarix-{primary,stacked,submark}-{512,1024}.png  (long side)
+  png/clarix-favicon-mark-{16,32,180,192,512,1024}.png
 public/icons/
-  icon-192.png  icon-512.png  icon-maskable-192.png  icon-maskable-512.png
+  icon-192.png  icon-512.png  icon-maskable-192.png  icon-maskable-512.png  icon.svg  icon-maskable.svg
 src/app/
-  favicon.ico (16, 32, 48 inside)   icon.png (32)   apple-icon.png (180)   icon.svg (kept)
-  opengraph-image.tsx   (1200×630: navy-900 ground, primary white logo top-left, the landing
+  favicon.ico (16, 32, 48 inside)   icon.png (32)   apple-icon.png (180)   icon.svg (the favicon mark)
+  opengraph-image.tsx   (BUILD-PLAN 2.2; 1200×630: navy-900 ground, primary white logo top-left, the landing
                          headline in display 600 white, a meter ring bottom-right at 6% white)
 ```
 

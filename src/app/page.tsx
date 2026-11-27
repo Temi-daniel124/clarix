@@ -7,7 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Wordmark } from "@/components/clarix/wordmark";
+import { Logo } from "@/components/clarix/logo";
 import { LandingHero } from "@/components/landing/landing-hero";
 import { LandingNav } from "@/components/landing/landing-nav";
 
@@ -168,7 +168,7 @@ export default function LandingPage() {
           </div>
 
           <div className="mt-12 flex flex-col gap-4 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
-            <Wordmark />
+            <Logo />
             <p className="type-caption text-text-muted">
               Built for the staff cooperatives of Federal Medical Centre, Abeokuta.
             </p>
